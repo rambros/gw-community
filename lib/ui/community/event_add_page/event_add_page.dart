@@ -10,6 +10,7 @@ import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/form_field_controller.dart';
 import '/index.dart';
 import '/data/repositories/event_repository.dart';
+import '/utils/context_extensions.dart';
 import 'view_model/event_add_view_model.dart';
 
 class EventAddPage extends StatefulWidget {
@@ -39,6 +40,7 @@ class _EventAddPageState extends State<EventAddPage> {
     logFirebaseEvent('screen_view', parameters: {'screen_name': 'eventAddPage'});
     viewModel = EventAddViewModel(
       repository: context.read<EventRepository>(),
+      currentUserUid: context.currentUserIdOrEmpty,
       groupId: widget.groupId,
       groupName: widget.groupName,
     );

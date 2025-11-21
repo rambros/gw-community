@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 import '/backend/supabase/supabase.dart';
 import '/domain/models/user_entity.dart';
+import '/domain/models/app_auth_user.dart';
 import '/flutter_flow/flutter_flow_util.dart';
-import '/auth/supabase_auth/supabase_user_provider.dart';
+import 'supabase_auth_user_provider.dart';
 import 'auth_service.dart';
 import 'providers/email_auth_provider.dart';
 import 'providers/google_auth_provider.dart';
@@ -17,6 +18,9 @@ class SupabaseAuthService implements AuthService {
   static final SupabaseAuthService _instance = SupabaseAuthService._internal();
   factory SupabaseAuthService() => _instance;
   SupabaseAuthService._internal();
+
+  Stream<AppAuthUser>? _authUserStream;
+  Stream<String>? _jwtTokenStream;
 
   @override
   Stream<UserEntity?> get authStateChanges {
@@ -35,6 +39,21 @@ class SupabaseAuthService implements AuthService {
     final user = SupaFlow.client.auth.currentUser;
     return user != null ? _mapToUserEntity(user) : null;
   }
+
+  @override
+  Stream<AppAuthUser> get authUserChanges => _authUserStream ??= gWCommunitySupabaseUserStream();
+
+  @override
+  Stream<String> get jwtTokenChanges => _jwtTokenStream ??= SupaFlow.client.auth.onAuthStateChange
+      .debounce(
+        (authState) => authState.event == AuthChangeEvent.tokenRefreshed
+            ? TimerStream(authState, const Duration(seconds: 1))
+            : Stream.value(authState),
+      )
+      .map<String>((authState) => authState.session?.accessToken ?? '');
+
+  @override
+  String? get currentUserId => SupaFlow.client.auth.currentUser?.id;
 
   @override
   Future<UserEntity?> signInWithEmail(

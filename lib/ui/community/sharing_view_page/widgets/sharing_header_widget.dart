@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '/backend/supabase/supabase.dart';
-import '/components/user_avatar/user_avatar_widget.dart';
+import '/ui/core/widgets/user_avatar.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 
@@ -29,7 +29,7 @@ class SharingHeaderWidget extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.max,
           children: [
-            UserAvatarWidget(
+            UserAvatar(
               imageUrl: sharing.photoUrl,
               fullName: sharing.fullName,
             ),

@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import '/backend/schema/structs/index.dart';
 import '/backend/supabase/supabase.dart';
 
-import '/auth/base_auth_user_provider.dart';
+import '/domain/models/app_auth_user.dart';
 
 import '/main.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -25,8 +25,8 @@ class AppStateNotifier extends ChangeNotifier {
   static AppStateNotifier? _instance;
   static AppStateNotifier get instance => _instance ??= AppStateNotifier._();
 
-  BaseAuthUser? initialUser;
-  BaseAuthUser? user;
+  AppAuthUser? initialUser;
+  AppAuthUser? user;
   bool showSplashImage = true;
   String? _redirectLocation;
 
@@ -51,7 +51,7 @@ class AppStateNotifier extends ChangeNotifier {
   /// to perform subsequent actions (such as navigation) afterwards.
   void updateNotifyOnAuthChange(bool notify) => notifyOnAuthChange = notify;
 
-  void update(BaseAuthUser newUser) {
+  void update(AppAuthUser newUser) {
     final shouldUpdate = user?.uid == null || newUser.uid == null || user?.uid != newUser.uid;
     initialUser ??= newUser;
     user = newUser;

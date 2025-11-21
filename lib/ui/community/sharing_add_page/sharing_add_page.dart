@@ -1,5 +1,4 @@
-import '/auth/supabase_auth/auth_util.dart';
-import '/components/user_avatar/user_avatar_widget.dart';
+import '/ui/core/widgets/user_avatar.dart';
 import '/flutter_flow/flutter_flow_drop_down.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -8,6 +7,7 @@ import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/form_field_controller.dart';
 import '/ui/community/sharing_add_page/view_model/sharing_add_view_model.dart';
 import '/data/repositories/sharing_repository.dart';
+import '/utils/context_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -36,7 +36,7 @@ class SharingAddPage extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (_) => SharingAddViewModel(
         repository: context.read<SharingRepository>(),
-        currentUserUid: currentUserUid,
+        currentUserUid: context.currentUserIdOrEmpty,
         groupId: groupId,
         groupName: groupName,
         privacy: privacy,
@@ -158,7 +158,7 @@ class _SharingAddPageContent extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.max,
         children: [
-          UserAvatarWidget(
+          UserAvatar(
             imageUrl: user?.photoUrl,
             fullName: user?.fullName,
           ),

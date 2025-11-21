@@ -1,4 +1,5 @@
 import '/domain/models/user_entity.dart';
+import '/domain/models/app_auth_user.dart';
 
 /// Repository interface for authentication operations.
 ///
@@ -10,8 +11,17 @@ abstract class AuthRepository {
   /// Emits the current user when authenticated, null when signed out.
   Stream<UserEntity?> get authStateChanges;
 
+  /// Stream of raw auth user changes used for routing/app state.
+  Stream<AppAuthUser> get authUserChanges;
+
+  /// Stream of auth tokens for environments that need manual refresh handling.
+  Stream<String> get jwtTokenChanges;
+
   /// Gets the current authenticated user, if any.
   UserEntity? get currentUser;
+
+  /// Convenience getter for the current user's UID, null if signed out.
+  String? get currentUserId;
 
   /// Signs in a user with email and password.
   ///

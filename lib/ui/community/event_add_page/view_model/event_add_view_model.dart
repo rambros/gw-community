@@ -7,6 +7,7 @@ import '/flutter_flow/flutter_flow_util.dart';
 class EventAddViewModel extends ChangeNotifier {
   EventAddViewModel({
     required EventRepository repository,
+    required this.currentUserUid,
     this.groupId,
     this.groupName,
   }) : _repository = repository {
@@ -14,6 +15,7 @@ class EventAddViewModel extends ChangeNotifier {
   }
 
   final EventRepository _repository;
+  final String currentUserUid;
   final int? groupId;
   final String? groupName;
 
@@ -129,6 +131,7 @@ class EventAddViewModel extends ChangeNotifier {
         title: titleController.text.trim(),
         description: descriptionController.text.trim(),
         facilitatorName: facilitatorController.text.trim(),
+        facilitatorId: currentUserUid,
         eventDate: _eventDate!,
         eventTime: _eventTime!,
         durationMinutes: duration,

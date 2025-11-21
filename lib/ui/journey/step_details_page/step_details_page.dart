@@ -6,13 +6,13 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/backend/supabase/supabase.dart';
-import '/auth/supabase_auth/auth_util.dart';
 import '/data/repositories/step_activities_repository.dart';
 import 'view_model/step_details_view_model.dart';
 import 'widgets/activity_item_widget.dart';
 import '/ui/journey/step_audio_player_page/step_audio_player_page.dart';
 import '/ui/journey/step_text_view_page/step_text_view_page.dart';
 import '/ui/journey/step_journal_page/step_journal_page.dart';
+import '/utils/context_extensions.dart';
 
 class StepDetailsPage extends StatefulWidget {
   const StepDetailsPage({
@@ -46,7 +46,7 @@ class _StepDetailsPageState extends State<StepDetailsPage> {
 
       _viewModel = StepDetailsViewModel(
         repository: context.read<StepActivitiesRepository>(),
-        currentUserUid: currentUserUid,
+        currentUserUid: context.currentUserIdOrEmpty,
         userStepRow: widget.userStepRow!,
       );
       setState(() {});

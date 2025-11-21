@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import '/data/repositories/group_repository.dart';
-import '/auth/supabase_auth/auth_util.dart';
 
 class GroupActionsViewModel extends ChangeNotifier {
   final GroupRepository _groupRepository;
   final int groupId;
   final int currentMemberCount;
+  final String currentUserUid;
 
-  GroupActionsViewModel(this._groupRepository, this.groupId, this.currentMemberCount);
+  GroupActionsViewModel(
+    this._groupRepository,
+    this.groupId,
+    this.currentMemberCount, {
+    required this.currentUserUid,
+  });
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;

@@ -1,5 +1,5 @@
 import '/backend/supabase/supabase.dart';
-import '/components/user_avatar/user_avatar_widget.dart';
+import '/ui/core/widgets/user_avatar.dart';
 import '/flutter_flow/flutter_flow_drop_down.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -144,7 +144,7 @@ class _SharingEditPageContent extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.max,
         children: [
-          UserAvatarWidget(
+          UserAvatar(
             imageUrl: sharing.photoUrl,
             fullName: sharing.fullName,
           ),

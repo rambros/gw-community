@@ -1,10 +1,10 @@
-import '/auth/supabase_auth/auth_util.dart';
 import '/backend/supabase/supabase.dart';
 import '/data/repositories/group_repository.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/ui/community/group_edit_page/group_edit_page.dart';
+import '/utils/context_extensions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -279,7 +279,9 @@ class GroupCard extends StatelessWidget {
     // Actually, I'll just copy the original logic for now to avoid breaking changes in behavior, even if it looks wrong.
     // Refactoring should preserve behavior first.
 
+    final currentUserId = context.currentUserIdOrEmpty;
+
     return (FFAppState().loginUser.roles.contains('Admin') == true) ||
-        (currentUserUid == FFAppState().loginUser.userId);
+        (currentUserId == FFAppState().loginUser.userId);
   }
 }

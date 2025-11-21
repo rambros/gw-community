@@ -1,4 +1,3 @@
-import '/auth/supabase_auth/auth_util.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 
@@ -13,6 +12,7 @@ import 'package:provider/provider.dart';
 
 import 'view_model/community_view_model.dart';
 import '/data/repositories/community_repository.dart';
+import '/utils/context_extensions.dart';
 
 class CommunityPage extends StatefulWidget {
   const CommunityPage({
@@ -71,7 +71,7 @@ class _CommunityPageState extends State<CommunityPage> with TickerProviderStateM
     return ChangeNotifierProvider(
       create: (context) => CommunityViewModel(
         repository: CommunityRepository(),
-        currentUserUid: currentUserUid,
+        currentUserUid: context.currentUserIdOrEmpty,
       ),
       child: Consumer<CommunityViewModel>(
         builder: (context, viewModel, child) {

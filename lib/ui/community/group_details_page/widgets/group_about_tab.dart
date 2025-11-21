@@ -6,7 +6,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 
 import '../view_model/group_details_view_model.dart';
-import '/components/user_avatar/user_avatar_widget.dart';
+import '/ui/core/widgets/user_avatar.dart';
 
 class GroupAboutTab extends StatelessWidget {
   const GroupAboutTab({super.key});
@@ -59,7 +59,7 @@ class GroupAboutTab extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: Row(
                       children: [
-                        UserAvatarWidget(
+                        UserAvatar(
                           imageUrl: member.photoUrl,
                           fullName: member.fullName,
                         ),

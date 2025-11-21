@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import '/data/repositories/group_repository.dart';
-import '/auth/supabase_auth/auth_util.dart';
 import '/backend/supabase/supabase.dart';
 
 class GroupInvitationViewModel extends ChangeNotifier {
   final GroupRepository _groupRepository;
   final CcGroupsRow? group;
+  final String currentUserUid;
 
-  GroupInvitationViewModel(this._groupRepository, this.group);
+  GroupInvitationViewModel(
+    this._groupRepository,
+    this.group, {
+    required this.currentUserUid,
+  });
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;

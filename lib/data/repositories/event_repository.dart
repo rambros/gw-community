@@ -1,6 +1,5 @@
 import '/backend/supabase/supabase.dart';
 import '/custom_code/actions/index.dart' as actions;
-import '/auth/supabase_auth/auth_util.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 
 /// Repository responsável por todas as operações de dados relacionadas a eventos.
@@ -46,6 +45,7 @@ class EventRepository {
     required String title,
     required String description,
     required String facilitatorName,
+    required String facilitatorId,
     required DateTime eventDate,
     required DateTime eventTime,
     required int durationMinutes,
@@ -65,7 +65,7 @@ class EventRepository {
       'date_created': supaSerialize<DateTime>(getCurrentTimestamp),
       'event_time': supaSerialize<PostgresTime>(PostgresTime(eventTime)),
       'facilitator_name': facilitatorName,
-      'facilitator_id': currentUserUid,
+      'facilitator_id': facilitatorId,
       'visibility': visibility,
     });
   }
@@ -75,6 +75,7 @@ class EventRepository {
     required String title,
     required String description,
     required String facilitatorName,
+    required String facilitatorId,
     required DateTime eventDate,
     required DateTime eventTime,
     required int durationMinutes,
@@ -92,7 +93,7 @@ class EventRepository {
         'event_status': status,
         'event_time': supaSerialize<PostgresTime>(PostgresTime(eventTime)),
         'facilitator_name': facilitatorName,
-        'facilitator_id': currentUserUid,
+        'facilitator_id': facilitatorId,
         'visibility': visibility,
       },
       matchingRows: (rows) => rows.eqOrNull('id', id),

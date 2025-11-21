@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-import '/auth/supabase_auth/auth_util.dart';
-import '/components/user_avatar/user_avatar_widget.dart';
+import '/ui/core/widgets/user_avatar.dart';
 import '/data/repositories/sharing_repository.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/index.dart';
 import '/ui/community/widgets/add_comment/view_model/add_comment_view_model.dart';
+import '/utils/context_extensions.dart';
 
 class AddCommentWidget extends StatelessWidget {
   const AddCommentWidget({
@@ -31,7 +31,7 @@ class AddCommentWidget extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (_) => AddCommentViewModel(
         repository: context.read<SharingRepository>(),
-        currentUserUid: currentUserUid,
+        currentUserUid: context.currentUserIdOrEmpty,
         sharingId: sharingId,
         parentId: parentId,
       ),
@@ -82,7 +82,7 @@ class _AddCommentView extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  UserAvatarWidget(
+                  UserAvatar(
                     imageUrl: photoUrl,
                     fullName: fullName,
                   ),

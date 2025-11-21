@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '/backend/supabase/supabase.dart';
 import '/data/repositories/user_profile_repository.dart';
-import '/auth/supabase_auth/auth_util.dart';
 
 class UserJourneysViewModel extends ChangeNotifier {
   final UserProfileRepository _repository;
@@ -17,7 +16,10 @@ class UserJourneysViewModel extends ChangeNotifier {
 
   UserJourneysViewModel({
     required UserProfileRepository repository,
+    required this.currentUserUid,
   }) : _repository = repository;
+
+  final String currentUserUid;
 
   Future<void> loadJourneys() async {
     _isLoading = true;

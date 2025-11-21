@@ -6,6 +6,7 @@ import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'view_model/login_view_model.dart';
 import '/ui/home/home_page/home_page.dart';
+import '/ui/auth/widgets/login_google_button.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -32,6 +33,32 @@ class _LoginPageState extends State<LoginPage> {
     _emailFocusNode.dispose();
     _passwordFocusNode.dispose();
     super.dispose();
+  }
+
+  Future<void> _handleGoogleSignIn(LoginViewModel viewModel) async {
+    try {
+      final user = await viewModel.signInWithGoogle(context);
+      if (user != null && mounted) {
+        context.pushNamed(HomePage.routeName);
+      }
+    } catch (e) {
+      if (!mounted) return;
+      _showAuthError(e);
+    }
+  }
+
+  void _showAuthError(Object error) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          error.toString(),
+          style: TextStyle(
+            color: FlutterFlowTheme.of(context).primaryText,
+          ),
+        ),
+        backgroundColor: FlutterFlowTheme.of(context).secondary,
+      ),
+    );
   }
 
   @override
@@ -304,17 +331,7 @@ class _LoginPageState extends State<LoginPage> {
                                     }
                                   } catch (e) {
                                     if (context.mounted) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            e.toString(),
-                                            style: TextStyle(
-                                              color: FlutterFlowTheme.of(context).primaryText,
-                                            ),
-                                          ),
-                                          backgroundColor: FlutterFlowTheme.of(context).secondary,
-                                        ),
-                                      );
+                                      _showAuthError(e);
                                     }
                                   }
                                 }
@@ -344,6 +361,13 @@ class _LoginPageState extends State<LoginPage> {
                                 borderRadius: BorderRadius.circular(40.0),
                               ),
                               showLoadingIndicator: viewModel.isLoading,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
+                            child: LoginGoogleButton(
+                              onPressed: () => _handleGoogleSignIn(viewModel),
+                              isLoading: viewModel.isLoading,
                             ),
                           ),
                         ],

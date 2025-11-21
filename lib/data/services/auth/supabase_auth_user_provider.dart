@@ -1,13 +1,10 @@
 import 'dart:async';
 import 'package:rxdart/rxdart.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import '/backend/supabase/supabase.dart';
-import '/auth/base_auth_user_provider.dart';
+import '/domain/models/app_auth_user.dart';
 
-export '/auth/base_auth_user_provider.dart';
-
-/// Supabase-specific implementation of BaseAuthUser.
-class GWCommunitySupabaseUser extends BaseAuthUser {
+/// Supabase-specific implementation of [AppAuthUser].
+class GWCommunitySupabaseUser extends AppAuthUser {
   GWCommunitySupabaseUser(this.user);
 
   final User? user;
@@ -34,15 +31,15 @@ class GWCommunitySupabaseUser extends BaseAuthUser {
   bool get emailVerified => user?.emailConfirmedAt != null;
 }
 
-/// Stream of Supabase auth state changes.
-Stream<BaseAuthUser> gWCommunitySupabaseUserStream() {
+/// Stream of Supabase auth state changes mapped to [AppAuthUser].
+Stream<AppAuthUser> gWCommunitySupabaseUserStream() {
   return SupaFlow.client.auth.onAuthStateChange
       .debounce(
         (authState) => authState.event == AuthChangeEvent.tokenRefreshed
             ? TimerStream(authState, const Duration(seconds: 1))
             : Stream.value(authState),
       )
-      .map<BaseAuthUser>(
+      .map<AppAuthUser>(
         (authState) => GWCommunitySupabaseUser(authState.session?.user),
       );
 }

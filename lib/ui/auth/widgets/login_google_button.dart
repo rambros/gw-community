@@ -1,42 +1,18 @@
-import '/data/services/auth/providers/google_auth_provider.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
-import '/index.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'login_google_model.dart';
-export 'login_google_model.dart';
 
-class LoginGoogleWidget extends StatefulWidget {
-  const LoginGoogleWidget({super.key});
+import '/flutter_flow/flutter_flow_widgets.dart';
 
-  @override
-  State<LoginGoogleWidget> createState() => _LoginGoogleWidgetState();
-}
+/// UI-only Google login button that delegates behavior to the caller.
+class LoginGoogleButton extends StatelessWidget {
+  const LoginGoogleButton({
+    super.key,
+    required this.onPressed,
+    this.isLoading = false,
+  });
 
-class _LoginGoogleWidgetState extends State<LoginGoogleWidget> {
-  late LoginGoogleModel _model;
-
-  @override
-  void setState(VoidCallback callback) {
-    super.setState(callback);
-    _model.onUpdate();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _model = createModel(context, () => LoginGoogleModel());
-
-    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
-  }
-
-  @override
-  void dispose() {
-    _model.maybeDispose();
-
-    super.dispose();
-  }
+  final VoidCallback onPressed;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -46,21 +22,13 @@ class _LoginGoogleWidgetState extends State<LoginGoogleWidget> {
         width: 230.0,
         height: 44.0,
         child: Stack(
-          alignment: const AlignmentDirectional(-0.050000000000000044, 0.0),
+          alignment: const AlignmentDirectional(-0.05, 0.0),
           children: [
             Align(
               alignment: const AlignmentDirectional(0.0, 0.0),
               child: FFButtonWidget(
-                onPressed: () async {
-                  GoRouter.of(context).prepareAuthEvent();
-                  final user = await googleSignInFunc();
-                  if (user == null) {
-                    return;
-                  }
-
-                  context.goNamedAuth(HomePage.routeName, context.mounted);
-                },
-                text: 'Sign in with Google',
+                onPressed: isLoading ? null : onPressed,
+                text: isLoading ? 'Signing in...' : 'Sign in with Google',
                 icon: const Icon(
                   Icons.add,
                   size: 20.0,
@@ -68,7 +36,7 @@ class _LoginGoogleWidgetState extends State<LoginGoogleWidget> {
                 options: FFButtonOptions(
                   width: 230.0,
                   height: 44.0,
-                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                  padding: EdgeInsets.zero,
                   iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
                   iconColor: Colors.transparent,
                   color: Colors.white,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '/domain/models/user_entity.dart';
+import '/domain/models/app_auth_user.dart';
 import '/data/services/auth/auth_service.dart';
 import 'auth_repository.dart';
 
@@ -17,7 +18,16 @@ class AuthRepositoryImpl implements AuthRepository {
   Stream<UserEntity?> get authStateChanges => _authService.authStateChanges;
 
   @override
+  Stream<AppAuthUser> get authUserChanges => _authService.authUserChanges;
+
+  @override
+  Stream<String> get jwtTokenChanges => _authService.jwtTokenChanges;
+
+  @override
   UserEntity? get currentUser => _authService.currentUser;
+
+  @override
+  String? get currentUserId => _authService.currentUserId;
 
   @override
   Future<UserEntity?> signInWithEmail(String email, String password) async {

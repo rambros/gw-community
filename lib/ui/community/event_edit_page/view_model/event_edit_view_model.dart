@@ -7,6 +7,7 @@ import '/flutter_flow/flutter_flow_util.dart';
 class EventEditViewModel extends ChangeNotifier {
   EventEditViewModel({
     required EventRepository repository,
+    required this.currentUserUid,
     required CcEventsRow event,
   })  : _repository = repository,
         _event = event {
@@ -14,6 +15,7 @@ class EventEditViewModel extends ChangeNotifier {
   }
 
   final EventRepository _repository;
+  final String currentUserUid;
   CcEventsRow _event;
   CcEventsRow get event => _event;
 
@@ -138,6 +140,7 @@ class EventEditViewModel extends ChangeNotifier {
         title: titleController.text.trim(),
         description: descriptionController.text.trim(),
         facilitatorName: facilitatorController.text.trim(),
+        facilitatorId: currentUserUid,
         eventDate: _eventDate!,
         eventTime: _eventTime!,
         durationMinutes: duration,

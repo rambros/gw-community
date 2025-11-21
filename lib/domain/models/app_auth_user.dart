@@ -1,6 +1,6 @@
-/// Base authentication user interface that all auth providers must implement.
-abstract class BaseAuthUser {
-  BaseAuthUser();
+/// Contract that represents the authenticated user exposed to the rest of the app.
+abstract class AppAuthUser {
+  AppAuthUser();
 
   bool get loggedIn;
   String? get uid;

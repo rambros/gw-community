@@ -1,4 +1,3 @@
-import '/auth/supabase_auth/auth_util.dart';
 import '/backend/supabase/supabase.dart';
 import '/data/repositories/notification_repository.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
@@ -8,6 +7,7 @@ import '/index.dart';
 import '/ui/community/widgets/add_comment/add_comment_widget.dart';
 import 'view_model/notification_view_view_model.dart';
 import '/ui/community/sharing_view_page/widgets/comment_item_widget.dart';
+import '/utils/context_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -42,7 +42,7 @@ class _NotificationViewPageState extends State<NotificationViewPage> {
     logFirebaseEvent('screen_view', parameters: {'screen_name': 'notificationViewPage'});
     _viewModel = NotificationViewViewModel(
       repository: context.read<NotificationRepository>(),
-      currentUserUid: currentUserUid,
+      currentUserUid: context.currentUserIdOrEmpty,
       appState: context.read<FFAppState>(),
       groupModerators: widget.groupModerators,
     );

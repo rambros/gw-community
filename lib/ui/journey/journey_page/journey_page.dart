@@ -5,9 +5,9 @@ import 'package:google_fonts/google_fonts.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/backend/supabase/supabase.dart';
-import '/auth/supabase_auth/auth_util.dart';
 import '/data/repositories/journeys_repository.dart';
 import '/custom_code/actions/index.dart' as actions;
+import '/utils/context_extensions.dart';
 import 'view_model/journey_view_model.dart';
 import 'widgets/journey_intro_widget.dart';
 import 'widgets/journey_step_item_widget.dart';
@@ -41,7 +41,7 @@ class _JourneyPageState extends State<JourneyPage> {
       final appState = context.read<FFAppState>();
       _viewModel = JourneyViewModel(
         repository: context.read<JourneysRepository>(),
-        currentUserUid: currentUserUid,
+        currentUserUid: context.currentUserIdOrEmpty,
         journeyId: widget.journeyId,
         startedJourneys: appState.listStartedJourneys,
       );

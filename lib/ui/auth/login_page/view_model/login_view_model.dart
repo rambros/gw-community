@@ -33,4 +33,19 @@ class LoginViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<UserEntity?> signInWithGoogle(BuildContext context) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final user = await _repository.signInWithGoogleContext(context);
+      return user;
+    } catch (e) {
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
 }

@@ -9,7 +9,7 @@ import '/flutter_flow/flutter_flow_widgets.dart';
 import '/backend/supabase/supabase.dart';
 import '../view_model/group_details_view_model.dart';
 import '/index.dart';
-import '/components/user_avatar/user_avatar_widget.dart';
+import '/ui/core/widgets/user_avatar.dart';
 
 class GroupNotificationsTab extends StatelessWidget {
   const GroupNotificationsTab({super.key});
@@ -163,7 +163,7 @@ class GroupNotificationsTab extends StatelessWidget {
                                     child: Row(
                                       mainAxisSize: MainAxisSize.max,
                                       children: [
-                                        UserAvatarWidget(
+                                        UserAvatar(
                                           imageUrl: notification.photoUrl,
                                           fullName: notification.fullName,
                                         ),

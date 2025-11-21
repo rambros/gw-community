@@ -11,6 +11,7 @@ import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_drop_down.dart';
 import '/flutter_flow/form_field_controller.dart';
 import '/data/repositories/group_repository.dart';
+import '/utils/context_extensions.dart';
 import 'view_model/group_add_view_model.dart';
 
 class GroupAddPage extends StatelessWidget {
@@ -22,7 +23,10 @@ class GroupAddPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => GroupAddViewModel(context.read<GroupRepository>())..init(),
+      create: (context) => GroupAddViewModel(
+        context.read<GroupRepository>(),
+        currentUserUid: context.currentUserIdOrEmpty,
+      )..init(),
       child: const GroupAddPageView(),
     );
   }

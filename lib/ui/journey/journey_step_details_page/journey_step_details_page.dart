@@ -5,12 +5,12 @@ import 'package:google_fonts/google_fonts.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/backend/supabase/supabase.dart';
-import '/auth/supabase_auth/auth_util.dart';
 import '/data/repositories/journeys_repository.dart';
 import '/ui/journey/journey_page/view_model/journey_view_model.dart';
 import '/ui/journey/journey_page/widgets/journey_step_item_widget.dart';
 import '/ui/journey/step_details_page/step_details_page.dart';
 import '/flutter_flow/custom_functions.dart' as functions;
+import '/utils/context_extensions.dart';
 
 class JourneyStepDetailsPage extends StatefulWidget {
   const JourneyStepDetailsPage({
@@ -45,7 +45,7 @@ class _JourneyStepDetailsPageState extends State<JourneyStepDetailsPage> {
       final appState = FFAppState();
       _viewModel = JourneyViewModel(
         repository: context.read<JourneysRepository>(),
-        currentUserUid: currentUserUid,
+        currentUserUid: context.currentUserIdOrEmpty,
         journeyId: widget.journeyId!,
         startedJourneys: appState.listStartedJourneys,
       );

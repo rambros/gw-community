@@ -1,5 +1,4 @@
-import '/auth/supabase_auth/auth_util.dart';
-import '/components/user_avatar/user_avatar_widget.dart';
+import '/ui/core/widgets/user_avatar.dart';
 import '/data/repositories/notification_repository.dart';
 import '/flutter_flow/flutter_flow_drop_down.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
@@ -9,6 +8,7 @@ import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/form_field_controller.dart';
 import '/index.dart';
 import 'view_model/add_notification_view_model.dart';
+import '/utils/context_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -42,7 +42,7 @@ class _NotificationAddPageState extends State<NotificationAddPage> {
     logFirebaseEvent('screen_view', parameters: {'screen_name': 'notificationAddPage'});
     _viewModel = AddNotificationViewModel(
       repository: context.read<NotificationRepository>(),
-      currentUserUid: currentUserUid,
+      currentUserUid: context.currentUserIdOrEmpty,
       groupId: widget.groupId,
       groupName: widget.groupName,
       privacy: widget.privacy,
@@ -142,7 +142,7 @@ class _NotificationAddPageState extends State<NotificationAddPage> {
       padding: const EdgeInsetsDirectional.fromSTEB(16.0, 24.0, 16.0, 24.0),
       child: Row(
         children: [
-          UserAvatarWidget(
+          UserAvatar(
             imageUrl: viewModel.currentUser?.photoUrl,
             fullName: viewModel.currentUser?.fullName,
           ),

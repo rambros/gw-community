@@ -6,8 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 
-import 'auth/supabase_auth/auth_util.dart';
-
 import '/backend/supabase/supabase.dart';
 import 'backend/firebase/firebase_config.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -16,6 +14,8 @@ import 'flutter_flow/internationalization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'index.dart';
+import '/domain/models/app_auth_user.dart';
+import '/utils/context_extensions.dart';
 
 // Repositories
 import '/data/repositories/auth_repository.dart';
@@ -132,32 +132,32 @@ void main() async {
         ChangeNotifierProvider(
           create: (context) => SharingViewViewModel(
             repository: context.read<SharingRepository>(),
-            currentUserUid: currentUserUid,
+            currentUserUid: context.currentUserIdOrEmpty,
             appState: context.read<FFAppState>(),
           ),
         ),
         ChangeNotifierProvider(
           create: (context) => UserProfileViewModel(
             repository: context.read<UserProfileRepository>(),
-            currentUserUid: currentUserUid,
+            currentUserUid: context.currentUserIdOrEmpty,
           ),
         ),
         ChangeNotifierProvider(
           create: (context) => UserEditProfileViewModel(
             repository: context.read<UserProfileRepository>(),
-            currentUserUid: currentUserUid,
+            currentUserUid: context.currentUserIdOrEmpty,
           ),
         ),
         ChangeNotifierProvider(
           create: (context) => UserCreateProfileViewModel(
             repository: context.read<UserProfileRepository>(),
-            currentUserUid: currentUserUid,
+            currentUserUid: context.currentUserIdOrEmpty,
           ),
         ),
         ChangeNotifierProvider(
           create: (context) => UserJournalListViewModel(
             repository: context.read<UserProfileRepository>(),
-            currentUserUid: currentUserUid,
+            currentUserUid: context.currentUserIdOrEmpty,
           ),
         ),
         ChangeNotifierProvider(
@@ -178,12 +178,13 @@ void main() async {
         ChangeNotifierProvider(
           create: (context) => UserJourneysViewModel(
             repository: context.read<UserProfileRepository>(),
+            currentUserUid: context.currentUserIdOrEmpty,
           ),
         ),
         ChangeNotifierProvider(
           create: (context) => HomeViewModel(
             repository: context.read<HomeRepository>(),
-            currentUserUid: currentUserUid,
+            currentUserUid: context.currentUserIdOrEmpty,
           ),
         ),
         ChangeNotifierProvider(
@@ -197,7 +198,7 @@ void main() async {
         ChangeNotifierProvider(
           create: (context) => JourneysListViewModel(
             repository: context.read<JourneysRepository>(),
-            currentUserUid: currentUserUid,
+            currentUserUid: context.currentUserIdOrEmpty,
           ),
         ),
       ],
@@ -239,7 +240,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   List<String> getRouteStack() => _router.routerDelegate.currentConfiguration.matches.map((e) => getRoute(e)).toList();
-  late Stream<BaseAuthUser> userStream;
+  late Stream<AppAuthUser> userStream;
 
   @override
   void initState() {
@@ -247,11 +248,12 @@ class _MyAppState extends State<MyApp> {
 
     _appStateNotifier = AppStateNotifier.instance;
     _router = createRouter(_appStateNotifier);
-    userStream = gWCommunitySupabaseUserStream()
+    final authRepository = context.read<AuthRepository>();
+    userStream = authRepository.authUserChanges
       ..listen((user) {
         _appStateNotifier.update(user);
       });
-    jwtTokenStream.listen((_) {});
+    authRepository.jwtTokenChanges.listen((_) {});
     Future.delayed(
       const Duration(milliseconds: 1000),
       () => _appStateNotifier.stopShowingSplashImage(),

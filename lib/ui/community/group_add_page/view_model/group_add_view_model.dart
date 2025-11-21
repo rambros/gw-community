@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '/auth/supabase_auth/auth_util.dart';
 import '/backend/supabase/supabase.dart';
 import '/data/repositories/group_repository.dart';
 
@@ -7,8 +6,12 @@ import '/flutter_flow/upload_data.dart';
 
 class GroupAddViewModel extends ChangeNotifier {
   final GroupRepository _groupRepository;
+  final String currentUserUid;
 
-  GroupAddViewModel(this._groupRepository);
+  GroupAddViewModel(
+    this._groupRepository, {
+    required this.currentUserUid,
+  });
 
   // Form Key
   final formKey = GlobalKey<FormState>();

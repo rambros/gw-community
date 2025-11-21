@@ -1,6 +1,5 @@
-import '/auth/supabase_auth/auth_util.dart';
 import '/backend/supabase/supabase.dart';
-import '/components/user_avatar/user_avatar_widget.dart';
+import '/ui/core/widgets/user_avatar.dart';
 import '/data/repositories/event_repository.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -8,6 +7,7 @@ import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/index.dart';
 import 'view_model/event_details_view_model.dart';
+import '/utils/context_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -41,7 +41,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
     logFirebaseEvent('screen_view', parameters: {'screen_name': 'eventDetails'});
     _viewModel = EventDetailsViewModel(
       repository: context.read<EventRepository>(),
-      currentUserUid: currentUserUid,
+      currentUserUid: context.currentUserIdOrEmpty,
       appState: context.read<FFAppState>(),
       initialEvent: widget.eventRow,
     );
@@ -347,7 +347,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          UserAvatarWidget(
+                          UserAvatar(
                             key: Key('participant_$index'),
                             imageUrl: participant.photoUrl,
                             fullName: participant.fullName,

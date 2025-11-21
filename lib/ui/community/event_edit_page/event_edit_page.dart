@@ -11,6 +11,7 @@ import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/form_field_controller.dart';
 import '/index.dart';
 import '/data/repositories/event_repository.dart';
+import '/utils/context_extensions.dart';
 import 'view_model/event_edit_view_model.dart';
 
 class EventEditPage extends StatefulWidget {
@@ -38,6 +39,7 @@ class _EventEditPageState extends State<EventEditPage> {
     if (viewModel == null && widget.eventRow != null) {
       viewModel = EventEditViewModel(
         repository: context.read<EventRepository>(),
+        currentUserUid: context.currentUserIdOrEmpty,
         event: widget.eventRow!,
       );
     }

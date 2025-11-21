@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '/auth/supabase_auth/auth_util.dart';
 import '/backend/supabase/supabase.dart';
-import '/components/user_avatar/user_avatar_widget.dart';
+import '/ui/core/widgets/user_avatar.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '../../sharing_view_page/sharing_view_page.dart';
+import '/utils/context_extensions.dart';
 
 class SharingCardWidget extends StatelessWidget {
   const SharingCardWidget({
@@ -97,7 +97,7 @@ class SharingCardWidget extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.max,
         children: [
-          UserAvatarWidget(
+          UserAvatar(
             key: Key('Keys09_${index}_of_$totalCount'),
             imageUrl: sharingRow.photoUrl,
             fullName: sharingRow.fullName,
@@ -207,7 +207,7 @@ class SharingCardWidget extends StatelessWidget {
 
   Widget _buildActions(BuildContext context) {
     final isAdmin = FFAppState().loginUser.roles.contains('Admin') == true;
-    final isOwner = currentUserUid == sharingRow.userId;
+    final isOwner = context.currentUserIdOrEmpty == sharingRow.userId;
 
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 8.0, 0.0),
