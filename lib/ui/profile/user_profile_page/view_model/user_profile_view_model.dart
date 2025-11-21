@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '/app_state.dart';
 import '/data/repositories/user_profile_repository.dart';
-import '/backend/supabase/supabase.dart';
+import '/data/services/supabase/supabase.dart';
 
 class UserProfileViewModel extends ChangeNotifier {
   final UserProfileRepository _repository;

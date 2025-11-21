@@ -9,7 +9,7 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
-import '/backend/supabase/supabase.dart';
+import '/data/services/supabase/supabase.dart';
 import 'view_model/user_journal_edit_view_model.dart';
 
 class UserJournalEditPage extends StatefulWidget {

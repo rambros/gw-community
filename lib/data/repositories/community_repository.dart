@@ -1,5 +1,4 @@
-import '/backend/supabase/supabase.dart';
-import '/custom_code/actions/index.dart' as actions;
+import '/data/services/supabase/supabase.dart';
 
 class CommunityRepository {
   Stream<List<CcViewSharingsUsersRow>> getSharingsStream() {
@@ -15,18 +14,45 @@ class CommunityRepository {
   }
 
   Future<List<CcEventsRow>> getEvents(String currentUserUid) async {
-    final events = await actions.getEvents(currentUserUid);
-    return events.toList().cast<CcEventsRow>();
+    final response = await SupaFlow.client.rpc(
+      'get_user_events',
+      params: {
+        'user_id_input': currentUserUid,
+      },
+    );
+
+    if (response is List) {
+      return response.map((row) => CcEventsRow(row as Map<String, dynamic>)).toList();
+    }
+    return [];
   }
 
   Future<List<CcGroupsRow>> getAvailableGroups(String currentUserUid) async {
-    final groups = await actions.getAvailableGroups(currentUserUid);
-    return groups.toList().cast<CcGroupsRow>();
+    final response = await SupaFlow.client.rpc(
+      'get_available_groups',
+      params: {
+        'user_input': currentUserUid,
+      },
+    );
+
+    if (response is List) {
+      return response.map((row) => CcGroupsRow(row as Map<String, dynamic>)).toList();
+    }
+    return [];
   }
 
   Future<List<CcGroupsRow>> getMyGroups(String currentUserUid) async {
-    final groups = await actions.getMyGroups(currentUserUid);
-    return groups.toList().cast<CcGroupsRow>();
+    final response = await SupaFlow.client.rpc(
+      'get_my_groups',
+      params: {
+        'user_input': currentUserUid,
+      },
+    );
+
+    if (response is List) {
+      return response.map((row) => CcGroupsRow(row as Map<String, dynamic>)).toList();
+    }
+    return [];
   }
 
   Future<void> deleteSharing(int id) async {

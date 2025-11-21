@@ -1,4 +1,4 @@
-import '/backend/supabase/supabase.dart';
+import '/data/services/supabase/supabase.dart';
 
 Future<User?> emailSignInFunc(
   String email,

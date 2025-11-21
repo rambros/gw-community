@@ -27,7 +27,7 @@ export 'package:intl/intl.dart';
 export 'package:page_transition/page_transition.dart';
 export 'custom_icons.dart' show FFIcons;
 export 'internationalization.dart' show FFLocalizations;
-export '/backend/firebase_analytics/analytics.dart';
+export '/data/services/analytics/firebase_analytics_service.dart';
 export 'nav/nav.dart';
 
 final RouteObserver<ModalRoute> routeObserver = RouteObserver<ModalRoute>();

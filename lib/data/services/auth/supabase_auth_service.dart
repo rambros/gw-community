@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
-import '/backend/supabase/supabase.dart';
+import '/data/services/supabase/supabase.dart';
 import '/domain/models/user_entity.dart';
 import '/domain/models/app_auth_user.dart';
 import '/flutter_flow/flutter_flow_util.dart';

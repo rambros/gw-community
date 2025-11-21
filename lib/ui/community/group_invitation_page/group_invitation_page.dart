@@ -10,7 +10,7 @@ import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/data/repositories/group_repository.dart';
 import '/utils/context_extensions.dart';
 import 'view_model/group_invitation_view_model.dart';
-import '/backend/supabase/supabase.dart';
+import '/data/services/supabase/supabase.dart';
 
 class GroupInvitationPage extends StatelessWidget {
   final CcGroupsRow? groupRow;

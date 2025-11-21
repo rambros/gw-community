@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import '/backend/supabase/supabase.dart';
+import '/data/services/supabase/supabase.dart';
 import '/data/repositories/learn_repository.dart';
 
 class LearnListViewModel extends ChangeNotifier {

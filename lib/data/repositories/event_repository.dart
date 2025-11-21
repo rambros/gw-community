@@ -1,5 +1,4 @@
-import '/backend/supabase/supabase.dart';
-import '/custom_code/actions/index.dart' as actions;
+import '/data/services/supabase/supabase.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 
 /// Repository responsável por todas as operações de dados relacionadas a eventos.
@@ -12,8 +11,17 @@ class EventRepository {
   }
 
   Future<List<CcUsersRow>> getParticipants(int eventId) async {
-    final result = await actions.getListParticipants(eventId.toString());
-    return result.toList().cast<CcUsersRow>();
+    final response = await SupaFlow.client.rpc(
+      'get_list_participants',
+      params: {
+        'event_id_input': eventId.toString(),
+      },
+    );
+
+    if (response is List) {
+      return response.map((row) => CcUsersRow(row as Map<String, dynamic>)).toList();
+    }
+    return [];
   }
 
   Future<void> registerUser({

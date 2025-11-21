@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '/backend/schema/structs/index.dart';
-import '/backend/supabase/supabase.dart';
+import '/data/models/structs/index.dart';
+import '/data/services/supabase/supabase.dart';
 
 import '/domain/models/app_auth_user.dart';
 

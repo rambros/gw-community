@@ -1,4 +1,4 @@
-import '/backend/supabase/supabase.dart';
+import '/data/services/supabase/supabase.dart';
 import '/ui/core/widgets/user_avatar.dart';
 import '/flutter_flow/flutter_flow_drop_down.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';

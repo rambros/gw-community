@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
-import '/backend/supabase/supabase.dart';
+import '/data/services/supabase/supabase.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class JourneyIntroWidget extends StatelessWidget {

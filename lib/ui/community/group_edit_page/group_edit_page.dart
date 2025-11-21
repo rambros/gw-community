@@ -11,7 +11,7 @@ import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_drop_down.dart';
 import '/flutter_flow/form_field_controller.dart';
 import '/data/repositories/group_repository.dart';
-import '/backend/supabase/supabase.dart';
+import '/data/services/supabase/supabase.dart';
 import 'view_model/group_edit_view_model.dart';
 
 class GroupEditPage extends StatelessWidget {

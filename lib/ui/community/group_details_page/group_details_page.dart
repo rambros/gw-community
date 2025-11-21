@@ -10,7 +10,7 @@ import '/data/repositories/group_repository.dart';
 import '/data/repositories/sharing_repository.dart';
 import '/data/repositories/event_repository.dart';
 import '/data/repositories/notification_repository.dart';
-import '/backend/supabase/supabase.dart';
+import '/data/services/supabase/supabase.dart';
 import 'view_model/group_details_view_model.dart';
 import 'widgets/group_sharings_tab.dart';
 import 'widgets/group_events_tab.dart';

@@ -1,4 +1,4 @@
-import '/backend/api_requests/api_calls.dart';
+import '/data/services/api/api_calls.dart';
 
 class UnsplashRepository {
   Future<ApiCallResponse> getRandomImage() async {

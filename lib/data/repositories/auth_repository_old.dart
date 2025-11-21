@@ -1,4 +1,4 @@
-import '/backend/supabase/supabase.dart';
+import '/data/services/supabase/supabase.dart';
 
 class AuthRepository {
   /// Signs in a user with email and password.

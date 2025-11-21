@@ -1,4 +1,4 @@
-export '/backend/schema/util/schema_util.dart';
+export '/data/models/schema_util.dart';
 
 export 'cott_event_struct.dart';
 export 'login_user_struct.dart';

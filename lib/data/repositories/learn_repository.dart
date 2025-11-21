@@ -1,4 +1,4 @@
-import '/backend/supabase/supabase.dart';
+import '/data/services/supabase/supabase.dart';
 
 class LearnRepository {
   Future<List<ViewContentRow>> searchContent(

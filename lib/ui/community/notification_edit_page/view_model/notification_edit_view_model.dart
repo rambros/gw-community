@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '/backend/supabase/supabase.dart';
+import '/data/services/supabase/supabase.dart';
 import '/data/repositories/notification_repository.dart';
 
 class NotificationEditViewModel extends ChangeNotifier {

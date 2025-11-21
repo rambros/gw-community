@@ -1,4 +1,4 @@
-import '/backend/supabase/supabase.dart';
+import '/data/services/supabase/supabase.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 
 class StepActivitiesRepository {

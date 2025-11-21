@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '/data/repositories/group_repository.dart';
-import '/backend/supabase/supabase.dart';
+import '/data/services/supabase/supabase.dart';
 
 class GroupInvitationViewModel extends ChangeNotifier {
   final GroupRepository _groupRepository;

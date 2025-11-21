@@ -1,4 +1,4 @@
-import '/backend/supabase/supabase.dart';
+import '/data/services/supabase/supabase.dart';
 
 class GroupRepository {
   /// Fetches all groups ordered by name

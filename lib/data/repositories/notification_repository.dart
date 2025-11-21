@@ -1,5 +1,5 @@
-import '/backend/schema/enums/enums.dart';
-import '/backend/supabase/supabase.dart';
+import '/data/models/enums/enums.dart';
+import '/data/services/supabase/supabase.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 
 class NotificationRepository {

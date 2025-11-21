@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '/data/repositories/journeys_repository.dart';
-import '/backend/supabase/supabase.dart';
+import '/data/services/supabase/supabase.dart';
 
 class JourneyViewModel extends ChangeNotifier {
   final JourneysRepository _repository;
@@ -65,10 +65,12 @@ class JourneyViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> startJourneyCommand(BuildContext context, Function(List<int>) onUpdateStartedJourneys,
-      Future<void> Function(String, int) startJourneyAction) async {
+  Future<void> startJourneyCommand(
+    BuildContext context,
+    Function(List<int>) onUpdateStartedJourneys,
+  ) async {
     try {
-      await startJourneyAction(currentUserUid, journeyId);
+      await _repository.startJourney(currentUserUid, journeyId);
 
       if (!startedJourneys.contains(journeyId)) {
         final updatedList = [...startedJourneys, journeyId];

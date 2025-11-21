@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '/backend/supabase/supabase.dart';
+import '/data/services/supabase/supabase.dart';
 import '/data/repositories/community_repository.dart';
 
 class CommunityViewModel extends ChangeNotifier {

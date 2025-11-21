@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
-import '/backend/supabase/supabase.dart';
+import '/data/services/supabase/supabase.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '/flutter_flow/custom_functions.dart' as functions;
 

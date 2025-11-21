@@ -6,7 +6,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
-import '/backend/supabase/supabase.dart';
+import '/data/services/supabase/supabase.dart';
 import '../view_model/group_details_view_model.dart';
 import '/ui/community/community_page/widgets/sharing_card_widget.dart';
 import '/ui/community/sharing_add_page/sharing_add_page.dart';

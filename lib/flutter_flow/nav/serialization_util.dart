@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
-import '/backend/schema/structs/index.dart';
-import '/backend/schema/enums/enums.dart';
-import '/backend/supabase/supabase.dart';
+import '/data/models/structs/index.dart';
+import '/data/models/enums/enums.dart';
+import '/data/services/supabase/supabase.dart';
 
 import '../../flutter_flow/place.dart';
 import '../../flutter_flow/uploaded_file.dart';

@@ -1,4 +1,4 @@
-import '/backend/supabase/supabase.dart';
+import '/data/services/supabase/supabase.dart';
 
 /// Repository responsável por todas as operações de dados relacionadas a Sharings e Comentários
 /// Segue padrão de arquitetura Compass - camada de dados isolada

@@ -4,9 +4,8 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
-import '/backend/supabase/supabase.dart';
+import '/data/services/supabase/supabase.dart';
 import '/data/repositories/journeys_repository.dart';
-import '/custom_code/actions/index.dart' as actions;
 import '/utils/context_extensions.dart';
 import 'view_model/journey_view_model.dart';
 import 'widgets/journey_intro_widget.dart';
@@ -235,7 +234,6 @@ class _JourneyPageState extends State<JourneyPage> {
       (updatedList) {
         appState.listStartedJourneys = updatedList;
       },
-      (userId, journeyId) => actions.startJourney(userId, journeyId),
     );
   }
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '/backend/supabase/supabase.dart';
+import '/data/services/supabase/supabase.dart';
 import '/data/repositories/event_repository.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 
