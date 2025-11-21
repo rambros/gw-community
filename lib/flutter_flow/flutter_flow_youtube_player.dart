@@ -60,19 +60,16 @@ class FlutterFlowYoutubePlayer extends StatefulWidget {
   final bool strictRelatedVideos;
 
   @override
-  State<FlutterFlowYoutubePlayer> createState() =>
-      _FlutterFlowYoutubePlayerState();
+  State<FlutterFlowYoutubePlayer> createState() => _FlutterFlowYoutubePlayerState();
 }
 
-class _FlutterFlowYoutubePlayerState extends State<FlutterFlowYoutubePlayer>
-    with RouteAware {
+class _FlutterFlowYoutubePlayerState extends State<FlutterFlowYoutubePlayer> with RouteAware {
   YoutubePlayerController? _controller;
   String? _videoId;
-  _YoutubeFullScreenWrapperState? _youtubeWrapper;
+  YoutubeFullScreenWrapperState? _youtubeWrapper;
   bool _subscribedRoute = false;
 
-  bool get handleFullScreen =>
-      !kIsWeb && widget.showFullScreen && _youtubeWrapper != null;
+  bool get handleFullScreen => !kIsWeb && widget.showFullScreen && _youtubeWrapper != null;
 
   @override
   void initState() {
@@ -109,14 +106,11 @@ class _FlutterFlowYoutubePlayerState extends State<FlutterFlowYoutubePlayer>
     }
   }
 
-  double get width => widget.width == null || widget.width! >= double.infinity
-      ? MediaQuery.sizeOf(context).width
-      : widget.width!;
+  double get width =>
+      widget.width == null || widget.width! >= double.infinity ? MediaQuery.sizeOf(context).width : widget.width!;
 
   double get height =>
-      widget.height == null || widget.height! >= double.infinity
-          ? width / kYoutubeAspectRatio
-          : widget.height!;
+      widget.height == null || widget.height! >= double.infinity ? width / kYoutubeAspectRatio : widget.height!;
 
   void initializePlayer() {
     if (!mounted) {
@@ -129,8 +123,7 @@ class _FlutterFlowYoutubePlayerState extends State<FlutterFlowYoutubePlayer>
     _videoId = videoId;
     _youtubeWrapper = YoutubeFullScreenWrapper.of(context);
 
-    if (handleFullScreen &&
-        _youtubeFullScreenControllerMap.containsKey(_videoId)) {
+    if (handleFullScreen && _youtubeFullScreenControllerMap.containsKey(_videoId)) {
       _controller = _youtubeFullScreenControllerMap[_videoId]!;
       _youtubeFullScreenControllerMap.clear();
     } else {
@@ -171,14 +164,12 @@ class _FlutterFlowYoutubePlayerState extends State<FlutterFlowYoutubePlayer>
                       controller: _controller!,
                       builder: (_, player) => player,
                       autoFullScreen: false,
-                      gestureRecognizers: const <Factory<
-                          TapGestureRecognizer>>{},
+                      gestureRecognizers: const <Factory<TapGestureRecognizer>>{},
                       enableFullScreenOnVerticalDrag: false,
                     )
                   : YoutubePlayer(
                       controller: _controller!,
-                      gestureRecognizers: const <Factory<
-                          TapGestureRecognizer>>{},
+                      gestureRecognizers: const <Factory<TapGestureRecognizer>>{},
                       enableFullScreenOnVerticalDrag: false,
                     )
               : Container(color: Colors.transparent),
@@ -192,15 +183,14 @@ class YoutubeFullScreenWrapper extends StatefulWidget {
 
   final Widget child;
 
-  static _YoutubeFullScreenWrapperState? of(BuildContext context) =>
-      context.findAncestorStateOfType<_YoutubeFullScreenWrapperState>();
+  static YoutubeFullScreenWrapperState? of(BuildContext context) =>
+      context.findAncestorStateOfType<YoutubeFullScreenWrapperState>();
 
   @override
-  State<YoutubeFullScreenWrapper> createState() =>
-      _YoutubeFullScreenWrapperState();
+  State<YoutubeFullScreenWrapper> createState() => YoutubeFullScreenWrapperState();
 }
 
-class _YoutubeFullScreenWrapperState extends State<YoutubeFullScreenWrapper> {
+class YoutubeFullScreenWrapperState extends State<YoutubeFullScreenWrapper> {
   YoutubePlayerController? _controller;
   String? _videoId;
 
@@ -235,12 +225,15 @@ String? _convertUrlToId(String url, {bool trimWhitespaces = true}) {
   if (!url.contains("http") && (url.length == 11)) return url;
   if (trimWhitespaces) url = url.trim();
   for (final regex in [
+    // ignore: deprecated_member_use
     RegExp(
       r"^https:\/\/(?:www\.|m\.)?youtube\.com\/watch\?v=([_\-a-zA-Z0-9]{11}).*$",
     ),
+    // ignore: deprecated_member_use
     RegExp(
       r"^https:\/\/(?:www\.|m\.)?youtube(?:-nocookie)?\.com\/embed\/([_\-a-zA-Z0-9]{11}).*$",
     ),
+    // ignore: deprecated_member_use
     RegExp(r"^https:\/\/youtu\.be\/([_\-a-zA-Z0-9]{11}).*$")
   ]) {
     final match = regex.firstMatch(url);

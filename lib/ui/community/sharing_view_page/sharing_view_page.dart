@@ -298,12 +298,11 @@ class _SharingViewPageState extends State<SharingViewPage> {
           ),
         );
       },
-    ).then((_) {
-      // Recarregar comentários após adicionar
-      if (mounted) {
-        context.read<SharingViewViewModel>().refreshComments(sharingId);
-      }
-    });
+    );
+
+    if (context.mounted) {
+      context.read<SharingViewViewModel>().refreshComments(sharingId);
+    }
   }
 
   Future<void> _handleDeleteSharing(
@@ -334,7 +333,7 @@ class _SharingViewPageState extends State<SharingViewPage> {
         false;
 
     if (confirmDialogResponse && widget.sharingId != null) {
-      if (!mounted) return;
+      if (!context.mounted) return;
       await viewModel.deleteSharingCommand(context, widget.sharingId!);
     }
   }

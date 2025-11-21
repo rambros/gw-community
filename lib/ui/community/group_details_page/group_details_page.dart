@@ -130,7 +130,7 @@ class GroupDetailsPageView extends StatelessWidget {
                     },
                     text: '',
                     icon: const FaIcon(
-                      FontAwesomeIcons.ellipsisH,
+                      FontAwesomeIcons.ellipsis,
                       size: 15.0,
                     ),
                     options: FFButtonOptions(

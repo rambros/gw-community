@@ -109,7 +109,7 @@ class ActivityItemWidget extends StatelessWidget {
                       ),
                       alignment: const AlignmentDirectional(0.0, 0.0),
                       child: FaIcon(
-                        FontAwesomeIcons.circle,
+                        FontAwesomeIcons.solidPenToSquare,
                         color: FlutterFlowTheme.of(context).primaryBackground,
                         size: 24.0,
                       ),
@@ -190,7 +190,7 @@ class ActivityItemWidget extends StatelessWidget {
       return Align(
         alignment: const AlignmentDirectional(0.0, 0.0),
         child: FaIcon(
-          FontAwesomeIcons.solidEdit,
+          FontAwesomeIcons.solidPenToSquare,
           color: iconColor,
           size: 32.0,
         ),

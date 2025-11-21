@@ -106,7 +106,7 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
       journeyId: _selectedJourneyId,
       groupId: _selectedGroupId,
     );
-    if (!mounted) {
+    if (!context.mounted) {
       return;
     }
     Navigator.of(context).pop();
@@ -173,7 +173,7 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
             width: double.infinity,
             height: double.infinity,
             decoration: BoxDecoration(
-              color: FlutterFlowTheme.of(context).primaryBackground.withOpacity(0.82),
+              color: FlutterFlowTheme.of(context).primaryBackground.withValues(alpha: 0.82),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.max,
@@ -212,228 +212,228 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
                                 style: FlutterFlowTheme.of(context).headlineMedium,
                               ),
                             ),
-                        // Author Dropdown
-                        _buildLabel(
-                          context,
-                          'Author',
-                          hasValue: _selectedAuthorId != 0,
-                          onClear: _clearAuthor,
-                        ),
-                        FlutterFlowDropDown<int>(
-                          controller: _authorController,
-                          options: authors.map((e) => e.id!).toList(),
-                          optionLabels: authors.map((e) => e.name ?? 'Author').toList(),
-                          onChanged: (val) {
-                            setState(() {
-                              _selectedAuthorId = val ?? 0;
-                            });
-                          },
-                          width: double.infinity,
-                          height: 50.0,
-                          textStyle: FlutterFlowTheme.of(context).bodyMedium,
-                          hintText: 'Select Author',
-                          searchHintText: 'Search for an author...',
-                          icon: Icon(
-                            Icons.keyboard_arrow_down_rounded,
-                            color: FlutterFlowTheme.of(context).secondaryText,
-                            size: 24.0,
-                          ),
-                          fillColor: FlutterFlowTheme.of(context).secondaryBackground,
-                          elevation: 2.0,
-                          borderColor: FlutterFlowTheme.of(context).alternate,
-                          borderWidth: 2.0,
-                          borderRadius: 12.0,
-                          margin: const EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
-                          hidesUnderline: true,
-                          isOverButton: true,
-                          isSearchable: true,
-                        ),
+                            // Author Dropdown
+                            _buildLabel(
+                              context,
+                              'Author',
+                              hasValue: _selectedAuthorId != 0,
+                              onClear: _clearAuthor,
+                            ),
+                            FlutterFlowDropDown<int>(
+                              controller: _authorController,
+                              options: authors.map((e) => e.id!).toList(),
+                              optionLabels: authors.map((e) => e.name ?? 'Author').toList(),
+                              onChanged: (val) {
+                                setState(() {
+                                  _selectedAuthorId = val ?? 0;
+                                });
+                              },
+                              width: double.infinity,
+                              height: 50.0,
+                              textStyle: FlutterFlowTheme.of(context).bodyMedium,
+                              hintText: 'Select Author',
+                              searchHintText: 'Search for an author...',
+                              icon: Icon(
+                                Icons.keyboard_arrow_down_rounded,
+                                color: FlutterFlowTheme.of(context).secondaryText,
+                                size: 24.0,
+                              ),
+                              fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+                              elevation: 2.0,
+                              borderColor: FlutterFlowTheme.of(context).alternate,
+                              borderWidth: 2.0,
+                              borderRadius: 12.0,
+                              margin: const EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
+                              hidesUnderline: true,
+                              isOverButton: true,
+                              isSearchable: true,
+                            ),
 
-                        // Event Dropdown
-                        _buildLabel(
-                          context,
-                          'Event',
-                          hasValue: _selectedEventId != 0,
-                          onClear: _clearEvent,
-                        ),
-                        FlutterFlowDropDown<int>(
-                          controller: _eventController,
-                          options: events.map((e) => e.eventId!).toList(),
-                          optionLabels: events.map((e) => e.eventName ?? 'Event').toList(),
-                          onChanged: (val) {
-                            setState(() {
-                              _selectedEventId = val ?? 0;
-                            });
-                          },
-                          width: double.infinity,
-                          height: 50.0,
-                          textStyle: FlutterFlowTheme.of(context).bodyMedium,
-                          hintText: 'Select Event',
-                          searchHintText: 'Search for an event...',
-                          icon: Icon(
-                            Icons.keyboard_arrow_down_rounded,
-                            color: FlutterFlowTheme.of(context).secondaryText,
-                            size: 24.0,
-                          ),
-                          fillColor: FlutterFlowTheme.of(context).secondaryBackground,
-                          elevation: 2.0,
-                          borderColor: FlutterFlowTheme.of(context).alternate,
-                          borderWidth: 2.0,
-                          borderRadius: 12.0,
-                          margin: const EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
-                          hidesUnderline: true,
-                          isOverButton: true,
-                          isSearchable: true,
-                        ),
+                            // Event Dropdown
+                            _buildLabel(
+                              context,
+                              'Event',
+                              hasValue: _selectedEventId != 0,
+                              onClear: _clearEvent,
+                            ),
+                            FlutterFlowDropDown<int>(
+                              controller: _eventController,
+                              options: events.map((e) => e.eventId!).toList(),
+                              optionLabels: events.map((e) => e.eventName ?? 'Event').toList(),
+                              onChanged: (val) {
+                                setState(() {
+                                  _selectedEventId = val ?? 0;
+                                });
+                              },
+                              width: double.infinity,
+                              height: 50.0,
+                              textStyle: FlutterFlowTheme.of(context).bodyMedium,
+                              hintText: 'Select Event',
+                              searchHintText: 'Search for an event...',
+                              icon: Icon(
+                                Icons.keyboard_arrow_down_rounded,
+                                color: FlutterFlowTheme.of(context).secondaryText,
+                                size: 24.0,
+                              ),
+                              fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+                              elevation: 2.0,
+                              borderColor: FlutterFlowTheme.of(context).alternate,
+                              borderWidth: 2.0,
+                              borderRadius: 12.0,
+                              margin: const EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
+                              hidesUnderline: true,
+                              isOverButton: true,
+                              isSearchable: true,
+                            ),
 
-                        // Year Dropdown
-                        _buildLabel(
-                          context,
-                          'Year',
-                          hasValue: _selectedYear.isNotEmpty,
-                          onClear: _clearYear,
-                        ),
-                        FlutterFlowDropDown<String>(
-                          controller: _yearController,
-                          options: years.map((e) => e.year!.toInt().toString()).toList(),
-                          optionLabels: years.map((e) => e.year!.toInt().toString()).toList(),
-                          onChanged: (val) {
-                            setState(() {
-                              _selectedYear = val ?? '';
-                            });
-                          },
-                          width: double.infinity,
-                          height: 50.0,
-                          textStyle: FlutterFlowTheme.of(context).bodyMedium,
-                          hintText: 'Select Year',
-                          searchHintText: 'Search for a year...',
-                          icon: Icon(
-                            Icons.keyboard_arrow_down_rounded,
-                            color: FlutterFlowTheme.of(context).secondaryText,
-                            size: 24.0,
-                          ),
-                          fillColor: FlutterFlowTheme.of(context).secondaryBackground,
-                          elevation: 2.0,
-                          borderColor: FlutterFlowTheme.of(context).alternate,
-                          borderWidth: 2.0,
-                          borderRadius: 12.0,
-                          margin: const EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
-                          hidesUnderline: true,
-                          isOverButton: true,
-                          isSearchable: true,
-                        ),
+                            // Year Dropdown
+                            _buildLabel(
+                              context,
+                              'Year',
+                              hasValue: _selectedYear.isNotEmpty,
+                              onClear: _clearYear,
+                            ),
+                            FlutterFlowDropDown<String>(
+                              controller: _yearController,
+                              options: years.map((e) => e.year!.toInt().toString()).toList(),
+                              optionLabels: years.map((e) => e.year!.toInt().toString()).toList(),
+                              onChanged: (val) {
+                                setState(() {
+                                  _selectedYear = val ?? '';
+                                });
+                              },
+                              width: double.infinity,
+                              height: 50.0,
+                              textStyle: FlutterFlowTheme.of(context).bodyMedium,
+                              hintText: 'Select Year',
+                              searchHintText: 'Search for a year...',
+                              icon: Icon(
+                                Icons.keyboard_arrow_down_rounded,
+                                color: FlutterFlowTheme.of(context).secondaryText,
+                                size: 24.0,
+                              ),
+                              fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+                              elevation: 2.0,
+                              borderColor: FlutterFlowTheme.of(context).alternate,
+                              borderWidth: 2.0,
+                              borderRadius: 12.0,
+                              margin: const EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
+                              hidesUnderline: true,
+                              isOverButton: true,
+                              isSearchable: true,
+                            ),
 
-                        // Journeys Dropdown
-                        _buildLabel(
-                          context,
-                          'Journeys',
-                          hasValue: _selectedJourneyId != 0,
-                          onClear: _clearJourney,
-                        ),
-                        FlutterFlowDropDown<int>(
-                          controller: _journeyController,
-                          options: journeys.map((e) => e.id).toList(),
-                          optionLabels: journeys.map((e) => e.title ?? 'Journey').toList(),
-                          onChanged: (val) {
-                            setState(() {
-                              _selectedJourneyId = val ?? 0;
-                            });
-                          },
-                          width: double.infinity,
-                          height: 50.0,
-                          textStyle: FlutterFlowTheme.of(context).bodyMedium,
-                          hintText: 'Select Journey',
-                          searchHintText: 'Search for a journey...',
-                          icon: Icon(
-                            Icons.keyboard_arrow_down_rounded,
-                            color: FlutterFlowTheme.of(context).secondaryText,
-                            size: 24.0,
-                          ),
-                          fillColor: FlutterFlowTheme.of(context).secondaryBackground,
-                          elevation: 2.0,
-                          borderColor: FlutterFlowTheme.of(context).alternate,
-                          borderWidth: 2.0,
-                          borderRadius: 12.0,
-                          margin: const EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
-                          hidesUnderline: true,
-                          isOverButton: true,
-                          isSearchable: true,
-                        ),
+                            // Journeys Dropdown
+                            _buildLabel(
+                              context,
+                              'Journeys',
+                              hasValue: _selectedJourneyId != 0,
+                              onClear: _clearJourney,
+                            ),
+                            FlutterFlowDropDown<int>(
+                              controller: _journeyController,
+                              options: journeys.map((e) => e.id).toList(),
+                              optionLabels: journeys.map((e) => e.title ?? 'Journey').toList(),
+                              onChanged: (val) {
+                                setState(() {
+                                  _selectedJourneyId = val ?? 0;
+                                });
+                              },
+                              width: double.infinity,
+                              height: 50.0,
+                              textStyle: FlutterFlowTheme.of(context).bodyMedium,
+                              hintText: 'Select Journey',
+                              searchHintText: 'Search for a journey...',
+                              icon: Icon(
+                                Icons.keyboard_arrow_down_rounded,
+                                color: FlutterFlowTheme.of(context).secondaryText,
+                                size: 24.0,
+                              ),
+                              fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+                              elevation: 2.0,
+                              borderColor: FlutterFlowTheme.of(context).alternate,
+                              borderWidth: 2.0,
+                              borderRadius: 12.0,
+                              margin: const EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
+                              hidesUnderline: true,
+                              isOverButton: true,
+                              isSearchable: true,
+                            ),
 
-                        // Groups Dropdown
-                        _buildLabel(
-                          context,
-                          'Groups',
-                          hasValue: _selectedGroupId != 0,
-                          onClear: _clearGroup,
-                        ),
-                        FlutterFlowDropDown<int>(
-                          controller: _groupController,
-                          options: groups.map((e) => e.id).toList(),
-                          optionLabels: groups.map((e) => e.name ?? 'Group').toList(),
-                          onChanged: (val) {
-                            setState(() {
-                              _selectedGroupId = val ?? 0;
-                            });
-                          },
-                          width: double.infinity,
-                          height: 50.0,
-                          textStyle: FlutterFlowTheme.of(context).bodyMedium,
-                          hintText: 'Select Group',
-                          searchHintText: 'Search for a group...',
-                          icon: Icon(
-                            Icons.keyboard_arrow_down_rounded,
-                            color: FlutterFlowTheme.of(context).secondaryText,
-                            size: 24.0,
-                          ),
-                          fillColor: FlutterFlowTheme.of(context).secondaryBackground,
-                          elevation: 2.0,
-                          borderColor: FlutterFlowTheme.of(context).alternate,
-                          borderWidth: 2.0,
-                          borderRadius: 12.0,
-                          margin: const EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
-                          hidesUnderline: true,
-                          isOverButton: true,
-                          isSearchable: true,
-                        ),
+                            // Groups Dropdown
+                            _buildLabel(
+                              context,
+                              'Groups',
+                              hasValue: _selectedGroupId != 0,
+                              onClear: _clearGroup,
+                            ),
+                            FlutterFlowDropDown<int>(
+                              controller: _groupController,
+                              options: groups.map((e) => e.id).toList(),
+                              optionLabels: groups.map((e) => e.name ?? 'Group').toList(),
+                              onChanged: (val) {
+                                setState(() {
+                                  _selectedGroupId = val ?? 0;
+                                });
+                              },
+                              width: double.infinity,
+                              height: 50.0,
+                              textStyle: FlutterFlowTheme.of(context).bodyMedium,
+                              hintText: 'Select Group',
+                              searchHintText: 'Search for a group...',
+                              icon: Icon(
+                                Icons.keyboard_arrow_down_rounded,
+                                color: FlutterFlowTheme.of(context).secondaryText,
+                                size: 24.0,
+                              ),
+                              fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+                              elevation: 2.0,
+                              borderColor: FlutterFlowTheme.of(context).alternate,
+                              borderWidth: 2.0,
+                              borderRadius: 12.0,
+                              margin: const EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
+                              hidesUnderline: true,
+                              isOverButton: true,
+                              isSearchable: true,
+                            ),
 
-                        // Topics Dropdown
-                        _buildLabel(
-                          context,
-                          'Topics',
-                          hasValue: _selectedTopics.isNotEmpty,
-                          onClear: _clearTopics,
-                        ),
-                        FlutterFlowDropDown<String>(
-                          multiSelectController: _topicsController,
-                          options: topicNames,
-                          optionLabels: topicNames,
-                          onMultiSelectChanged: (val) {
-                            setState(() {
-                              _selectedTopics = List<String>.from(val ?? []);
-                            });
-                          },
-                          width: double.infinity,
-                          height: 50.0,
-                          textStyle: FlutterFlowTheme.of(context).bodyMedium,
-                          hintText: 'Select Topics',
-                          searchHintText: 'Search for topics...',
-                          icon: Icon(
-                            Icons.keyboard_arrow_down_rounded,
-                            color: FlutterFlowTheme.of(context).secondaryText,
-                            size: 24.0,
-                          ),
-                          fillColor: FlutterFlowTheme.of(context).secondaryBackground,
-                          elevation: 2.0,
-                          borderColor: FlutterFlowTheme.of(context).alternate,
-                          borderWidth: 2.0,
-                          borderRadius: 12.0,
-                          margin: const EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
-                          hidesUnderline: true,
-                          isOverButton: true,
-                          isSearchable: true,
-                          isMultiSelect: true,
-                        ),
+                            // Topics Dropdown
+                            _buildLabel(
+                              context,
+                              'Topics',
+                              hasValue: _selectedTopics.isNotEmpty,
+                              onClear: _clearTopics,
+                            ),
+                            FlutterFlowDropDown<String>(
+                              multiSelectController: _topicsController,
+                              options: topicNames,
+                              optionLabels: topicNames,
+                              onMultiSelectChanged: (val) {
+                                setState(() {
+                                  _selectedTopics = List<String>.from(val ?? []);
+                                });
+                              },
+                              width: double.infinity,
+                              height: 50.0,
+                              textStyle: FlutterFlowTheme.of(context).bodyMedium,
+                              hintText: 'Select Topics',
+                              searchHintText: 'Search for topics...',
+                              icon: Icon(
+                                Icons.keyboard_arrow_down_rounded,
+                                color: FlutterFlowTheme.of(context).secondaryText,
+                                size: 24.0,
+                              ),
+                              fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+                              elevation: 2.0,
+                              borderColor: FlutterFlowTheme.of(context).alternate,
+                              borderWidth: 2.0,
+                              borderRadius: 12.0,
+                              margin: const EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
+                              hidesUnderline: true,
+                              isOverButton: true,
+                              isSearchable: true,
+                              isMultiSelect: true,
+                            ),
 
                             Padding(
                               padding: const EdgeInsetsDirectional.fromSTEB(16.0, 24.0, 16.0, 0.0),
@@ -493,12 +493,12 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
                     ),
                   ),
                 ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation']!),
-            ],
-          ),
-        );
-      },
-    ),
-  );
+              ],
+            ),
+          );
+        },
+      ),
+    );
   }
 
   Widget _buildLabel(

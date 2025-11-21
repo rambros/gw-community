@@ -683,6 +683,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> with TickerProviderStat
                                             child: FFButtonWidget(
                                               onPressed: () async {
                                                 await viewModel.completeOnboarding(context);
+                                                if (!context.mounted) return;
                                                 context.pushNamed(HomePage.routeName);
                                               },
                                               text: 'Get Started',

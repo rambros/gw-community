@@ -124,7 +124,7 @@ class SupabaseAuthService implements AuthService {
     try {
       final user = SupaFlow.client.auth.currentUser;
       if (user == null) {
-        print('Error: update email attempted with no logged in user!');
+        debugPrint('Error: update email attempted with no logged in user!');
         return;
       }
       await SupaFlow.client.auth.updateUser(UserAttributes(email: email));
@@ -152,7 +152,7 @@ class SupabaseAuthService implements AuthService {
     try {
       final user = SupaFlow.client.auth.currentUser;
       if (user == null) {
-        print('Error: update password attempted with no logged in user!');
+        debugPrint('Error: update password attempted with no logged in user!');
         return;
       }
       await SupaFlow.client.auth.updateUser(
@@ -179,7 +179,7 @@ class SupabaseAuthService implements AuthService {
     try {
       final user = SupaFlow.client.auth.currentUser;
       if (user == null) {
-        print('Error: delete user attempted with no logged in user!');
+        debugPrint('Error: delete user attempted with no logged in user!');
         return;
       }
       // Note: Supabase doesn't have a direct delete user method in the client SDK

@@ -1,4 +1,4 @@
-import 'package:supabase_flutter/supabase_flutter.dart' hide Provider;
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 export 'database/database.dart';
 export 'storage/storage.dart';
@@ -23,7 +23,6 @@ class SupaFlow {
         },
         anonKey: _kSupabaseAnonKey,
         debug: false,
-        authOptions:
-            const FlutterAuthClientOptions(authFlowType: AuthFlowType.implicit),
+        authOptions: const FlutterAuthClientOptions(authFlowType: AuthFlowType.implicit),
       );
 }

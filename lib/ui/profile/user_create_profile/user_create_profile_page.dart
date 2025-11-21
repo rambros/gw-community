@@ -422,7 +422,7 @@ class _UserCreateProfilePageState extends State<UserCreateProfilePage> {
             ),
             if (viewModel.isLoading)
               Container(
-                color: Colors.black.withOpacity(0.5),
+                color: Colors.black.withValues(alpha: 0.5),
                 child: Center(
                   child: SpinKitRipple(
                     color: FlutterFlowTheme.of(context).primary,

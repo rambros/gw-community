@@ -32,9 +32,11 @@ class GroupInvitationViewModel extends ChangeNotifier {
       return true;
     } catch (e) {
       debugPrint('Error joining group: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error joining group: $e')),
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error joining group: $e')),
+        );
+      }
       return false;
     } finally {
       _isLoading = false;

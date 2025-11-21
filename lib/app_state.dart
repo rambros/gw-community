@@ -32,17 +32,9 @@ class FFAppState extends ChangeNotifier {
 
   late SharedPreferences prefs;
 
-  String _typeSelectedEvent = 'upcomming';
-  String get typeSelectedEvent => _typeSelectedEvent;
-  set typeSelectedEvent(String value) {
-    _typeSelectedEvent = value;
-  }
+  String typeSelectedEvent = 'upcomming';
 
-  List<int> _listStartedJourneys = [];
-  List<int> get listStartedJourneys => _listStartedJourneys;
-  set listStartedJourneys(List<int> value) {
-    _listStartedJourneys = value;
-  }
+  List<int> listStartedJourneys = [];
 
   void addToListStartedJourneys(int value) {
     listStartedJourneys.add(value);
@@ -60,54 +52,26 @@ class FFAppState extends ChangeNotifier {
     int index,
     int Function(int) updateFn,
   ) {
-    listStartedJourneys[index] = updateFn(_listStartedJourneys[index]);
+    listStartedJourneys[index] = updateFn(listStartedJourneys[index]);
   }
 
   void insertAtIndexInListStartedJourneys(int index, int value) {
     listStartedJourneys.insert(index, value);
   }
 
-  bool _hasStartedJourney = false;
-  bool get hasStartedJourney => _hasStartedJourney;
-  set hasStartedJourney(bool value) {
-    _hasStartedJourney = value;
-  }
+  bool hasStartedJourney = false;
 
-  bool _filterOn = false;
-  bool get filterOn => _filterOn;
-  set filterOn(bool value) {
-    _filterOn = value;
-  }
+  bool filterOn = false;
 
-  int _filterByAuthorId = 0;
-  int get filterByAuthorId => _filterByAuthorId;
-  set filterByAuthorId(int value) {
-    _filterByAuthorId = value;
-  }
+  int filterByAuthorId = 0;
 
-  String _filterByYear = '';
-  String get filterByYear => _filterByYear;
-  set filterByYear(String value) {
-    _filterByYear = value;
-  }
+  String filterByYear = '';
 
-  int _filterByLocalID = 0;
-  int get filterByLocalID => _filterByLocalID;
-  set filterByLocalID(int value) {
-    _filterByLocalID = value;
-  }
+  int filterByLocalID = 0;
 
-  String _filterLine = '';
-  String get filterLine => _filterLine;
-  set filterLine(String value) {
-    _filterLine = value;
-  }
+  String filterLine = '';
 
-  List<String> _filterByTopics = [];
-  List<String> get filterByTopics => _filterByTopics;
-  set filterByTopics(List<String> value) {
-    _filterByTopics = value;
-  }
+  List<String> filterByTopics = [];
 
   void addToFilterByTopics(String value) {
     filterByTopics.add(value);
@@ -125,41 +89,24 @@ class FFAppState extends ChangeNotifier {
     int index,
     String Function(String) updateFn,
   ) {
-    filterByTopics[index] = updateFn(_filterByTopics[index]);
+    filterByTopics[index] = updateFn(filterByTopics[index]);
   }
 
   void insertAtIndexInFilterByTopics(int index, String value) {
     filterByTopics.insert(index, value);
   }
 
-  int _filterByEventId = 0;
-  int get filterByEventId => _filterByEventId;
-  set filterByEventId(int value) {
-    _filterByEventId = value;
-  }
+  int filterByEventId = 0;
 
-  LoginUserStruct _loginUser =
-      LoginUserStruct.fromSerializableMap(jsonDecode('{\"roles\":\"[]\"}'));
-  LoginUserStruct get loginUser => _loginUser;
-  set loginUser(LoginUserStruct value) {
-    _loginUser = value;
-  }
+  LoginUserStruct loginUser = LoginUserStruct.fromSerializableMap(jsonDecode('{\"roles\":\"[]\"}'));
 
   void updateLoginUserStruct(Function(LoginUserStruct) updateFn) {
-    updateFn(_loginUser);
+    updateFn(loginUser);
   }
 
-  int _filterByJourneyId = 0;
-  int get filterByJourneyId => _filterByJourneyId;
-  set filterByJourneyId(int value) {
-    _filterByJourneyId = value;
-  }
+  int filterByJourneyId = 0;
 
-  int _filterByGroupId = 0;
-  int get filterByGroupId => _filterByGroupId;
-  set filterByGroupId(int value) {
-    _filterByGroupId = value;
-  }
+  int filterByGroupId = 0;
 
   /// if true the user pass through onbording process
   bool _onboardingDone = false;
@@ -181,11 +128,9 @@ class FFAppState extends ChangeNotifier {
         requestFn: requestFn,
       );
   void clearListEventsUserCache() => _listEventsUserManager.clear();
-  void clearListEventsUserCacheKey(String? uniqueKey) =>
-      _listEventsUserManager.clearRequest(uniqueKey);
+  void clearListEventsUserCacheKey(String? uniqueKey) => _listEventsUserManager.clearRequest(uniqueKey);
 
-  final _listJourneyStepsManager =
-      FutureRequestManager<List<CcJourneyStepsRow>>();
+  final _listJourneyStepsManager = FutureRequestManager<List<CcJourneyStepsRow>>();
   Future<List<CcJourneyStepsRow>> listJourneySteps({
     String? uniqueQueryKey,
     bool? overrideCache,
@@ -197,8 +142,7 @@ class FFAppState extends ChangeNotifier {
         requestFn: requestFn,
       );
   void clearListJourneyStepsCache() => _listJourneyStepsManager.clear();
-  void clearListJourneyStepsCacheKey(String? uniqueKey) =>
-      _listJourneyStepsManager.clearRequest(uniqueKey);
+  void clearListJourneyStepsCacheKey(String? uniqueKey) => _listJourneyStepsManager.clearRequest(uniqueKey);
 
   final _journeyManager = FutureRequestManager<List<CcJourneysRow>>();
   Future<List<CcJourneysRow>> journey({
@@ -212,8 +156,7 @@ class FFAppState extends ChangeNotifier {
         requestFn: requestFn,
       );
   void clearJourneyCache() => _journeyManager.clear();
-  void clearJourneyCacheKey(String? uniqueKey) =>
-      _journeyManager.clearRequest(uniqueKey);
+  void clearJourneyCacheKey(String? uniqueKey) => _journeyManager.clearRequest(uniqueKey);
 
   final _userRowManager = FutureRequestManager<List<CcUsersRow>>();
   Future<List<CcUsersRow>> userRow({
@@ -227,18 +170,11 @@ class FFAppState extends ChangeNotifier {
         requestFn: requestFn,
       );
   void clearUserRowCache() => _userRowManager.clear();
-  void clearUserRowCacheKey(String? uniqueKey) =>
-      _userRowManager.clearRequest(uniqueKey);
+  void clearUserRowCacheKey(String? uniqueKey) => _userRowManager.clearRequest(uniqueKey);
 }
 
 void _safeInit(Function() initializeField) {
   try {
     initializeField();
-  } catch (_) {}
-}
-
-Future _safeInitAsync(Function() initializeField) async {
-  try {
-    await initializeField();
   } catch (_) {}
 }

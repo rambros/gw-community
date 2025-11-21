@@ -27,7 +27,7 @@ dynamic deserializeStructParam<T>(
   if (param == null) {
     return null;
   } else if (isList) {
-    final paramValues;
+    final dynamic paramValues;
     try {
       paramValues = param is Iterable ? param : json.decode(param);
     } catch (e) {
@@ -37,8 +37,7 @@ dynamic deserializeStructParam<T>(
       return null;
     }
     return paramValues
-        .map<T>((e) => deserializeStructParam<T>(e, paramType, false,
-            structBuilder: structBuilder))
+        .map<T>((e) => deserializeStructParam<T>(e, paramType, false, structBuilder: structBuilder))
         .toList();
   } else if (param is Map<String, dynamic>) {
     return structBuilder(param);
@@ -56,16 +55,9 @@ List<T>? getStructList<T>(
   dynamic value,
   StructBuilder<T> structBuilder,
 ) =>
-    value is! List
-        ? null
-        : value
-            .whereType<Map<String, dynamic>>()
-            .map((e) => structBuilder(e))
-            .toList();
+    value is! List ? null : value.whereType<Map<String, dynamic>>().map((e) => structBuilder(e)).toList();
 
-List<T>? getEnumList<T>(dynamic value) => value is! List
-    ? null
-    : value.map((e) => deserializeEnum<T>(e)).withoutNulls;
+List<T>? getEnumList<T>(dynamic value) => value is! List ? null : value.map((e) => deserializeEnum<T>(e)).withoutNulls;
 
 Color? getSchemaColor(dynamic value) => value is String
     ? fromCssColor(value)
@@ -73,8 +65,6 @@ Color? getSchemaColor(dynamic value) => value is String
         ? value
         : null;
 
-List<Color>? getColorsList(dynamic value) =>
-    value is! List ? null : value.map(getSchemaColor).withoutNulls;
+List<Color>? getColorsList(dynamic value) => value is! List ? null : value.map(getSchemaColor).withoutNulls;
 
-List<T>? getDataList<T>(dynamic value) =>
-    value is! List ? null : value.map((e) => castToType<T>(e)!).toList();
+List<T>? getDataList<T>(dynamic value) => value is! List ? null : value.map((e) => castToType<T>(e)!).toList();

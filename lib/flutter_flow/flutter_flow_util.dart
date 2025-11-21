@@ -13,7 +13,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../main.dart';
 
-
 export 'keep_alive_wrapper.dart';
 export 'lat_lng.dart';
 export 'place.dart';
@@ -65,8 +64,7 @@ Theme wrapInMaterialDatePickerTheme(
   required double iconSize,
 }) {
   final baseTheme = Theme.of(context);
-  final dateTimeMaterialStateForegroundColor =
-      WidgetStateProperty.resolveWith((states) {
+  final dateTimeMaterialStateForegroundColor = WidgetStateProperty.resolveWith((states) {
     if (states.contains(WidgetState.disabled)) {
       return pickerForegroundColor.applyAlpha(0.60);
     }
@@ -79,8 +77,7 @@ Theme wrapInMaterialDatePickerTheme(
     return null;
   });
 
-  final dateTimeMaterialStateBackgroundColor =
-      WidgetStateProperty.resolveWith((states) {
+  final dateTimeMaterialStateBackgroundColor = WidgetStateProperty.resolveWith((states) {
     if (states.contains(WidgetState.selected)) {
       return selectedDateTimeBackgroundColor;
     }
@@ -109,8 +106,7 @@ Theme wrapInMaterialDatePickerTheme(
               if (states.contains(WidgetState.hovered)) {
                 return actionButtonForegroundColor.applyAlpha(0.04);
               }
-              if (states.contains(WidgetState.focused) ||
-                  states.contains(WidgetState.pressed)) {
+              if (states.contains(WidgetState.focused) || states.contains(WidgetState.pressed)) {
                 return actionButtonForegroundColor.applyAlpha(0.12);
               }
               return null;
@@ -163,8 +159,7 @@ Theme wrapInMaterialTimePickerTheme(
               if (states.contains(WidgetState.hovered)) {
                 return actionButtonForegroundColor.applyAlpha(0.04);
               }
-              if (states.contains(WidgetState.focused) ||
-                  states.contains(WidgetState.pressed)) {
+              if (states.contains(WidgetState.focused) || states.contains(WidgetState.pressed)) {
                 return actionButtonForegroundColor.applyAlpha(0.12);
               }
               return null;
@@ -175,20 +170,14 @@ Theme wrapInMaterialTimePickerTheme(
         hourMinuteTextColor: pickerForegroundColor,
         dialHandColor: selectedDateTimeBackgroundColor,
         dialTextColor: WidgetStateColor.resolveWith((states) =>
-            states.contains(WidgetState.selected)
-                ? selectedDateTimeForegroundColor
-                : pickerForegroundColor),
+            states.contains(WidgetState.selected) ? selectedDateTimeForegroundColor : pickerForegroundColor),
         dayPeriodBorderSide: BorderSide(
           color: pickerForegroundColor,
         ),
         dayPeriodTextColor: WidgetStateColor.resolveWith((states) =>
-            states.contains(WidgetState.selected)
-                ? selectedDateTimeForegroundColor
-                : pickerForegroundColor),
-        dayPeriodColor: WidgetStateColor.resolveWith((states) =>
-            states.contains(WidgetState.selected)
-                ? selectedDateTimeBackgroundColor
-                : Colors.transparent),
+            states.contains(WidgetState.selected) ? selectedDateTimeForegroundColor : pickerForegroundColor),
+        dayPeriodColor: WidgetStateColor.resolveWith(
+            (states) => states.contains(WidgetState.selected) ? selectedDateTimeBackgroundColor : Colors.transparent),
         entryModeIconColor: pickerForegroundColor,
       ),
     ),
@@ -279,8 +268,7 @@ String formatNumber(
       break;
     case FormatType.custom:
       final hasLocale = locale != null && locale.isNotEmpty;
-      formattedValue =
-          NumberFormat(format, hasLocale ? locale : null).format(value);
+      formattedValue = NumberFormat(format, hasLocale ? locale : null).format(value);
   }
 
   if (formattedValue.isEmpty) {
@@ -288,9 +276,7 @@ String formatNumber(
   }
 
   if (currency != null) {
-    final currencySymbol = currency.isNotEmpty
-        ? currency
-        : NumberFormat.simpleCurrency().format(0.0).substring(0, 1);
+    final currencySymbol = currency.isNotEmpty ? currency : NumberFormat.simpleCurrency().format(0.0).substring(0, 1);
     formattedValue = '$currencySymbol$formattedValue';
   }
 
@@ -318,10 +304,10 @@ T? castToType<T>(dynamic value) {
     return null;
   }
   switch (T) {
-    case double:
+    case == double:
       // Doubles may be stored as ints in some cases.
       return value.toDouble() as T;
-    case int:
+    case == int:
       // Likewise, ints may be stored as doubles. If this is the case
       // (i.e. no decimal value), return the value as an int.
       if (value is num && value.toInt() == value) {
@@ -348,9 +334,7 @@ dynamic getJsonField(
   }
   final value = field.first.value;
   if (isForList) {
-    return value is! Iterable
-        ? [value]
-        : (value is List ? value : value.toList());
+    return value is! Iterable ? [value] : (value is List ? value : value.toList());
   }
   return value;
 }
@@ -371,8 +355,7 @@ bool get isWeb => kIsWeb;
 const kBreakpointSmall = 479.0;
 const kBreakpointMedium = 767.0;
 const kBreakpointLarge = 991.0;
-bool isMobileWidth(BuildContext context) =>
-    MediaQuery.sizeOf(context).width < kBreakpointSmall;
+bool isMobileWidth(BuildContext context) => MediaQuery.sizeOf(context).width < kBreakpointSmall;
 bool responsiveVisibility({
   required BuildContext context,
   bool phone = true,
@@ -405,28 +388,21 @@ extension FFTextEditingControllerExt on TextEditingController? {
 }
 
 extension IterableExt<T> on Iterable<T> {
-  List<T> sortedList<S extends Comparable>(
-      {S Function(T)? keyOf, bool desc = false}) {
-    final sortedAscending = toList()
-      ..sort(keyOf == null ? null : ((a, b) => keyOf(a).compareTo(keyOf(b))));
+  List<T> sortedList<S extends Comparable>({S Function(T)? keyOf, bool desc = false}) {
+    final sortedAscending = toList()..sort(keyOf == null ? null : ((a, b) => keyOf(a).compareTo(keyOf(b))));
     if (desc) {
       return sortedAscending.reversed.toList();
     }
     return sortedAscending;
   }
 
-  List<S> mapIndexed<S>(S Function(int, T) func) => toList()
-      .asMap()
-      .map((index, value) => MapEntry(index, func(index, value)))
-      .values
-      .toList();
+  List<S> mapIndexed<S>(S Function(int, T) func) =>
+      toList().asMap().map((index, value) => MapEntry(index, func(index, value))).values.toList();
 }
 
-void setAppLanguage(BuildContext context, String language) =>
-    MyApp.of(context).setLocale(language);
+void setAppLanguage(BuildContext context, String language) => MyApp.of(context).setLocale(language);
 
-void setDarkModeSetting(BuildContext context, ThemeMode themeMode) =>
-    MyApp.of(context).setThemeMode(themeMode);
+void setDarkModeSetting(BuildContext context, ThemeMode themeMode) => MyApp.of(context).setThemeMode(themeMode);
 
 void showSnackbar(
   BuildContext context,
@@ -460,9 +436,7 @@ void showSnackbar(
 
 extension FFStringExt on String {
   String maybeHandleOverflow({int? maxChars, String replacement = ''}) =>
-      maxChars != null && length > maxChars
-          ? replaceRange(maxChars, null, replacement)
-          : this;
+      maxChars != null && length > maxChars ? replaceRange(maxChars, null, replacement) : this;
 
   String toCapitalization(TextCapitalization textCapitalization) {
     switch (textCapitalization) {
@@ -484,16 +458,13 @@ extension ListFilterExt<T> on Iterable<T?> {
 
 extension MapFilterExtensions<T> on Map<String, T?> {
   Map<String, T> get withoutNulls => Map.fromEntries(
-        entries
-            .where((e) => e.value != null)
-            .map((e) => MapEntry(e.key, e.value as T)),
+        entries.where((e) => e.value != null).map((e) => MapEntry(e.key, e.value as T)),
       );
 }
 
 extension MapListContainsExt on List<dynamic> {
-  bool containsMap(dynamic map) => map is Map
-      ? any((e) => e is Map && const DeepCollectionEquality().equals(e, map))
-      : contains(map);
+  bool containsMap(dynamic map) =>
+      map is Map ? any((e) => e is Map && const DeepCollectionEquality().equals(e, map)) : contains(map);
 }
 
 extension ListDivideExt<T extends Widget> on Iterable<T> {
@@ -501,23 +472,17 @@ extension ListDivideExt<T extends Widget> on Iterable<T> {
 
   List<Widget> divide(Widget t, {bool Function(int)? filterFn}) => isEmpty
       ? []
-      : (enumerate
-          .map((e) => [e.value, if (filterFn == null || filterFn(e.key)) t])
-          .expand((i) => i)
-          .toList()
+      : (enumerate.map((e) => [e.value, if (filterFn == null || filterFn(e.key)) t]).expand((i) => i).toList()
         ..removeLast());
 
   List<Widget> around(Widget t) => addToStart(t).addToEnd(t);
 
-  List<Widget> addToStart(Widget t) =>
-      enumerate.map((e) => e.value).toList()..insert(0, t);
+  List<Widget> addToStart(Widget t) => enumerate.map((e) => e.value).toList()..insert(0, t);
 
-  List<Widget> addToEnd(Widget t) =>
-      enumerate.map((e) => e.value).toList()..add(t);
+  List<Widget> addToEnd(Widget t) => enumerate.map((e) => e.value).toList()..add(t);
 
   List<Padding> paddingTopEach(double val) =>
-      map((w) => Padding(padding: EdgeInsets.only(top: val), child: w))
-          .toList();
+      map((w) => Padding(padding: EdgeInsets.only(top: val), child: w)).toList();
 }
 
 extension StatefulWidgetExtensions on State<StatefulWidget> {
@@ -603,7 +568,5 @@ extension ListUniqueExt<T> on Iterable<T> {
   }
 }
 
-String getCurrentRoute(BuildContext context) =>
-    context.mounted ? MyApp.of(context).getRoute() : '';
-List<String> getCurrentRouteStack(BuildContext context) =>
-    context.mounted ? MyApp.of(context).getRouteStack() : [];
+String getCurrentRoute(BuildContext context) => context.mounted ? MyApp.of(context).getRoute() : '';
+List<String> getCurrentRouteStack(BuildContext context) => context.mounted ? MyApp.of(context).getRouteStack() : [];

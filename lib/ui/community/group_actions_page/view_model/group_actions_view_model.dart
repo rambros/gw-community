@@ -64,9 +64,11 @@ class GroupActionsViewModel extends ChangeNotifier {
       return true;
     } catch (e) {
       debugPrint('Error leaving group: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error leaving group: $e')),
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error leaving group: $e')),
+        );
+      }
       return false;
     } finally {
       _isLoading = false;

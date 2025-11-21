@@ -89,13 +89,10 @@ class FlutterFlowDropDown<T> extends StatefulWidget {
 class _FlutterFlowDropDownState<T> extends State<FlutterFlowDropDown<T>> {
   bool get isMultiSelect => widget.isMultiSelect;
   FormFieldController<T?> get controller => widget.controller!;
-  FormFieldController<List<T>?> get multiSelectController =>
-      widget.multiSelectController!;
+  FormFieldController<List<T>?> get multiSelectController => widget.multiSelectController!;
 
   T? get currentValue {
-    final value = isMultiSelect
-        ? multiSelectController.value?.firstOrNull
-        : controller.value;
+    final value = isMultiSelect ? multiSelectController.value?.firstOrNull : controller.value;
     return widget.options.contains(value) ? value : null;
   }
 
@@ -103,17 +100,14 @@ class _FlutterFlowDropDownState<T> extends State<FlutterFlowDropDown<T>> {
     if (!isMultiSelect || multiSelectController.value == null) {
       return {};
     }
-    return widget.options
-        .toSet()
-        .intersection(multiSelectController.value!.toSet());
+    return widget.options.toSet().intersection(multiSelectController.value!.toSet());
   }
 
   Map<T, String> get optionLabels => Map.fromEntries(
         widget.options.asMap().entries.map(
               (option) => MapEntry(
                 option.value,
-                widget.optionLabels == null ||
-                        widget.optionLabels!.length < option.key + 1
+                widget.optionLabels == null || widget.optionLabels!.length < option.key + 1
                     ? option.value.toString()
                     : widget.optionLabels![option.key],
               ),
@@ -132,8 +126,7 @@ class _FlutterFlowDropDownState<T> extends State<FlutterFlowDropDown<T>> {
   void initState() {
     super.initState();
     if (isMultiSelect) {
-      _listener =
-          () => widget.onMultiSelectChanged!(multiSelectController.value);
+      _listener = () => widget.onMultiSelectChanged!(multiSelectController.value);
       multiSelectController.addListener(_listener);
     } else {
       _listener = () => widget.onChanged!(controller.value);
@@ -168,26 +161,20 @@ class _FlutterFlowDropDownState<T> extends State<FlutterFlowDropDown<T>> {
         ),
         child: Padding(
           padding: _useDropdown2() ? EdgeInsets.zero : widget.margin,
-          child: widget.hidesUnderline
-              ? DropdownButtonHideUnderline(child: dropdownWidget)
-              : dropdownWidget,
+          child: widget.hidesUnderline ? DropdownButtonHideUnderline(child: dropdownWidget) : dropdownWidget,
         ),
       ),
     );
   }
 
   bool _useDropdown2() =>
-      widget.isMultiSelect ||
-      widget.isSearchable ||
-      !widget.isOverButton ||
-      widget.maxHeight != null;
+      widget.isMultiSelect || widget.isSearchable || !widget.isOverButton || widget.maxHeight != null;
 
-  Widget _buildDropdownWidget() =>
-      _useDropdown2() ? _buildDropdown() : _buildLegacyDropdown();
+  Widget _buildDropdownWidget() => _useDropdown2() ? _buildDropdown() : _buildLegacyDropdown();
 
   Widget _buildLegacyDropdown() {
     return DropdownButtonFormField<T>(
-      value: currentValue,
+      initialValue: currentValue,
       hint: _createHintText(),
       items: _createMenuItems(),
       elevation: widget.elevation.toInt(),
@@ -197,20 +184,14 @@ class _FlutterFlowDropDownState<T> extends State<FlutterFlowDropDown<T>> {
       dropdownColor: widget.fillColor,
       focusColor: Colors.transparent,
       decoration: InputDecoration(
-        labelText: widget.labelText == null || widget.labelText!.isEmpty
-            ? null
-            : widget.labelText,
+        labelText: widget.labelText == null || widget.labelText!.isEmpty ? null : widget.labelText,
         labelStyle: widget.labelTextStyle,
-        border: widget.hidesUnderline
-            ? InputBorder.none
-            : const UnderlineInputBorder(),
+        border: widget.hidesUnderline ? InputBorder.none : const UnderlineInputBorder(),
       ),
     );
   }
 
-  Text? _createHintText() => widget.hintText != null
-      ? Text(widget.hintText!, style: widget.textStyle)
-      : null;
+  Text? _createHintText() => widget.hintText != null ? Text(widget.hintText!, style: widget.textStyle) : null;
 
   ValueKey _getItemKey(T option) {
     final widgetKey = (widget.key as ValueKey).value;
@@ -225,8 +206,7 @@ class _FlutterFlowDropDownState<T> extends State<FlutterFlowDropDown<T>> {
             child: Builder(builder: (_) {
               final child = Padding(
                 padding: _useDropdown2() ? horizontalMargin : EdgeInsets.zero,
-                child:
-                    Text(optionLabels[option] ?? '', style: widget.textStyle),
+                child: Text(optionLabels[option] ?? '', style: widget.textStyle),
               );
               if (kIsWeb) {
                 return WebViewAware(child: child);
@@ -245,13 +225,10 @@ class _FlutterFlowDropDownState<T> extends State<FlutterFlowDropDown<T>> {
           enabled: false,
           child: StatefulBuilder(
             builder: (context, menuSetState) {
-              final isSelected =
-                  multiSelectController.value?.contains(item) ?? false;
+              final isSelected = multiSelectController.value?.contains(item) ?? false;
               return InkWell(onTap: () {
                 multiSelectController.value ??= [];
-                isSelected
-                    ? multiSelectController.value!.remove(item)
-                    : multiSelectController.value!.add(item);
+                isSelected ? multiSelectController.value!.remove(item) : multiSelectController.value!.add(item);
                 multiSelectController.update();
                 // This rebuilds the StatefulWidget to update the button's text.
                 setState(() {});
@@ -289,11 +266,9 @@ class _FlutterFlowDropDownState<T> extends State<FlutterFlowDropDown<T>> {
       .toList();
 
   Widget _buildDropdown() {
-    final overlayColor = WidgetStateProperty.resolveWith<Color?>((states) =>
-        states.contains(WidgetState.focused) ? Colors.transparent : null);
-    final iconStyleData = widget.icon != null
-        ? IconStyleData(icon: widget.icon!)
-        : const IconStyleData();
+    final overlayColor = WidgetStateProperty.resolveWith<Color?>(
+        (states) => states.contains(WidgetState.focused) ? Colors.transparent : null);
+    final iconStyleData = widget.icon != null ? IconStyleData(icon: widget.icon!) : const IconStyleData();
     return DropdownButton2<T>(
       value: currentValue,
       hint: _createHintText(),
@@ -319,9 +294,7 @@ class _FlutterFlowDropDownState<T> extends State<FlutterFlowDropDown<T>> {
         maxHeight: widget.maxHeight,
         padding: EdgeInsets.zero,
       ),
-      onChanged: widget.disabled
-          ? null
-          : (isMultiSelect ? (_) {} : (val) => widget.controller!.value = val),
+      onChanged: widget.disabled ? null : (isMultiSelect ? (_) {} : (val) => widget.controller!.value = val),
       isExpanded: true,
       selectedItemBuilder: (context) => widget.options
           .map(
@@ -330,10 +303,7 @@ class _FlutterFlowDropDownState<T> extends State<FlutterFlowDropDown<T>> {
                 child: Builder(builder: (_) {
                   final child = Text(
                     isMultiSelect
-                        ? currentValues
-                            .where((v) => optionLabels.containsKey(v))
-                            .map((v) => optionLabels[v])
-                            .join(', ')
+                        ? currentValues.where((v) => optionLabels.containsKey(v)).map((v) => optionLabels[v]).join(', ')
                         : optionLabels[item]!,
                     style: widget.textStyle,
                     maxLines: 1,
@@ -378,9 +348,7 @@ class _FlutterFlowDropDownState<T> extends State<FlutterFlowDropDown<T>> {
                 ),
               ),
               searchMatchFn: (item, searchValue) {
-                return (optionLabels[item.value] ?? '')
-                    .toLowerCase()
-                    .contains(searchValue.toLowerCase());
+                return (optionLabels[item.value] ?? '').toLowerCase().contains(searchValue.toLowerCase());
               },
             )
           : null,

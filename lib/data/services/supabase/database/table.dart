@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'database.dart';
 
 abstract class SupabaseTable<T extends SupabaseDataRow> {
@@ -23,21 +24,15 @@ abstract class SupabaseTable<T extends SupabaseDataRow> {
           .limit(1)
           .select()
           .maybeSingle()
-          .catchError((e) => print('Error querying row: $e'))
+          .catchError((e) => debugPrint('Error querying row: $e'))
           .then((r) => [if (r != null) createRow(r)]);
 
-  Future<T> insert(Map<String, dynamic> data) => SupaFlow.client
-      .from(tableName)
-      .insert(data)
-      .select()
-      .limit(1)
-      .single()
-      .then(createRow);
+  Future<T> insert(Map<String, dynamic> data) =>
+      SupaFlow.client.from(tableName).insert(data).select().limit(1).single().then(createRow);
 
   Future<List<T>> update({
     required Map<String, dynamic> data,
-    required PostgrestTransformBuilder Function(PostgrestFilterBuilder)
-        matchingRows,
+    required PostgrestTransformBuilder Function(PostgrestFilterBuilder) matchingRows,
     bool returnRows = false,
   }) async {
     final update = matchingRows(SupaFlow.client.from(tableName).update(data));
@@ -49,8 +44,7 @@ abstract class SupabaseTable<T extends SupabaseDataRow> {
   }
 
   Future<List<T>> delete({
-    required PostgrestTransformBuilder Function(PostgrestFilterBuilder)
-        matchingRows,
+    required PostgrestTransformBuilder Function(PostgrestFilterBuilder) matchingRows,
     bool returnRows = false,
   }) async {
     final delete = matchingRows(SupaFlow.client.from(tableName).delete());
@@ -136,8 +130,7 @@ class PostgresTime {
 
   static PostgresTime? tryParse(String formattedString) {
     final datePrefix = DateTime.now().toIso8601String().split('T').first;
-    return PostgresTime(
-        DateTime.tryParse('${datePrefix}T$formattedString')?.toLocal());
+    return PostgresTime(DateTime.tryParse('${datePrefix}T$formattedString')?.toLocal());
   }
 
   String? toIso8601String() {

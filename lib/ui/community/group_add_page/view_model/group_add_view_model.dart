@@ -73,6 +73,7 @@ class GroupAddViewModel extends ChangeNotifier {
     );
 
     if (selectedMedia != null && selectedMedia.every((m) => validateFileFormat(m.storagePath, context))) {
+      if (!context.mounted) return;
       _setLoading(true);
       try {
         showUploadMessage(
@@ -91,11 +92,15 @@ class GroupAddViewModel extends ChangeNotifier {
           notifyListeners();
         }
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error uploading image: $e')),
-        );
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error uploading image: $e')),
+          );
+        }
       } finally {
-        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        }
         _setLoading(false);
       }
     }
@@ -134,9 +139,11 @@ class GroupAddViewModel extends ChangeNotifier {
 
       return true;
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error creating group: $e')),
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error creating group: $e')),
+        );
+      }
       return false;
     } finally {
       _setLoading(false);

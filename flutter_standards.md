@@ -55,7 +55,7 @@ lib/
   data/
     repositories/
     services/
-    model/
+    models/
   config/
   utils/
   routing/

@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:collection/collection.dart';
 
 enum ContentType {
@@ -36,19 +38,18 @@ extension FFEnumExtensions<T extends Enum> on T {
 }
 
 extension FFEnumListExtensions<T extends Enum> on Iterable<T> {
-  T? deserialize(String? value) =>
-      firstWhereOrNull((e) => e.serialize() == value);
+  T? deserialize(String? value) => firstWhereOrNull((e) => e.serialize() == value);
 }
 
 T? deserializeEnum<T>(String? value) {
   switch (T) {
-    case (ContentType):
+    case == ContentType:
       return ContentType.values.deserialize(value) as T?;
-    case (CottEventType):
+    case == CottEventType:
       return CottEventType.values.deserialize(value) as T?;
-    case (SortContentType):
+    case == SortContentType:
       return SortContentType.values.deserialize(value) as T?;
-    case (SharingType):
+    case == SharingType:
       return SharingType.values.deserialize(value) as T?;
     default:
       return null;

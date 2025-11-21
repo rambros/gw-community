@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -27,8 +29,7 @@ String placeToString(FFPlace place) => jsonEncode({
       'zipCode': place.zipCode,
     });
 
-String uploadedFileToString(FFUploadedFile uploadedFile) =>
-    uploadedFile.serialize();
+String uploadedFileToString(FFUploadedFile uploadedFile) => uploadedFile.serialize();
 
 String? serializeParam(
   dynamic param,
@@ -80,13 +81,10 @@ String? serializeParam(
 
       case ParamType.SupabaseRow:
         return json.encode((param as SupabaseDataRow).data);
-
-      default:
-        data = null;
     }
     return data;
   } catch (e) {
-    print('Error serializing parameter: $e');
+    debugPrint('Error serializing parameter: $e');
     return null;
   }
 }
@@ -141,8 +139,7 @@ FFPlace placeFromString(String placeStr) {
   );
 }
 
-FFUploadedFile uploadedFileFromString(String uploadedFileStr) =>
-    FFUploadedFile.deserialize(uploadedFileStr);
+FFUploadedFile uploadedFileFromString(String uploadedFileStr) => FFUploadedFile.deserialize(uploadedFileStr);
 
 enum ParamType {
   int,
@@ -201,9 +198,7 @@ dynamic deserializeParam<T>(
         return param == 'true';
       case ParamType.DateTime:
         final milliseconds = int.tryParse(param);
-        return milliseconds != null
-            ? DateTime.fromMillisecondsSinceEpoch(milliseconds)
-            : null;
+        return milliseconds != null ? DateTime.fromMillisecondsSinceEpoch(milliseconds) : null;
       case ParamType.DateTimeRange:
         return dateTimeRangeFromString(param);
       case ParamType.LatLng:
@@ -220,107 +215,107 @@ dynamic deserializeParam<T>(
       case ParamType.SupabaseRow:
         final data = json.decode(param) as Map<String, dynamic>;
         switch (T) {
-          case YearsWithContentPublishedRow:
+          case == YearsWithContentPublishedRow:
             return YearsWithContentPublishedRow(data);
-          case CcViewUserJournalRow:
+          case == CcViewUserJournalRow:
             return CcViewUserJournalRow(data);
-          case ViewMessagesRow:
+          case == ViewMessagesRow:
             return ViewMessagesRow(data);
-          case PortalItemRow:
+          case == PortalItemRow:
             return PortalItemRow(data);
-          case DashboardGroupRow:
+          case == DashboardGroupRow:
             return DashboardGroupRow(data);
-          case CcGroupsRow:
+          case == CcGroupsRow:
             return CcGroupsRow(data);
-          case AuthorWithContentRow:
+          case == AuthorWithContentRow:
             return AuthorWithContentRow(data);
-          case CcCountryRow:
+          case == CcCountryRow:
             return CcCountryRow(data);
-          case CcViewAvailJourneysRow:
+          case == CcViewAvailJourneysRow:
             return CcViewAvailJourneysRow(data);
-          case CcUserJourneysRow:
+          case == CcUserJourneysRow:
             return CcUserJourneysRow(data);
-          case ViewLocationRow:
+          case == ViewLocationRow:
             return ViewLocationRow(data);
-          case LocalWithEventRow:
+          case == LocalWithEventRow:
             return LocalWithEventRow(data);
-          case CcViewSharingsUsersRow:
+          case == CcViewSharingsUsersRow:
             return CcViewSharingsUsersRow(data);
-          case CcViewUserStepsRow:
+          case == CcViewUserStepsRow:
             return CcViewUserStepsRow(data);
-          case ItemTopicRow:
+          case == ItemTopicRow:
             return ItemTopicRow(data);
-          case CcViewUserActivitiesRow:
+          case == CcViewUserActivitiesRow:
             return CcViewUserActivitiesRow(data);
-          case AuthorWithMessageRow:
+          case == AuthorWithMessageRow:
             return AuthorWithMessageRow(data);
-          case CcChatMessagesRow:
+          case == CcChatMessagesRow:
             return CcChatMessagesRow(data);
-          case CcUserActivitiesRow:
+          case == CcUserActivitiesRow:
             return CcUserActivitiesRow(data);
-          case CcStepActivitiesRow:
+          case == CcStepActivitiesRow:
             return CcStepActivitiesRow(data);
-          case CcSharingsRow:
+          case == CcSharingsRow:
             return CcSharingsRow(data);
-          case CcJourneysRow:
+          case == CcJourneysRow:
             return CcJourneysRow(data);
-          case CcJourneyStepsRow:
+          case == CcJourneyStepsRow:
             return CcJourneyStepsRow(data);
-          case ItemAuthorRow:
+          case == ItemAuthorRow:
             return ItemAuthorRow(data);
-          case ViewEventsRow:
+          case == ViewEventsRow:
             return ViewEventsRow(data);
-          case YearsWithContentRow:
+          case == YearsWithContentRow:
             return YearsWithContentRow(data);
-          case CcRegionRow:
+          case == CcRegionRow:
             return CcRegionRow(data);
-          case CcUserStepsRow:
+          case == CcUserStepsRow:
             return CcUserStepsRow(data);
-          case YearsWithEventsRow:
+          case == YearsWithEventsRow:
             return YearsWithEventsRow(data);
-          case TopicsWithContentRow:
+          case == TopicsWithContentRow:
             return TopicsWithContentRow(data);
-          case MidiaTypeRow:
+          case == MidiaTypeRow:
             return MidiaTypeRow(data);
-          case CottEventRow:
+          case == CottEventRow:
             return CottEventRow(data);
-          case ViewContentRow:
+          case == ViewContentRow:
             return ViewContentRow(data);
-          case CcCommentsRow:
+          case == CcCommentsRow:
             return CcCommentsRow(data);
-          case CcChatsRow:
+          case == CcChatsRow:
             return CcChatsRow(data);
-          case TopicRow:
+          case == TopicRow:
             return TopicRow(data);
-          case CcGroupMembersRow:
+          case == CcGroupMembersRow:
             return CcGroupMembersRow(data);
-          case AuthorRow:
+          case == AuthorRow:
             return AuthorRow(data);
-          case AuthorEventRow:
+          case == AuthorEventRow:
             return AuthorEventRow(data);
-          case CcEventRegistrationsRow:
+          case == CcEventRegistrationsRow:
             return CcEventRegistrationsRow(data);
-          case CcViewUserJourneysRow:
+          case == CcViewUserJourneysRow:
             return CcViewUserJourneysRow(data);
-          case MbkMensagensRow:
+          case == MbkMensagensRow:
             return MbkMensagensRow(data);
-          case CcEventsRow:
+          case == CcEventsRow:
             return CcEventsRow(data);
-          case EventTypeRow:
+          case == EventTypeRow:
             return EventTypeRow(data);
-          case ContentTypeRow:
+          case == ContentTypeRow:
             return ContentTypeRow(data);
-          case CcViewOrderedCommentsRow:
+          case == CcViewOrderedCommentsRow:
             return CcViewOrderedCommentsRow(data);
-          case CcViewGroupFacilitatorsRow:
+          case == CcViewGroupFacilitatorsRow:
             return CcViewGroupFacilitatorsRow(data);
-          case UserRecordingEventCountsRow:
+          case == UserRecordingEventCountsRow:
             return UserRecordingEventCountsRow(data);
-          case LocalRow:
+          case == LocalRow:
             return LocalRow(data);
-          case CcViewNotificationsUsersRow:
+          case == CcViewNotificationsUsersRow:
             return CcViewNotificationsUsersRow(data);
-          case CcUsersRow:
+          case == CcUsersRow:
             return CcUsersRow(data);
           default:
             return null;
@@ -332,12 +327,9 @@ dynamic deserializeParam<T>(
 
       case ParamType.Enum:
         return deserializeEnum<T>(param);
-
-      default:
-        return null;
     }
   } catch (e) {
-    print('Error deserializing parameter: $e');
+    debugPrint('Error deserializing parameter: $e');
     return null;
   }
 }

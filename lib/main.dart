@@ -212,9 +212,9 @@ class MyApp extends StatefulWidget {
 
   // This widget is the root of your application.
   @override
-  State<MyApp> createState() => _MyAppState();
+  State<MyApp> createState() => MyAppState();
 
-  static _MyAppState of(BuildContext context) => context.findAncestorStateOfType<_MyAppState>()!;
+  static MyAppState of(BuildContext context) => context.findAncestorStateOfType<MyAppState>()!;
 }
 
 class MyAppScrollBehavior extends MaterialScrollBehavior {
@@ -225,7 +225,7 @@ class MyAppScrollBehavior extends MaterialScrollBehavior {
       };
 }
 
-class _MyAppState extends State<MyApp> {
+class MyAppState extends State<MyApp> {
   Locale? _locale;
 
   ThemeMode _themeMode = ThemeMode.system;
@@ -309,11 +309,11 @@ class NavBarPage extends StatefulWidget {
   final bool disableResizeToAvoidBottomInset;
 
   @override
-  _NavBarPageState createState() => _NavBarPageState();
+  NavBarPageState createState() => NavBarPageState();
 }
 
 /// This is the private State class that goes with NavBarPage.
-class _NavBarPageState extends State<NavBarPage> {
+class NavBarPageState extends State<NavBarPage> {
   String _currentPageName = 'homePage';
   late Widget? _currentPage;
 

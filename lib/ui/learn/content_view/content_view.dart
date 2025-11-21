@@ -70,7 +70,7 @@ class _ContentViewState extends State<ContentView> with TickerProviderStateMixin
             child: Container(
               width: double.infinity,
               height: double.infinity,
-              color: FlutterFlowTheme.of(context).primaryBackground.withOpacity(0.82),
+              color: FlutterFlowTheme.of(context).primaryBackground.withValues(alpha: 0.82),
               child: Align(
                 alignment: const AlignmentDirectional(0.0, 0.0),
                 child: GestureDetector(

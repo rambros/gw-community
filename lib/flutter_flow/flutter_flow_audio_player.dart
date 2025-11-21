@@ -51,11 +51,10 @@ class FlutterFlowAudioPlayer extends StatefulWidget {
   final PlayInBackground playInBackground;
 
   @override
-  _FlutterFlowAudioPlayerState createState() => _FlutterFlowAudioPlayerState();
+  State<FlutterFlowAudioPlayer> createState() => _FlutterFlowAudioPlayerState();
 }
 
-class _FlutterFlowAudioPlayerState extends State<FlutterFlowAudioPlayer>
-    with RouteAware {
+class _FlutterFlowAudioPlayerState extends State<FlutterFlowAudioPlayer> with RouteAware {
   AssetsAudioPlayer? _assetsAudioPlayer;
   bool _subscribedRoute = false;
 
@@ -66,8 +65,7 @@ class _FlutterFlowAudioPlayerState extends State<FlutterFlowAudioPlayer>
   }
 
   Future openPlayer() async {
-    _assetsAudioPlayer ??=
-        AssetsAudioPlayer.withId(generateRandomAlphaNumericString());
+    _assetsAudioPlayer ??= AssetsAudioPlayer.withId(generateRandomAlphaNumericString());
     if (_assetsAudioPlayer?.playlist != null) {
       _assetsAudioPlayer!.playlist!.replaceAt(0, (oldAudio) => widget.audio);
     } else {
@@ -91,8 +89,7 @@ class _FlutterFlowAudioPlayerState extends State<FlutterFlowAudioPlayer>
   @override
   void didUpdateWidget(FlutterFlowAudioPlayer old) {
     super.didUpdateWidget(old);
-    final changed = old.audio.path != widget.audio.path ||
-        old.audio.audioType != widget.audio.audioType;
+    final changed = old.audio.path != widget.audio.path || old.audio.audioType != widget.audio.audioType;
     final isPlaying = _assetsAudioPlayer?.isPlaying.value ?? false;
     if (changed && !isPlaying) {
       openPlayer();
@@ -115,8 +112,7 @@ class _FlutterFlowAudioPlayerState extends State<FlutterFlowAudioPlayer>
     }
   }
 
-  Duration currentPosition(RealtimePlayingInfos infos) =>
-      infos.currentPosition.ensureFinite;
+  Duration currentPosition(RealtimePlayingInfos infos) => infos.currentPosition.ensureFinite;
   Duration duration(RealtimePlayingInfos infos) => infos.duration.ensureFinite;
 
   String playbackStateText(RealtimePlayingInfos infos) {
@@ -126,87 +122,84 @@ class _FlutterFlowAudioPlayerState extends State<FlutterFlowAudioPlayer>
   }
 
   @override
-  Widget build(BuildContext context) =>
-      _assetsAudioPlayer!.builderRealtimePlayingInfos(
-          builder: (context, infos) => PlayerBuilder.isPlaying(
-              player: _assetsAudioPlayer!,
-              builder: (context, isPlaying) {
-                final childWidget = Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: widget.fillColor,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
+  Widget build(BuildContext context) => _assetsAudioPlayer!.builderRealtimePlayingInfos(
+      builder: (context, infos) => PlayerBuilder.isPlaying(
+          player: _assetsAudioPlayer!,
+          builder: (context, isPlaying) {
+            final childWidget = Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: widget.fillColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsetsDirectional.fromSTEB(
-                                  15, 10, 0, 0),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.max,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    widget.audio.metas.title ?? 'Audio Title',
-                                    style: widget.titleTextStyle,
-                                  ),
-                                  Text(
-                                    playbackStateText(infos),
-                                    style: widget.playbackDurationTextStyle,
-                                  )
-                                ],
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsetsDirectional.fromSTEB(15, 10, 0, 0),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                widget.audio.metas.title ?? 'Audio Title',
+                                style: widget.titleTextStyle,
                               ),
-                            ),
+                              Text(
+                                playbackStateText(infos),
+                                style: widget.playbackDurationTextStyle,
+                              )
+                            ],
                           ),
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(34),
-                            child: Material(
-                              color: Colors.transparent,
-                              child: IconButton(
-                                onPressed: _assetsAudioPlayer!.playOrPause,
-                                icon: Icon(
-                                  (isPlaying)
-                                      ? Icons.pause_circle_filled_rounded
-                                      : Icons.play_circle_fill_rounded,
-                                  color: widget.playbackButtonColor,
-                                  size: 34,
-                                ),
-                                iconSize: 34,
-                              ),
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
-                      PositionSeekWidget(
-                        currentPosition: currentPosition(infos),
-                        duration: duration(infos),
-                        seekTo: (to) {
-                          _assetsAudioPlayer!.seek(to);
-                        },
-                        activeTrackColor: widget.activeTrackColor,
-                        inactiveTrackColor: widget.inactiveTrackColor,
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(34),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: IconButton(
+                            onPressed: _assetsAudioPlayer!.playOrPause,
+                            icon: Icon(
+                              (isPlaying) ? Icons.pause_circle_filled_rounded : Icons.play_circle_fill_rounded,
+                              color: widget.playbackButtonColor,
+                              size: 34,
+                            ),
+                            iconSize: 34,
+                          ),
+                        ),
                       ),
                     ],
                   ),
-                );
-                return Material(
-                    color: Colors.transparent,
-                    elevation: widget.elevation,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: childWidget);
-              }));
+                  PositionSeekWidget(
+                    currentPosition: currentPosition(infos),
+                    duration: duration(infos),
+                    seekTo: (to) {
+                      _assetsAudioPlayer!.seek(to);
+                    },
+                    activeTrackColor: widget.activeTrackColor,
+                    inactiveTrackColor: widget.inactiveTrackColor,
+                  ),
+                ],
+              ),
+            );
+            return Material(
+                color: Colors.transparent,
+                elevation: widget.elevation,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: childWidget);
+          }));
 }
 
 class PositionSeekWidget extends StatefulWidget {
-  const PositionSeekWidget({super.key, 
+  const PositionSeekWidget({
+    super.key,
     required this.currentPosition,
     required this.duration,
     required this.seekTo,
@@ -221,15 +214,14 @@ class PositionSeekWidget extends StatefulWidget {
   final Color? inactiveTrackColor;
 
   @override
-  _PositionSeekWidgetState createState() => _PositionSeekWidgetState();
+  State<PositionSeekWidget> createState() => _PositionSeekWidgetState();
 }
 
 class _PositionSeekWidgetState extends State<PositionSeekWidget> {
   late Duration _visibleValue;
   bool listenOnlyUserInteraction = false;
-  double get percent => widget.duration.inMilliseconds == 0
-      ? 0
-      : _visibleValue.inMilliseconds / widget.duration.inMilliseconds;
+  double get percent =>
+      widget.duration.inMilliseconds == 0 ? 0 : _visibleValue.inMilliseconds / widget.duration.inMilliseconds;
 
   @override
   void initState() {
@@ -249,8 +241,7 @@ class _PositionSeekWidgetState extends State<PositionSeekWidget> {
   Widget build(BuildContext context) => SliderTheme(
         data: SliderTheme.of(context).copyWith(
           activeTrackColor: widget.activeTrackColor,
-          inactiveTrackColor:
-              widget.inactiveTrackColor ?? const Color(0xFFC9D0D5),
+          inactiveTrackColor: widget.inactiveTrackColor ?? const Color(0xFFC9D0D5),
           trackShape: const FlutterFlowRoundedRectSliderTrackShape(),
           trackHeight: 6.0,
           thumbShape: SliderComponentShape.noThumb,
@@ -260,16 +251,13 @@ class _PositionSeekWidgetState extends State<PositionSeekWidget> {
         child: Slider(
           min: 0,
           max: widget.duration.inMilliseconds.toDouble(),
-          value: math.min(1.0, percent) *
-              widget.duration.inMilliseconds.toDouble(),
+          value: math.min(1.0, percent) * widget.duration.inMilliseconds.toDouble(),
           onChangeEnd: (newValue) => setState(() {
             listenOnlyUserInteraction = false;
             widget.seekTo(_visibleValue);
           }),
-          onChangeStart: (_) =>
-              setState(() => listenOnlyUserInteraction = true),
-          onChanged: (newValue) => setState(
-              () => _visibleValue = Duration(milliseconds: newValue.floor())),
+          onChangeStart: (_) => setState(() => listenOnlyUserInteraction = true),
+          onChanged: (newValue) => setState(() => _visibleValue = Duration(milliseconds: newValue.floor())),
         ),
       );
 }
@@ -277,15 +265,12 @@ class _PositionSeekWidgetState extends State<PositionSeekWidget> {
 String durationToString(Duration duration) {
   String twoDigits(int n) => (n >= 10) ? '$n' : '0$n';
 
-  final twoDigitMinutes =
-      twoDigits(duration.inMinutes.remainder(Duration.minutesPerHour).toInt());
-  final twoDigitSeconds = twoDigits(
-      duration.inSeconds.remainder(Duration.secondsPerMinute).toInt());
+  final twoDigitMinutes = twoDigits(duration.inMinutes.remainder(Duration.minutesPerHour).toInt());
+  final twoDigitSeconds = twoDigits(duration.inSeconds.remainder(Duration.secondsPerMinute).toInt());
   return '$twoDigitMinutes:$twoDigitSeconds';
 }
 
-class FlutterFlowRoundedRectSliderTrackShape extends SliderTrackShape
-    with BaseSliderTrackShape {
+class FlutterFlowRoundedRectSliderTrackShape extends SliderTrackShape with BaseSliderTrackShape {
   /// Create a slider track that draws two rectangles with rounded outer edges.
   const FlutterFlowRoundedRectSliderTrackShape();
 
@@ -317,16 +302,12 @@ class FlutterFlowRoundedRectSliderTrackShape extends SliderTrackShape
 
     // Assign the track segment paints, which are leading: active and
     // trailing: inactive.
-    final ColorTween activeTrackColorTween = ColorTween(
-        begin: sliderTheme.disabledActiveTrackColor,
-        end: sliderTheme.activeTrackColor);
-    final ColorTween inactiveTrackColorTween = ColorTween(
-        begin: sliderTheme.disabledInactiveTrackColor,
-        end: sliderTheme.inactiveTrackColor);
-    final Paint activePaint = Paint()
-      ..color = activeTrackColorTween.evaluate(enableAnimation)!;
-    final Paint inactivePaint = Paint()
-      ..color = inactiveTrackColorTween.evaluate(enableAnimation)!;
+    final ColorTween activeTrackColorTween =
+        ColorTween(begin: sliderTheme.disabledActiveTrackColor, end: sliderTheme.activeTrackColor);
+    final ColorTween inactiveTrackColorTween =
+        ColorTween(begin: sliderTheme.disabledInactiveTrackColor, end: sliderTheme.inactiveTrackColor);
+    final Paint activePaint = Paint()..color = activeTrackColorTween.evaluate(enableAnimation)!;
+    final Paint inactivePaint = Paint()..color = inactiveTrackColorTween.evaluate(enableAnimation)!;
     final Paint leftTrackPaint = activePaint;
     final Paint rightTrackPaint = inactivePaint;
 
@@ -371,8 +352,7 @@ class FlutterFlowRoundedRectSliderTrackShape extends SliderTrackShape
 
 String generateRandomAlphaNumericString() {
   const chars = 'abcdefghijklmnopqrstuvwxyz1234567890';
-  return String.fromCharCodes(Iterable.generate(
-      8, (_) => chars.codeUnits[math.Random().nextInt(chars.length)]));
+  return String.fromCharCodes(Iterable.generate(8, (_) => chars.codeUnits[math.Random().nextInt(chars.length)]));
 }
 
 extension _AudioPlayerDurationExtensions on Duration {

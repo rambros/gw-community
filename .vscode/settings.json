@@ -13,7 +13,7 @@
     "/Users/rodrigoambros/Library/Application Support/io.flutterflow.prod.mac/flutter"
   ],
   "files.readonlyInclude": {
-    "**": true
+    "**": false
   },
   "files.readonlyExclude": {
     "lib/custom_code/**": true,

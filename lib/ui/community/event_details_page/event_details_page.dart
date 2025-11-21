@@ -226,7 +226,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                 Padding(
                   padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 12.0, 0.0),
                   child: FaIcon(
-                    FontAwesomeIcons.calendarAlt,
+                    FontAwesomeIcons.calendarDays,
                     color: FlutterFlowTheme.of(context).secondary,
                     size: 32.0,
                   ),
