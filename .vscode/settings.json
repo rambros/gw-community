@@ -1,0 +1,12 @@
+{
+  "dart.flutterSdkPath": "/Users/rodrigoambros/Library/Application Support/io.flutterflow.prod.mac/flutter",
+  "debug.toolBarLocation": "docked",
+  "debug.openDebug": "openOnDebugBreak",
+  "dart.debugExternalPackageLibraries": true,
+  "dart.debugSdkLibraries": false,
+  "dart.previewHotReloadOnSaveWatcher": true,
+  "dart.hotReloadOnSave": "all",
+  "dart.previewFlutterUiGuides": true,
+  "dart.openDevTools": "flutter",
+
+}

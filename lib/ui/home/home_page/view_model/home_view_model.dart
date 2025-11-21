@@ -1,0 +1,123 @@
+import 'package:flutter/material.dart';
+import '/backend/supabase/supabase.dart';
+import '/data/repositories/home_repository.dart';
+import '/backend/schema/structs/index.dart';
+import '/flutter_flow/flutter_flow_util.dart';
+
+class HomeViewModel extends ChangeNotifier {
+  final HomeRepository _repository;
+  final String currentUserUid;
+
+  HomeViewModel({
+    required HomeRepository repository,
+    required this.currentUserUid,
+  }) : _repository = repository;
+
+  // ========== STATE ==========
+
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
+  String? _errorMessage;
+  String? get errorMessage => _errorMessage;
+
+  CcUsersRow? _userProfile;
+  CcUsersRow? get userProfile => _userProfile;
+
+  List<CcUserJourneysRow> _userJourneys = [];
+  List<CcUserJourneysRow> get userJourneys => _userJourneys;
+
+  CcJourneysRow? _journeyDetails;
+  CcJourneysRow? get journeyDetails => _journeyDetails;
+
+  CcViewUserJourneysRow? _userJourneyProgress;
+  CcViewUserJourneysRow? get userJourneyProgress => _userJourneyProgress;
+
+  List<CcEventsRow> _upcomingEvents = [];
+  List<CcEventsRow> get upcomingEvents => _upcomingEvents;
+
+  // ========== COMMANDS ==========
+
+  Future<void> loadData() async {
+    _setLoading(true);
+    _clearError();
+
+    try {
+      await Future.wait([
+        _loadUserProfile(),
+        _loadUserJourneys(),
+        _loadUpcomingEvents(),
+      ]);
+
+      // Load journey details if user has started journeys
+      if (_userJourneys.isNotEmpty) {
+        // Assuming we want the first one or logic from original code
+        // Original code: CcJourneysTable().querySingleRow(queryFn: (q) => q.eqOrNull('id', 1))
+        // This seems hardcoded to ID 1 in the original code?
+        // "FutureBuilder<List<CcJourneysRow>> future: CcJourneysTable().querySingleRow(queryFn: (q) => q.eqOrNull('id', 1))"
+        // Yes, it looks hardcoded to 1. I will keep it as is for now but this looks suspicious.
+        await _loadJourneyDetails(1);
+
+        await _loadUserJourneyProgress();
+      }
+    } catch (e) {
+      _setError('Error loading home data: $e');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<void> _loadUserProfile() async {
+    _userProfile = await _repository.getUserProfile(currentUserUid);
+
+    // Update global state (FFAppState) as per original code requirement
+    // "FFAppState().loginUser = LoginUserStruct(...)"
+    if (_userProfile != null) {
+      FFAppState().loginUser = LoginUserStruct(
+        fullName: _userProfile?.fullName,
+        email: _userProfile?.email,
+        userId: _userProfile?.id,
+        roles: _userProfile?.userRole,
+        displayName: _userProfile?.displayName,
+        photoUrl: _userProfile?.photoUrl == null || _userProfile?.photoUrl == '' ? '' : _userProfile?.photoUrl,
+        firstName: _userProfile?.firstName,
+      );
+    }
+  }
+
+  Future<void> _loadUserJourneys() async {
+    _userJourneys = await _repository.getUserJourneys(currentUserUid);
+
+    // Update global state
+    FFAppState().listStartedJourneys = _userJourneys.map((e) => e.journeyId).withoutNulls.toList().cast<int>();
+    FFAppState().hasStartedJourney = _userJourneys.isNotEmpty;
+  }
+
+  Future<void> _loadJourneyDetails(int journeyId) async {
+    _journeyDetails = await _repository.getJourneyDetails(journeyId);
+  }
+
+  Future<void> _loadUserJourneyProgress() async {
+    _userJourneyProgress = await _repository.getUserJourneyProgress(currentUserUid);
+  }
+
+  Future<void> _loadUpcomingEvents() async {
+    _upcomingEvents = await _repository.getUpcomingEvents();
+  }
+
+  // ========== HELPER METHODS ==========
+
+  void _setLoading(bool value) {
+    _isLoading = value;
+    notifyListeners();
+  }
+
+  void _setError(String message) {
+    _errorMessage = message;
+    notifyListeners();
+  }
+
+  void _clearError() {
+    _errorMessage = null;
+  }
+}

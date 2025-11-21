@@ -1,0 +1,3 @@
+NSAppleMusicUsageDescription = "Goodwishes-app needs your permition to play meditation audio";
+NSMicrophoneUsageDescription = "In order to play and control meditations, this app requires permission to access the microphone.";
+PermissionGroupNotification = "In order to receive notifications , that you can disable, this app requires permission to receive notifications.";

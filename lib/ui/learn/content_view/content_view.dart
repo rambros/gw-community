@@ -1,0 +1,286 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../../../custom_code/widgets/index.dart' as custom_widgets;
+import '/backend/supabase/supabase.dart';
+import '/flutter_flow/flutter_flow_theme.dart';
+import '/flutter_flow/flutter_flow_animations.dart';
+import '/flutter_flow/flutter_flow_util.dart';
+import '/flutter_flow/flutter_flow_pdf_viewer.dart';
+import '/flutter_flow/flutter_flow_youtube_player.dart';
+import 'view_model/content_view_model.dart';
+
+class ContentView extends StatefulWidget {
+  const ContentView({
+    super.key,
+    required this.contentId,
+    required this.viewContentRow,
+  });
+
+  final int contentId;
+  final ViewContentRow viewContentRow;
+
+  @override
+  State<ContentView> createState() => _ContentViewState();
+}
+
+class _ContentViewState extends State<ContentView> with TickerProviderStateMixin {
+  final animationsMap = <String, AnimationInfo>{};
+
+  @override
+  void initState() {
+    super.initState();
+    animationsMap.addAll({
+      'containerOnPageLoadAnimation': AnimationInfo(
+        trigger: AnimationTrigger.onPageLoad,
+        effectsBuilder: () => [
+          VisibilityEffect(duration: 300.ms),
+          MoveEffect(
+            curve: Curves.bounceOut,
+            delay: 300.0.ms,
+            duration: 400.0.ms,
+            begin: const Offset(0.0, 100.0),
+            end: const Offset(0.0, 0.0),
+          ),
+          FadeEffect(
+            curve: Curves.easeInOut,
+            delay: 300.0.ms,
+            duration: 400.0.ms,
+            begin: 0.0,
+            end: 1.0,
+          ),
+        ],
+      ),
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => ContentViewModel(
+        contentId: widget.contentId,
+        viewContentRow: widget.viewContentRow,
+      ),
+      child: Consumer<ContentViewModel>(
+        builder: (context, viewModel, child) {
+          final modalMaxHeight = MediaQuery.sizeOf(context).height * 0.75;
+          return GestureDetector(
+            onTap: () => Navigator.of(context).pop(),
+            child: Container(
+              width: double.infinity,
+              height: double.infinity,
+              color: FlutterFlowTheme.of(context).primaryBackground.withOpacity(0.82),
+              child: Align(
+                alignment: const AlignmentDirectional(0.0, 0.0),
+                child: GestureDetector(
+                  onTap: () {}, // Prevents tap from propagating to parent
+                  child: Padding(
+                    padding: const EdgeInsetsDirectional.fromSTEB(16.0, 80.0, 16.0, 80.0),
+                    child: Container(
+                      width: double.infinity,
+                      constraints: BoxConstraints(
+                        maxWidth: 600.0,
+                        maxHeight: modalMaxHeight,
+                      ),
+                      decoration: BoxDecoration(
+                        color: FlutterFlowTheme.of(context).primaryBackground,
+                        boxShadow: const [
+                          BoxShadow(
+                            blurRadius: 12.0,
+                            color: Color(0x1E000000),
+                            offset: Offset(0.0, 5.0),
+                          )
+                        ],
+                        borderRadius: BorderRadius.circular(16.0),
+                      ),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Header Row with Close button
+                            Align(
+                              alignment: const AlignmentDirectional(0.0, 0.0),
+                              child: Padding(
+                                padding: const EdgeInsetsDirectional.fromSTEB(8.0, 16.0, 8.0, 0.0),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    InkWell(
+                                      splashColor: Colors.transparent,
+                                      focusColor: Colors.transparent,
+                                      hoverColor: Colors.transparent,
+                                      highlightColor: Colors.transparent,
+                                      onTap: () => Navigator.of(context).pop(),
+                                      child: Container(
+                                        width: 40.0,
+                                        height: 40.0,
+                                        decoration: BoxDecoration(
+                                          color: FlutterFlowTheme.of(context).secondaryBackground,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Icon(
+                                          Icons.close_rounded,
+                                          color: FlutterFlowTheme.of(context).primary,
+                                          size: 24.0,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+
+                            Padding(
+                              padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.max,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // Title
+                                  Padding(
+                                    padding: const EdgeInsetsDirectional.fromSTEB(16.0, 24.0, 16.0, 12.0),
+                                    child: Text(
+                                      valueOrDefault<String>(
+                                        viewModel.viewContentRow.title,
+                                        'Title',
+                                      ),
+                                      style: FlutterFlowTheme.of(context).bodyLarge.override(
+                                            font: GoogleFonts.poppins(
+                                              fontWeight: FontWeight.bold,
+                                              fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
+                                            ),
+                                            color: FlutterFlowTheme.of(context).primary,
+                                            fontSize: 16.0,
+                                            letterSpacing: 0.0,
+                                            fontWeight: FontWeight.bold,
+                                            fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
+                                          ),
+                                    ),
+                                  ),
+
+                                  // Authors
+                                  Padding(
+                                    padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 8.0),
+                                    child: Text(
+                                      'With ${(List<String> listSpeakers) {
+                                        return listSpeakers.join(', ');
+                                      }(viewModel.viewContentRow.authorsNames.toList())}',
+                                      style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                            font: GoogleFonts.lexendDeca(
+                                              fontWeight: FontWeight.normal,
+                                              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                            ),
+                                            color: FlutterFlowTheme.of(context).primary,
+                                            fontSize: 12.0,
+                                            letterSpacing: 0.0,
+                                            fontWeight: FontWeight.normal,
+                                            fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                          ),
+                                    ),
+                                  ),
+
+                                  // Event
+                                  if ((viewModel.viewContentRow.cottEventId != null) &&
+                                      (viewModel.viewContentRow.cottEventId! > 0))
+                                    Padding(
+                                      padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 8.0),
+                                      child: Text(
+                                        'at ${viewModel.viewContentRow.eventName}',
+                                        style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                              font: GoogleFonts.lexendDeca(
+                                                fontWeight: FontWeight.normal,
+                                                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                              ),
+                                              color: FlutterFlowTheme.of(context).primary,
+                                              fontSize: 12.0,
+                                              letterSpacing: 0.0,
+                                              fontWeight: FontWeight.normal,
+                                              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                            ),
+                                      ),
+                                    ),
+
+                                  // Description
+                                  Padding(
+                                    padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 8.0),
+                                    child: SelectionArea(
+                                        child: Text(
+                                      valueOrDefault<String>(
+                                        viewModel.viewContentRow.description,
+                                        'description',
+                                      ),
+                                      style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                            font: GoogleFonts.lexendDeca(
+                                              fontWeight: FontWeight.normal,
+                                              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                            ),
+                                            color: FlutterFlowTheme.of(context).primary,
+                                            fontSize: 14.0,
+                                            letterSpacing: 0.0,
+                                            fontWeight: FontWeight.normal,
+                                            fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                          ),
+                                    )),
+                                  ),
+
+                                  // Media Content
+                                  // Audio
+                                  if (viewModel.midiaType == 'audio')
+                                    SizedBox(
+                                      width: double.infinity,
+                                      height: 320,
+                                      child: custom_widgets.AudioPlayerWidget(
+                                        width: double.infinity,
+                                        height: 320,
+                                        audioUrl: viewModel.viewContentRow.audioUrl!,
+                                        audioTitle: viewModel.viewContentRow.title!,
+                                        audioArt: ' ',
+                                        colorButton: FlutterFlowTheme.of(context).primary,
+                                      ),
+                                    ),
+
+                                  // PDF
+                                  if (viewModel.midiaType == 'text' && viewModel.viewContentRow.midiaFileUrl != null)
+                                    Padding(
+                                      padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+                                      child: FlutterFlowPdfViewer(
+                                        networkPath: viewModel.viewContentRow.midiaFileUrl!,
+                                        height: 600.0,
+                                        horizontalScroll: false,
+                                      ),
+                                    ),
+
+                                  // Video
+                                  if (viewModel.midiaType == 'video' && viewModel.viewContentRow.midiaFileUrl != null)
+                                    Padding(
+                                      padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+                                      child: FlutterFlowYoutubePlayer(
+                                        url: viewModel.viewContentRow.midiaFileUrl!,
+                                        autoPlay: false,
+                                        looping: true,
+                                        mute: false,
+                                        showControls: true,
+                                        showFullScreen: true,
+                                        strictRelatedVideos: false,
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation']!),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}

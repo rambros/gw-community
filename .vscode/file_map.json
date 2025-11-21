@@ -1,0 +1,97 @@
+{
+  "init_audio_service.dart": {
+    "old_identifier_name": "initAudioService",
+    "new_identifier_name": "initAudioService",
+    "type": "A",
+    "is_deleted": false,
+    "current_checksum": "05db213c953359551d120b2de4747febd7cc0f42b973a608292efeefb11817bb",
+    "original_checksum": "7adef7e0bc3c5bcca523a084f3040370dcfd485d81a24fa0776c902cfe3051e8"
+  },
+  "get_available_journeys.dart": {
+    "old_identifier_name": "getAvailableJourneys",
+    "new_identifier_name": "getAvailableJourneys",
+    "type": "A",
+    "is_deleted": false,
+    "current_checksum": "a4453723b2f38e71e27545757034141741ff965dacc8be4fadadc0f7df3de518",
+    "original_checksum": "e53b749cc2fd4f8ced158c5b585387c36f4e13862b7b0187558fbebe2cf613d8"
+  },
+  "get_list_participants.dart": {
+    "old_identifier_name": "getListParticipants",
+    "new_identifier_name": "getListParticipants",
+    "type": "A",
+    "is_deleted": false,
+    "current_checksum": "737b82dc048adb3fbc7d782c542c35d380cff13385e8c9f65a22a0c37f70bbf4",
+    "original_checksum": "f4e8857237f12cca2f754ccba86c4eba5e372d4b808e86f84176bc51f1d8f1d2"
+  },
+  "get_my_groups.dart": {
+    "old_identifier_name": "getMyGroups",
+    "new_identifier_name": "getMyGroups",
+    "type": "A",
+    "is_deleted": false,
+    "current_checksum": "c31cb930d763c03112a8b05454c88515cda18b3b8cb7d4f28fb6a449ae6e2894",
+    "original_checksum": "98d4a74f365b7ff7b408dc0f377ac2d3979d06f101db81359c70df3a12cda443"
+  },
+  "get_available_groups.dart": {
+    "old_identifier_name": "getAvailableGroups",
+    "new_identifier_name": "getAvailableGroups",
+    "type": "A",
+    "is_deleted": false,
+    "current_checksum": "57b9d391f275389fc26c02fcdf11b5a07fc1ddcacade17d1c33b2755d535cf12",
+    "original_checksum": "9dcada91962a59164f307ef11a7a89b74b519d2d44d84ea5d6b4800ef1f46640"
+  },
+  "search_content.dart": {
+    "old_identifier_name": "searchContent",
+    "new_identifier_name": "searchContent",
+    "type": "A",
+    "is_deleted": false,
+    "current_checksum": "45dd26da1ed65e8d0009e34a9fe2a59614bbf3fa653d4ab7c639f7216d10f5d2",
+    "original_checksum": "9b01a10948c1b0edb7e3dbd8f7568c948dc2209ae26e463b0cfbdcc237d1aec8"
+  },
+  "filter_content.dart": {
+    "old_identifier_name": "filterContent",
+    "new_identifier_name": "filterContent",
+    "type": "A",
+    "is_deleted": false,
+    "current_checksum": "51ee61ac1b567759bb49e7805ab3f176880985600b5c92b53adc6f7102d8b4a7",
+    "original_checksum": "833ce213dfdb1f385f9a5f4db00d7ac95a4d4a9fabe452e5d96215616b634054"
+  },
+  "get_events.dart": {
+    "old_identifier_name": "getEvents",
+    "new_identifier_name": "getEvents",
+    "type": "A",
+    "is_deleted": false,
+    "current_checksum": "876aa4bdb69e0fa27edba1428b0b1a2e21c51da58d9b84f8c522364841bcba21",
+    "original_checksum": "3b2b46da940f4ca31662b81a7b6374fc80a2c28164a2852aff99adeec14960bb"
+  },
+  "audio_player_widget.dart": {
+    "old_identifier_name": "AudioPlayerWidget",
+    "new_identifier_name": "AudioPlayerWidget",
+    "type": "W",
+    "is_deleted": false,
+    "current_checksum": "accb9588b66d1442620f16a0932bcfa2f5b86923f1bac69e99b88235c1d474bb",
+    "original_checksum": "65093229e6ad91a5260886a7ac9bce3ade53f6ff0f8b09b2b8acf5dbdbd33b0a"
+  },
+  "custom_functions.dart": {
+    "old_identifier_name": "CustomFunctions",
+    "new_identifier_name": "CustomFunctions",
+    "type": "F",
+    "is_deleted": false,
+    "current_checksum": "d2c5dd716920684252152614fda37fbb43d5653f51ed4feda8b546bb6712ccf7",
+    "original_checksum": "4fb741b261e550dc6fe73d5770a9fb3ff0615684162d45f9f74fd209102dcb0b"
+  },
+  "pubspec.yaml": {
+    "old_identifier_name": "pubspec.yaml",
+    "new_identifier_name": "pubspec.yaml",
+    "type": "D",
+    "is_deleted": false,
+    "current_checksum": "c7f9fd45313d1b8a2124776b8ad9f568cd238a638530d043f0496268a3dc1b51",
+    "original_checksum": "c0c16dba61d350ca7a2c89891ce461448f73e6bb1e685878c20eaf9024af275b"
+  },
+  "start_journey.dart": {
+    "old_identifier_name": "startJourney",
+    "new_identifier_name": "startJourney",
+    "type": "A",
+    "is_deleted": false,
+    "current_checksum": "ae83260461889be093e36e7296b5cd5486878445373e4dd2ccd2ad90f67f3039"
+  }
+}

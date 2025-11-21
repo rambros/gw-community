@@ -1,0 +1,18 @@
+{
+    "version": "0.2.0",
+"configurations": [
+    
+  {
+    "name": "Flutter Web (Safari)",
+    "request": "launch",
+    "type": "dart",
+    "deviceId": "safari"
+  },
+  {
+    "name": "Flutter Web (Default Chrome)",
+    "request": "launch",
+    "type": "dart",
+    "deviceId": "chrome"
+  }
+]
+}

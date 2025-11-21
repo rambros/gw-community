@@ -1,0 +1,190 @@
+{
+  "project_info": {
+    "project_number": "875067654858",
+    "project_id": "good-wishes-project",
+    "storage_bucket": "good-wishes-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:875067654858:android:0c7f9222dce8a851e9aa33",
+        "android_client_info": {
+          "package_name": "app.brahmakumaris.gwcommunity"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "875067654858-2n9ih6fu9tpp257u868fi5datf1dprk8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.brahmakumaris.gwcommunity",
+            "certificate_hash": "d5e2c242734af51b6119025ad7b4060a71c98f59"
+          }
+        },
+        {
+          "client_id": "875067654858-5e80rb4uet6flfln13r116m517l76tmm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.brahmakumaris.gwcommunity",
+            "certificate_hash": "9bbb3186b2189ef16d8f272bdab59362c395cbb4"
+          }
+        },
+        {
+          "client_id": "875067654858-33f5239btrqtclbn6jjl9lbmgp7uaj4s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRw_qK7H3tQgpS6L2Qe0h6fqnscdzJNXQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "875067654858-33f5239btrqtclbn6jjl9lbmgp7uaj4s.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "875067654858-0napud0k340i984c6scuqm7h387d1bpv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.verygoodcore.gw-app"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:875067654858:android:89fb6b9bdc8fca57e9aa33",
+        "android_client_info": {
+          "package_name": "org.brahmakumaris.gw_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "875067654858-3tgg0d0f0see7jb22s8tqeiva9ul8ga3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.brahmakumaris.gw_app",
+            "certificate_hash": "abe2f622053704ea4367f7ee6aa8d01bb0c9280c"
+          }
+        },
+        {
+          "client_id": "875067654858-52cd79d9pvu9qj1ojl680mvkq49ta98t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.brahmakumaris.gw_app",
+            "certificate_hash": "d5e2c242734af51b6119025ad7b4060a71c98f59"
+          }
+        },
+        {
+          "client_id": "875067654858-bg122lvk4i0rqsb2sr29m4kve62sv9nv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.brahmakumaris.gw_app",
+            "certificate_hash": "9bbb3186b2189ef16d8f272bdab59362c395cbb4"
+          }
+        },
+        {
+          "client_id": "875067654858-c5n4gj24rfhfkv3onl6di8qbh3pj3g0c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.brahmakumaris.gw_app",
+            "certificate_hash": "ec5c00c61bed495d54e361d4cc36e37370199eb0"
+          }
+        },
+        {
+          "client_id": "875067654858-nmia9dm2r9m4nleshkajnkn480o4q03c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.brahmakumaris.gw_app",
+            "certificate_hash": "513c354a0b5873f9c6069fda477c9ba9f6965a3e"
+          }
+        },
+        {
+          "client_id": "875067654858-rln5vlb0br8s480o5cb68ltn65dtplq2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.brahmakumaris.gw_app",
+            "certificate_hash": "e7df0339ccd3848882ed18b3318a4de35d264cdb"
+          }
+        },
+        {
+          "client_id": "875067654858-33f5239btrqtclbn6jjl9lbmgp7uaj4s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRw_qK7H3tQgpS6L2Qe0h6fqnscdzJNXQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "875067654858-33f5239btrqtclbn6jjl9lbmgp7uaj4s.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "875067654858-0napud0k340i984c6scuqm7h387d1bpv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.verygoodcore.gw-app"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:875067654858:android:6786c2088ff80734e9aa33",
+        "android_client_info": {
+          "package_name": "org.brahmakumaris.gwadmin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "875067654858-bsmub3n6bsp8uaf2an1d6620gsmfitu6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.brahmakumaris.gwadmin",
+            "certificate_hash": "9bbb3186b2189ef16d8f272bdab59362c395cbb4"
+          }
+        },
+        {
+          "client_id": "875067654858-33f5239btrqtclbn6jjl9lbmgp7uaj4s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRw_qK7H3tQgpS6L2Qe0h6fqnscdzJNXQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "875067654858-33f5239btrqtclbn6jjl9lbmgp7uaj4s.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "875067654858-0napud0k340i984c6scuqm7h387d1bpv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.verygoodcore.gw-app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
