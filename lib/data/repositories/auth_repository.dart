@@ -1,50 +1,53 @@
-import '/backend/supabase/supabase.dart';
+import '/domain/models/user_entity.dart';
 
-class AuthRepository {
+/// Repository interface for authentication operations.
+///
+/// This is the main interface that ViewModels should depend on.
+/// It provides high-level authentication operations and abstracts
+/// away the underlying service implementation (Supabase, Firebase, etc.).
+abstract class AuthRepository {
+  /// Stream of authentication state changes.
+  /// Emits the current user when authenticated, null when signed out.
+  Stream<UserEntity?> get authStateChanges;
+
+  /// Gets the current authenticated user, if any.
+  UserEntity? get currentUser;
+
   /// Signs in a user with email and password.
-  Future<User?> signInWithEmail(String email, String password) async {
-    final AuthResponse res = await SupaFlow.client.auth.signInWithPassword(
-      email: email,
-      password: password,
-    );
-    return res.user;
-  }
+  ///
+  /// Returns the authenticated user on success, null on failure.
+  /// Shows error messages via SnackBar if context is provided.
+  Future<UserEntity?> signInWithEmail(String email, String password);
 
   /// Creates a new account with email and password.
-  Future<User?> createAccountWithEmail(String email, String password) async {
-    final AuthResponse res = await SupaFlow.client.auth.signUp(
-      email: email,
-      password: password,
-    );
+  ///
+  /// Returns the newly created user on success, null on failure.
+  /// Shows error messages via SnackBar if context is provided.
+  Future<UserEntity?> createAccountWithEmail(String email, String password);
 
-    // If email confirmation is required, the user might be returned but not signed in.
-    // We return the user if the sign-up request was successful.
-    return res.user;
-  }
+  /// Signs in with Google OAuth.
+  ///
+  /// Returns the authenticated user on success, null on failure.
+  Future<UserEntity?> signInWithGoogle();
 
   /// Signs out the current user.
-  Future<void> signOut() async {
-    await SupaFlow.client.auth.signOut();
-  }
+  Future<void> signOut();
 
-  /// Sends a password reset email.
-  Future<void> resetPassword(String email, {String? redirectTo}) async {
-    await SupaFlow.client.auth.resetPasswordForEmail(
-      email,
-      redirectTo: redirectTo,
-    );
-  }
+  /// Sends a password reset email to the specified address.
+  Future<void> resetPassword(String email, {String? redirectTo});
 
-  /// Updates the user's password.
-  Future<void> updatePassword(String newPassword) async {
-    await SupaFlow.client.auth.updateUser(
-      UserAttributes(password: newPassword),
-    );
-  }
+  /// Updates the current user's email address.
+  Future<void> updateEmail(String email);
 
-  /// Gets the current authenticated user.
-  User? get currentUser => SupaFlow.client.auth.currentUser;
+  /// Updates the current user's password.
+  Future<void> updatePassword(String newPassword);
 
-  /// Stream of auth state changes.
-  Stream<AuthState> get onAuthStateChange => SupaFlow.client.auth.onAuthStateChange;
+  /// Deletes the current user's account.
+  Future<void> deleteUser();
+
+  /// Sends an email verification to the current user.
+  Future<void> sendEmailVerification();
+
+  /// Refreshes the current user's data.
+  Future<void> refreshUser();
 }

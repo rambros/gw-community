@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import '/data/repositories/auth_repository.dart';
-import '/backend/supabase/supabase.dart';
+import '/data/repositories/auth_repository_impl.dart';
+import '/domain/models/user_entity.dart';
 
 class CreateAccountViewModel extends ChangeNotifier {
-  final AuthRepository _repository;
+  final AuthRepositoryImpl _repository;
 
-  CreateAccountViewModel({required AuthRepository authRepository}) : _repository = authRepository;
+  CreateAccountViewModel({required AuthRepository authRepository}) : _repository = authRepository as AuthRepositoryImpl;
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
@@ -26,12 +27,12 @@ class CreateAccountViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<User?> createAccount(String email, String password) async {
+  Future<UserEntity?> createAccount(BuildContext context, String email, String password) async {
     _isLoading = true;
     notifyListeners();
 
     try {
-      final user = await _repository.createAccountWithEmail(email, password);
+      final user = await _repository.createAccountWithEmailContext(context, email, password);
       return user;
     } catch (e) {
       rethrow;

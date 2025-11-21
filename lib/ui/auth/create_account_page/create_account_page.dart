@@ -359,6 +359,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                                 if (_formKey.currentState!.validate()) {
                                   try {
                                     final user = await viewModel.createAccount(
+                                      context,
                                       _emailController.text,
                                       _passwordController.text,
                                     );

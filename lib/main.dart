@@ -20,6 +20,9 @@ import 'index.dart';
 
 // Repositories
 import '/data/repositories/auth_repository.dart';
+import '/data/repositories/auth_repository_impl.dart';
+import '/data/services/auth/auth_service.dart';
+import '/data/services/auth/supabase_auth_service.dart';
 import '/data/repositories/event_repository.dart';
 import '/data/repositories/community_repository.dart';
 import '/data/repositories/notification_repository.dart';
@@ -81,7 +84,12 @@ void main() async {
         ChangeNotifierProvider(create: (context) => appState),
 
         // ========== REPOSITORIES ==========
-        Provider(create: (_) => AuthRepository()),
+        Provider<AuthService>(create: (_) => SupabaseAuthService()),
+        Provider<AuthRepository>(
+          create: (context) => AuthRepositoryImpl(
+            authService: context.read<AuthService>(),
+          ),
+        ),
         Provider(create: (_) => SharingRepository()),
         Provider(create: (_) => EventRepository()),
         Provider(create: (_) => CommunityRepository()),

@@ -295,6 +295,7 @@ class _LoginPageState extends State<LoginPage> {
                                 if (_formKey.currentState!.validate()) {
                                   try {
                                     final user = await viewModel.signIn(
+                                      context,
                                       _emailController.text,
                                       _passwordController.text,
                                     );
