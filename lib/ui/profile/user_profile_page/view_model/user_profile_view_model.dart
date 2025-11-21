@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import '/app_state.dart';
 import '/data/repositories/user_profile_repository.dart';
 import '/backend/supabase/supabase.dart';
-import '/auth/supabase_auth/auth_util.dart';
 
 class UserProfileViewModel extends ChangeNotifier {
   final UserProfileRepository _repository;
@@ -55,13 +55,46 @@ class UserProfileViewModel extends ChangeNotifier {
       await _repository.resetJourney(currentUserUid, currentStartedJourneys);
 
       // Auth logout logic from original code
-      await authManager.signOut();
+      await _signOut();
     } catch (e) {
       _setError('Erro ao resetar jornada: $e');
       rethrow; // Allow UI to handle specific navigation/feedback if needed, or just catch here.
     } finally {
       _setLoading(false);
     }
+  }
+
+  /// Resets the onboarding flag stored locally so onboarding runs again.
+  Future<void> resetOnboardingCommand() async {
+    _clearError();
+
+    try {
+      FFAppState().update(() {
+        FFAppState().onboardingDone = false;
+      });
+    } catch (e) {
+      _setError('Erro ao resetar onboarding: $e');
+      rethrow;
+    }
+  }
+
+  /// Signs the user out from Supabase.
+  Future<void> logoutCommand() async {
+    _setLoading(true);
+    _clearError();
+
+    try {
+      await _signOut();
+    } catch (e) {
+      _setError('Erro ao sair: $e');
+      rethrow;
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<void> _signOut() async {
+    await SupaFlow.client.auth.signOut();
   }
 
   // ========== HELPER METHODS ==========

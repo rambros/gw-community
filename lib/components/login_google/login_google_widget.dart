@@ -1,4 +1,4 @@
-import '/auth/supabase_auth/auth_util.dart';
+import '/data/services/auth/providers/google_auth_provider.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/index.dart';
@@ -53,7 +53,7 @@ class _LoginGoogleWidgetState extends State<LoginGoogleWidget> {
               child: FFButtonWidget(
                 onPressed: () async {
                   GoRouter.of(context).prepareAuthEvent();
-                  final user = await authManager.signInWithGoogle(context);
+                  final user = await googleSignInFunc();
                   if (user == null) {
                     return;
                   }

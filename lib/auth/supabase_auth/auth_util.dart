@@ -1,29 +1,21 @@
+import 'dart:async';
+import 'package:rxdart/rxdart.dart';
 import '/backend/supabase/supabase.dart';
-import 'supabase_auth_manager.dart';
 
-export 'supabase_auth_manager.dart';
+export 'supabase_user_provider.dart';
 
-final _authManager = SupabaseAuthManager();
-SupabaseAuthManager get authManager => _authManager;
+/// Stream that emits JWT tokens from Supabase auth.
+Stream<String> get jwtTokenStream {
+  return SupaFlow.client.auth.onAuthStateChange
+      .debounce(
+        (authState) => authState.event == AuthChangeEvent.tokenRefreshed
+            ? TimerStream(authState, const Duration(seconds: 1))
+            : Stream.value(authState),
+      )
+      .map<String>((authState) => authState.session?.accessToken ?? '');
+}
 
-String get currentUserEmail => currentUser?.email ?? '';
-
-String get currentUserUid => currentUser?.uid ?? '';
-
-String get currentUserDisplayName => currentUser?.displayName ?? '';
-
-String get currentUserPhoto => currentUser?.photoUrl ?? '';
-
-String get currentPhoneNumber => currentUser?.phoneNumber ?? '';
-
-String get currentJwtToken => _currentJwtToken ?? '';
-
-bool get currentUserEmailVerified => currentUser?.emailVerified ?? false;
-
-/// Create a Stream that listens to the current user's JWT Token.
-String? _currentJwtToken;
-final jwtTokenStream = SupaFlow.client.auth.onAuthStateChange
-    .map(
-      (authState) => _currentJwtToken = authState.session?.accessToken,
-    )
-    .asBroadcastStream();
+/// Gets the current user's UID from Supabase.
+String get currentUserUid {
+  return SupaFlow.client.auth.currentUser?.id ?? '';
+}

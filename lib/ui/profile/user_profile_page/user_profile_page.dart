@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
+import '/flutter_flow/flutter_flow_widgets.dart';
 import '/index.dart';
 import 'view_model/user_profile_view_model.dart';
 
 import 'widgets/profile_menu_item_widget.dart';
-import '../widgets/confirm_reset_journey_dialog.dart';
+import '../widgets/confirm_profile_action_dialog.dart';
 
 class UserProfilePage extends StatefulWidget {
   const UserProfilePage({super.key});
@@ -276,7 +277,48 @@ class _UserProfilePageState extends State<UserProfilePage> {
                   },
                 ),
               ),
+              Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
+                child: ProfileMenuItemWidget(
+                  text: 'Reset Onboarding',
+                  onTap: () async {
+                    await _handleResetOnboarding(context, viewModel);
+                  },
+                ),
+              ),
             ],
+          ),
+          Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(24.0, 24.0, 24.0, 24.0),
+            child: FFButtonWidget(
+              onPressed: () async {
+                await _handleLogout(context, viewModel);
+              },
+              text: 'Log Out',
+              options: FFButtonOptions(
+                width: double.infinity,
+                height: 48.0,
+                padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                color: FlutterFlowTheme.of(context).primary,
+                textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                      font: GoogleFonts.lexendDeca(
+                        fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
+                        fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
+                      ),
+                      color: Colors.white,
+                      letterSpacing: 0.0,
+                      fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
+                      fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
+                    ),
+                elevation: 3.0,
+                borderSide: const BorderSide(
+                  color: Colors.transparent,
+                  width: 1.0,
+                ),
+                borderRadius: BorderRadius.circular(30.0),
+              ),
+            ),
           ),
         ],
       ),
@@ -288,7 +330,13 @@ class _UserProfilePageState extends State<UserProfilePage> {
           context: context,
           builder: (alertDialogContext) {
             return const WebViewAware(
-              child: ConfirmResetJourneyDialog(),
+              child: ConfirmProfileActionDialog(
+                title: 'Reset your Good Wishes Journey',
+                description: 'Resetting your journey will delete all progress made so far. '
+                    'This action cannot be undone.',
+                confirmLabel: 'Reset Journey',
+                icon: Icons.restart_alt,
+              ),
             );
           },
         ) ??
@@ -330,6 +378,82 @@ class _UserProfilePageState extends State<UserProfilePage> {
             ),
           );
         }
+      }
+    }
+  }
+
+  Future<void> _handleResetOnboarding(BuildContext context, UserProfileViewModel viewModel) async {
+    final confirmDialogResponse = await showDialog<bool>(
+          context: context,
+          builder: (alertDialogContext) {
+            return const WebViewAware(
+              child: ConfirmProfileActionDialog(
+                title: 'Reset onboarding experience',
+                description: 'We will clear your onboarding progress so you can go through the introduction again.',
+                confirmLabel: 'Reset Onboarding',
+                icon: Icons.flag_outlined,
+              ),
+            );
+          },
+        ) ??
+        false;
+
+    if (!confirmDialogResponse) {
+      return;
+    }
+
+    try {
+      await viewModel.resetOnboardingCommand();
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Onboarding reset successfully.',
+              style: TextStyle(
+                color: FlutterFlowTheme.of(context).primaryText,
+              ),
+            ),
+            duration: const Duration(milliseconds: 4000),
+            backgroundColor: FlutterFlowTheme.of(context).secondary,
+          ),
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Error resetting onboarding: $e',
+              style: const TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _handleLogout(BuildContext context, UserProfileViewModel viewModel) async {
+    try {
+      await viewModel.logoutCommand();
+
+      if (context.mounted) {
+        GoRouter.of(context).prepareAuthEvent();
+        GoRouter.of(context).clearRedirectLocation();
+        context.goNamed(SplashPage.routeName);
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Error logging out: $e',
+              style: const TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
     }
   }

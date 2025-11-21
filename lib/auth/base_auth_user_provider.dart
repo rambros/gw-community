@@ -1,37 +1,12 @@
-class AuthUserInfo {
-  const AuthUserInfo({
-    this.uid,
-    this.email,
-    this.displayName,
-    this.photoUrl,
-    this.phoneNumber,
-  });
-
-  final String? uid;
-  final String? email;
-  final String? displayName;
-  final String? photoUrl;
-  final String? phoneNumber;
-}
-
+/// Base authentication user interface that all auth providers must implement.
 abstract class BaseAuthUser {
+  BaseAuthUser();
+
   bool get loggedIn;
+  String? get uid;
+  String? get email;
+  String? get displayName;
+  String? get photoUrl;
+  String? get phoneNumber;
   bool get emailVerified;
-
-  AuthUserInfo get authUserInfo;
-
-  Future? delete();
-  Future? updateEmail(String email);
-  Future? updatePassword(String newPassword);
-  Future? sendEmailVerification();
-  Future refreshUser() async {}
-
-  String? get uid => authUserInfo.uid;
-  String? get email => authUserInfo.email;
-  String? get displayName => authUserInfo.displayName;
-  String? get photoUrl => authUserInfo.photoUrl;
-  String? get phoneNumber => authUserInfo.phoneNumber;
 }
-
-BaseAuthUser? currentUser;
-bool get loggedIn => currentUser?.loggedIn ?? false;

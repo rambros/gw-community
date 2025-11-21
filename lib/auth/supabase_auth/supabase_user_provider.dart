@@ -1,84 +1,48 @@
+import 'dart:async';
 import 'package:rxdart/rxdart.dart';
-
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '/backend/supabase/supabase.dart';
-import '../base_auth_user_provider.dart';
+import '/auth/base_auth_user_provider.dart';
 
-export '../base_auth_user_provider.dart';
+export '/auth/base_auth_user_provider.dart';
 
+/// Supabase-specific implementation of BaseAuthUser.
 class GWCommunitySupabaseUser extends BaseAuthUser {
   GWCommunitySupabaseUser(this.user);
-  User? user;
+
+  final User? user;
+
   @override
   bool get loggedIn => user != null;
 
   @override
-  AuthUserInfo get authUserInfo => AuthUserInfo(
-        uid: user?.id,
-        email: user?.email,
-        phoneNumber: user?.phone,
-      );
+  String? get uid => user?.id;
 
   @override
-  Future? delete() =>
-      throw UnsupportedError('The delete user operation is not yet supported.');
+  String? get email => user?.email;
 
   @override
-  Future? updateEmail(String email) async {
-    final response =
-        await SupaFlow.client.auth.updateUser(UserAttributes(email: email));
-    if (response.user != null) {
-      user = response.user;
-    }
-  }
+  String? get displayName => user?.userMetadata?['display_name'] as String?;
 
   @override
-  Future? updatePassword(String newPassword) async {
-    final response = await SupaFlow.client.auth.updateUser(
-      UserAttributes(password: newPassword),
-    );
-    if (response.user != null) {
-      user = response.user;
-    }
-  }
+  String? get photoUrl => user?.userMetadata?['avatar_url'] as String?;
 
   @override
-  Future? sendEmailVerification() => throw UnsupportedError(
-      'The send email verification operation is not yet supported.');
+  String? get phoneNumber => user?.phone;
 
   @override
-  bool get emailVerified {
-    // Reloads the user when checking in order to get the most up to date
-    // email verified status.
-    if (loggedIn && user!.emailConfirmedAt == null) {
-      refreshUser();
-    }
-    return user?.emailConfirmedAt != null;
-  }
-
-  @override
-  Future refreshUser() async {
-    await SupaFlow.client.auth
-        .refreshSession()
-        .then((_) => user = SupaFlow.client.auth.currentUser);
-  }
+  bool get emailVerified => user?.emailConfirmedAt != null;
 }
 
-/// Generates a stream of the authenticated user.
-/// [SupaFlow.client.auth.onAuthStateChange] does not yield any values until the
-/// user is already authenticated. So we add a default null user to the stream,
-/// if we need to interact with the [currentUser] before logging in.
+/// Stream of Supabase auth state changes.
 Stream<BaseAuthUser> gWCommunitySupabaseUserStream() {
-  final supabaseAuthStream = SupaFlow.client.auth.onAuthStateChange.debounce(
-      (authState) => authState.event == AuthChangeEvent.tokenRefreshed
-          ? TimerStream(authState, const Duration(seconds: 1))
-          : Stream.value(authState));
-  return (!loggedIn
-          ? Stream<AuthState?>.value(null).concatWith([supabaseAuthStream])
-          : supabaseAuthStream)
+  return SupaFlow.client.auth.onAuthStateChange
+      .debounce(
+        (authState) => authState.event == AuthChangeEvent.tokenRefreshed
+            ? TimerStream(authState, const Duration(seconds: 1))
+            : Stream.value(authState),
+      )
       .map<BaseAuthUser>(
-    (authState) {
-      currentUser = GWCommunitySupabaseUser(authState?.session?.user);
-      return currentUser!;
-    },
-  );
+        (authState) => GWCommunitySupabaseUser(authState.session?.user),
+      );
 }
