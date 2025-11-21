@@ -67,7 +67,7 @@
     "old_identifier_name": "AudioPlayerWidget",
     "new_identifier_name": "AudioPlayerWidget",
     "type": "W",
-    "is_deleted": false,
+    "is_deleted": true,
     "current_checksum": "accb9588b66d1442620f16a0932bcfa2f5b86923f1bac69e99b88235c1d474bb",
     "original_checksum": "65093229e6ad91a5260886a7ac9bce3ade53f6ff0f8b09b2b8acf5dbdbd33b0a"
   },

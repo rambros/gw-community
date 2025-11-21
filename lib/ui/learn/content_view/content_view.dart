@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../custom_code/widgets/index.dart' as custom_widgets;
+import '/ui/core/widgets/audio_player_widget.dart';
 import '/data/services/supabase/supabase.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_animations.dart';
@@ -232,7 +232,7 @@ class _ContentViewState extends State<ContentView> with TickerProviderStateMixin
                                     SizedBox(
                                       width: double.infinity,
                                       height: 320,
-                                      child: custom_widgets.AudioPlayerWidget(
+                                      child: AudioPlayerWidget(
                                         width: double.infinity,
                                         height: 320,
                                         audioUrl: viewModel.viewContentRow.audioUrl!,

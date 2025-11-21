@@ -4,7 +4,7 @@ import 'package:lottie/lottie.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
-import '/custom_code/widgets/index.dart' as custom_widgets;
+import '/ui/core/widgets/audio_player_widget.dart';
 
 class StepAudioPlayerPage extends StatelessWidget {
   const StepAudioPlayerPage({
@@ -106,7 +106,7 @@ class StepAudioPlayerPage extends StatelessWidget {
                   child: SizedBox(
                     width: 600.0,
                     height: 620.0,
-                    child: custom_widgets.AudioPlayerWidget(
+                    child: AudioPlayerWidget(
                       width: 600.0,
                       height: 620.0,
                       audioUrl: stepAudioUrl!,
