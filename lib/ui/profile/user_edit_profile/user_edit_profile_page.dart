@@ -288,7 +288,7 @@ class _UserEditProfilePageState extends State<UserEditProfilePage> {
                                 onChanged: (newValue) async {
                                   viewModel.setHideLastName(newValue);
                                 },
-                                activeThumbColor: AppTheme.of(context).primary,
+                                activeColor: AppTheme.of(context).primary,
                               ),
                             ],
                           ),
