@@ -20,11 +20,12 @@ class FlutterFlowRiveController extends SimpleAnimation {
     }
   }
 
-  bool endOfAnimation(LinearAnimationInstance? instance) {
-    if (instance == null) {
+  bool get _hasReachedEnd {
+    final currentInstance = instance;
+    if (currentInstance == null) {
       return false;
     }
-    return instance.time == instance.animation.endTime;
+    return currentInstance.time == currentInstance.animation.endTime;
   }
 
   @override
@@ -46,13 +47,13 @@ class FlutterFlowRiveController extends SimpleAnimation {
 
     /// Reset on button press
     if (reactivate) {
-      if (endOfAnimation(instance)) {
+      if (_hasReachedEnd) {
         instance?.time = 0;
       }
       reactivate = false;
     }
 
-    if (instance == null || endOfAnimation(instance)) {
+    if (instance == null || _hasReachedEnd) {
       isActive = false;
     }
 

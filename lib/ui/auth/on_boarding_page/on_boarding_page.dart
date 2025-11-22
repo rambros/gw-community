@@ -602,11 +602,11 @@ class _OnBoardingPageState extends State<OnBoardingPage> with TickerProviderStat
                               height: 100.0,
                               decoration: BoxDecoration(
                                 color: FlutterFlowTheme.of(context).alternate,
-                                image: DecorationImage(
+                                image: const DecorationImage(
                                   fit: BoxFit.cover,
-                                  image: Image.network(
+                                  image: NetworkImage(
                                     'https://images.unsplash.com/photo-1522992319-0365e5f11656?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NTYyMDF8MHwxfHNlYXJjaHwxMnx8Y29mZmVlfGVufDB8fHx8MTcwNjY1MzkzMHww&ixlib=rb-4.0.3&q=80&w=1080',
-                                  ).image,
+                                  ),
                                 ),
                               ),
                               child: ClipRRect(

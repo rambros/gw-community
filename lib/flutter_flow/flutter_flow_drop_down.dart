@@ -141,6 +141,7 @@ class _FlutterFlowDropDownState<T> extends State<FlutterFlowDropDown<T>> {
     } else {
       controller.removeListener(_listener);
     }
+    _textEditingController.dispose();
     super.dispose();
   }
 

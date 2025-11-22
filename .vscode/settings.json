@@ -1,5 +1,4 @@
 {
-  "dart.flutterSdkPath": "/Users/rodrigoambros/Library/Application Support/io.flutterflow.prod.mac/flutter",
   "debug.toolBarLocation": "docked",
   "debug.openDebug": "openOnDebugBreak",
   "dart.debugExternalPackageLibraries": true,
@@ -12,14 +11,5 @@
     "/Users/rodrigoambros/flutter",
     "/Users/rodrigoambros/Library/Application Support/io.flutterflow.prod.mac/flutter"
   ],
-  "files.readonlyInclude": {
-    "**": false
-  },
-  "files.readonlyExclude": {
-    "lib/custom_code/**": true,
-    "lib/flutter_flow/custom_functions.dart": true,
-    "pubspec.yaml": true,
-    "lib/flutter_flow/function_changes.json": true,
-    ".vscode/settings.json": true
-  }
+
 }

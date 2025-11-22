@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 // Imports other custom widgets
 
 import 'dart:io';
+import 'dart:math';
 
 // Imports other custom widgets
 
@@ -125,6 +126,7 @@ class SeekBarState extends State<SeekBar> {
           right: 16.0,
           bottom: -3.0,
           child: Text(
+            // ignore: deprecated_member_use
             RegExp(r'((^0*[1-9]\d*:)?\d{2}:\d{2})\.\d+$').firstMatch("$_remaining")?.group(1) ?? '$_remaining',
             style: Theme.of(context).textTheme.bodyLarge!.override(
                   fontFamily: 'Poppins',
@@ -209,10 +211,7 @@ class AudioPlayerWidget extends StatefulWidget {
 
 class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
   static const String _fallbackArtAsset = 'assets/images/Good_Wishes_Team.png';
-  static const int _nextMediaId = 0;
   late AudioPlayer _player;
-  ConcatenatingAudioSource _playlist = ConcatenatingAudioSource(children: []);
-  final int _addedCount = 0;
 
   @override
   void initState() {
@@ -228,29 +227,26 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
     final session = await AudioSession.instance;
     await session.configure(const AudioSessionConfiguration.speech());
     final artUri = await _resolveArtUri();
-
-    _playlist = ConcatenatingAudioSource(children: [
-      AudioSource.uri(
-        Uri.parse(widget.audioUrl),
-        tag: MediaItem(
-          id: 'GoodWishes',
-          album: 'GoodWishes Album',
-          title: widget.audioTitle,
-          artUri: artUri,
-        ),
+    final audioSource = AudioSource.uri(
+      Uri.parse(widget.audioUrl),
+      tag: MediaItem(
+        id: 'GoodWishes',
+        album: 'GoodWishes Album',
+        title: widget.audioTitle,
+        artUri: artUri,
       ),
-    ]);
+    );
 
     // Listen to errors during playback.
     _player.playbackEventStream.listen((event) {}, onError: (Object e, StackTrace stackTrace) {
-      print('A stream error occurred: $e');
+      debugPrint('A stream error occurred: $e');
     });
     try {
-      await _player.setAudioSource(_playlist);
+      await _player.setAudioSource(audioSource);
     } catch (e, stackTrace) {
       // Catch load errors: 404, invalid url ...
-      print("Error loading playlist: $e");
-      print(stackTrace);
+      debugPrint("Error loading playlist: $e");
+      debugPrint(stackTrace.toString());
     }
   }
 
@@ -286,7 +282,7 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
       }
       return file.uri;
     } catch (error) {
-      print('Failed to load default audio art: $error');
+      debugPrint('Failed to load default audio art: $error');
       return null;
     }
   }
