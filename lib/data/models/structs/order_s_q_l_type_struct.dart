@@ -3,7 +3,7 @@
 import '/data/models/schema_util.dart';
 
 import 'index.dart';
-import '/flutter_flow/flutter_flow_util.dart';
+import '/utils/flutter_flow_util.dart';
 
 class OrderSQLTypeStruct extends BaseStruct {
   OrderSQLTypeStruct({

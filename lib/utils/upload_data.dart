@@ -10,7 +10,7 @@ import 'package:mime_type/mime_type.dart';
 import 'package:video_player/video_player.dart';
 import 'package:image/image.dart' as img;
 
-import '/flutter_flow/flutter_flow_theme.dart';
+import '/ui/core/themes/flutter_flow_theme.dart';
 import 'flutter_flow_util.dart';
 
 const allowedFormats = {'image/png', 'image/jpeg', 'video/mp4', 'image/gif'};
@@ -62,23 +62,23 @@ Future<List<SelectedFile>?> selectMediaWithSourceBottomSheet({
   bool includeBlurHash = false,
 }) async {
   createUploadMediaListTile(String label, MediaSource mediaSource) => ListTile(
-            title: Text(
-              label,
-              textAlign: TextAlign.center,
-              style: GoogleFonts.getFont(
-                pickerFontFamily,
-                color: textColor,
-                fontWeight: FontWeight.w600,
-                fontSize: 20,
-              ),
-            ),
-            tileColor: backgroundColor,
-            dense: false,
-            onTap: () => Navigator.pop(
-              context,
-              mediaSource,
-            ),
-          );
+        title: Text(
+          label,
+          textAlign: TextAlign.center,
+          style: GoogleFonts.getFont(
+            pickerFontFamily,
+            color: textColor,
+            fontWeight: FontWeight.w600,
+            fontSize: 20,
+          ),
+        ),
+        tileColor: backgroundColor,
+        dense: false,
+        onTap: () => Navigator.pop(
+          context,
+          mediaSource,
+        ),
+      );
   final mediaSource = await showModalBottomSheet<MediaSource>(
       context: context,
       backgroundColor: backgroundColor,
@@ -143,8 +143,8 @@ Future<List<SelectedFile>?> selectMediaWithSourceBottomSheet({
     maxWidth: maxWidth,
     maxHeight: maxHeight,
     imageQuality: imageQuality,
-    isVideo: mediaSource == MediaSource.videoGallery ||
-        (mediaSource == MediaSource.camera && allowVideo && !allowPhoto),
+    isVideo:
+        mediaSource == MediaSource.videoGallery || (mediaSource == MediaSource.camera && allowVideo && !allowPhoto),
     mediaSource: mediaSource,
     includeDimensions: includeDimensions,
     includeBlurHash: includeBlurHash,
@@ -200,9 +200,7 @@ Future<List<SelectedFile>?> selectMedia({
     }));
   }
 
-  final source = mediaSource == MediaSource.camera
-      ? ImageSource.camera
-      : ImageSource.gallery;
+  final source = mediaSource == MediaSource.camera ? ImageSource.camera : ImageSource.gallery;
   final pickedMediaFuture = isVideo
       ? picker.pickVideo(source: source)
       : picker.pickImage(
@@ -279,8 +277,7 @@ Future<List<SelectedFile>?> selectFiles({
     return Future.wait(pickedFiles.files.asMap().entries.map((e) async {
       final index = e.key;
       final file = e.value;
-      final storagePath =
-          _getStoragePath(storageFolderPath, file.name, false, index);
+      final storagePath = _getStoragePath(storageFolderPath, file.name, false, index);
       return SelectedFile(
         storagePath: storagePath,
         filePath: isWeb ? null : file.path,
@@ -334,8 +331,7 @@ Future<MediaDimensions> _getImageDimensions(Uint8List mediaBytes) async {
 }
 
 Future<MediaDimensions> _getVideoDimensions(String path) async {
-  final VideoPlayerController videoPlayerController =
-      VideoPlayerController.asset(path);
+  final VideoPlayerController videoPlayerController = VideoPlayerController.asset(path);
   await videoPlayerController.initialize();
   final size = videoPlayerController.value.size;
   return MediaDimensions(width: size.width, height: size.height);
@@ -351,8 +347,7 @@ String? _generateBlurHash(Uint8List mediaBytes) {
   return null;
 }
 
-Future<String?> _getImageBlurHash(Uint8List mediaBytes) async =>
-    await compute(_generateBlurHash, mediaBytes);
+Future<String?> _getImageBlurHash(Uint8List mediaBytes) async => await compute(_generateBlurHash, mediaBytes);
 
 String _getStoragePath(
   String? pathPrefix,
@@ -391,8 +386,7 @@ void showUploadMessage(
                 padding: const EdgeInsetsDirectional.only(end: 10.0),
                 child: CircularProgressIndicator(
                   valueColor: Theme.of(context).brightness == Brightness.dark
-                      ? AlwaysStoppedAnimation<Color>(
-                          FlutterFlowTheme.of(context).accent4)
+                      ? AlwaysStoppedAnimation<Color>(FlutterFlowTheme.of(context).accent4)
                       : null,
                 ),
               ),
@@ -404,6 +398,5 @@ void showUploadMessage(
     );
 }
 
-String? _removeTrailingSlash(String? path) => path != null && path.endsWith('/')
-    ? path.substring(0, path.length - 1)
-    : path;
+String? _removeTrailingSlash(String? path) =>
+    path != null && path.endsWith('/') ? path.substring(0, path.length - 1) : path;

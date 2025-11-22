@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
+import '/ui/core/themes/flutter_flow_theme.dart';
 import '/data/services/supabase/supabase.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '/flutter_flow/custom_functions.dart' as functions;
+import '/utils/custom_functions.dart' as functions;
 
 class JourneyStepItemWidget extends StatelessWidget {
   const JourneyStepItemWidget({

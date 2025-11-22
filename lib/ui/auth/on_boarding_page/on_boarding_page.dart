@@ -8,11 +8,11 @@ import 'package:provider/provider.dart';
 import 'package:rive/rive.dart' hide LinearGradient;
 import 'package:smooth_page_indicator/smooth_page_indicator.dart' as smooth_page_indicator;
 
-import '/flutter_flow/flutter_flow_animations.dart';
-import '/flutter_flow/flutter_flow_icon_button.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
+import '/ui/core/ui/flutter_flow_animations.dart';
+import '/ui/core/ui/flutter_flow_icon_button.dart';
+import '/ui/core/themes/flutter_flow_theme.dart';
+import '/utils/flutter_flow_util.dart';
+import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/ui/auth/on_boarding_page/view_model/on_boarding_view_model.dart';
 import '/ui/home/home_page/home_page.dart';
 

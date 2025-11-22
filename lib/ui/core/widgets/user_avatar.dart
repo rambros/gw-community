@@ -2,8 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/custom_functions.dart' as functions;
+import '/ui/core/themes/flutter_flow_theme.dart';
+import '/utils/custom_functions.dart' as functions;
 
 /// Rounded avatar that shows either the user's photo or derived initials.
 class UserAvatar extends StatelessWidget {

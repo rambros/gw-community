@@ -1,5 +1,5 @@
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
+import '/ui/core/themes/flutter_flow_theme.dart';
+import '/utils/flutter_flow_util.dart';
 
 import 'widgets/sharings_tab_widget.dart';
 import 'widgets/groups_tab_widget.dart';

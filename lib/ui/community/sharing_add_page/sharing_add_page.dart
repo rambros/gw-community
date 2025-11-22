@@ -1,10 +1,10 @@
 import '/ui/core/widgets/user_avatar.dart';
-import '/flutter_flow/flutter_flow_drop_down.dart';
-import '/flutter_flow/flutter_flow_icon_button.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
-import '/flutter_flow/form_field_controller.dart';
+import '/ui/core/ui/flutter_flow_drop_down.dart';
+import '/ui/core/ui/flutter_flow_icon_button.dart';
+import '/ui/core/themes/flutter_flow_theme.dart';
+import '/utils/flutter_flow_util.dart';
+import '/ui/core/ui/flutter_flow_widgets.dart';
+import '/ui/core/ui/form_field_controller.dart';
 import '/ui/community/sharing_add_page/view_model/sharing_add_view_model.dart';
 import '/data/repositories/sharing_repository.dart';
 import '/utils/context_extensions.dart';

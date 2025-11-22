@@ -1,10 +1,10 @@
 import '/data/services/supabase/supabase.dart';
 import '/ui/core/widgets/user_avatar.dart';
 import '/data/repositories/event_repository.dart';
-import '/flutter_flow/flutter_flow_icon_button.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
+import '/ui/core/ui/flutter_flow_icon_button.dart';
+import '/ui/core/themes/flutter_flow_theme.dart';
+import '/utils/flutter_flow_util.dart';
+import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/index.dart';
 import 'view_model/event_details_view_model.dart';
 import '/utils/context_extensions.dart';

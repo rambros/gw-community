@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
+import '/ui/core/themes/flutter_flow_theme.dart';
+import '/utils/flutter_flow_util.dart';
+import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/ui/community/event_add_page/event_add_page.dart';
 import '/ui/community/widgets/event_card.dart';
 import '../view_model/community_view_model.dart';

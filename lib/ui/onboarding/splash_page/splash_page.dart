@@ -4,8 +4,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-import '/flutter_flow/flutter_flow_animations.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
+import '/ui/core/ui/flutter_flow_animations.dart';
+import '/ui/core/themes/flutter_flow_theme.dart';
 
 import 'view_model/splash_view_model.dart';
 

@@ -4,7 +4,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-import '/flutter_flow/flutter_flow_theme.dart';
+import '/ui/core/themes/flutter_flow_theme.dart';
 import 'view_model/home_view_model.dart';
 import 'widgets/home_journey_card.dart';
 import 'widgets/home_event_card.dart';

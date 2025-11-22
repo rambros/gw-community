@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:internet_file/internet_file.dart';
 import 'package:pdfx/pdfx.dart';
-import '/flutter_flow/flutter_flow_util.dart';
+import '/utils/flutter_flow_util.dart';
 
 class FlutterFlowPdfViewer extends StatefulWidget {
   const FlutterFlowPdfViewer({

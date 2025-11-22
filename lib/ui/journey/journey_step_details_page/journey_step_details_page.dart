@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
+import '/ui/core/themes/flutter_flow_theme.dart';
+import '/utils/flutter_flow_util.dart';
 import '/data/services/supabase/supabase.dart';
 import '/data/repositories/journeys_repository.dart';
 import '/ui/journey/journey_page/view_model/journey_view_model.dart';
 import '/ui/journey/journey_page/widgets/journey_step_item_widget.dart';
 import '/ui/journey/step_details_page/step_details_page.dart';
-import '/flutter_flow/custom_functions.dart' as functions;
+import '/utils/custom_functions.dart' as functions;
 import '/utils/context_extensions.dart';
 
 class JourneyStepDetailsPage extends StatefulWidget {

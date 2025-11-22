@@ -28,7 +28,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
-import '/flutter_flow/flutter_flow_util.dart' show routeObserver;
+import '/utils/flutter_flow_util.dart' show routeObserver;
 
 const kYoutubeAspectRatio = 16 / 9;
 final _youtubeFullScreenControllerMap = <String, YoutubePlayerController>{};

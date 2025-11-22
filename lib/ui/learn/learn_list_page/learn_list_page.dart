@@ -5,9 +5,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
 
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
-import '/flutter_flow/flutter_flow_util.dart';
+import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/ui/flutter_flow_widgets.dart';
+import '/utils/flutter_flow_util.dart';
 import '/ui/learn/widgets/content_card.dart';
 import '/ui/learn/widgets/content_filter.dart';
 import 'view_model/learn_list_view_model.dart';

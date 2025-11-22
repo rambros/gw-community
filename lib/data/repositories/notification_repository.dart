@@ -1,6 +1,6 @@
 import '/data/models/enums/enums.dart';
 import '/data/services/supabase/supabase.dart';
-import '/flutter_flow/flutter_flow_util.dart';
+import '/utils/flutter_flow_util.dart';
 
 class NotificationRepository {
   Future<CcUsersRow?> getUserById(String userId) async {

@@ -1,8 +1,8 @@
 import '/data/services/supabase/supabase.dart';
 import '/data/repositories/group_repository.dart';
-import '/flutter_flow/flutter_flow_icon_button.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
+import '/ui/core/ui/flutter_flow_icon_button.dart';
+import '/ui/core/themes/flutter_flow_theme.dart';
+import '/utils/flutter_flow_util.dart';
 import '/ui/community/group_edit_page/group_edit_page.dart';
 import '/utils/context_extensions.dart';
 import 'package:cached_network_image/cached_network_image.dart';

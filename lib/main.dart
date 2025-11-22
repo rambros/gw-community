@@ -8,9 +8,9 @@ import 'package:flutter_web_plugins/url_strategy.dart';
 
 import '/data/services/supabase/supabase.dart';
 import 'config/firebase/firebase_config.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import 'flutter_flow/flutter_flow_util.dart';
-import 'flutter_flow/internationalization.dart';
+import '/ui/core/themes/flutter_flow_theme.dart';
+import 'utils/flutter_flow_util.dart';
+import 'utils/internationalization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'index.dart';

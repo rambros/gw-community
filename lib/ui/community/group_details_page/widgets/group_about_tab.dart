@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-import '/flutter_flow/flutter_flow_theme.dart';
+import '/ui/core/themes/flutter_flow_theme.dart';
 
 import '../view_model/group_details_view_model.dart';
 import '/ui/core/widgets/user_avatar.dart';

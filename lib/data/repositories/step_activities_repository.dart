@@ -1,5 +1,5 @@
 import '/data/services/supabase/supabase.dart';
-import '/flutter_flow/flutter_flow_util.dart';
+import '/utils/flutter_flow_util.dart';
 
 class StepActivitiesRepository {
   Future<List<CcViewUserActivitiesRow>> getUserActivities(

@@ -4,12 +4,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
-import '/flutter_flow/flutter_flow_icon_button.dart';
-import '/flutter_flow/flutter_flow_drop_down.dart';
-import '/flutter_flow/form_field_controller.dart';
+import '/ui/core/themes/flutter_flow_theme.dart';
+import '/utils/flutter_flow_util.dart';
+import '/ui/core/ui/flutter_flow_widgets.dart';
+import '/ui/core/ui/flutter_flow_icon_button.dart';
+import '/ui/core/ui/flutter_flow_drop_down.dart';
+import '/ui/core/ui/form_field_controller.dart';
 import '/data/repositories/group_repository.dart';
 import '/utils/context_extensions.dart';
 import 'view_model/group_add_view_model.dart';

@@ -8,8 +8,8 @@ import '/data/models/structs/index.dart';
 import '/data/models/enums/enums.dart';
 import '/data/services/supabase/supabase.dart';
 
-import '../../flutter_flow/place.dart';
-import '../../flutter_flow/uploaded_file.dart';
+import '../../utils/place.dart';
+import '../../utils/uploaded_file.dart';
 
 /// SERIALIZATION HELPERS
 

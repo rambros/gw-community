@@ -3,10 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
+import '/ui/core/themes/flutter_flow_theme.dart';
+import '/utils/flutter_flow_util.dart';
 
-import '/flutter_flow/flutter_flow_icon_button.dart';
+import '/ui/core/ui/flutter_flow_icon_button.dart';
 import '/data/repositories/group_repository.dart';
 import '/utils/context_extensions.dart';
 import 'view_model/group_invitation_view_model.dart';

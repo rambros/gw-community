@@ -3,9 +3,9 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '/data/services/supabase/supabase.dart';
 import '/ui/core/widgets/user_avatar.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
+import '/ui/core/themes/flutter_flow_theme.dart';
+import '/utils/flutter_flow_util.dart';
+import '/ui/core/ui/flutter_flow_widgets.dart';
 import '../../sharing_view_page/sharing_view_page.dart';
 import '/utils/context_extensions.dart';
 

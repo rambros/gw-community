@@ -1,11 +1,11 @@
 import '/data/services/supabase/supabase.dart';
 import '/data/repositories/notification_repository.dart';
-import '/flutter_flow/flutter_flow_drop_down.dart';
-import '/flutter_flow/flutter_flow_icon_button.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
-import '/flutter_flow/form_field_controller.dart';
+import '/ui/core/ui/flutter_flow_drop_down.dart';
+import '/ui/core/ui/flutter_flow_icon_button.dart';
+import '/ui/core/themes/flutter_flow_theme.dart';
+import '/utils/flutter_flow_util.dart';
+import '/ui/core/ui/flutter_flow_widgets.dart';
+import '/ui/core/ui/form_field_controller.dart';
 import '/index.dart';
 import 'view_model/notification_edit_view_model.dart';
 import 'package:flutter/material.dart';

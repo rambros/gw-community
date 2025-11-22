@@ -1,6 +1,6 @@
-import '/flutter_flow/flutter_flow_icon_button.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
+import '/ui/core/ui/flutter_flow_icon_button.dart';
+import '/ui/core/themes/flutter_flow_theme.dart';
+import '/utils/flutter_flow_util.dart';
 import '../widgets/add_comment/add_comment_widget.dart';
 import 'view_model/sharing_view_view_model.dart';
 import 'widgets/sharing_header_widget.dart';

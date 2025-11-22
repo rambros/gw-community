@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
-import '/flutter_flow/flutter_flow_util.dart';
+import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/ui/flutter_flow_widgets.dart';
+import '/utils/flutter_flow_util.dart';
 import 'view_model/login_view_model.dart';
 import '/ui/home/home_page/home_page.dart';
 import '/ui/auth/widgets/login_google_button.dart';

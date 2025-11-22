@@ -9,7 +9,7 @@ import '/data/services/supabase/supabase.dart';
 import '/domain/models/app_auth_user.dart';
 
 import '/main.dart';
-import '/flutter_flow/flutter_flow_util.dart';
+import '/utils/flutter_flow_util.dart';
 import '/index.dart';
 
 export 'package:go_router/go_router.dart';

@@ -1,4 +1,4 @@
-import '/flutter_flow/flutter_flow_util.dart';
+import '/utils/flutter_flow_util.dart';
 import 'demo_animations_widget.dart' show DemoAnimationsWidget;
 import 'package:flutter/material.dart';
 

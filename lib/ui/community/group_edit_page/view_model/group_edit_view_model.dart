@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '/data/services/supabase/supabase.dart';
 import '/data/repositories/group_repository.dart';
-import '/flutter_flow/upload_data.dart';
+import '/utils/upload_data.dart';
 
 class GroupEditViewModel extends ChangeNotifier {
   final GroupRepository _groupRepository;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
+import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/ui/flutter_flow_widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class JourneyCardWidget extends StatelessWidget {

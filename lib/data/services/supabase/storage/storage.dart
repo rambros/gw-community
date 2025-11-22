@@ -1,4 +1,4 @@
-import '/flutter_flow/upload_data.dart';
+import '/utils/upload_data.dart';
 import '../supabase.dart';
 
 Future<List<String>> uploadSupabaseStorageFiles({

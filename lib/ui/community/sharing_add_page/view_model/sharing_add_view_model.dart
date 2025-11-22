@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '/data/models/enums/enums.dart';
 import '/data/services/supabase/supabase.dart';
 import '/data/repositories/sharing_repository.dart';
-import '/flutter_flow/flutter_flow_util.dart';
+import '/utils/flutter_flow_util.dart';
 import '/index.dart';
 
 /// ViewModel para a página de adicionar sharing

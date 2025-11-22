@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '/data/services/supabase/supabase.dart';
 import '/data/repositories/event_repository.dart';
-import '/flutter_flow/flutter_flow_util.dart';
+import '/utils/flutter_flow_util.dart';
 
 class EventEditViewModel extends ChangeNotifier {
   EventEditViewModel({

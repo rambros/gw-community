@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '/flutter_flow/flutter_flow_util.dart';
+import '/utils/flutter_flow_util.dart';
 import '/index.dart';
 
 class SplashViewModel extends ChangeNotifier {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
+import '/ui/core/themes/flutter_flow_theme.dart';
 import '/data/services/supabase/supabase.dart';
 
 class ActivityItemWidget extends StatelessWidget {
