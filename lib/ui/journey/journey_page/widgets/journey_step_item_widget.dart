@@ -81,7 +81,9 @@ class JourneyStepItemWidget extends StatelessWidget {
                               fontWeight: FontWeight.w500,
                               fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                             ),
-                            color: AppTheme.of(context).primaryText,
+                            color: (stepRow.stepStatus != 'open' && stepRow.stepStatus != 'closed')
+                                ? AppTheme.of(context).alternate
+                                : AppTheme.of(context).primaryText,
                             fontSize: 16.0,
                             letterSpacing: 0.0,
                             fontWeight: FontWeight.w500,
@@ -95,7 +97,9 @@ class JourneyStepItemWidget extends StatelessWidget {
                               fontWeight: FontWeight.w300,
                               fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                             ),
-                            color: AppTheme.of(context).primaryText,
+                            color: (stepRow.stepStatus != 'open' && stepRow.stepStatus != 'closed')
+                                ? AppTheme.of(context).alternate
+                                : AppTheme.of(context).primaryText,
                             fontSize: 14.0,
                             letterSpacing: 0.0,
                             fontWeight: FontWeight.w300,

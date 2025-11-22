@@ -66,6 +66,7 @@ class AppStateNotifier extends ChangeNotifier {
   }
 
   void stopShowingSplashImage() {
+    print('🛑 AppStateNotifier: stopShowingSplashImage called');
     showSplashImage = false;
     notifyListeners();
   }
@@ -76,12 +77,21 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
       debugLogDiagnostics: true,
       refreshListenable: appStateNotifier,
       navigatorKey: appNavigatorKey,
-      errorBuilder: (context, state) => appStateNotifier.loggedIn ? const NavBarPage() : const SplashPage(),
+      errorBuilder: (context, state) => appStateNotifier.loggedIn ? const NavBarPage() : const LoginPage(),
       routes: [
         FFRoute(
           name: '_initialize',
           path: '/',
-          builder: (context, _) => appStateNotifier.loggedIn ? const NavBarPage() : const SplashPage(),
+          builder: (context, _) {
+            print(
+                '🔄 Router: Rebuilding root route. Loading: ${appStateNotifier.loading}, LoggedIn: ${appStateNotifier.loggedIn}, ShowSplash: ${appStateNotifier.showSplashImage}');
+            if (appStateNotifier.loading) {
+              print('👉 Router: Returning SplashPage');
+              return const SplashPage();
+            }
+            print('👉 Router: Returning ${appStateNotifier.loggedIn ? "NavBarPage" : "LoginPage"}');
+            return appStateNotifier.loggedIn ? const NavBarPage() : const LoginPage();
+          },
         ),
         FFRoute(
           name: SplashPage.routeName,
@@ -602,18 +612,7 @@ class FFRoute {
                   builder: (context, _) => builder(context, ffParams),
                 )
               : builder(context, ffParams);
-          final child = appStateNotifier.loading
-              ? Container(
-                  color: Colors.transparent,
-                  child: Center(
-                    child: Image.asset(
-                      'assets/images/GoodWishes_RGB_Logo_Stacked_600.png',
-                      width: 300.0,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                )
-              : page;
+          final child = page;
 
           final transitionInfo = state.transitionInfo;
           return transitionInfo.hasTransition

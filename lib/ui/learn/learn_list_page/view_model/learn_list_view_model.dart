@@ -62,25 +62,102 @@ class LearnListViewModel extends ChangeNotifier {
   List<TopicsWithContentRow> _topics = [];
   List<TopicsWithContentRow> get topics => _topics;
 
+  // Pagination
+  int _page = 0;
+  final int _pageSize = 20;
+  bool _hasMore = true;
+  bool get hasMore => _hasMore;
+
+  bool _isLoadingMore = false;
+  bool get isLoadingMore => _isLoadingMore;
+
   Future<void> loadInitialData() async {
     _setLoading(true);
-    try {
-      // Load content
-      _contentList = await _repository.getAllContent();
+    _page = 0;
+    _hasMore = true;
+    _contentList = []; // Clear list on initial load
 
-      // Load filter options
-      await Future.wait([
-        _loadAuthors(),
-        _loadEvents(),
-        _loadYears(),
-        _loadJourneys(),
-        _loadGroups(),
-        _loadTopics(),
-      ]);
+    // 1. Start fetching filters in the background
+    final filtersFuture = Future.wait([
+      _loadAuthors(),
+      _loadEvents(),
+      _loadYears(),
+      _loadJourneys(),
+      _loadGroups(),
+      _loadTopics(),
+    ]);
+
+    try {
+      // 2. Fetch first page of content
+      final newContent = await _repository.getAllContent(
+        limit: _pageSize,
+        offset: 0,
+      );
+      _contentList = newContent;
+      _hasMore = newContent.length >= _pageSize;
     } catch (e) {
-      debugPrint('Error loading initial data: $e');
+      debugPrint('Error loading content: $e');
     } finally {
       _setLoading(false);
+    }
+
+    // 4. Wait for filters to finish
+    try {
+      await filtersFuture;
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error loading filters: $e');
+    }
+  }
+
+  Future<void> loadMoreContent() async {
+    if (_isLoadingMore || !_hasMore) return;
+
+    _isLoadingMore = true;
+    notifyListeners();
+
+    try {
+      _page++;
+      final offset = _page * _pageSize;
+
+      List<ViewContentRow> newContent;
+
+      if (_isSearchActive) {
+        newContent = await _repository.searchContent(
+          _searchQuery,
+          limit: _pageSize,
+          offset: offset,
+        );
+      } else if (_isFilterActive) {
+        newContent = await _repository.filterContent(
+          filterByAuthorId: _filterByAuthorId,
+          filterByYear: _filterByYear,
+          filterByEventId: _filterByEventId,
+          filterByTopics: _filterByTopics,
+          filterByJourneyId: _filterByJourneyId,
+          filterByGroupId: _filterByGroupId,
+          limit: _pageSize,
+          offset: offset,
+        );
+      } else {
+        newContent = await _repository.getAllContent(
+          limit: _pageSize,
+          offset: offset,
+        );
+      }
+
+      if (newContent.isNotEmpty) {
+        _contentList.addAll(newContent);
+        _hasMore = newContent.length >= _pageSize;
+      } else {
+        _hasMore = false;
+      }
+    } catch (e) {
+      debugPrint('Error loading more content: $e');
+      _page--; // Revert page increment on error
+    } finally {
+      _isLoadingMore = false;
+      notifyListeners();
     }
   }
 
@@ -144,8 +221,18 @@ class LearnListViewModel extends ChangeNotifier {
     _isFilterActive = false; // Search overrides filter display logic in original code
     _filterDescription = 'Filtered by Search Field -> $query';
 
+    // Reset pagination
+    _page = 0;
+    _hasMore = true;
+
     try {
-      _contentList = await _repository.searchContent(query);
+      final newContent = await _repository.searchContent(
+        query,
+        limit: _pageSize,
+        offset: 0,
+      );
+      _contentList = newContent;
+      _hasMore = newContent.length >= _pageSize;
     } catch (e) {
       debugPrint('Error searching content: $e');
     } finally {
@@ -173,15 +260,23 @@ class LearnListViewModel extends ChangeNotifier {
     _isSearchActive = false;
     _updateFilterDescription();
 
+    // Reset pagination
+    _page = 0;
+    _hasMore = true;
+
     try {
-      _contentList = await _repository.filterContent(
+      final newContent = await _repository.filterContent(
         filterByAuthorId: _filterByAuthorId,
         filterByYear: _filterByYear,
         filterByEventId: _filterByEventId,
         filterByTopics: _filterByTopics,
         filterByJourneyId: _filterByJourneyId,
         filterByGroupId: _filterByGroupId,
+        limit: _pageSize,
+        offset: 0,
       );
+      _contentList = newContent;
+      _hasMore = newContent.length >= _pageSize;
     } catch (e) {
       debugPrint('Error filtering content: $e');
     } finally {

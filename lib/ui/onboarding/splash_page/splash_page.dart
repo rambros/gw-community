@@ -26,13 +26,19 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    print('🏗️ SplashPage: initState called');
 
     // Initialize animations
     _initAnimations();
 
     // On page load action
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      context.read<SplashViewModel>().initSplash(context);
+      print('📅 SplashPage: postFrameCallback triggered');
+      try {
+        context.read<SplashViewModel>().initSplash(context);
+      } catch (e) {
+        print('❌ SplashPage: Error calling initSplash: $e');
+      }
     });
   }
 

@@ -1,23 +1,36 @@
 import '/data/services/supabase/supabase.dart';
 
 class LearnRepository {
+  // Columns to select for list view to avoid fetching heavy data
+  static final String _listColumns =
+      'content_id, title, description, authors_names, midia_type, is_published, cott_event_id, event_name, audio_url, midia_file_url';
+
   Future<List<ViewContentRow>> searchContent(
     String searchString, {
     bool ascending = true,
     String sortColumn = 'title',
+    int? limit,
+    int? offset,
   }) async {
     String finalString = searchString.replaceAll('&', '-&-');
     finalString = finalString.trim();
     finalString = finalString.replaceAll(' ', '&');
 
-    final response = SupaFlow.client
+    dynamic query = SupaFlow.client
         .from('view_content')
-        .select()
+        .select(_listColumns)
         .textSearch('content_search_string', finalString)
         .order(sortColumn, ascending: ascending);
 
-    final data = await response;
-    return (data as List).map((row) => ViewContentRow(row)).toList();
+    if (limit != null) {
+      query = query.limit(limit);
+    }
+    if (offset != null) {
+      query = query.range(offset, offset + limit! - 1);
+    }
+
+    final response = await query;
+    return (response as List).map((row) => ViewContentRow(row)).toList();
   }
 
   Future<List<ViewContentRow>> filterContent({
@@ -29,8 +42,10 @@ class LearnRepository {
     int filterByGroupId = 0,
     bool ascending = true,
     String sortColumn = 'title',
+    int? limit,
+    int? offset,
   }) async {
-    var query = SupaFlow.client.from('view_content').select('*').eq('is_published', true);
+    dynamic query = SupaFlow.client.from('view_content').select(_listColumns).eq('is_published', true);
 
     if (filterByAuthorId != 0) {
       query = query.contains('authors', [filterByAuthorId]);
@@ -51,19 +66,39 @@ class LearnRepository {
       query = query.contains('journeys', [filterByJourneyId]);
     }
 
-    final response = await query.order(sortColumn, ascending: ascending);
+    query = query.order(sortColumn, ascending: ascending);
+
+    if (limit != null) {
+      query = query.limit(limit);
+    }
+    if (offset != null) {
+      query = query.range(offset, offset + limit! - 1);
+    }
+
+    final response = await query;
     return (response as List).map((row) => ViewContentRow(row)).toList();
   }
 
   Future<List<ViewContentRow>> getAllContent({
     bool ascending = true,
     String sortColumn = 'title',
+    int? limit,
+    int? offset,
   }) async {
-    final response = await SupaFlow.client
+    dynamic query = SupaFlow.client
         .from('view_content')
-        .select('*')
+        .select(_listColumns)
         .eq('is_published', true)
         .order(sortColumn, ascending: ascending);
+
+    if (limit != null) {
+      query = query.limit(limit);
+    }
+    if (offset != null) {
+      query = query.range(offset, offset + limit! - 1);
+    }
+
+    final response = await query;
     return (response as List).map((row) => ViewContentRow(row)).toList();
   }
 

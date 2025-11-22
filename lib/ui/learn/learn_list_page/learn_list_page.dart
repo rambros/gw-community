@@ -26,6 +26,7 @@ class _LearnListPageState extends State<LearnListPage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   late TextEditingController _textController;
   late FocusNode _textFieldFocusNode;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -37,12 +38,19 @@ class _LearnListPageState extends State<LearnListPage> {
     SchedulerBinding.instance.addPostFrameCallback((_) {
       context.read<LearnListViewModel>().loadInitialData();
     });
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
+        context.read<LearnListViewModel>().loadMoreContent();
+      }
+    });
   }
 
   @override
   void dispose() {
     _textController.dispose();
     _textFieldFocusNode.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -139,9 +147,11 @@ class _LearnListPageState extends State<LearnListPage> {
                                               textInputAction: TextInputAction.search,
                                               decoration: InputDecoration(
                                                 labelText: 'Search all content...',
-                                                labelStyle: AppTheme.of(context).labelMedium
+                                                labelStyle: AppTheme.of(context)
+                                                    .labelMedium
                                                     .copyWith(color: AppTheme.of(context).primary),
-                                                hintStyle: AppTheme.of(context).labelMedium
+                                                hintStyle: AppTheme.of(context)
+                                                    .labelMedium
                                                     .copyWith(color: AppTheme.of(context).primary),
                                                 enabledBorder: OutlineInputBorder(
                                                   borderSide: BorderSide(
@@ -347,11 +357,27 @@ class _LearnListPageState extends State<LearnListPage> {
                                           ),
                                         )
                                       : ListView.separated(
+                                          controller: _scrollController,
                                           padding: const EdgeInsets.fromLTRB(0, 0, 0, 12.0),
                                           scrollDirection: Axis.vertical,
-                                          itemCount: viewModel.contentList.length,
+                                          itemCount: viewModel.contentList.length + (viewModel.isLoadingMore ? 1 : 0),
                                           separatorBuilder: (_, __) => const SizedBox(height: 8.0),
                                           itemBuilder: (context, index) {
+                                            if (index == viewModel.contentList.length) {
+                                              return Center(
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: SizedBox(
+                                                    width: 30.0,
+                                                    height: 30.0,
+                                                    child: SpinKitThreeBounce(
+                                                      color: AppTheme.of(context).primary,
+                                                      size: 20.0,
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            }
                                             final contentRow = viewModel.contentList[index];
                                             return ContentCard(
                                               key: Key('content_card_$index'),

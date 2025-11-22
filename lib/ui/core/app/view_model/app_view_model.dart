@@ -32,11 +32,6 @@ class AppViewModel extends ChangeNotifier {
     });
 
     authRepository.jwtTokenChanges.listen((_) {});
-
-    Future.delayed(
-      const Duration(milliseconds: 1000),
-      () => appStateNotifier.stopShowingSplashImage(),
-    );
   }
 
   @override
