@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/data/services/supabase/supabase.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -28,15 +28,15 @@ class JourneyIntroWidget extends StatelessWidget {
             children: [
               Text(
                 journey.title ?? 'Journey Title',
-                style: FlutterFlowTheme.of(context).titleMedium.override(
+                style: AppTheme.of(context).titleMedium.override(
                       font: GoogleFonts.lexendDeca(
-                        fontWeight: FlutterFlowTheme.of(context).titleMedium.fontWeight,
-                        fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                        fontWeight: AppTheme.of(context).titleMedium.fontWeight,
+                        fontStyle: AppTheme.of(context).titleMedium.fontStyle,
                       ),
-                      color: FlutterFlowTheme.of(context).tertiary,
+                      color: AppTheme.of(context).tertiary,
                       letterSpacing: 0.0,
-                      fontWeight: FlutterFlowTheme.of(context).titleMedium.fontWeight,
-                      fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                      fontWeight: AppTheme.of(context).titleMedium.fontWeight,
+                      fontStyle: AppTheme.of(context).titleMedium.fontStyle,
                     ),
               ),
             ],
@@ -51,15 +51,15 @@ class JourneyIntroWidget extends StatelessWidget {
                 child: Text(
                   journey.description ?? 'Description',
                   textAlign: TextAlign.start,
-                  style: FlutterFlowTheme.of(context).bodyMedium.override(
+                  style: AppTheme.of(context).bodyMedium.override(
                         font: GoogleFonts.lexendDeca(
                           fontWeight: FontWeight.w300,
-                          fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                          fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                         ),
-                        color: FlutterFlowTheme.of(context).primaryText,
+                        color: AppTheme.of(context).primaryText,
                         letterSpacing: 0.0,
                         fontWeight: FontWeight.w300,
-                        fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                        fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                       ),
                 ),
               ),
@@ -82,20 +82,20 @@ class JourneyIntroWidget extends StatelessWidget {
                       height: 40.0,
                       padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
                       iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      color: FlutterFlowTheme.of(context).primary,
-                      textStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                      color: AppTheme.of(context).primary,
+                      textStyle: AppTheme.of(context).labelLarge.override(
                             font: GoogleFonts.poppins(
-                              fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                              fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                              fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                             ),
-                            color: FlutterFlowTheme.of(context).primaryBackground,
+                            color: AppTheme.of(context).primaryBackground,
                             letterSpacing: 0.0,
-                            fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                            fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                            fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                           ),
                       elevation: 1.0,
                       borderSide: BorderSide(
-                        color: FlutterFlowTheme.of(context).secondary,
+                        color: AppTheme.of(context).secondary,
                         width: 0.5,
                       ),
                       borderRadius: BorderRadius.circular(20.0),

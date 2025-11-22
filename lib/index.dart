@@ -25,7 +25,6 @@ export '/ui/journey/step_details_page/step_details_page.dart' show StepDetailsPa
 export '/ui/journey/step_text_view_page/step_text_view_page.dart' show StepTextViewPage;
 export '/ui/journey/step_audio_player_page/step_audio_player_page.dart' show StepAudioPlayerPage;
 export '/ui/journey/step_journal_page/step_journal_page.dart' show StepJournalPage;
-export '/demo_animations/demo_animations_widget.dart' show DemoAnimationsWidget;
 export '/ui/journey/journey_page/journey_page.dart' show JourneyPage;
 export 'ui/community/group_add_page/group_add_page.dart' show GroupAddPage;
 export 'ui/community/group_edit_page/group_edit_page.dart' show GroupEditPage;

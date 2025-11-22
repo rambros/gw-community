@@ -1,5 +1,5 @@
 import '/ui/core/ui/flutter_flow_icon_button.dart';
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/utils/flutter_flow_util.dart';
 import '../widgets/add_comment/add_comment_widget.dart';
 import 'view_model/sharing_view_view_model.dart';
@@ -63,7 +63,7 @@ class _SharingViewPageState extends State<SharingViewPage> {
       },
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+        backgroundColor: AppTheme.of(context).primaryBackground,
         appBar: _buildAppBar(context),
         body: _buildBody(context, viewModel),
       ),
@@ -72,7 +72,7 @@ class _SharingViewPageState extends State<SharingViewPage> {
 
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
-      backgroundColor: FlutterFlowTheme.of(context).primary,
+      backgroundColor: AppTheme.of(context).primary,
       automaticallyImplyLeading: false,
       leading: FlutterFlowIconButton(
         borderColor: Colors.transparent,
@@ -90,15 +90,15 @@ class _SharingViewPageState extends State<SharingViewPage> {
       ),
       title: Text(
         'Sharing',
-        style: FlutterFlowTheme.of(context).titleLarge.override(
+        style: AppTheme.of(context).titleLarge.override(
               font: GoogleFonts.poppins(
-                fontWeight: FlutterFlowTheme.of(context).titleLarge.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).titleLarge.fontStyle,
+                fontWeight: AppTheme.of(context).titleLarge.fontWeight,
+                fontStyle: AppTheme.of(context).titleLarge.fontStyle,
               ),
               fontSize: 20.0,
               letterSpacing: 0.0,
-              fontWeight: FlutterFlowTheme.of(context).titleLarge.fontWeight,
-              fontStyle: FlutterFlowTheme.of(context).titleLarge.fontStyle,
+              fontWeight: AppTheme.of(context).titleLarge.fontWeight,
+              fontStyle: AppTheme.of(context).titleLarge.fontStyle,
             ),
       ),
       actions: const [],
@@ -115,7 +115,7 @@ class _SharingViewPageState extends State<SharingViewPage> {
           width: 50.0,
           height: 50.0,
           child: SpinKitRipple(
-            color: FlutterFlowTheme.of(context).primary,
+            color: AppTheme.of(context).primary,
             size: 50.0,
           ),
         ),
@@ -129,9 +129,9 @@ class _SharingViewPageState extends State<SharingViewPage> {
           padding: const EdgeInsets.all(16.0),
           child: Text(
             viewModel.errorMessage!,
-            style: FlutterFlowTheme.of(context).bodyMedium.override(
+            style: AppTheme.of(context).bodyMedium.override(
                   font: GoogleFonts.lexendDeca(),
-                  color: FlutterFlowTheme.of(context).error,
+                  color: AppTheme.of(context).error,
                   letterSpacing: 0.0,
                 ),
             textAlign: TextAlign.center,
@@ -145,7 +145,7 @@ class _SharingViewPageState extends State<SharingViewPage> {
       return Center(
         child: Text(
           'Sharing não encontrado',
-          style: FlutterFlowTheme.of(context).bodyMedium.override(
+          style: AppTheme.of(context).bodyMedium.override(
                 font: GoogleFonts.lexendDeca(),
                 letterSpacing: 0.0,
               ),
@@ -201,7 +201,7 @@ class _SharingViewPageState extends State<SharingViewPage> {
   Widget _buildActionsCard(BuildContext context, SharingViewViewModel viewModel, sharing) {
     return Card(
       clipBehavior: Clip.antiAliasWithSaveLayer,
-      color: FlutterFlowTheme.of(context).primaryBackground,
+      color: AppTheme.of(context).primaryBackground,
       elevation: 0.0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.0),
@@ -231,7 +231,7 @@ class _SharingViewPageState extends State<SharingViewPage> {
         padding: const EdgeInsets.all(16.0),
         child: Text(
           'Nenhum comentário ainda',
-          style: FlutterFlowTheme.of(context).bodyMedium.override(
+          style: AppTheme.of(context).bodyMedium.override(
                 font: GoogleFonts.lexendDeca(),
                 letterSpacing: 0.0,
               ),

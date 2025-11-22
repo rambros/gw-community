@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/utils/flutter_flow_util.dart';
 import 'view_model/login_view_model.dart';
@@ -53,10 +53,10 @@ class _LoginPageState extends State<LoginPage> {
         content: Text(
           error.toString(),
           style: TextStyle(
-            color: FlutterFlowTheme.of(context).primaryText,
+            color: AppTheme.of(context).primaryText,
           ),
         ),
-        backgroundColor: FlutterFlowTheme.of(context).secondary,
+        backgroundColor: AppTheme.of(context).secondary,
       ),
     );
   }
@@ -67,12 +67,12 @@ class _LoginPageState extends State<LoginPage> {
       builder: (context, viewModel, child) {
         return Scaffold(
           key: scaffoldKey,
-          backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+          backgroundColor: AppTheme.of(context).primaryBackground,
           body: Container(
             width: double.infinity,
             height: double.infinity,
             decoration: BoxDecoration(
-              color: FlutterFlowTheme.of(context).primaryBackground,
+              color: AppTheme.of(context).primaryBackground,
             ),
             alignment: const AlignmentDirectional(0.0, 0.0),
             child: SingleChildScrollView(
@@ -111,12 +111,12 @@ class _LoginPageState extends State<LoginPage> {
                                   padding: const EdgeInsetsDirectional.fromSTEB(0.0, 36.0, 0.0, 0.0),
                                   child: Text(
                                     'Welcome,',
-                                    style: FlutterFlowTheme.of(context).displaySmall.override(
+                                    style: AppTheme.of(context).displaySmall.override(
                                           font: GoogleFonts.lexendDeca(
-                                            fontWeight: FlutterFlowTheme.of(context).displaySmall.fontWeight,
-                                            fontStyle: FlutterFlowTheme.of(context).displaySmall.fontStyle,
+                                            fontWeight: AppTheme.of(context).displaySmall.fontWeight,
+                                            fontStyle: AppTheme.of(context).displaySmall.fontStyle,
                                           ),
-                                          color: FlutterFlowTheme.of(context).secondary,
+                                          color: AppTheme.of(context).secondary,
                                           fontSize: 24.0,
                                           letterSpacing: 0.0,
                                         ),
@@ -140,10 +140,10 @@ class _LoginPageState extends State<LoginPage> {
                                       Text(
                                         'Access your account below ',
                                         textAlign: TextAlign.start,
-                                        style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                        style: AppTheme.of(context).bodyMedium.override(
                                               font: GoogleFonts.lexendDeca(
-                                                fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                                fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                                fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                               ),
                                               letterSpacing: 0.0,
                                             ),
@@ -163,34 +163,34 @@ class _LoginPageState extends State<LoginPage> {
                               obscureText: false,
                               decoration: InputDecoration(
                                 labelText: 'Email',
-                                labelStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                                labelStyle: AppTheme.of(context).labelLarge.override(
                                       font: GoogleFonts.poppins(
-                                        fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                                        fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                                        fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                                       ),
-                                      color: FlutterFlowTheme.of(context).primary,
+                                      color: AppTheme.of(context).primary,
                                       fontSize: 16.0,
                                       letterSpacing: 0.0,
                                     ),
                                 hintText: 'Your email',
-                                hintStyle: FlutterFlowTheme.of(context).bodySmall.override(
+                                hintStyle: AppTheme.of(context).bodySmall.override(
                                       font: GoogleFonts.lexendDeca(
-                                        fontWeight: FlutterFlowTheme.of(context).bodySmall.fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context).bodySmall.fontStyle,
+                                        fontWeight: AppTheme.of(context).bodySmall.fontWeight,
+                                        fontStyle: AppTheme.of(context).bodySmall.fontStyle,
                                       ),
-                                      color: FlutterFlowTheme.of(context).alternate,
+                                      color: AppTheme.of(context).alternate,
                                       letterSpacing: 0.0,
                                     ),
                                 enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                    color: FlutterFlowTheme.of(context).alternate,
+                                    color: AppTheme.of(context).alternate,
                                     width: 1.0,
                                   ),
                                   borderRadius: BorderRadius.circular(16.0),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                    color: FlutterFlowTheme.of(context).alternate,
+                                    color: AppTheme.of(context).alternate,
                                     width: 1.0,
                                   ),
                                   borderRadius: BorderRadius.circular(16.0),
@@ -212,12 +212,12 @@ class _LoginPageState extends State<LoginPage> {
                                 filled: true,
                                 fillColor: const Color(0xFFF9FAFB),
                               ),
-                              style: FlutterFlowTheme.of(context).bodyMedium.override(
+                              style: AppTheme.of(context).bodyMedium.override(
                                     font: GoogleFonts.lexendDeca(
-                                      fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                      fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                      fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                     ),
-                                    color: FlutterFlowTheme.of(context).secondary,
+                                    color: AppTheme.of(context).secondary,
                                     fontSize: 14.0,
                                     letterSpacing: 0.0,
                                   ),
@@ -238,34 +238,34 @@ class _LoginPageState extends State<LoginPage> {
                               obscureText: !viewModel.passwordVisibility,
                               decoration: InputDecoration(
                                 labelText: 'Password',
-                                labelStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                                labelStyle: AppTheme.of(context).labelLarge.override(
                                       font: GoogleFonts.poppins(
-                                        fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                                        fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                                        fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                                       ),
-                                      color: FlutterFlowTheme.of(context).primary,
+                                      color: AppTheme.of(context).primary,
                                       fontSize: 16.0,
                                       letterSpacing: 0.0,
                                     ),
                                 hintText: 'Your password',
-                                hintStyle: FlutterFlowTheme.of(context).bodySmall.override(
+                                hintStyle: AppTheme.of(context).bodySmall.override(
                                       font: GoogleFonts.lexendDeca(
-                                        fontWeight: FlutterFlowTheme.of(context).bodySmall.fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context).bodySmall.fontStyle,
+                                        fontWeight: AppTheme.of(context).bodySmall.fontWeight,
+                                        fontStyle: AppTheme.of(context).bodySmall.fontStyle,
                                       ),
-                                      color: FlutterFlowTheme.of(context).alternate,
+                                      color: AppTheme.of(context).alternate,
                                       letterSpacing: 0.0,
                                     ),
                                 enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                    color: FlutterFlowTheme.of(context).alternate,
+                                    color: AppTheme.of(context).alternate,
                                     width: 1.0,
                                   ),
                                   borderRadius: BorderRadius.circular(16.0),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                    color: FlutterFlowTheme.of(context).alternate,
+                                    color: AppTheme.of(context).alternate,
                                     width: 1.0,
                                   ),
                                   borderRadius: BorderRadius.circular(16.0),
@@ -293,17 +293,17 @@ class _LoginPageState extends State<LoginPage> {
                                     viewModel.passwordVisibility
                                         ? Icons.visibility_outlined
                                         : Icons.visibility_off_outlined,
-                                    color: FlutterFlowTheme.of(context).secondaryText,
+                                    color: AppTheme.of(context).secondaryText,
                                     size: 24.0,
                                   ),
                                 ),
                               ),
-                              style: FlutterFlowTheme.of(context).bodyMedium.override(
+                              style: AppTheme.of(context).bodyMedium.override(
                                     font: GoogleFonts.lexendDeca(
-                                      fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                      fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                      fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                     ),
-                                    color: FlutterFlowTheme.of(context).secondary,
+                                    color: AppTheme.of(context).secondary,
                                     fontSize: 14.0,
                                     letterSpacing: 0.0,
                                   ),
@@ -342,11 +342,11 @@ class _LoginPageState extends State<LoginPage> {
                                 height: 50.0,
                                 padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
                                 iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                                color: FlutterFlowTheme.of(context).primary,
-                                textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                                color: AppTheme.of(context).primary,
+                                textStyle: AppTheme.of(context).titleSmall.override(
                                       font: GoogleFonts.lexendDeca(
-                                        fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
+                                        fontWeight: AppTheme.of(context).titleSmall.fontWeight,
+                                        fontStyle: AppTheme.of(context).titleSmall.fontStyle,
                                       ),
                                       color: Colors.white,
                                       fontSize: 16.0,

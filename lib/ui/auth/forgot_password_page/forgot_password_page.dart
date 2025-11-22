@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/utils/flutter_flow_util.dart';
 import 'view_model/forgot_password_view_model.dart';
@@ -35,9 +35,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       builder: (context, viewModel, child) {
         return Scaffold(
           key: scaffoldKey,
-          backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+          backgroundColor: AppTheme.of(context).primaryBackground,
           appBar: AppBar(
-            backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+            backgroundColor: AppTheme.of(context).primaryBackground,
             automaticallyImplyLeading: false,
             leading: InkWell(
               onTap: () async {
@@ -45,18 +45,18 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               },
               child: Icon(
                 Icons.arrow_back_rounded,
-                color: FlutterFlowTheme.of(context).secondaryText,
+                color: AppTheme.of(context).secondaryText,
                 size: 24.0,
               ),
             ),
             title: Text(
               'Forgot Password',
-              style: FlutterFlowTheme.of(context).headlineMedium.override(
+              style: AppTheme.of(context).headlineMedium.override(
                     font: GoogleFonts.lexendDeca(
-                      fontWeight: FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                      fontStyle: FlutterFlowTheme.of(context).headlineMedium.fontStyle,
+                      fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
+                      fontStyle: AppTheme.of(context).headlineMedium.fontStyle,
                     ),
-                    color: FlutterFlowTheme.of(context).secondaryText,
+                    color: AppTheme.of(context).secondaryText,
                     fontSize: 22.0,
                     letterSpacing: 0.0,
                   ),
@@ -69,7 +69,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             width: double.infinity,
             height: double.infinity,
             decoration: BoxDecoration(
-              color: FlutterFlowTheme.of(context).primaryBackground,
+              color: AppTheme.of(context).primaryBackground,
             ),
             alignment: const AlignmentDirectional(0.0, 0.0),
             child: SingleChildScrollView(
@@ -86,12 +86,12 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         children: [
                           Text(
                             'Enter your email address below and we will send you a link to reset your password.',
-                            style: FlutterFlowTheme.of(context).bodyMedium.override(
+                            style: AppTheme.of(context).bodyMedium.override(
                                   font: GoogleFonts.lexendDeca(
-                                    fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                    fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                    fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                   ),
-                                  color: FlutterFlowTheme.of(context).secondaryText,
+                                  color: AppTheme.of(context).secondaryText,
                                   fontSize: 14.0,
                                   letterSpacing: 0.0,
                                 ),
@@ -105,34 +105,34 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                               obscureText: false,
                               decoration: InputDecoration(
                                 labelText: 'Email',
-                                labelStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                                labelStyle: AppTheme.of(context).labelLarge.override(
                                       font: GoogleFonts.poppins(
-                                        fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                                        fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                                        fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                                       ),
-                                      color: FlutterFlowTheme.of(context).primary,
+                                      color: AppTheme.of(context).primary,
                                       fontSize: 16.0,
                                       letterSpacing: 0.0,
                                     ),
                                 hintText: 'Your email',
-                                hintStyle: FlutterFlowTheme.of(context).bodySmall.override(
+                                hintStyle: AppTheme.of(context).bodySmall.override(
                                       font: GoogleFonts.lexendDeca(
-                                        fontWeight: FlutterFlowTheme.of(context).bodySmall.fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context).bodySmall.fontStyle,
+                                        fontWeight: AppTheme.of(context).bodySmall.fontWeight,
+                                        fontStyle: AppTheme.of(context).bodySmall.fontStyle,
                                       ),
-                                      color: FlutterFlowTheme.of(context).alternate,
+                                      color: AppTheme.of(context).alternate,
                                       letterSpacing: 0.0,
                                     ),
                                 enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                    color: FlutterFlowTheme.of(context).alternate,
+                                    color: AppTheme.of(context).alternate,
                                     width: 1.0,
                                   ),
                                   borderRadius: BorderRadius.circular(16.0),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                    color: FlutterFlowTheme.of(context).alternate,
+                                    color: AppTheme.of(context).alternate,
                                     width: 1.0,
                                   ),
                                   borderRadius: BorderRadius.circular(16.0),
@@ -154,12 +154,12 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                                 filled: true,
                                 fillColor: const Color(0xFFF9FAFB),
                               ),
-                              style: FlutterFlowTheme.of(context).bodyMedium.override(
+                              style: AppTheme.of(context).bodyMedium.override(
                                     font: GoogleFonts.lexendDeca(
-                                      fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                      fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                      fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                     ),
-                                    color: FlutterFlowTheme.of(context).secondary,
+                                    color: AppTheme.of(context).secondary,
                                     fontSize: 14.0,
                                     letterSpacing: 0.0,
                                   ),
@@ -186,10 +186,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                                           content: Text(
                                             'Password reset email sent',
                                             style: TextStyle(
-                                              color: FlutterFlowTheme.of(context).primaryText,
+                                              color: AppTheme.of(context).primaryText,
                                             ),
                                           ),
-                                          backgroundColor: FlutterFlowTheme.of(context).secondary,
+                                          backgroundColor: AppTheme.of(context).secondary,
                                         ),
                                       );
                                       context.pop();
@@ -201,10 +201,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                                           content: Text(
                                             e.toString(),
                                             style: TextStyle(
-                                              color: FlutterFlowTheme.of(context).primaryText,
+                                              color: AppTheme.of(context).primaryText,
                                             ),
                                           ),
-                                          backgroundColor: FlutterFlowTheme.of(context).secondary,
+                                          backgroundColor: AppTheme.of(context).secondary,
                                         ),
                                       );
                                     }
@@ -217,11 +217,11 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                                 height: 50.0,
                                 padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
                                 iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                                color: FlutterFlowTheme.of(context).primary,
-                                textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                                color: AppTheme.of(context).primary,
+                                textStyle: AppTheme.of(context).titleSmall.override(
                                       font: GoogleFonts.lexendDeca(
-                                        fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
+                                        fontWeight: AppTheme.of(context).titleSmall.fontWeight,
+                                        fontStyle: AppTheme.of(context).titleSmall.fontStyle,
                                       ),
                                       color: Colors.white,
                                       fontSize: 16.0,

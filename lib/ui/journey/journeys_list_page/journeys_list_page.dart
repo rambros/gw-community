@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/utils/flutter_flow_util.dart';
 
 import 'view_model/journeys_list_view_model.dart';
@@ -48,22 +48,22 @@ class _JourneysListPageState extends State<JourneysListPage> with TickerProvider
     final viewModel = context.watch<JourneysListViewModel>();
 
     return Scaffold(
-      backgroundColor: FlutterFlowTheme.of(context).secondary,
+      backgroundColor: AppTheme.of(context).secondary,
       appBar: AppBar(
-        backgroundColor: FlutterFlowTheme.of(context).primary,
+        backgroundColor: AppTheme.of(context).primary,
         automaticallyImplyLeading: false,
         title: Text(
           'Journeys',
-          style: FlutterFlowTheme.of(context).bodyMedium.override(
+          style: AppTheme.of(context).bodyMedium.override(
                 font: GoogleFonts.lexendDeca(
-                  fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                  fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                  fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                 ),
                 color: Colors.white,
                 fontSize: 20.0,
                 letterSpacing: 0.0,
-                fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
               ),
         ),
         actions: const [],
@@ -81,20 +81,20 @@ class _JourneysListPageState extends State<JourneysListPage> with TickerProvider
                   Align(
                     alignment: const Alignment(0.0, 0),
                     child: TabBar(
-                      labelColor: FlutterFlowTheme.of(context).primaryText,
-                      unselectedLabelColor: FlutterFlowTheme.of(context).alternate,
-                      labelStyle: FlutterFlowTheme.of(context).titleMedium.override(
+                      labelColor: AppTheme.of(context).primaryText,
+                      unselectedLabelColor: AppTheme.of(context).alternate,
+                      labelStyle: AppTheme.of(context).titleMedium.override(
                             font: GoogleFonts.lexendDeca(
-                              fontWeight: FlutterFlowTheme.of(context).titleMedium.fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                              fontWeight: AppTheme.of(context).titleMedium.fontWeight,
+                              fontStyle: AppTheme.of(context).titleMedium.fontStyle,
                             ),
                             fontSize: 16.0,
                             letterSpacing: 0.0,
-                            fontWeight: FlutterFlowTheme.of(context).titleMedium.fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                            fontWeight: AppTheme.of(context).titleMedium.fontWeight,
+                            fontStyle: AppTheme.of(context).titleMedium.fontStyle,
                           ),
                       unselectedLabelStyle: const TextStyle(),
-                      indicatorColor: FlutterFlowTheme.of(context).primary,
+                      indicatorColor: AppTheme.of(context).primary,
                       padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 0.0),
                       tabs: const [
                         Tab(text: 'My Journeys'),
@@ -128,7 +128,7 @@ class _JourneysListPageState extends State<JourneysListPage> with TickerProvider
           width: 50.0,
           height: 50.0,
           child: SpinKitRipple(
-            color: FlutterFlowTheme.of(context).primary,
+            color: AppTheme.of(context).primary,
             size: 50.0,
           ),
         ),
@@ -193,7 +193,7 @@ class _JourneysListPageState extends State<JourneysListPage> with TickerProvider
           width: 50.0,
           height: 50.0,
           child: SpinKitRipple(
-            color: FlutterFlowTheme.of(context).primary,
+            color: AppTheme.of(context).primary,
             size: 50.0,
           ),
         ),

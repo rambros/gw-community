@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '/data/services/supabase/supabase.dart';
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/utils/flutter_flow_util.dart';
 import '/index.dart';
 
@@ -32,7 +32,7 @@ class EventCardWidget extends StatelessWidget {
       width: MediaQuery.sizeOf(context).width,
       height: 110.0,
       decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).primaryBackground,
+        color: AppTheme.of(context).primaryBackground,
         boxShadow: const [
           BoxShadow(
             blurRadius: 15.0,
@@ -83,39 +83,39 @@ class EventCardWidget extends StatelessWidget {
                     if (userRegistered == true)
                       Text(
                         'Registered',
-                        style: FlutterFlowTheme.of(context).titleMedium.override(
+                        style: AppTheme.of(context).titleMedium.override(
                               font: GoogleFonts.lexendDeca(
                                 fontWeight: FontWeight.w300,
-                                fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                                fontStyle: AppTheme.of(context).titleMedium.fontStyle,
                               ),
-                              color: FlutterFlowTheme.of(context).primary,
+                              color: AppTheme.of(context).primary,
                               fontSize: 12.0,
                               letterSpacing: 0.0,
                               fontWeight: FontWeight.w300,
-                              fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                              fontStyle: AppTheme.of(context).titleMedium.fontStyle,
                             ),
                       ),
                     Padding(
                       padding: const EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 3.0),
                       child: Text(
                         eventName ?? '',
-                        style: FlutterFlowTheme.of(context).titleMedium.override(
+                        style: AppTheme.of(context).titleMedium.override(
                               font: GoogleFonts.lexendDeca(
                                 fontWeight: FontWeight.w500,
-                                fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                                fontStyle: AppTheme.of(context).titleMedium.fontStyle,
                               ),
-                              color: FlutterFlowTheme.of(context).secondary,
+                              color: AppTheme.of(context).secondary,
                               fontSize: 18.0,
                               letterSpacing: 0.0,
                               fontWeight: FontWeight.w500,
-                              fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                              fontStyle: AppTheme.of(context).titleMedium.fontStyle,
                             ),
                       ),
                     ),
                     Text(
                       'by ${facilitator ?? '-'}',
                       style: GoogleFonts.lexendDeca(
-                        color: FlutterFlowTheme.of(context).secondary,
+                        color: AppTheme.of(context).secondary,
                         fontWeight: FontWeight.normal,
                         fontSize: 12.0,
                       ),
@@ -124,15 +124,15 @@ class EventCardWidget extends StatelessWidget {
                       padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 0.0),
                       child: Text(
                         '$date, $time',
-                        style: FlutterFlowTheme.of(context).bodySmall.override(
+                        style: AppTheme.of(context).bodySmall.override(
                               font: GoogleFonts.lexendDeca(
                                 fontWeight: FontWeight.normal,
-                                fontStyle: FlutterFlowTheme.of(context).bodySmall.fontStyle,
+                                fontStyle: AppTheme.of(context).bodySmall.fontStyle,
                               ),
-                              color: FlutterFlowTheme.of(context).secondary,
+                              color: AppTheme.of(context).secondary,
                               letterSpacing: 0.0,
-                              fontWeight: FlutterFlowTheme.of(context).bodySmall.fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context).bodySmall.fontStyle,
+                              fontWeight: AppTheme.of(context).bodySmall.fontWeight,
+                              fontStyle: AppTheme.of(context).bodySmall.fontStyle,
                             ),
                       ),
                     ),

@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/utils/flutter_flow_util.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/ui/core/ui/flutter_flow_icon_button.dart';
@@ -58,9 +58,9 @@ class _UserJournalEditPageState extends State<UserJournalEditPage> {
 
     return Scaffold(
       key: scaffoldKey,
-      backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+      backgroundColor: AppTheme.of(context).primaryBackground,
       appBar: AppBar(
-        backgroundColor: FlutterFlowTheme.of(context).primary,
+        backgroundColor: AppTheme.of(context).primary,
         automaticallyImplyLeading: false,
         leading: FlutterFlowIconButton(
           borderColor: Colors.transparent,
@@ -68,7 +68,7 @@ class _UserJournalEditPageState extends State<UserJournalEditPage> {
           buttonSize: 46.0,
           icon: Icon(
             Icons.arrow_back_rounded,
-            color: FlutterFlowTheme.of(context).primaryBackground,
+            color: AppTheme.of(context).primaryBackground,
             size: 25.0,
           ),
           onPressed: () async {
@@ -77,15 +77,15 @@ class _UserJournalEditPageState extends State<UserJournalEditPage> {
         ),
         title: Text(
           'Your Journal Entry',
-          style: FlutterFlowTheme.of(context).headlineMedium.override(
+          style: AppTheme.of(context).headlineMedium.override(
                 font: GoogleFonts.lexendDeca(
-                  fontWeight: FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).headlineMedium.fontStyle,
+                  fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
+                  fontStyle: AppTheme.of(context).headlineMedium.fontStyle,
                 ),
-                color: FlutterFlowTheme.of(context).primaryBackground,
+                color: AppTheme.of(context).primaryBackground,
                 letterSpacing: 0.0,
-                fontWeight: FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).headlineMedium.fontStyle,
+                fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
+                fontStyle: AppTheme.of(context).headlineMedium.fontStyle,
               ),
         ),
         actions: const [],
@@ -118,16 +118,16 @@ class _UserJournalEditPageState extends State<UserJournalEditPage> {
                               locale: FFLocalizations.of(context).languageCode,
                             ),
                             minFontSize: 14.0,
-                            style: FlutterFlowTheme.of(context).titleMedium.override(
+                            style: AppTheme.of(context).titleMedium.override(
                                   font: GoogleFonts.lexendDeca(
                                     fontWeight: FontWeight.w500,
-                                    fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                                    fontStyle: AppTheme.of(context).titleMedium.fontStyle,
                                   ),
-                                  color: FlutterFlowTheme.of(context).secondary,
+                                  color: AppTheme.of(context).secondary,
                                   fontSize: 14.0,
                                   letterSpacing: 0.0,
                                   fontWeight: FontWeight.w500,
-                                  fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                                  fontStyle: AppTheme.of(context).titleMedium.fontStyle,
                                 ),
                           ),
                         ],
@@ -141,15 +141,15 @@ class _UserJournalEditPageState extends State<UserJournalEditPage> {
                             widget.userJournalEntryRow?.journeyTitle,
                             'Journey',
                           ),
-                          style: FlutterFlowTheme.of(context).titleMedium.override(
+                          style: AppTheme.of(context).titleMedium.override(
                                 font: GoogleFonts.lexendDeca(
                                   fontWeight: FontWeight.w300,
-                                  fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                                  fontStyle: AppTheme.of(context).titleMedium.fontStyle,
                                 ),
                                 fontSize: 14.0,
                                 letterSpacing: 0.0,
                                 fontWeight: FontWeight.w300,
-                                fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                                fontStyle: AppTheme.of(context).titleMedium.fontStyle,
                               ),
                         ),
                       ],
@@ -159,15 +159,15 @@ class _UserJournalEditPageState extends State<UserJournalEditPage> {
                       children: [
                         Text(
                           '${widget.userJournalEntryRow?.stepNumber?.toString()} - ${widget.userJournalEntryRow?.stepTitle}',
-                          style: FlutterFlowTheme.of(context).titleMedium.override(
+                          style: AppTheme.of(context).titleMedium.override(
                                 font: GoogleFonts.lexendDeca(
                                   fontWeight: FontWeight.w300,
-                                  fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                                  fontStyle: AppTheme.of(context).titleMedium.fontStyle,
                                 ),
                                 fontSize: 14.0,
                                 letterSpacing: 0.0,
                                 fontWeight: FontWeight.w300,
-                                fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                                fontStyle: AppTheme.of(context).titleMedium.fontStyle,
                               ),
                         ),
                       ],
@@ -190,30 +190,30 @@ class _UserJournalEditPageState extends State<UserJournalEditPage> {
                             obscureText: false,
                             decoration: InputDecoration(
                               isDense: true,
-                              labelStyle: FlutterFlowTheme.of(context).labelMedium.override(
+                              labelStyle: AppTheme.of(context).labelMedium.override(
                                     font: GoogleFonts.poppins(
-                                      fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                                      fontWeight: AppTheme.of(context).labelMedium.fontWeight,
+                                      fontStyle: AppTheme.of(context).labelMedium.fontStyle,
                                     ),
-                                    color: FlutterFlowTheme.of(context).primaryBackground,
+                                    color: AppTheme.of(context).primaryBackground,
                                     fontSize: 14.0,
                                     letterSpacing: 0.0,
-                                    fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                                    fontWeight: AppTheme.of(context).labelMedium.fontWeight,
+                                    fontStyle: AppTheme.of(context).labelMedium.fontStyle,
                                   ),
                               hintText: 'TextField',
-                              hintStyle: FlutterFlowTheme.of(context).labelMedium.override(
+                              hintStyle: AppTheme.of(context).labelMedium.override(
                                     font: GoogleFonts.poppins(
-                                      fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                                      fontWeight: AppTheme.of(context).labelMedium.fontWeight,
+                                      fontStyle: AppTheme.of(context).labelMedium.fontStyle,
                                     ),
                                     letterSpacing: 0.0,
-                                    fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                                    fontWeight: AppTheme.of(context).labelMedium.fontWeight,
+                                    fontStyle: AppTheme.of(context).labelMedium.fontStyle,
                                   ),
                               enabledBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: FlutterFlowTheme.of(context).primary,
+                                  color: AppTheme.of(context).primary,
                                   width: 1.0,
                                 ),
                                 borderRadius: BorderRadius.circular(8.0),
@@ -227,20 +227,20 @@ class _UserJournalEditPageState extends State<UserJournalEditPage> {
                               ),
                               errorBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: FlutterFlowTheme.of(context).error,
+                                  color: AppTheme.of(context).error,
                                   width: 1.0,
                                 ),
                                 borderRadius: BorderRadius.circular(8.0),
                               ),
                               focusedErrorBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: FlutterFlowTheme.of(context).error,
+                                  color: AppTheme.of(context).error,
                                   width: 1.0,
                                 ),
                                 borderRadius: BorderRadius.circular(8.0),
                               ),
                               filled: true,
-                              fillColor: FlutterFlowTheme.of(context).primaryBackground,
+                              fillColor: AppTheme.of(context).primaryBackground,
                               suffixIcon: _textController.text.isNotEmpty
                                   ? InkWell(
                                       onTap: () async {
@@ -249,24 +249,24 @@ class _UserJournalEditPageState extends State<UserJournalEditPage> {
                                       },
                                       child: Icon(
                                         Icons.clear,
-                                        color: FlutterFlowTheme.of(context).secondary,
+                                        color: AppTheme.of(context).secondary,
                                         size: 32.0,
                                       ),
                                     )
                                   : null,
                             ),
-                            style: FlutterFlowTheme.of(context).bodyMedium.override(
+                            style: AppTheme.of(context).bodyMedium.override(
                                   font: GoogleFonts.lexendDeca(
-                                    fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                    fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                    fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                   ),
-                                  color: FlutterFlowTheme.of(context).secondary,
+                                  color: AppTheme.of(context).secondary,
                                   letterSpacing: 0.0,
-                                  fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                  fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                  fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                 ),
                             maxLines: 50,
-                            cursorColor: FlutterFlowTheme.of(context).primary,
+                            cursorColor: AppTheme.of(context).primary,
                             enableInteractiveSelection: true,
                           ),
                         ),
@@ -281,7 +281,7 @@ class _UserJournalEditPageState extends State<UserJournalEditPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
                   viewModel.errorMessage!,
-                  style: TextStyle(color: FlutterFlowTheme.of(context).error),
+                  style: TextStyle(color: AppTheme.of(context).error),
                 ),
               ),
             Padding(
@@ -301,20 +301,20 @@ class _UserJournalEditPageState extends State<UserJournalEditPage> {
                         height: 40.0,
                         padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
                         iconPadding: const EdgeInsets.all(0.0),
-                        color: FlutterFlowTheme.of(context).primaryBackground,
-                        textStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                        color: AppTheme.of(context).primaryBackground,
+                        textStyle: AppTheme.of(context).labelLarge.override(
                               font: GoogleFonts.poppins(
-                                fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                                fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                                fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                               ),
-                              color: FlutterFlowTheme.of(context).secondary,
+                              color: AppTheme.of(context).secondary,
                               letterSpacing: 0.0,
-                              fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                              fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                              fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                             ),
                         elevation: 0.0,
                         borderSide: BorderSide(
-                          color: FlutterFlowTheme.of(context).secondaryBackground,
+                          color: AppTheme.of(context).secondaryBackground,
                           width: 0.5,
                         ),
                         borderRadius: BorderRadius.circular(20.0),
@@ -335,11 +335,11 @@ class _UserJournalEditPageState extends State<UserJournalEditPage> {
                                     content: Text(
                                       'Journal saved',
                                       style: TextStyle(
-                                        color: FlutterFlowTheme.of(context).primaryText,
+                                        color: AppTheme.of(context).primaryText,
                                       ),
                                     ),
                                     duration: const Duration(milliseconds: 4000),
-                                    backgroundColor: FlutterFlowTheme.of(context).secondary,
+                                    backgroundColor: AppTheme.of(context).secondary,
                                   ),
                                 );
                                 context.safePop();
@@ -350,20 +350,20 @@ class _UserJournalEditPageState extends State<UserJournalEditPage> {
                         height: 40.0,
                         padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
                         iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                        color: FlutterFlowTheme.of(context).primary,
-                        textStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                        color: AppTheme.of(context).primary,
+                        textStyle: AppTheme.of(context).labelLarge.override(
                               font: GoogleFonts.poppins(
-                                fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                                fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                                fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                               ),
-                              color: FlutterFlowTheme.of(context).primaryBackground,
+                              color: AppTheme.of(context).primaryBackground,
                               letterSpacing: 0.0,
-                              fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                              fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                              fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                             ),
                         elevation: 1.0,
                         borderSide: BorderSide(
-                          color: FlutterFlowTheme.of(context).secondaryBackground,
+                          color: AppTheme.of(context).secondaryBackground,
                           width: 0.5,
                         ),
                         borderRadius: BorderRadius.circular(20.0),

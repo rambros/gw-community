@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/utils/flutter_flow_util.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/data/services/supabase/supabase.dart';
@@ -33,7 +33,7 @@ class GroupNotificationsTab extends StatelessWidget {
                   padding: const EdgeInsetsDirectional.fromSTEB(8.0, 8.0, 8.0, 0.0),
                   child: Text(
                     'Notifications',
-                    style: FlutterFlowTheme.of(context).titleSmall.override(
+                    style: AppTheme.of(context).titleSmall.override(
                           font: GoogleFonts.lexendDeca(
                             fontWeight: FontWeight.w500,
                           ),
@@ -64,14 +64,14 @@ class GroupNotificationsTab extends StatelessWidget {
                       height: 40.0,
                       padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
                       iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      color: FlutterFlowTheme.of(context).primary,
-                      textStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                      color: AppTheme.of(context).primary,
+                      textStyle: AppTheme.of(context).labelLarge.override(
                             font: GoogleFonts.poppins(),
-                            color: FlutterFlowTheme.of(context).primaryBackground,
+                            color: AppTheme.of(context).primaryBackground,
                           ),
                       elevation: 1.0,
                       borderSide: BorderSide(
-                        color: FlutterFlowTheme.of(context).secondaryBackground,
+                        color: AppTheme.of(context).secondaryBackground,
                         width: 0.5,
                       ),
                       borderRadius: BorderRadius.circular(20.0),
@@ -92,7 +92,7 @@ class GroupNotificationsTab extends StatelessWidget {
                       width: 50.0,
                       height: 50.0,
                       child: SpinKitRipple(
-                        color: FlutterFlowTheme.of(context).primary,
+                        color: AppTheme.of(context).primary,
                         size: 50.0,
                       ),
                     ),
@@ -105,7 +105,7 @@ class GroupNotificationsTab extends StatelessWidget {
                       padding: const EdgeInsets.all(16.0),
                       child: Text(
                         'No notifications yet.',
-                        style: FlutterFlowTheme.of(context).bodyMedium,
+                        style: AppTheme.of(context).bodyMedium,
                       ),
                     ),
                   );
@@ -137,7 +137,7 @@ class GroupNotificationsTab extends StatelessWidget {
                           child: Container(
                             width: double.infinity,
                             decoration: BoxDecoration(
-                              color: FlutterFlowTheme.of(context).primaryBackground,
+                              color: AppTheme.of(context).primaryBackground,
                               boxShadow: const [
                                 BoxShadow(
                                   blurRadius: 15.0,
@@ -148,7 +148,7 @@ class GroupNotificationsTab extends StatelessWidget {
                               ],
                               borderRadius: BorderRadius.circular(12.0),
                               border: Border.all(
-                                color: FlutterFlowTheme.of(context).primaryBackground,
+                                color: AppTheme.of(context).primaryBackground,
                                 width: 1.0,
                               ),
                             ),
@@ -175,15 +175,15 @@ class GroupNotificationsTab extends StatelessWidget {
                                               children: [
                                                 Text(
                                                   notification.displayName ?? 'User name',
-                                                  style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                                  style: AppTheme.of(context).bodyMedium.override(
                                                         font: GoogleFonts.lexendDeca(),
-                                                        color: FlutterFlowTheme.of(context).secondary,
+                                                        color: AppTheme.of(context).secondary,
                                                         fontSize: 16.0,
                                                       ),
                                                 ),
                                                 Text(
                                                   dateTimeFormat('relative', notification.updatedAt),
-                                                  style: FlutterFlowTheme.of(context).labelSmall,
+                                                  style: AppTheme.of(context).labelSmall,
                                                 ),
                                               ],
                                             ),
@@ -196,11 +196,11 @@ class GroupNotificationsTab extends StatelessWidget {
                                     padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 16.0),
                                     child: Text(
                                       notification.title!,
-                                      style: FlutterFlowTheme.of(context).bodyLarge.override(
+                                      style: AppTheme.of(context).bodyLarge.override(
                                             font: GoogleFonts.inter(
                                               fontWeight: FontWeight.w500,
                                             ),
-                                            color: FlutterFlowTheme.of(context).primary,
+                                            color: AppTheme.of(context).primary,
                                             fontSize: 16.0,
                                           ),
                                     ),

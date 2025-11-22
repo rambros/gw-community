@@ -2,7 +2,7 @@ import '/ui/core/widgets/user_avatar.dart';
 import '/data/repositories/notification_repository.dart';
 import '/ui/core/ui/flutter_flow_drop_down.dart';
 import '/ui/core/ui/flutter_flow_icon_button.dart';
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/utils/flutter_flow_util.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/ui/core/ui/form_field_controller.dart';
@@ -68,9 +68,9 @@ class _NotificationAddPageState extends State<NotificationAddPage> {
             },
             child: Scaffold(
               key: scaffoldKey,
-              backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+              backgroundColor: AppTheme.of(context).primaryBackground,
               appBar: AppBar(
-                backgroundColor: FlutterFlowTheme.of(context).primary,
+                backgroundColor: AppTheme.of(context).primary,
                 automaticallyImplyLeading: false,
                 leading: FlutterFlowIconButton(
                   borderColor: Colors.transparent,
@@ -86,10 +86,10 @@ class _NotificationAddPageState extends State<NotificationAddPage> {
                 ),
                 title: Text(
                   'New Notification',
-                  style: FlutterFlowTheme.of(context).titleLarge.override(
+                  style: AppTheme.of(context).titleLarge.override(
                         font: GoogleFonts.poppins(
-                          fontWeight: FlutterFlowTheme.of(context).titleLarge.fontWeight,
-                          fontStyle: FlutterFlowTheme.of(context).titleLarge.fontStyle,
+                          fontWeight: AppTheme.of(context).titleLarge.fontWeight,
+                          fontStyle: AppTheme.of(context).titleLarge.fontStyle,
                         ),
                         fontSize: 20.0,
                         letterSpacing: 0.0,
@@ -130,7 +130,7 @@ class _NotificationAddPageState extends State<NotificationAddPage> {
         height: 50.0,
         child: CircularProgressIndicator(
           valueColor: AlwaysStoppedAnimation<Color>(
-            FlutterFlowTheme.of(context).primary,
+            AppTheme.of(context).primary,
           ),
         ),
       ),
@@ -154,12 +154,12 @@ class _NotificationAddPageState extends State<NotificationAddPage> {
                 children: [
                   Text(
                     valueOrDefault<String>(viewModel.currentUser?.displayName, 'name'),
-                    style: FlutterFlowTheme.of(context).bodyLarge.override(
+                    style: AppTheme.of(context).bodyLarge.override(
                           font: GoogleFonts.inter(
                             fontWeight: FontWeight.normal,
-                            fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
+                            fontStyle: AppTheme.of(context).bodyLarge.fontStyle,
                           ),
-                          color: FlutterFlowTheme.of(context).secondary,
+                          color: AppTheme.of(context).secondary,
                           fontSize: 16.0,
                           letterSpacing: 0.0,
                         ),
@@ -167,12 +167,12 @@ class _NotificationAddPageState extends State<NotificationAddPage> {
                   if (widget.groupId != null)
                     Text(
                       'From group ${widget.groupName}',
-                      style: FlutterFlowTheme.of(context).bodyMedium.override(
+                      style: AppTheme.of(context).bodyMedium.override(
                             font: GoogleFonts.lexendDeca(
-                              fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                              fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                              fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                             ),
-                            color: FlutterFlowTheme.of(context).secondary,
+                            color: AppTheme.of(context).secondary,
                             letterSpacing: 0.0,
                           ),
                     ),
@@ -180,12 +180,12 @@ class _NotificationAddPageState extends State<NotificationAddPage> {
                     viewModel.canSelectVisibility && viewModel.visibility != 'everyone'
                         ? 'Sharing only for this group'
                         : 'Sharing for everyone',
-                    style: FlutterFlowTheme.of(context).bodyMedium.override(
+                    style: AppTheme.of(context).bodyMedium.override(
                           font: GoogleFonts.lexendDeca(
-                            fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                            fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                            fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                           ),
-                          color: FlutterFlowTheme.of(context).primary,
+                          color: AppTheme.of(context).primary,
                           fontSize: 12.0,
                           letterSpacing: 0.0,
                         ),
@@ -208,12 +208,12 @@ class _NotificationAddPageState extends State<NotificationAddPage> {
             controller: viewModel.titleController,
             focusNode: viewModel.titleFocusNode,
             decoration: _inputDecoration(context, 'Title'),
-            style: FlutterFlowTheme.of(context).bodyMedium.override(
+            style: AppTheme.of(context).bodyMedium.override(
                   font: GoogleFonts.lexendDeca(
-                    fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                    fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                    fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                    fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                   ),
-                  color: FlutterFlowTheme.of(context).secondary,
+                  color: AppTheme.of(context).secondary,
                   letterSpacing: 0.0,
                 ),
           ),
@@ -224,12 +224,12 @@ class _NotificationAddPageState extends State<NotificationAddPage> {
             controller: viewModel.experienceController,
             focusNode: viewModel.experienceFocusNode,
             decoration: _inputDecoration(context, 'Message'),
-            style: FlutterFlowTheme.of(context).bodyMedium.override(
+            style: AppTheme.of(context).bodyMedium.override(
                   font: GoogleFonts.lexendDeca(
-                    fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                    fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                    fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                    fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                   ),
-                  color: FlutterFlowTheme.of(context).secondary,
+                  color: AppTheme.of(context).secondary,
                   letterSpacing: 0.0,
                 ),
             maxLines: 14,
@@ -244,12 +244,12 @@ class _NotificationAddPageState extends State<NotificationAddPage> {
                   padding: const EdgeInsetsDirectional.fromSTEB(4.0, 0.0, 16.0, 0.0),
                   child: Text(
                     'Visibility',
-                    style: FlutterFlowTheme.of(context).bodyMedium.override(
+                    style: AppTheme.of(context).bodyMedium.override(
                           font: GoogleFonts.lexendDeca(
-                            fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                            fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                            fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                           ),
-                          color: FlutterFlowTheme.of(context).primary,
+                          color: AppTheme.of(context).primary,
                           fontSize: 16.0,
                           letterSpacing: 0.0,
                         ),
@@ -262,17 +262,17 @@ class _NotificationAddPageState extends State<NotificationAddPage> {
                   onChanged: viewModel.setVisibility,
                   width: 180.0,
                   height: 50.0,
-                  textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
+                  textStyle: AppTheme.of(context).bodyMedium.override(
                         font: GoogleFonts.lexendDeca(
-                          fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                          fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                          fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                          fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                         ),
-                        color: FlutterFlowTheme.of(context).secondary,
+                        color: AppTheme.of(context).secondary,
                         letterSpacing: 0.0,
                       ),
-                  fillColor: FlutterFlowTheme.of(context).primaryBackground,
+                  fillColor: AppTheme.of(context).primaryBackground,
                   elevation: 2.0,
-                  borderColor: FlutterFlowTheme.of(context).alternate,
+                  borderColor: AppTheme.of(context).alternate,
                   borderWidth: 1.0,
                   borderRadius: 16.0,
                   margin: const EdgeInsetsDirectional.fromSTEB(12.0, 4.0, 12.0, 4.0),
@@ -286,8 +286,8 @@ class _NotificationAddPageState extends State<NotificationAddPage> {
             padding: const EdgeInsetsDirectional.fromSTEB(8.0, 8.0, 8.0, 0.0),
             child: Text(
               viewModel.errorMessage!,
-              style: FlutterFlowTheme.of(context).labelMedium.copyWith(
-                    color: FlutterFlowTheme.of(context).error,
+              style: AppTheme.of(context).labelMedium.copyWith(
+                    color: AppTheme.of(context).error,
                   ),
             ),
           ),
@@ -298,33 +298,33 @@ class _NotificationAddPageState extends State<NotificationAddPage> {
   InputDecoration _inputDecoration(BuildContext context, String label) {
     return InputDecoration(
       labelText: label,
-      labelStyle: FlutterFlowTheme.of(context).labelLarge.override(
+      labelStyle: AppTheme.of(context).labelLarge.override(
             font: GoogleFonts.poppins(
-              fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-              fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+              fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+              fontStyle: AppTheme.of(context).labelLarge.fontStyle,
             ),
-            color: FlutterFlowTheme.of(context).primary,
+            color: AppTheme.of(context).primary,
             fontSize: 16.0,
             letterSpacing: 0.0,
           ),
-      hintStyle: FlutterFlowTheme.of(context).bodySmall.override(
+      hintStyle: AppTheme.of(context).bodySmall.override(
             font: GoogleFonts.lexendDeca(
-              fontWeight: FlutterFlowTheme.of(context).bodySmall.fontWeight,
-              fontStyle: FlutterFlowTheme.of(context).bodySmall.fontStyle,
+              fontWeight: AppTheme.of(context).bodySmall.fontWeight,
+              fontStyle: AppTheme.of(context).bodySmall.fontStyle,
             ),
-            color: FlutterFlowTheme.of(context).alternate,
+            color: AppTheme.of(context).alternate,
             letterSpacing: 0.0,
           ),
       enabledBorder: OutlineInputBorder(
         borderSide: BorderSide(
-          color: FlutterFlowTheme.of(context).alternate,
+          color: AppTheme.of(context).alternate,
           width: 1.0,
         ),
         borderRadius: BorderRadius.circular(16.0),
       ),
       focusedBorder: OutlineInputBorder(
         borderSide: BorderSide(
-          color: FlutterFlowTheme.of(context).alternate,
+          color: AppTheme.of(context).alternate,
           width: 1.0,
         ),
         borderRadius: BorderRadius.circular(16.0),
@@ -348,18 +348,18 @@ class _NotificationAddPageState extends State<NotificationAddPage> {
               options: FFButtonOptions(
                 height: 40.0,
                 padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-                color: FlutterFlowTheme.of(context).primaryBackground,
-                textStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                color: AppTheme.of(context).primaryBackground,
+                textStyle: AppTheme.of(context).labelLarge.override(
                       font: GoogleFonts.poppins(
-                        fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                        fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                        fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                        fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                       ),
-                      color: FlutterFlowTheme.of(context).secondary,
+                      color: AppTheme.of(context).secondary,
                       letterSpacing: 0.0,
                     ),
                 elevation: 0.0,
                 borderSide: BorderSide(
-                  color: FlutterFlowTheme.of(context).secondaryBackground,
+                  color: AppTheme.of(context).secondaryBackground,
                   width: 0.5,
                 ),
                 borderRadius: BorderRadius.circular(20.0),
@@ -377,10 +377,10 @@ class _NotificationAddPageState extends State<NotificationAddPage> {
                         content: Text(
                           'Notification created with success',
                           style: TextStyle(
-                            color: FlutterFlowTheme.of(context).primaryText,
+                            color: AppTheme.of(context).primaryText,
                           ),
                         ),
-                        backgroundColor: FlutterFlowTheme.of(context).secondary,
+                        backgroundColor: AppTheme.of(context).secondary,
                       ),
                     );
                     context.pushNamed(CommunityPage.routeName);
@@ -389,18 +389,18 @@ class _NotificationAddPageState extends State<NotificationAddPage> {
             options: FFButtonOptions(
               height: 40.0,
               padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-              color: FlutterFlowTheme.of(context).primary,
-              textStyle: FlutterFlowTheme.of(context).labelLarge.override(
+              color: AppTheme.of(context).primary,
+              textStyle: AppTheme.of(context).labelLarge.override(
                     font: GoogleFonts.poppins(
-                      fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                      fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                      fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                      fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                     ),
-                    color: FlutterFlowTheme.of(context).primaryBackground,
+                    color: AppTheme.of(context).primaryBackground,
                     letterSpacing: 0.0,
                   ),
               elevation: 1.0,
               borderSide: BorderSide(
-                color: FlutterFlowTheme.of(context).secondaryBackground,
+                color: AppTheme.of(context).secondaryBackground,
                 width: 0.5,
               ),
               borderRadius: BorderRadius.circular(20.0),

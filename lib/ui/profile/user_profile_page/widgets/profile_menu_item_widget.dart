@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ProfileMenuItemWidget extends StatelessWidget {
@@ -39,16 +39,16 @@ class ProfileMenuItemWidget extends StatelessWidget {
                   padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 0.0, 0.0),
                   child: Text(
                     text,
-                    style: FlutterFlowTheme.of(context).bodyMedium.override(
+                    style: AppTheme.of(context).bodyMedium.override(
                           font: GoogleFonts.lexendDeca(
                             fontWeight: FontWeight.normal,
-                            fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                            fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                           ),
-                          color: textColor ?? FlutterFlowTheme.of(context).secondary,
+                          color: textColor ?? AppTheme.of(context).secondary,
                           fontSize: 14.0,
                           letterSpacing: 0.0,
                           fontWeight: FontWeight.normal,
-                          fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                          fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                         ),
                   ),
                 ),

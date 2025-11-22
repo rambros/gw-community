@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/utils/flutter_flow_util.dart';
 import '/data/services/supabase/supabase.dart';
 import '/data/repositories/journeys_repository.dart';
@@ -63,7 +63,7 @@ class _JourneyStepDetailsPageState extends State<JourneyStepDetailsPage> {
   Widget build(BuildContext context) {
     if (_viewModel == null) {
       return Scaffold(
-        backgroundColor: FlutterFlowTheme.of(context).secondary,
+        backgroundColor: AppTheme.of(context).secondary,
         body: const Center(child: CircularProgressIndicator()),
       );
     }
@@ -71,22 +71,22 @@ class _JourneyStepDetailsPageState extends State<JourneyStepDetailsPage> {
     return ChangeNotifierProvider.value(
       value: _viewModel!,
       child: Scaffold(
-        backgroundColor: FlutterFlowTheme.of(context).secondary,
+        backgroundColor: AppTheme.of(context).secondary,
         appBar: AppBar(
-          backgroundColor: FlutterFlowTheme.of(context).primary,
+          backgroundColor: AppTheme.of(context).primary,
           automaticallyImplyLeading: false,
           title: Text(
             FFLocalizations.of(context).getText('3k4dstim' /* Journey */),
-            style: FlutterFlowTheme.of(context).bodyMedium.override(
+            style: AppTheme.of(context).bodyMedium.override(
                   font: GoogleFonts.lexendDeca(
-                    fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                    fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                    fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                    fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                   ),
                   color: Colors.white,
                   fontSize: 20.0,
                   letterSpacing: 0.0,
-                  fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                  fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                  fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                 ),
           ),
           actions: const [],
@@ -113,7 +113,7 @@ class _JourneyStepDetailsPageState extends State<JourneyStepDetailsPage> {
               width: 50.0,
               height: 50.0,
               child: SpinKitRipple(
-                color: FlutterFlowTheme.of(context).primary,
+                color: AppTheme.of(context).primary,
                 size: 50.0,
               ),
             ),
@@ -124,7 +124,7 @@ class _JourneyStepDetailsPageState extends State<JourneyStepDetailsPage> {
           return Center(
             child: Text(
               viewModel.errorMessage!,
-              style: FlutterFlowTheme.of(context).bodyMedium,
+              style: AppTheme.of(context).bodyMedium,
             ),
           );
         }
@@ -137,7 +137,7 @@ class _JourneyStepDetailsPageState extends State<JourneyStepDetailsPage> {
               width: double.infinity,
               height: MediaQuery.sizeOf(context).height * 0.9,
               decoration: BoxDecoration(
-                color: FlutterFlowTheme.of(context).secondary,
+                color: AppTheme.of(context).secondary,
               ),
               child: Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 8.0, 0.0),
@@ -156,16 +156,16 @@ class _JourneyStepDetailsPageState extends State<JourneyStepDetailsPage> {
                               child: Text(
                                 'Welcome back, ${FFAppState().loginUser.firstName}',
                                 textAlign: TextAlign.center,
-                                style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                style: AppTheme.of(context).bodyMedium.override(
                                       font: GoogleFonts.lexendDeca(
-                                        fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                        fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                        fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                       ),
-                                      color: FlutterFlowTheme.of(context).tertiary400,
+                                      color: AppTheme.of(context).tertiary400,
                                       fontSize: 16.0,
                                       letterSpacing: 0.0,
-                                      fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                      fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                      fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                     ),
                               ),
                             ),

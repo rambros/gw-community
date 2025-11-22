@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/utils/custom_functions.dart' as functions;
 
 /// Rounded avatar that shows either the user's photo or derived initials.
@@ -32,10 +32,10 @@ class UserAvatar extends StatelessWidget {
         width: size,
         height: size,
         decoration: BoxDecoration(
-          color: FlutterFlowTheme.of(context).alternate,
+          color: AppTheme.of(context).alternate,
           shape: BoxShape.circle,
           border: Border.all(
-            color: FlutterFlowTheme.of(context).alternate,
+            color: AppTheme.of(context).alternate,
             width: 0.0,
           ),
         ),
@@ -97,12 +97,12 @@ class _InitialsPlaceholder extends StatelessWidget {
       child: Text(
         initials,
         textAlign: TextAlign.center,
-        style: FlutterFlowTheme.of(context).bodyMedium.override(
+        style: AppTheme.of(context).bodyMedium.override(
               font: GoogleFonts.lexendDeca(
-                fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
               ),
-              color: FlutterFlowTheme.of(context).primaryText,
+              color: AppTheme.of(context).primaryText,
               fontSize: size * 0.4,
             ),
       ),

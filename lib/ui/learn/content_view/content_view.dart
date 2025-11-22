@@ -4,7 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '/ui/core/widgets/audio_player_widget.dart';
 import '/data/services/supabase/supabase.dart';
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/ui/core/ui/flutter_flow_animations.dart';
 import '/utils/flutter_flow_util.dart';
 import '/ui/core/ui/flutter_flow_pdf_viewer.dart';
@@ -70,7 +70,7 @@ class _ContentViewState extends State<ContentView> with TickerProviderStateMixin
             child: Container(
               width: double.infinity,
               height: double.infinity,
-              color: FlutterFlowTheme.of(context).primaryBackground.withValues(alpha: 0.82),
+              color: AppTheme.of(context).primaryBackground.withValues(alpha: 0.82),
               child: Align(
                 alignment: const AlignmentDirectional(0.0, 0.0),
                 child: GestureDetector(
@@ -84,7 +84,7 @@ class _ContentViewState extends State<ContentView> with TickerProviderStateMixin
                         maxHeight: modalMaxHeight,
                       ),
                       decoration: BoxDecoration(
-                        color: FlutterFlowTheme.of(context).primaryBackground,
+                        color: AppTheme.of(context).primaryBackground,
                         boxShadow: const [
                           BoxShadow(
                             blurRadius: 12.0,
@@ -118,12 +118,12 @@ class _ContentViewState extends State<ContentView> with TickerProviderStateMixin
                                         width: 40.0,
                                         height: 40.0,
                                         decoration: BoxDecoration(
-                                          color: FlutterFlowTheme.of(context).secondaryBackground,
+                                          color: AppTheme.of(context).secondaryBackground,
                                           shape: BoxShape.circle,
                                         ),
                                         child: Icon(
                                           Icons.close_rounded,
-                                          color: FlutterFlowTheme.of(context).primary,
+                                          color: AppTheme.of(context).primary,
                                           size: 24.0,
                                         ),
                                       ),
@@ -147,16 +147,16 @@ class _ContentViewState extends State<ContentView> with TickerProviderStateMixin
                                         viewModel.viewContentRow.title,
                                         'Title',
                                       ),
-                                      style: FlutterFlowTheme.of(context).bodyLarge.override(
+                                      style: AppTheme.of(context).bodyLarge.override(
                                             font: GoogleFonts.poppins(
                                               fontWeight: FontWeight.bold,
-                                              fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
+                                              fontStyle: AppTheme.of(context).bodyLarge.fontStyle,
                                             ),
-                                            color: FlutterFlowTheme.of(context).primary,
+                                            color: AppTheme.of(context).primary,
                                             fontSize: 16.0,
                                             letterSpacing: 0.0,
                                             fontWeight: FontWeight.bold,
-                                            fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
+                                            fontStyle: AppTheme.of(context).bodyLarge.fontStyle,
                                           ),
                                     ),
                                   ),
@@ -168,16 +168,16 @@ class _ContentViewState extends State<ContentView> with TickerProviderStateMixin
                                       'With ${(List<String> listSpeakers) {
                                         return listSpeakers.join(', ');
                                       }(viewModel.viewContentRow.authorsNames.toList())}',
-                                      style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                      style: AppTheme.of(context).bodyMedium.override(
                                             font: GoogleFonts.lexendDeca(
                                               fontWeight: FontWeight.normal,
-                                              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                              fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                             ),
-                                            color: FlutterFlowTheme.of(context).primary,
+                                            color: AppTheme.of(context).primary,
                                             fontSize: 12.0,
                                             letterSpacing: 0.0,
                                             fontWeight: FontWeight.normal,
-                                            fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                            fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                           ),
                                     ),
                                   ),
@@ -189,16 +189,16 @@ class _ContentViewState extends State<ContentView> with TickerProviderStateMixin
                                       padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 8.0),
                                       child: Text(
                                         'at ${viewModel.viewContentRow.eventName}',
-                                        style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                        style: AppTheme.of(context).bodyMedium.override(
                                               font: GoogleFonts.lexendDeca(
                                                 fontWeight: FontWeight.normal,
-                                                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                                fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                               ),
-                                              color: FlutterFlowTheme.of(context).primary,
+                                              color: AppTheme.of(context).primary,
                                               fontSize: 12.0,
                                               letterSpacing: 0.0,
                                               fontWeight: FontWeight.normal,
-                                              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                              fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                             ),
                                       ),
                                     ),
@@ -212,16 +212,16 @@ class _ContentViewState extends State<ContentView> with TickerProviderStateMixin
                                         viewModel.viewContentRow.description,
                                         'description',
                                       ),
-                                      style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                      style: AppTheme.of(context).bodyMedium.override(
                                             font: GoogleFonts.lexendDeca(
                                               fontWeight: FontWeight.normal,
-                                              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                              fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                             ),
-                                            color: FlutterFlowTheme.of(context).primary,
+                                            color: AppTheme.of(context).primary,
                                             fontSize: 14.0,
                                             letterSpacing: 0.0,
                                             fontWeight: FontWeight.normal,
-                                            fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                            fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                           ),
                                     )),
                                   ),
@@ -238,7 +238,7 @@ class _ContentViewState extends State<ContentView> with TickerProviderStateMixin
                                         audioUrl: viewModel.viewContentRow.audioUrl!,
                                         audioTitle: viewModel.viewContentRow.title!,
                                         audioArt: ' ',
-                                        colorButton: FlutterFlowTheme.of(context).primary,
+                                        colorButton: AppTheme.of(context).primary,
                                       ),
                                     ),
 

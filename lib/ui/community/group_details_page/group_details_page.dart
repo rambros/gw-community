@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/utils/flutter_flow_util.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/ui/core/ui/flutter_flow_icon_button.dart';
@@ -65,9 +65,9 @@ class GroupDetailsPageView extends StatelessWidget {
         FocusManager.instance.primaryFocus?.unfocus();
       },
       child: Scaffold(
-        backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+        backgroundColor: AppTheme.of(context).primaryBackground,
         appBar: AppBar(
-          backgroundColor: FlutterFlowTheme.of(context).primary,
+          backgroundColor: AppTheme.of(context).primary,
           automaticallyImplyLeading: false,
           actions: const [],
           flexibleSpace: FlexibleSpaceBar(
@@ -93,11 +93,11 @@ class GroupDetailsPageView extends StatelessWidget {
                   ),
                   Text(
                     'Group Details',
-                    style: FlutterFlowTheme.of(context).titleLarge.override(
+                    style: AppTheme.of(context).titleLarge.override(
                           font: GoogleFonts.poppins(
-                            fontWeight: FlutterFlowTheme.of(context).titleLarge.fontWeight,
+                            fontWeight: AppTheme.of(context).titleLarge.fontWeight,
                           ),
-                          color: FlutterFlowTheme.of(context).primaryBackground,
+                          color: AppTheme.of(context).primaryBackground,
                           fontSize: 20.0,
                         ),
                   ),
@@ -137,8 +137,8 @@ class GroupDetailsPageView extends StatelessWidget {
                       height: 40.0,
                       padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
                       iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      color: FlutterFlowTheme.of(context).primary,
-                      textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                      color: AppTheme.of(context).primary,
+                      textStyle: AppTheme.of(context).titleSmall.override(
                             font: GoogleFonts.lexendDeca(),
                             color: Colors.white,
                           ),
@@ -190,7 +190,7 @@ class GroupDetailsPageView extends StatelessWidget {
                           padding: const EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 0.0),
                           child: Text(
                             group.name!,
-                            style: FlutterFlowTheme.of(context).headlineSmall.override(
+                            style: AppTheme.of(context).headlineSmall.override(
                                   font: GoogleFonts.lexendDeca(),
                                 ),
                           ),
@@ -200,9 +200,9 @@ class GroupDetailsPageView extends StatelessWidget {
                             group.numberMembers,
                             formatType: FormatType.compact,
                           )} members',
-                          style: FlutterFlowTheme.of(context).bodyMedium.override(
+                          style: AppTheme.of(context).bodyMedium.override(
                                 font: GoogleFonts.lexendDeca(),
-                                color: FlutterFlowTheme.of(context).secondary,
+                                color: AppTheme.of(context).secondary,
                                 fontSize: 14.0,
                               ),
                         ),
@@ -219,13 +219,13 @@ class GroupDetailsPageView extends StatelessWidget {
                       alignment: const Alignment(0.0, 0),
                       child: TabBar(
                         isScrollable: true,
-                        labelColor: FlutterFlowTheme.of(context).primary,
-                        labelStyle: FlutterFlowTheme.of(context).bodyMedium.override(
+                        labelColor: AppTheme.of(context).primary,
+                        labelStyle: AppTheme.of(context).bodyMedium.override(
                               font: GoogleFonts.lexendDeca(),
                               fontSize: 16.0,
                             ),
                         unselectedLabelStyle: const TextStyle(),
-                        indicatorColor: FlutterFlowTheme.of(context).secondary,
+                        indicatorColor: AppTheme.of(context).secondary,
                         tabs: const [
                           Tab(text: 'Share'),
                           Tab(text: 'Events'),

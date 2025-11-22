@@ -3,7 +3,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/utils/flutter_flow_util.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/index.dart';
@@ -39,22 +39,22 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
     return Scaffold(
       key: scaffoldKey,
-      backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+      backgroundColor: AppTheme.of(context).primaryBackground,
       appBar: AppBar(
-        backgroundColor: FlutterFlowTheme.of(context).primary,
+        backgroundColor: AppTheme.of(context).primary,
         automaticallyImplyLeading: false,
         title: Text(
           'Profile',
-          style: FlutterFlowTheme.of(context).headlineMedium.override(
+          style: AppTheme.of(context).headlineMedium.override(
                 font: GoogleFonts.lexendDeca(
-                  fontWeight: FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).headlineMedium.fontStyle,
+                  fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
+                  fontStyle: AppTheme.of(context).headlineMedium.fontStyle,
                 ),
                 color: Colors.white,
                 fontSize: 20.0,
                 letterSpacing: 0.0,
-                fontWeight: FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).headlineMedium.fontStyle,
+                fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
+                fontStyle: AppTheme.of(context).headlineMedium.fontStyle,
               ),
         ),
         actions: const [],
@@ -72,7 +72,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
           width: 50.0,
           height: 50.0,
           child: SpinKitRipple(
-            color: FlutterFlowTheme.of(context).primary,
+            color: AppTheme.of(context).primary,
             size: 50.0,
           ),
         ),
@@ -83,7 +83,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
       return Center(
         child: Text(
           viewModel.errorMessage!,
-          style: FlutterFlowTheme.of(context).bodyMedium,
+          style: AppTheme.of(context).bodyMedium,
         ),
       );
     }
@@ -115,14 +115,14 @@ class _UserProfilePageState extends State<UserProfilePage> {
                           userProfile?.fullName,
                           'Name',
                         ),
-                        style: FlutterFlowTheme.of(context).headlineSmall.override(
+                        style: AppTheme.of(context).headlineSmall.override(
                               font: GoogleFonts.lexendDeca(
-                                fontWeight: FlutterFlowTheme.of(context).headlineSmall.fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context).headlineSmall.fontStyle,
+                                fontWeight: AppTheme.of(context).headlineSmall.fontWeight,
+                                fontStyle: AppTheme.of(context).headlineSmall.fontStyle,
                               ),
                               letterSpacing: 0.0,
-                              fontWeight: FlutterFlowTheme.of(context).headlineSmall.fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context).headlineSmall.fontStyle,
+                              fontWeight: AppTheme.of(context).headlineSmall.fontWeight,
+                              fontStyle: AppTheme.of(context).headlineSmall.fontStyle,
                             ),
                       ),
                       Align(
@@ -135,16 +135,16 @@ class _UserProfilePageState extends State<UserProfilePage> {
                               'Email',
                             ),
                             textAlign: TextAlign.start,
-                            style: FlutterFlowTheme.of(context).bodyMedium.override(
+                            style: AppTheme.of(context).bodyMedium.override(
                                   font: GoogleFonts.lexendDeca(
                                     fontWeight: FontWeight.normal,
-                                    fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                    fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                   ),
-                                  color: FlutterFlowTheme.of(context).primary,
+                                  color: AppTheme.of(context).primary,
                                   fontSize: 14.0,
                                   letterSpacing: 0.0,
                                   fontWeight: FontWeight.normal,
-                                  fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                  fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                 ),
                           ),
                         ),
@@ -198,18 +198,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
                 child: ProfileMenuItemWidget(
                   text: 'Favorites',
-                  onTap: () async {
-                    context.pushNamed(
-                      DemoAnimationsWidget.routeName,
-                      extra: <String, dynamic>{
-                        kTransitionInfoKey: const TransitionInfo(
-                          hasTransition: true,
-                          transitionType: PageTransitionType.fade,
-                          duration: Duration(milliseconds: 0),
-                        ),
-                      },
-                    );
-                  },
+                  onTap: () async {},
                 ),
               ),
             ],
@@ -223,16 +212,16 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 padding: const EdgeInsetsDirectional.fromSTEB(24.0, 12.0, 0.0, 12.0),
                 child: Text(
                   'Account Settings',
-                  style: FlutterFlowTheme.of(context).bodyMedium.override(
+                  style: AppTheme.of(context).bodyMedium.override(
                         font: GoogleFonts.lexendDeca(
                           fontWeight: FontWeight.bold,
-                          fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                          fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                         ),
-                        color: FlutterFlowTheme.of(context).secondary,
+                        color: AppTheme.of(context).secondary,
                         fontSize: 14.0,
                         letterSpacing: 0.0,
                         fontWeight: FontWeight.bold,
-                        fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                        fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                       ),
                 ),
               ),
@@ -300,16 +289,16 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 height: 48.0,
                 padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
                 iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                color: FlutterFlowTheme.of(context).primary,
-                textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                color: AppTheme.of(context).primary,
+                textStyle: AppTheme.of(context).titleSmall.override(
                       font: GoogleFonts.lexendDeca(
-                        fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                        fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
+                        fontWeight: AppTheme.of(context).titleSmall.fontWeight,
+                        fontStyle: AppTheme.of(context).titleSmall.fontStyle,
                       ),
                       color: Colors.white,
                       letterSpacing: 0.0,
-                      fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                      fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
+                      fontWeight: AppTheme.of(context).titleSmall.fontWeight,
+                      fontStyle: AppTheme.of(context).titleSmall.fontStyle,
                     ),
                 elevation: 3.0,
                 borderSide: const BorderSide(
@@ -352,11 +341,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
               content: Text(
                 'Journey reset with success',
                 style: TextStyle(
-                  color: FlutterFlowTheme.of(context).primaryText,
+                  color: AppTheme.of(context).primaryText,
                 ),
               ),
               duration: const Duration(milliseconds: 4000),
-              backgroundColor: FlutterFlowTheme.of(context).secondary,
+              backgroundColor: AppTheme.of(context).secondary,
             ),
           );
 
@@ -411,11 +400,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
             content: Text(
               'Onboarding reset successfully.',
               style: TextStyle(
-                color: FlutterFlowTheme.of(context).primaryText,
+                color: AppTheme.of(context).primaryText,
               ),
             ),
             duration: const Duration(milliseconds: 4000),
-            backgroundColor: FlutterFlowTheme.of(context).secondary,
+            backgroundColor: AppTheme.of(context).secondary,
           ),
         );
       }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/utils/flutter_flow_util.dart';
 import '/data/services/supabase/supabase.dart';
 import '/ui/community/event_details_page/event_details_page.dart';
@@ -55,7 +55,7 @@ class HomeEventCard extends StatelessWidget {
                 width: MediaQuery.sizeOf(context).width * 0.9,
                 height: 110.0,
                 decoration: BoxDecoration(
-                  color: FlutterFlowTheme.of(context).primaryBackground,
+                  color: AppTheme.of(context).primaryBackground,
                   boxShadow: const [
                     BoxShadow(
                       blurRadius: 15.0,
@@ -85,7 +85,7 @@ class HomeEventCard extends StatelessWidget {
                               children: [
                                 Text(
                                   'from  Good Wishes Team',
-                                  style: FlutterFlowTheme.of(context).titleMedium.override(
+                                  style: AppTheme.of(context).titleMedium.override(
                                         font: GoogleFonts.lexendDeca(
                                           fontWeight: FontWeight.w300,
                                         ),
@@ -105,11 +105,11 @@ class HomeEventCard extends StatelessWidget {
                                       'title',
                                     ),
                                     minFontSize: 12.0,
-                                    style: FlutterFlowTheme.of(context).titleMedium.override(
+                                    style: AppTheme.of(context).titleMedium.override(
                                           font: GoogleFonts.lexendDeca(
                                             fontWeight: FontWeight.w500,
                                           ),
-                                          color: FlutterFlowTheme.of(context).secondary,
+                                          color: AppTheme.of(context).secondary,
                                           fontSize: 18.0,
                                         ),
                                   ),
@@ -128,7 +128,7 @@ class HomeEventCard extends StatelessWidget {
                                       locale: FFLocalizations.of(context).languageCode,
                                     ),
                                     style: GoogleFonts.lexendDeca(
-                                      color: FlutterFlowTheme.of(context).secondary,
+                                      color: AppTheme.of(context).secondary,
                                       fontWeight: FontWeight.normal,
                                       fontSize: 12.0,
                                     ),

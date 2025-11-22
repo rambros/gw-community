@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import '/ui/core/ui/flutter_flow_drop_down.dart';
 import '/ui/core/ui/flutter_flow_icon_button.dart';
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/utils/flutter_flow_util.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/ui/core/ui/form_field_controller.dart';
@@ -65,9 +65,9 @@ class _EventAddPageState extends State<EventAddPage> {
             },
             child: Scaffold(
               key: scaffoldKey,
-              backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+              backgroundColor: AppTheme.of(context).primaryBackground,
               appBar: AppBar(
-                backgroundColor: FlutterFlowTheme.of(context).primary,
+                backgroundColor: AppTheme.of(context).primary,
                 automaticallyImplyLeading: false,
                 leading: FlutterFlowIconButton(
                   borderColor: Colors.transparent,
@@ -83,15 +83,15 @@ class _EventAddPageState extends State<EventAddPage> {
                 ),
                 title: Text(
                   'New Event',
-                  style: FlutterFlowTheme.of(context).titleLarge.override(
+                  style: AppTheme.of(context).titleLarge.override(
                         font: GoogleFonts.poppins(
-                          fontWeight: FlutterFlowTheme.of(context).titleLarge.fontWeight,
-                          fontStyle: FlutterFlowTheme.of(context).titleLarge.fontStyle,
+                          fontWeight: AppTheme.of(context).titleLarge.fontWeight,
+                          fontStyle: AppTheme.of(context).titleLarge.fontStyle,
                         ),
                         fontSize: 20.0,
                         letterSpacing: 0.0,
-                        fontWeight: FlutterFlowTheme.of(context).titleLarge.fontWeight,
-                        fontStyle: FlutterFlowTheme.of(context).titleLarge.fontStyle,
+                        fontWeight: AppTheme.of(context).titleLarge.fontWeight,
+                        fontStyle: AppTheme.of(context).titleLarge.fontStyle,
                       ),
                 ),
                 centerTitle: true,
@@ -136,7 +136,7 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
     return Container(
       width: double.infinity,
       height: double.infinity,
-      color: FlutterFlowTheme.of(context).primaryBackground,
+      color: AppTheme.of(context).primaryBackground,
       child: Form(
         key: vm.formKey,
         autovalidateMode: AutovalidateMode.disabled,
@@ -190,11 +190,11 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
                     options: const ['group_only', 'everyone'],
                     optionLabels: const ['Only this group', 'Everyone'],
                     onChanged: vm.setVisibility,
-                    textStyle: FlutterFlowTheme.of(context).bodyMedium,
+                    textStyle: AppTheme.of(context).bodyMedium,
                     hintText: 'Visibility',
-                    fillColor: FlutterFlowTheme.of(context).primaryBackground,
+                    fillColor: AppTheme.of(context).primaryBackground,
                     elevation: 2.0,
-                    borderColor: FlutterFlowTheme.of(context).alternate,
+                    borderColor: AppTheme.of(context).alternate,
                     borderWidth: 1.0,
                     borderRadius: 16.0,
                     margin: const EdgeInsetsDirectional.fromSTEB(12.0, 4.0, 12.0, 4.0),
@@ -207,11 +207,11 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
                     options: const ['scheduled', 'recorded'],
                     optionLabels: const ['Scheduled', 'Recorded'],
                     onChanged: vm.setStatus,
-                    textStyle: FlutterFlowTheme.of(context).bodyMedium,
+                    textStyle: AppTheme.of(context).bodyMedium,
                     hintText: 'Status',
-                    fillColor: FlutterFlowTheme.of(context).primaryBackground,
+                    fillColor: AppTheme.of(context).primaryBackground,
                     elevation: 2.0,
-                    borderColor: FlutterFlowTheme.of(context).alternate,
+                    borderColor: AppTheme.of(context).alternate,
                     borderWidth: 1.0,
                     borderRadius: 16.0,
                     margin: const EdgeInsetsDirectional.fromSTEB(12.0, 4.0, 12.0, 4.0),
@@ -222,8 +222,8 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
                     padding: const EdgeInsetsDirectional.fromSTEB(4.0, 8.0, 4.0, 0.0),
                     child: Text(
                       vm.errorMessage!,
-                      style: FlutterFlowTheme.of(context).labelMedium.copyWith(
-                            color: FlutterFlowTheme.of(context).error,
+                      style: AppTheme.of(context).labelMedium.copyWith(
+                            color: AppTheme.of(context).error,
                           ),
                     ),
                   ),
@@ -265,30 +265,30 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
         maxLines: maxLines,
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: FlutterFlowTheme.of(context).labelLarge.override(
+          labelStyle: AppTheme.of(context).labelLarge.override(
                 font: GoogleFonts.poppins(
-                  fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                  fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                  fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                 ),
-                color: FlutterFlowTheme.of(context).primary,
+                color: AppTheme.of(context).primary,
                 fontSize: 16.0,
               ),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: FlutterFlowTheme.of(context).alternate,
+              color: AppTheme.of(context).alternate,
               width: 1.0,
             ),
             borderRadius: BorderRadius.circular(16.0),
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: FlutterFlowTheme.of(context).primary,
+              color: AppTheme.of(context).primary,
               width: 1.0,
             ),
             borderRadius: BorderRadius.circular(16.0),
           ),
         ),
-        style: FlutterFlowTheme.of(context).bodyMedium,
+        style: AppTheme.of(context).bodyMedium,
       ),
     );
   }
@@ -373,23 +373,23 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
   InputDecoration _dateTimeDecoration(BuildContext context, String label) {
     return InputDecoration(
       labelText: label,
-      labelStyle: FlutterFlowTheme.of(context).labelLarge.override(
+      labelStyle: AppTheme.of(context).labelLarge.override(
             font: GoogleFonts.poppins(
-              fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-              fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+              fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+              fontStyle: AppTheme.of(context).labelLarge.fontStyle,
             ),
-            color: FlutterFlowTheme.of(context).primary,
+            color: AppTheme.of(context).primary,
           ),
       enabledBorder: OutlineInputBorder(
         borderSide: BorderSide(
-          color: FlutterFlowTheme.of(context).alternate,
+          color: AppTheme.of(context).alternate,
           width: 1.0,
         ),
         borderRadius: BorderRadius.circular(16.0),
       ),
       focusedBorder: OutlineInputBorder(
         borderSide: BorderSide(
-          color: FlutterFlowTheme.of(context).primary,
+          color: AppTheme.of(context).primary,
           width: 1.0,
         ),
         borderRadius: BorderRadius.circular(16.0),
@@ -401,17 +401,17 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
     return FFButtonOptions(
       height: 40.0,
       padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-      color: FlutterFlowTheme.of(context).primary,
-      textStyle: FlutterFlowTheme.of(context).labelLarge.override(
+      color: AppTheme.of(context).primary,
+      textStyle: AppTheme.of(context).labelLarge.override(
             font: GoogleFonts.poppins(
-              fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-              fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+              fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+              fontStyle: AppTheme.of(context).labelLarge.fontStyle,
             ),
-            color: FlutterFlowTheme.of(context).primaryBackground,
+            color: AppTheme.of(context).primaryBackground,
           ),
       elevation: 1.0,
       borderSide: BorderSide(
-        color: FlutterFlowTheme.of(context).secondaryBackground,
+        color: AppTheme.of(context).secondaryBackground,
         width: 0.5,
       ),
       borderRadius: BorderRadius.circular(20.0),
@@ -427,17 +427,17 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
       options: FFButtonOptions(
         height: 40.0,
         padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-        color: FlutterFlowTheme.of(context).primaryBackground,
-        textStyle: FlutterFlowTheme.of(context).labelLarge.override(
+        color: AppTheme.of(context).primaryBackground,
+        textStyle: AppTheme.of(context).labelLarge.override(
               font: GoogleFonts.poppins(
-                fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                fontStyle: AppTheme.of(context).labelLarge.fontStyle,
               ),
-              color: FlutterFlowTheme.of(context).secondary,
+              color: AppTheme.of(context).secondary,
             ),
         elevation: 0.0,
         borderSide: BorderSide(
-          color: FlutterFlowTheme.of(context).secondaryBackground,
+          color: AppTheme.of(context).secondaryBackground,
           width: 0.5,
         ),
         borderRadius: BorderRadius.circular(20.0),
@@ -456,9 +456,9 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
                 SnackBar(
                   content: Text(
                     'Event created with success',
-                    style: TextStyle(color: FlutterFlowTheme.of(context).primaryText),
+                    style: TextStyle(color: AppTheme.of(context).primaryText),
                   ),
-                  backgroundColor: FlutterFlowTheme.of(context).secondary,
+                  backgroundColor: AppTheme.of(context).secondary,
                 ),
               );
               context.pushNamed(CommunityPage.routeName);
@@ -467,17 +467,17 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
       options: FFButtonOptions(
         height: 40.0,
         padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-        color: FlutterFlowTheme.of(context).primary,
-        textStyle: FlutterFlowTheme.of(context).labelLarge.override(
+        color: AppTheme.of(context).primary,
+        textStyle: AppTheme.of(context).labelLarge.override(
               font: GoogleFonts.poppins(
-                fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                fontStyle: AppTheme.of(context).labelLarge.fontStyle,
               ),
-              color: FlutterFlowTheme.of(context).primaryBackground,
+              color: AppTheme.of(context).primaryBackground,
             ),
         elevation: 1.0,
         borderSide: BorderSide(
-          color: FlutterFlowTheme.of(context).secondaryBackground,
+          color: AppTheme.of(context).secondaryBackground,
           width: 0.5,
         ),
         borderRadius: BorderRadius.circular(20.0),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -27,7 +27,7 @@ class JourneyCardWidget extends StatelessWidget {
         width: MediaQuery.sizeOf(context).width * 0.9,
         height: 110.0,
         decoration: BoxDecoration(
-          color: FlutterFlowTheme.of(context).primaryBackground,
+          color: AppTheme.of(context).primaryBackground,
           boxShadow: const [
             BoxShadow(
               blurRadius: 15.0,
@@ -59,16 +59,16 @@ class JourneyCardWidget extends StatelessWidget {
                         children: [
                           Text(
                             title,
-                            style: FlutterFlowTheme.of(context).titleMedium.override(
+                            style: AppTheme.of(context).titleMedium.override(
                                   font: GoogleFonts.lexendDeca(
                                     fontWeight: FontWeight.w500,
-                                    fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                                    fontStyle: AppTheme.of(context).titleMedium.fontStyle,
                                   ),
-                                  color: FlutterFlowTheme.of(context).secondary,
+                                  color: AppTheme.of(context).secondary,
                                   fontSize: 18.0,
                                   letterSpacing: 0.0,
                                   fontWeight: FontWeight.w500,
-                                  fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                                  fontStyle: AppTheme.of(context).titleMedium.fontStyle,
                                 ),
                           ),
                         ],
@@ -82,7 +82,7 @@ class JourneyCardWidget extends StatelessWidget {
                           child: Text(
                             'Completed $stepsCompleted of $stepsTotal steps',
                             style: GoogleFonts.lexendDeca(
-                              color: FlutterFlowTheme.of(context).secondary,
+                              color: AppTheme.of(context).secondary,
                               fontWeight: FontWeight.normal,
                               fontSize: 12.0,
                             ),
@@ -103,17 +103,17 @@ class JourneyCardWidget extends StatelessWidget {
                               height: 32.0,
                               padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
                               iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                              color: FlutterFlowTheme.of(context).secondary,
-                              textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                              color: AppTheme.of(context).secondary,
+                              textStyle: AppTheme.of(context).titleSmall.override(
                                     font: GoogleFonts.lexendDeca(
-                                      fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
+                                      fontWeight: AppTheme.of(context).titleSmall.fontWeight,
+                                      fontStyle: AppTheme.of(context).titleSmall.fontStyle,
                                     ),
                                     color: Colors.white,
                                     fontSize: 12.0,
                                     letterSpacing: 0.0,
-                                    fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
+                                    fontWeight: AppTheme.of(context).titleSmall.fontWeight,
+                                    fontStyle: AppTheme.of(context).titleSmall.fontStyle,
                                   ),
                               borderSide: const BorderSide(
                                 color: Colors.transparent,

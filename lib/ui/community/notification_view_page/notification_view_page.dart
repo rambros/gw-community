@@ -1,7 +1,7 @@
 import '/data/services/supabase/supabase.dart';
 import '/data/repositories/notification_repository.dart';
 import '/ui/core/ui/flutter_flow_icon_button.dart';
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/utils/flutter_flow_util.dart';
 import '/index.dart';
 import '/ui/community/widgets/add_comment/add_comment_widget.dart';
@@ -70,9 +70,9 @@ class _NotificationViewPageState extends State<NotificationViewPage> {
         builder: (context, viewModel, _) {
           return Scaffold(
             key: scaffoldKey,
-            backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+            backgroundColor: AppTheme.of(context).primaryBackground,
             appBar: AppBar(
-              backgroundColor: FlutterFlowTheme.of(context).primary,
+              backgroundColor: AppTheme.of(context).primary,
               automaticallyImplyLeading: false,
               leading: FlutterFlowIconButton(
                 borderColor: Colors.transparent,
@@ -88,10 +88,10 @@ class _NotificationViewPageState extends State<NotificationViewPage> {
               ),
               title: Text(
                 'Notification',
-                style: FlutterFlowTheme.of(context).titleLarge.override(
+                style: AppTheme.of(context).titleLarge.override(
                       font: GoogleFonts.poppins(
-                        fontWeight: FlutterFlowTheme.of(context).titleLarge.fontWeight,
-                        fontStyle: FlutterFlowTheme.of(context).titleLarge.fontStyle,
+                        fontWeight: AppTheme.of(context).titleLarge.fontWeight,
+                        fontStyle: AppTheme.of(context).titleLarge.fontStyle,
                       ),
                       fontSize: 20.0,
                       letterSpacing: 0.0,
@@ -106,7 +106,7 @@ class _NotificationViewPageState extends State<NotificationViewPage> {
                   ? Center(
                       child: CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation<Color>(
-                          FlutterFlowTheme.of(context).primary,
+                          AppTheme.of(context).primary,
                         ),
                       ),
                     )
@@ -124,7 +124,7 @@ class _NotificationViewPageState extends State<NotificationViewPage> {
       return Center(
         child: Text(
           viewModel.errorMessage ?? 'Notification not found.',
-          style: FlutterFlowTheme.of(context).labelLarge,
+          style: AppTheme.of(context).labelLarge,
         ),
       );
     }
@@ -150,7 +150,7 @@ class _NotificationViewPageState extends State<NotificationViewPage> {
   Widget _buildHeaderCard(BuildContext context, CcViewNotificationsUsersRow notification) {
     return Card(
       clipBehavior: Clip.antiAliasWithSaveLayer,
-      color: FlutterFlowTheme.of(context).primaryBackground,
+      color: AppTheme.of(context).primaryBackground,
       elevation: 0.0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.0),
@@ -166,12 +166,12 @@ class _NotificationViewPageState extends State<NotificationViewPage> {
                     padding: const EdgeInsetsDirectional.fromSTEB(0.0, 12.0, 0.0, 0.0),
                     child: Text(
                       valueOrDefault<String>(notification.title, 'title'),
-                      style: FlutterFlowTheme.of(context).titleMedium.override(
+                      style: AppTheme.of(context).titleMedium.override(
                             font: GoogleFonts.lexendDeca(
-                              fontWeight: FlutterFlowTheme.of(context).titleMedium.fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                              fontWeight: AppTheme.of(context).titleMedium.fontWeight,
+                              fontStyle: AppTheme.of(context).titleMedium.fontStyle,
                             ),
-                            color: FlutterFlowTheme.of(context).secondary,
+                            color: AppTheme.of(context).secondary,
                             letterSpacing: 0.0,
                           ),
                     ),
@@ -192,12 +192,12 @@ class _NotificationViewPageState extends State<NotificationViewPage> {
                       children: [
                         Text(
                           'From ${valueOrDefault<String>(notification.displayName, 'name')} - Group Administrator',
-                          style: FlutterFlowTheme.of(context).bodyLarge.override(
+                          style: AppTheme.of(context).bodyLarge.override(
                                 font: GoogleFonts.inter(
                                   fontWeight: FontWeight.normal,
-                                  fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
+                                  fontStyle: AppTheme.of(context).bodyLarge.fontStyle,
                                 ),
-                                color: FlutterFlowTheme.of(context).secondary,
+                                color: AppTheme.of(context).secondary,
                                 fontSize: 14.0,
                                 letterSpacing: 0.0,
                               ),
@@ -209,12 +209,12 @@ class _NotificationViewPageState extends State<NotificationViewPage> {
                               notification.updatedAt,
                               locale: FFLocalizations.of(context).languageCode,
                             ),
-                            style: FlutterFlowTheme.of(context).bodyMedium.override(
+                            style: AppTheme.of(context).bodyMedium.override(
                                   font: GoogleFonts.lexendDeca(
-                                    fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                    fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                    fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                   ),
-                                  color: FlutterFlowTheme.of(context).secondary,
+                                  color: AppTheme.of(context).secondary,
                                   fontSize: 12.0,
                                   letterSpacing: 0.0,
                                 ),
@@ -223,12 +223,12 @@ class _NotificationViewPageState extends State<NotificationViewPage> {
                           notification.visibility == 'everyone'
                               ? 'Notification for everyone'
                               : 'Only for the Group ${notification.groupName}',
-                          style: FlutterFlowTheme.of(context).bodyMedium.override(
+                          style: AppTheme.of(context).bodyMedium.override(
                                 font: GoogleFonts.lexendDeca(
-                                  fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                  fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                  fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                 ),
-                                color: FlutterFlowTheme.of(context).primary,
+                                color: AppTheme.of(context).primary,
                                 fontSize: 12.0,
                                 letterSpacing: 0.0,
                               ),
@@ -252,7 +252,7 @@ class _NotificationViewPageState extends State<NotificationViewPage> {
   ) {
     return Card(
       clipBehavior: Clip.antiAliasWithSaveLayer,
-      color: FlutterFlowTheme.of(context).primaryBackground,
+      color: AppTheme.of(context).primaryBackground,
       elevation: 0.0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.0),
@@ -282,7 +282,7 @@ class _NotificationViewPageState extends State<NotificationViewPage> {
                     buttonSize: 40.0,
                     icon: Icon(
                       Icons.delete,
-                      color: FlutterFlowTheme.of(context).secondary,
+                      color: AppTheme.of(context).secondary,
                       size: 26.0,
                     ),
                     onPressed: viewModel.isActionInProgress
@@ -301,10 +301,10 @@ class _NotificationViewPageState extends State<NotificationViewPage> {
                                 content: Text(
                                   'Notification deleted successfully',
                                   style: TextStyle(
-                                    color: FlutterFlowTheme.of(context).primaryText,
+                                    color: AppTheme.of(context).primaryText,
                                   ),
                                 ),
-                                backgroundColor: FlutterFlowTheme.of(context).secondary,
+                                backgroundColor: AppTheme.of(context).secondary,
                               ),
                             );
                             context.pushNamed(CommunityPage.routeName);
@@ -316,7 +316,7 @@ class _NotificationViewPageState extends State<NotificationViewPage> {
                     buttonSize: 40.0,
                     icon: Icon(
                       viewModel.isLocked ? Icons.lock : Icons.lock_open,
-                      color: FlutterFlowTheme.of(context).secondary,
+                      color: AppTheme.of(context).secondary,
                       size: 26.0,
                     ),
                     onPressed: viewModel.isActionInProgress
@@ -347,7 +347,7 @@ class _NotificationViewPageState extends State<NotificationViewPage> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15.0),
             border: Border.all(
-              color: FlutterFlowTheme.of(context).alternate,
+              color: AppTheme.of(context).alternate,
               width: 1.0,
             ),
           ),
@@ -361,8 +361,8 @@ class _NotificationViewPageState extends State<NotificationViewPage> {
                   icon: Icon(
                     Icons.comment_rounded,
                     color: notification.locked == true
-                        ? FlutterFlowTheme.of(context).alternate
-                        : FlutterFlowTheme.of(context).secondary,
+                        ? AppTheme.of(context).alternate
+                        : AppTheme.of(context).secondary,
                     size: 28.0,
                   ),
                   onPressed: !viewModel.canComment
@@ -376,10 +376,10 @@ class _NotificationViewPageState extends State<NotificationViewPage> {
                   padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 10.0, 0.0),
                   child: Text(
                     valueOrDefault<String>(notification.comments?.toString(), '0'),
-                    style: FlutterFlowTheme.of(context).bodyMedium.override(
+                    style: AppTheme.of(context).bodyMedium.override(
                           font: GoogleFonts.lexendDeca(
-                            fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                            fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                            fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                           ),
                           fontSize: 17.0,
                           letterSpacing: 0.0,
@@ -400,7 +400,7 @@ class _NotificationViewPageState extends State<NotificationViewPage> {
         padding: const EdgeInsetsDirectional.fromSTEB(0.0, 24.0, 0.0, 0.0),
         child: Text(
           'No comments yet.',
-          style: FlutterFlowTheme.of(context).labelLarge,
+          style: AppTheme.of(context).labelLarge,
         ),
       );
     }

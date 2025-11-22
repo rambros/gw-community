@@ -8,13 +8,11 @@ import 'package:flutter_web_plugins/url_strategy.dart';
 
 import '/data/services/supabase/supabase.dart';
 import 'config/firebase/firebase_config.dart';
-import '/ui/core/themes/flutter_flow_theme.dart';
 import 'utils/flutter_flow_util.dart';
 import 'utils/internationalization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'index.dart';
-import '/domain/models/app_auth_user.dart';
+
 import '/utils/context_extensions.dart';
 
 // Repositories
@@ -55,6 +53,7 @@ import '/ui/learn/learn_list_page/view_model/learn_list_view_model.dart';
 import '/ui/onboarding/splash_page/view_model/splash_view_model.dart';
 import '/ui/utility/unsplash_page/view_model/unsplash_view_model.dart';
 import '/ui/journey/journeys_list_page/view_model/journeys_list_view_model.dart';
+import '/ui/core/app/view_model/app_view_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -101,6 +100,12 @@ void main() async {
         Provider(create: (_) => JourneysRepository()),
         Provider(create: (_) => StepActivitiesRepository()),
         Provider(create: (_) => JournalRepository()),
+
+        ChangeNotifierProvider(
+          create: (context) => AppViewModel(
+            authRepository: context.read<AuthRepository>(),
+          ),
+        ),
 
         // ========== VIEW MODELS ==========
         ChangeNotifierProvider(create: (_) => LearnListViewModel()),
@@ -207,16 +212,6 @@ void main() async {
   );
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
-  @override
-  State<MyApp> createState() => MyAppState();
-
-  static MyAppState of(BuildContext context) => context.findAncestorStateOfType<MyAppState>()!;
-}
-
 class MyAppScrollBehavior extends MaterialScrollBehavior {
   @override
   Set<PointerDeviceKind> get dragDevices => {
@@ -225,51 +220,13 @@ class MyAppScrollBehavior extends MaterialScrollBehavior {
       };
 }
 
-class MyAppState extends State<MyApp> {
-  Locale? _locale;
-
-  ThemeMode _themeMode = ThemeMode.system;
-
-  late AppStateNotifier _appStateNotifier;
-  late GoRouter _router;
-  String getRoute([RouteMatchBase? routeMatch]) {
-    final RouteMatchBase lastMatch = routeMatch ?? _router.routerDelegate.currentConfiguration.last;
-    final RouteMatchList matchList =
-        lastMatch is ImperativeRouteMatch ? lastMatch.matches : _router.routerDelegate.currentConfiguration;
-    return matchList.uri.toString();
-  }
-
-  List<String> getRouteStack() => _router.routerDelegate.currentConfiguration.matches.map((e) => getRoute(e)).toList();
-  late Stream<AppAuthUser> userStream;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _appStateNotifier = AppStateNotifier.instance;
-    _router = createRouter(_appStateNotifier);
-    final authRepository = context.read<AuthRepository>();
-    userStream = authRepository.authUserChanges
-      ..listen((user) {
-        _appStateNotifier.update(user);
-      });
-    authRepository.jwtTokenChanges.listen((_) {});
-    Future.delayed(
-      const Duration(milliseconds: 1000),
-      () => _appStateNotifier.stopShowingSplashImage(),
-    );
-  }
-
-  void setLocale(String language) {
-    safeSetState(() => _locale = createLocale(language));
-  }
-
-  void setThemeMode(ThemeMode mode) => safeSetState(() {
-        _themeMode = mode;
-      });
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final appViewModel = context.watch<AppViewModel>();
+
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'GW-Community',
@@ -282,7 +239,7 @@ class MyAppState extends State<MyApp> {
         FallbackMaterialLocalizationDelegate(),
         FallbackCupertinoLocalizationDelegate(),
       ],
-      locale: _locale,
+      locale: appViewModel.locale,
       supportedLocales: const [
         Locale('en'),
       ],
@@ -290,121 +247,8 @@ class MyAppState extends State<MyApp> {
         brightness: Brightness.light,
         useMaterial3: false,
       ),
-      themeMode: _themeMode,
-      routerConfig: _router,
-    );
-  }
-}
-
-class NavBarPage extends StatefulWidget {
-  const NavBarPage({
-    super.key,
-    this.initialPage,
-    this.page,
-    this.disableResizeToAvoidBottomInset = false,
-  });
-
-  final String? initialPage;
-  final Widget? page;
-  final bool disableResizeToAvoidBottomInset;
-
-  @override
-  NavBarPageState createState() => NavBarPageState();
-}
-
-/// This is the private State class that goes with NavBarPage.
-class NavBarPageState extends State<NavBarPage> {
-  String _currentPageName = 'homePage';
-  late Widget? _currentPage;
-
-  @override
-  void initState() {
-    super.initState();
-    _currentPageName = widget.initialPage ?? _currentPageName;
-    _currentPage = widget.page;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final tabs = {
-      'homePage': const HomePage(),
-      'learnListPage': const LearnListPage(),
-      'journeyPage': const JourneyPage(),
-      'communityPage': const CommunityPage(),
-      'userProfilePage': const UserProfilePage(),
-    };
-    final currentIndex = tabs.keys.toList().indexOf(_currentPageName);
-
-    return Scaffold(
-      resizeToAvoidBottomInset: !widget.disableResizeToAvoidBottomInset,
-      body: _currentPage ?? tabs[_currentPageName],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: currentIndex,
-        onTap: (i) => safeSetState(() {
-          _currentPage = null;
-          _currentPageName = tabs.keys.toList()[i];
-        }),
-        backgroundColor: Colors.white,
-        selectedItemColor: FlutterFlowTheme.of(context).primary,
-        unselectedItemColor: const Color(0xFF95A1AC),
-        showSelectedLabels: true,
-        showUnselectedLabels: false,
-        type: BottomNavigationBarType.fixed,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.home_outlined,
-              size: 28.0,
-            ),
-            label: 'Home',
-            tooltip: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.library_music,
-              size: 24.0,
-            ),
-            label: 'Library',
-            tooltip: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              FFIcons.kiconLogo,
-              size: 24.0,
-            ),
-            activeIcon: Icon(
-              FFIcons.kiconLogo,
-              size: 24.0,
-            ),
-            label: 'Journey',
-            tooltip: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.public,
-              size: 28.0,
-            ),
-            activeIcon: Icon(
-              Icons.public,
-              size: 28.0,
-            ),
-            label: 'Community',
-            tooltip: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.account_circle_outlined,
-              size: 28.0,
-            ),
-            activeIcon: Icon(
-              Icons.account_circle,
-              size: 28.0,
-            ),
-            label: 'Profile',
-            tooltip: '',
-          )
-        ],
-      ),
+      themeMode: appViewModel.themeMode,
+      routerConfig: appViewModel.router,
     );
   }
 }

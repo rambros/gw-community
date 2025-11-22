@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/utils/flutter_flow_util.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/data/services/supabase/supabase.dart';
@@ -33,7 +33,7 @@ class GroupEventsTab extends StatelessWidget {
                   padding: const EdgeInsetsDirectional.fromSTEB(8.0, 8.0, 8.0, 0.0),
                   child: Text(
                     'Events',
-                    style: FlutterFlowTheme.of(context).titleSmall.override(
+                    style: AppTheme.of(context).titleSmall.override(
                           font: GoogleFonts.lexendDeca(
                             fontWeight: FontWeight.w500,
                           ),
@@ -64,14 +64,14 @@ class GroupEventsTab extends StatelessWidget {
                       height: 40.0,
                       padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
                       iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      color: FlutterFlowTheme.of(context).primary,
-                      textStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                      color: AppTheme.of(context).primary,
+                      textStyle: AppTheme.of(context).labelLarge.override(
                             font: GoogleFonts.poppins(),
-                            color: FlutterFlowTheme.of(context).primaryBackground,
+                            color: AppTheme.of(context).primaryBackground,
                           ),
                       elevation: 1.0,
                       borderSide: BorderSide(
-                        color: FlutterFlowTheme.of(context).secondaryBackground,
+                        color: AppTheme.of(context).secondaryBackground,
                         width: 0.5,
                       ),
                       borderRadius: BorderRadius.circular(20.0),
@@ -92,7 +92,7 @@ class GroupEventsTab extends StatelessWidget {
                       width: 50.0,
                       height: 50.0,
                       child: SpinKitRipple(
-                        color: FlutterFlowTheme.of(context).primary,
+                        color: AppTheme.of(context).primary,
                         size: 50.0,
                       ),
                     ),
@@ -105,7 +105,7 @@ class GroupEventsTab extends StatelessWidget {
                       padding: const EdgeInsets.all(16.0),
                       child: Text(
                         'No events yet.',
-                        style: FlutterFlowTheme.of(context).bodyMedium,
+                        style: AppTheme.of(context).bodyMedium,
                       ),
                     ),
                   );

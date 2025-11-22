@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/utils/flutter_flow_util.dart';
 
 import '/ui/core/ui/flutter_flow_icon_button.dart';
@@ -46,9 +46,9 @@ class GroupInvitationPageView extends StatelessWidget {
 
     if (group == null) {
       return Scaffold(
-        backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+        backgroundColor: AppTheme.of(context).primaryBackground,
         appBar: AppBar(
-          backgroundColor: FlutterFlowTheme.of(context).primary,
+          backgroundColor: AppTheme.of(context).primary,
           automaticallyImplyLeading: false,
           leading: FlutterFlowIconButton(
             borderColor: Colors.transparent,
@@ -66,9 +66,9 @@ class GroupInvitationPageView extends StatelessWidget {
           ),
           title: Text(
             'Group Not Found',
-            style: FlutterFlowTheme.of(context).titleLarge.override(
+            style: AppTheme.of(context).titleLarge.override(
                   font: GoogleFonts.poppins(),
-                  color: FlutterFlowTheme.of(context).primaryBackground,
+                  color: AppTheme.of(context).primaryBackground,
                 ),
           ),
           centerTitle: true,
@@ -79,7 +79,7 @@ class GroupInvitationPageView extends StatelessWidget {
     }
 
     return Scaffold(
-      backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+      backgroundColor: AppTheme.of(context).primaryBackground,
       floatingActionButton: Align(
         alignment: const AlignmentDirectional(0.2, 1.0),
         child: Padding(
@@ -94,10 +94,10 @@ class GroupInvitationPageView extends StatelessWidget {
                       content: Text(
                         'You have joined the group successfully',
                         style: TextStyle(
-                          color: FlutterFlowTheme.of(context).primaryText,
+                          color: AppTheme.of(context).primaryText,
                         ),
                       ),
-                      backgroundColor: FlutterFlowTheme.of(context).secondary,
+                      backgroundColor: AppTheme.of(context).secondary,
                     ),
                   );
                   if (Navigator.of(context).canPop()) {
@@ -116,7 +116,7 @@ class GroupInvitationPageView extends StatelessWidget {
                 }
               }
             },
-            backgroundColor: FlutterFlowTheme.of(context).primary,
+            backgroundColor: AppTheme.of(context).primary,
             elevation: 8.0,
             label: viewModel.isLoading
                 ? const SpinKitRipple(color: Colors.white, size: 30.0)
@@ -129,9 +129,9 @@ class GroupInvitationPageView extends StatelessWidget {
                         alignment: const AlignmentDirectional(0.0, 0.0),
                         child: Text(
                           'Join Group',
-                          style: FlutterFlowTheme.of(context).bodyMedium.override(
+                          style: AppTheme.of(context).bodyMedium.override(
                                 font: GoogleFonts.lexendDeca(),
-                                color: FlutterFlowTheme.of(context).primaryBackground,
+                                color: AppTheme.of(context).primaryBackground,
                                 fontSize: 16.0,
                               ),
                         ),
@@ -142,7 +142,7 @@ class GroupInvitationPageView extends StatelessWidget {
         ),
       ),
       appBar: AppBar(
-        backgroundColor: FlutterFlowTheme.of(context).primary,
+        backgroundColor: AppTheme.of(context).primary,
         automaticallyImplyLeading: false,
         leading: FlutterFlowIconButton(
           borderColor: Colors.transparent,
@@ -160,9 +160,9 @@ class GroupInvitationPageView extends StatelessWidget {
         ),
         title: Text(
           'About Group',
-          style: FlutterFlowTheme.of(context).titleLarge.override(
+          style: AppTheme.of(context).titleLarge.override(
                 font: GoogleFonts.poppins(),
-                color: FlutterFlowTheme.of(context).primaryBackground,
+                color: AppTheme.of(context).primaryBackground,
                 fontSize: 20.0,
               ),
         ),
@@ -203,7 +203,7 @@ class GroupInvitationPageView extends StatelessWidget {
                             padding: const EdgeInsetsDirectional.fromSTEB(0.0, 12.0, 0.0, 0.0),
                             child: Text(
                               valueOrDefault<String>(group.name, 'name'),
-                              style: FlutterFlowTheme.of(context).headlineSmall.override(
+                              style: AppTheme.of(context).headlineSmall.override(
                                     font: GoogleFonts.lexendDeca(),
                                   ),
                             ),
@@ -215,9 +215,9 @@ class GroupInvitationPageView extends StatelessWidget {
                                 group.numberMembers,
                                 formatType: FormatType.compact,
                               )} members',
-                              style: FlutterFlowTheme.of(context).bodyMedium.override(
+                              style: AppTheme.of(context).bodyMedium.override(
                                     font: GoogleFonts.lexendDeca(fontWeight: FontWeight.w500),
-                                    color: FlutterFlowTheme.of(context).secondary,
+                                    color: AppTheme.of(context).secondary,
                                     fontSize: 16.0,
                                   ),
                             ),
@@ -231,9 +231,9 @@ class GroupInvitationPageView extends StatelessWidget {
                   padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 0.0, 0.0),
                   child: Text(
                     'Description',
-                    style: FlutterFlowTheme.of(context).bodyMedium.override(
+                    style: AppTheme.of(context).bodyMedium.override(
                           font: GoogleFonts.lexendDeca(fontWeight: FontWeight.w500),
-                          color: FlutterFlowTheme.of(context).secondary,
+                          color: AppTheme.of(context).secondary,
                           fontSize: 16.0,
                         ),
                   ),
@@ -243,16 +243,16 @@ class GroupInvitationPageView extends StatelessWidget {
                   child: Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: FlutterFlowTheme.of(context).primaryBackground,
+                      color: AppTheme.of(context).primaryBackground,
                     ),
                     child: Padding(
                       padding: const EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 0.0),
                       child: Text(
                         valueOrDefault<String>(group.description, 'description'),
                         textAlign: TextAlign.start,
-                        style: FlutterFlowTheme.of(context).bodySmall.override(
+                        style: AppTheme.of(context).bodySmall.override(
                               font: GoogleFonts.lexendDeca(),
-                              color: FlutterFlowTheme.of(context).primary,
+                              color: AppTheme.of(context).primary,
                             ),
                       ),
                     ),
@@ -270,7 +270,7 @@ class GroupInvitationPageView extends StatelessWidget {
                           width: 50.0,
                           height: 50.0,
                           child: SpinKitRipple(
-                            color: FlutterFlowTheme.of(context).primary,
+                            color: AppTheme.of(context).primary,
                             size: 50.0,
                           ),
                         ),
@@ -288,9 +288,9 @@ class GroupInvitationPageView extends StatelessWidget {
                           padding: const EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 0.0, 0.0),
                           child: Text(
                             'Facilitators',
-                            style: FlutterFlowTheme.of(context).bodyMedium.override(
+                            style: AppTheme.of(context).bodyMedium.override(
                                   font: GoogleFonts.lexendDeca(fontWeight: FontWeight.w500),
-                                  color: FlutterFlowTheme.of(context).secondary,
+                                  color: AppTheme.of(context).secondary,
                                   fontSize: 16.0,
                                 ),
                           ),
@@ -300,16 +300,16 @@ class GroupInvitationPageView extends StatelessWidget {
                           child: Container(
                             width: double.infinity,
                             decoration: BoxDecoration(
-                              color: FlutterFlowTheme.of(context).primaryBackground,
+                              color: AppTheme.of(context).primaryBackground,
                             ),
                             child: Padding(
                               padding: const EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 0.0),
                               child: Text(
                                 facilitator.managerNames.join(", "),
                                 textAlign: TextAlign.start,
-                                style: FlutterFlowTheme.of(context).bodySmall.override(
+                                style: AppTheme.of(context).bodySmall.override(
                                       font: GoogleFonts.lexendDeca(),
-                                      color: FlutterFlowTheme.of(context).primary,
+                                      color: AppTheme.of(context).primary,
                                     ),
                               ),
                             ),
@@ -323,9 +323,9 @@ class GroupInvitationPageView extends StatelessWidget {
                   padding: const EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 0.0, 0.0),
                   child: Text(
                     'Group policy',
-                    style: FlutterFlowTheme.of(context).bodyMedium.override(
+                    style: AppTheme.of(context).bodyMedium.override(
                           font: GoogleFonts.lexendDeca(fontWeight: FontWeight.w500),
-                          color: FlutterFlowTheme.of(context).secondary,
+                          color: AppTheme.of(context).secondary,
                           fontSize: 16.0,
                         ),
                   ),
@@ -335,16 +335,16 @@ class GroupInvitationPageView extends StatelessWidget {
                   child: Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: FlutterFlowTheme.of(context).primaryBackground,
+                      color: AppTheme.of(context).primaryBackground,
                     ),
                     child: Padding(
                       padding: const EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 0.0),
                       child: Text(
                         valueOrDefault<String>(group.policyMessage, 'policy message'),
                         textAlign: TextAlign.start,
-                        style: FlutterFlowTheme.of(context).bodySmall.override(
+                        style: AppTheme.of(context).bodySmall.override(
                               font: GoogleFonts.lexendDeca(),
-                              color: FlutterFlowTheme.of(context).primary,
+                              color: AppTheme.of(context).primary,
                             ),
                       ),
                     ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/ui/core/ui/flutter_flow_icon_button.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 
@@ -24,7 +24,7 @@ class ConfirmProfileActionDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = FlutterFlowTheme.of(context);
+    final theme = AppTheme.of(context);
 
     return Align(
       alignment: const AlignmentDirectional(0.0, 0.0),

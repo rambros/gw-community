@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/utils/flutter_flow_util.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/ui/community/event_add_page/event_add_page.dart';
@@ -38,10 +38,10 @@ class _EventsTabWidgetState extends State<EventsTabWidget> {
                   width: 220.0,
                   height: 40.0,
                   decoration: BoxDecoration(
-                    color: FlutterFlowTheme.of(context).secondaryBackground,
+                    color: AppTheme.of(context).secondaryBackground,
                     borderRadius: BorderRadius.circular(200.0),
                     border: Border.all(
-                      color: FlutterFlowTheme.of(context).secondaryBackground,
+                      color: AppTheme.of(context).secondaryBackground,
                       width: 1.0,
                     ),
                   ),
@@ -64,10 +64,10 @@ class _EventsTabWidgetState extends State<EventsTabWidget> {
                               width: 110.0,
                               height: 60.0,
                               decoration: BoxDecoration(
-                                color: FlutterFlowTheme.of(context).primaryBackground,
+                                color: AppTheme.of(context).primaryBackground,
                                 borderRadius: BorderRadius.circular(200.0),
                                 border: Border.all(
-                                  color: FlutterFlowTheme.of(context).accent3,
+                                  color: AppTheme.of(context).accent3,
                                   width: 1.0,
                                 ),
                               ),
@@ -91,15 +91,15 @@ class _EventsTabWidgetState extends State<EventsTabWidget> {
                               },
                               child: Text(
                                 'Upcomming',
-                                style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                style: AppTheme.of(context).bodyMedium.override(
                                       font: GoogleFonts.lexendDeca(
-                                        fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                        fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                        fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                       ),
-                                      color: FlutterFlowTheme.of(context).primary,
+                                      color: AppTheme.of(context).primary,
                                       letterSpacing: 0.0,
-                                      fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                      fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                      fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                     ),
                               ),
                             ),
@@ -117,15 +117,15 @@ class _EventsTabWidgetState extends State<EventsTabWidget> {
                               },
                               child: Text(
                                 'Recorded',
-                                style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                style: AppTheme.of(context).bodyMedium.override(
                                       font: GoogleFonts.lexendDeca(
-                                        fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                        fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                        fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                       ),
-                                      color: FlutterFlowTheme.of(context).primary,
+                                      color: AppTheme.of(context).primary,
                                       letterSpacing: 0.0,
-                                      fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                      fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                      fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                     ),
                               ),
                             ),
@@ -141,14 +141,14 @@ class _EventsTabWidgetState extends State<EventsTabWidget> {
         ),
         Text(
           FFAppState().typeSelectedEvent,
-          style: FlutterFlowTheme.of(context).bodyMedium.override(
+          style: AppTheme.of(context).bodyMedium.override(
                 font: GoogleFonts.lexendDeca(
-                  fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                  fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                  fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                 ),
                 letterSpacing: 0.0,
-                fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
               ),
         ),
         Padding(
@@ -170,20 +170,20 @@ class _EventsTabWidgetState extends State<EventsTabWidget> {
                       height: 40.0,
                       padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
                       iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      color: FlutterFlowTheme.of(context).primary,
-                      textStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                      color: AppTheme.of(context).primary,
+                      textStyle: AppTheme.of(context).labelLarge.override(
                             font: GoogleFonts.poppins(
-                              fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                              fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                              fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                             ),
-                            color: FlutterFlowTheme.of(context).primaryBackground,
+                            color: AppTheme.of(context).primaryBackground,
                             letterSpacing: 0.0,
-                            fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                            fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                            fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                           ),
                       elevation: 1.0,
                       borderSide: BorderSide(
-                        color: FlutterFlowTheme.of(context).secondaryBackground,
+                        color: AppTheme.of(context).secondaryBackground,
                         width: 0.5,
                       ),
                       borderRadius: BorderRadius.circular(20.0),

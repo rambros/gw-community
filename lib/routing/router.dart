@@ -8,7 +8,7 @@ import '/data/services/supabase/supabase.dart';
 
 import '/domain/models/app_auth_user.dart';
 
-import '/main.dart';
+import '/ui/core/nav_bar/nav_bar_page.dart';
 import '/utils/flutter_flow_util.dart';
 import '/index.dart';
 
@@ -322,11 +322,6 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               ParamType.SupabaseRow,
             ),
           ),
-        ),
-        FFRoute(
-          name: DemoAnimationsWidget.routeName,
-          path: DemoAnimationsWidget.routePath,
-          builder: (context, params) => const DemoAnimationsWidget(),
         ),
         FFRoute(
             name: JourneyPage.routeName,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '/data/services/supabase/supabase.dart';
 import '/ui/core/ui/flutter_flow_icon_button.dart';
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/utils/flutter_flow_util.dart';
 
 /// Widget que exibe um comentário individual
@@ -32,7 +32,7 @@ class CommentItemWidget extends StatelessWidget {
           Container(
             width: (comment.depth ?? 0) * 12.0,
             decoration: BoxDecoration(
-              color: FlutterFlowTheme.of(context).primaryBackground,
+              color: AppTheme.of(context).primaryBackground,
             ),
           ),
           // Card do comentário
@@ -40,7 +40,7 @@ class CommentItemWidget extends StatelessWidget {
             child: Container(
               width: 100.0,
               decoration: BoxDecoration(
-                color: FlutterFlowTheme.of(context).primaryBackground,
+                color: AppTheme.of(context).primaryBackground,
                 boxShadow: const [
                   BoxShadow(
                     blurRadius: 15.0,
@@ -84,11 +84,11 @@ class CommentItemWidget extends StatelessWidget {
               comment.displayName,
               'display_name',
             ),
-            style: FlutterFlowTheme.of(context).bodyMedium.override(
+            style: AppTheme.of(context).bodyMedium.override(
                   font: GoogleFonts.lexendDeca(
                     fontWeight: FontWeight.w600,
                   ),
-                  color: FlutterFlowTheme.of(context).secondary,
+                  color: AppTheme.of(context).secondary,
                   fontSize: 14.0,
                   letterSpacing: 0.0,
                   fontWeight: FontWeight.w600,
@@ -101,9 +101,9 @@ class CommentItemWidget extends StatelessWidget {
             comment.createdAt!,
             locale: FFLocalizations.of(context).languageCode,
           ),
-          style: FlutterFlowTheme.of(context).bodyMedium.override(
+          style: AppTheme.of(context).bodyMedium.override(
                 font: GoogleFonts.lexendDeca(),
-                color: FlutterFlowTheme.of(context).secondary,
+                color: AppTheme.of(context).secondary,
                 fontSize: 14.0,
                 letterSpacing: 0.0,
               ),
@@ -122,9 +122,9 @@ class CommentItemWidget extends StatelessWidget {
               comment.content,
               'comment',
             ),
-            style: FlutterFlowTheme.of(context).bodyMedium.override(
+            style: AppTheme.of(context).bodyMedium.override(
                   font: GoogleFonts.lexendDeca(),
-                  color: FlutterFlowTheme.of(context).secondary,
+                  color: AppTheme.of(context).secondary,
                   letterSpacing: 0.0,
                 ),
           ),
@@ -144,7 +144,7 @@ class CommentItemWidget extends StatelessWidget {
           buttonSize: 40.0,
           icon: Icon(
             Icons.reply_outlined,
-            color: FlutterFlowTheme.of(context).secondary,
+            color: AppTheme.of(context).secondary,
             size: 26.0,
           ),
           onPressed: onReply,
@@ -156,7 +156,7 @@ class CommentItemWidget extends StatelessWidget {
             buttonSize: 40.0,
             icon: Icon(
               Icons.delete,
-              color: FlutterFlowTheme.of(context).secondary,
+              color: AppTheme.of(context).secondary,
               size: 26.0,
             ),
             onPressed: onDelete,

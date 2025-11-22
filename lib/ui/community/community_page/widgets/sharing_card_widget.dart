@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '/data/services/supabase/supabase.dart';
 import '/ui/core/widgets/user_avatar.dart';
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/utils/flutter_flow_util.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 import '../../sharing_view_page/sharing_view_page.dart';
@@ -58,7 +58,7 @@ class SharingCardWidget extends StatelessWidget {
               maxWidth: 530.0,
             ),
             decoration: BoxDecoration(
-              color: FlutterFlowTheme.of(context).primaryBackground,
+              color: AppTheme.of(context).primaryBackground,
               boxShadow: const [
                 BoxShadow(
                   blurRadius: 15.0,
@@ -69,7 +69,7 @@ class SharingCardWidget extends StatelessWidget {
               ],
               borderRadius: BorderRadius.circular(12.0),
               border: Border.all(
-                color: FlutterFlowTheme.of(context).primaryBackground,
+                color: AppTheme.of(context).primaryBackground,
                 width: 1.0,
               ),
             ),
@@ -115,16 +115,16 @@ class SharingCardWidget extends StatelessWidget {
                       sharingRow.displayName,
                       'User name',
                     ),
-                    style: FlutterFlowTheme.of(context).bodyMedium.override(
+                    style: AppTheme.of(context).bodyMedium.override(
                           font: GoogleFonts.lexendDeca(
-                            fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                            fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                            fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                           ),
-                          color: FlutterFlowTheme.of(context).secondary,
+                          color: AppTheme.of(context).secondary,
                           fontSize: 16.0,
                           letterSpacing: 0.0,
-                          fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                          fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                          fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                          fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                         ),
                   ),
                   if (sharingRow.groupName != null && sharingRow.groupName != '')
@@ -135,35 +135,35 @@ class SharingCardWidget extends StatelessWidget {
                           TextSpan(
                             text: 'From group ',
                             style: TextStyle(
-                              color: FlutterFlowTheme.of(context).primary,
+                              color: AppTheme.of(context).primary,
                               fontSize: 12.0,
                             ),
                           ),
                           TextSpan(
                             text: '${sharingRow.groupName}',
-                            style: FlutterFlowTheme.of(context).bodyMedium.override(
+                            style: AppTheme.of(context).bodyMedium.override(
                                   font: GoogleFonts.lexendDeca(
                                     fontWeight: FontWeight.bold,
-                                    fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                    fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                   ),
-                                  color: FlutterFlowTheme.of(context).primary,
+                                  color: AppTheme.of(context).primary,
                                   fontSize: 12.0,
                                   letterSpacing: 0.0,
                                   fontWeight: FontWeight.bold,
-                                  fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                  fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                 ),
                           )
                         ],
-                        style: FlutterFlowTheme.of(context).bodyMedium.override(
+                        style: AppTheme.of(context).bodyMedium.override(
                               font: GoogleFonts.lexendDeca(
-                                fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                               ),
-                              color: FlutterFlowTheme.of(context).primary,
+                              color: AppTheme.of(context).primary,
                               fontSize: 12.0,
                               letterSpacing: 0.0,
-                              fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                              fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                              fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                             ),
                       ),
                     ),
@@ -188,16 +188,16 @@ class SharingCardWidget extends StatelessWidget {
               sharingRow.title,
               'title',
             ),
-            style: FlutterFlowTheme.of(context).bodyLarge.override(
+            style: AppTheme.of(context).bodyLarge.override(
                   font: GoogleFonts.inter(
                     fontWeight: FontWeight.w500,
-                    fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
+                    fontStyle: AppTheme.of(context).bodyLarge.fontStyle,
                   ),
-                  color: FlutterFlowTheme.of(context).primary,
+                  color: AppTheme.of(context).primary,
                   fontSize: 16.0,
                   letterSpacing: 0.0,
                   fontWeight: FontWeight.w500,
-                  fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
+                  fontStyle: AppTheme.of(context).bodyLarge.fontStyle,
                 ),
           ),
         ],
@@ -227,20 +227,20 @@ class SharingCardWidget extends StatelessWidget {
                   height: 40.0,
                   padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
                   iconPadding: const EdgeInsets.all(0.0),
-                  color: FlutterFlowTheme.of(context).primaryBackground,
-                  textStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                  color: AppTheme.of(context).primaryBackground,
+                  textStyle: AppTheme.of(context).labelLarge.override(
                         font: GoogleFonts.poppins(
-                          fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                          fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                          fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                          fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                         ),
-                        color: FlutterFlowTheme.of(context).secondary,
+                        color: AppTheme.of(context).secondary,
                         letterSpacing: 0.0,
-                        fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                        fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                        fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                        fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                       ),
                   elevation: 0.0,
                   borderSide: BorderSide(
-                    color: FlutterFlowTheme.of(context).secondaryBackground,
+                    color: AppTheme.of(context).secondaryBackground,
                     width: 0.5,
                   ),
                   borderRadius: BorderRadius.circular(20.0),
@@ -267,20 +267,20 @@ class SharingCardWidget extends StatelessWidget {
                   height: 40.0,
                   padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
                   iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                  color: FlutterFlowTheme.of(context).primary,
-                  textStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                  color: AppTheme.of(context).primary,
+                  textStyle: AppTheme.of(context).labelLarge.override(
                         font: GoogleFonts.poppins(
-                          fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                          fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                          fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                          fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                         ),
-                        color: FlutterFlowTheme.of(context).primaryBackground,
+                        color: AppTheme.of(context).primaryBackground,
                         letterSpacing: 0.0,
-                        fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                        fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                        fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                        fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                       ),
                   elevation: 1.0,
                   borderSide: BorderSide(
-                    color: FlutterFlowTheme.of(context).secondaryBackground,
+                    color: AppTheme.of(context).secondaryBackground,
                     width: 0.5,
                   ),
                   borderRadius: BorderRadius.circular(20.0),

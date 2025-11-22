@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/ui/core/ui/flutter_flow_icon_button.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/data/services/supabase/supabase.dart';
@@ -60,7 +60,7 @@ class _StepJournalPageState extends State<StepJournalPage> {
   Widget build(BuildContext context) {
     if (_viewModel == null) {
       return Scaffold(
-        backgroundColor: FlutterFlowTheme.of(context).secondary,
+        backgroundColor: AppTheme.of(context).secondary,
         body: const Center(child: Text('Invalid activity data')),
       );
     }
@@ -73,9 +73,9 @@ class _StepJournalPageState extends State<StepJournalPage> {
           FocusManager.instance.primaryFocus?.unfocus();
         },
         child: Scaffold(
-          backgroundColor: FlutterFlowTheme.of(context).secondary,
+          backgroundColor: AppTheme.of(context).secondary,
           appBar: AppBar(
-            backgroundColor: FlutterFlowTheme.of(context).primary,
+            backgroundColor: AppTheme.of(context).primary,
             automaticallyImplyLeading: false,
             leading: FlutterFlowIconButton(
               borderColor: Colors.transparent,
@@ -93,15 +93,15 @@ class _StepJournalPageState extends State<StepJournalPage> {
             ),
             title: Text(
               'My Journal',
-              style: FlutterFlowTheme.of(context).titleLarge.override(
+              style: AppTheme.of(context).titleLarge.override(
                     font: GoogleFonts.poppins(
-                      fontWeight: FlutterFlowTheme.of(context).titleLarge.fontWeight,
-                      fontStyle: FlutterFlowTheme.of(context).titleLarge.fontStyle,
+                      fontWeight: AppTheme.of(context).titleLarge.fontWeight,
+                      fontStyle: AppTheme.of(context).titleLarge.fontStyle,
                     ),
                     fontSize: 20.0,
                     letterSpacing: 0.0,
-                    fontWeight: FlutterFlowTheme.of(context).titleLarge.fontWeight,
-                    fontStyle: FlutterFlowTheme.of(context).titleLarge.fontStyle,
+                    fontWeight: AppTheme.of(context).titleLarge.fontWeight,
+                    fontStyle: AppTheme.of(context).titleLarge.fontStyle,
                   ),
             ),
             actions: const [],
@@ -114,7 +114,7 @@ class _StepJournalPageState extends State<StepJournalPage> {
               width: MediaQuery.sizeOf(context).width * 1.0,
               height: MediaQuery.sizeOf(context).height * 0.9,
               decoration: BoxDecoration(
-                color: FlutterFlowTheme.of(context).secondary,
+                color: AppTheme.of(context).secondary,
               ),
               child: Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 8.0),
@@ -131,16 +131,16 @@ class _StepJournalPageState extends State<StepJournalPage> {
                             child: Text(
                               widget.activityRow?.activityPrompt ?? 'prompt',
                               textAlign: TextAlign.center,
-                              style: FlutterFlowTheme.of(context).titleMedium.override(
+                              style: AppTheme.of(context).titleMedium.override(
                                     font: GoogleFonts.lexendDeca(
-                                      fontWeight: FlutterFlowTheme.of(context).titleMedium.fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                                      fontWeight: AppTheme.of(context).titleMedium.fontWeight,
+                                      fontStyle: AppTheme.of(context).titleMedium.fontStyle,
                                     ),
-                                    color: FlutterFlowTheme.of(context).tertiary,
+                                    color: AppTheme.of(context).tertiary,
                                     fontSize: 16.0,
                                     letterSpacing: 0.0,
-                                    fontWeight: FlutterFlowTheme.of(context).titleMedium.fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                                    fontWeight: AppTheme.of(context).titleMedium.fontWeight,
+                                    fontStyle: AppTheme.of(context).titleMedium.fontStyle,
                                   ),
                             ),
                           ),
@@ -152,7 +152,7 @@ class _StepJournalPageState extends State<StepJournalPage> {
                           width: MediaQuery.sizeOf(context).width * 0.9,
                           height: MediaQuery.sizeOf(context).height * 0.6,
                           decoration: BoxDecoration(
-                            color: FlutterFlowTheme.of(context).secondaryBackground,
+                            color: AppTheme.of(context).secondaryBackground,
                             borderRadius: BorderRadius.circular(16.0),
                           ),
                           child: Padding(
@@ -163,38 +163,38 @@ class _StepJournalPageState extends State<StepJournalPage> {
                               autofocus: true,
                               obscureText: false,
                               decoration: InputDecoration(
-                                labelStyle: FlutterFlowTheme.of(context).labelMedium.override(
+                                labelStyle: AppTheme.of(context).labelMedium.override(
                                       font: GoogleFonts.poppins(
-                                        fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                                        fontWeight: AppTheme.of(context).labelMedium.fontWeight,
+                                        fontStyle: AppTheme.of(context).labelMedium.fontStyle,
                                       ),
                                       letterSpacing: 0.0,
-                                      fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                                      fontWeight: AppTheme.of(context).labelMedium.fontWeight,
+                                      fontStyle: AppTheme.of(context).labelMedium.fontStyle,
                                     ),
-                                hintStyle: FlutterFlowTheme.of(context).labelMedium.override(
+                                hintStyle: AppTheme.of(context).labelMedium.override(
                                       font: GoogleFonts.poppins(
-                                        fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                                        fontWeight: AppTheme.of(context).labelMedium.fontWeight,
+                                        fontStyle: AppTheme.of(context).labelMedium.fontStyle,
                                       ),
                                       letterSpacing: 0.0,
-                                      fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                                      fontWeight: AppTheme.of(context).labelMedium.fontWeight,
+                                      fontStyle: AppTheme.of(context).labelMedium.fontStyle,
                                     ),
                                 enabledBorder: InputBorder.none,
                                 focusedBorder: InputBorder.none,
                                 errorBorder: InputBorder.none,
                                 focusedErrorBorder: InputBorder.none,
                               ),
-                              style: FlutterFlowTheme.of(context).bodyMedium.override(
+                              style: AppTheme.of(context).bodyMedium.override(
                                     font: GoogleFonts.lexendDeca(
-                                      fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                      fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                      fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                     ),
-                                    color: FlutterFlowTheme.of(context).secondary,
+                                    color: AppTheme.of(context).secondary,
                                     letterSpacing: 0.0,
-                                    fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                    fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                    fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                   ),
                               maxLines: 50,
                               onChanged: (value) => _viewModel?.updateJournalContent(value),
@@ -213,20 +213,20 @@ class _StepJournalPageState extends State<StepJournalPage> {
                                 height: 40.0,
                                 padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
                                 iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                                color: FlutterFlowTheme.of(context).primary,
-                                textStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                                color: AppTheme.of(context).primary,
+                                textStyle: AppTheme.of(context).labelLarge.override(
                                       font: GoogleFonts.poppins(
-                                        fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                                        fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                                        fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                                       ),
-                                      color: FlutterFlowTheme.of(context).primaryBackground,
+                                      color: AppTheme.of(context).primaryBackground,
                                       letterSpacing: 0.0,
-                                      fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                                      fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                                      fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                                     ),
                                 elevation: 1.0,
                                 borderSide: BorderSide(
-                                  color: FlutterFlowTheme.of(context).secondaryBackground,
+                                  color: AppTheme.of(context).secondaryBackground,
                                   width: 0.5,
                                 ),
                                 borderRadius: BorderRadius.circular(20.0),
@@ -255,11 +255,11 @@ class _StepJournalPageState extends State<StepJournalPage> {
             content: Text(
               'Journal saved',
               style: TextStyle(
-                color: FlutterFlowTheme.of(context).primaryText,
+                color: AppTheme.of(context).primaryText,
               ),
             ),
             duration: const Duration(milliseconds: 4000),
-            backgroundColor: FlutterFlowTheme.of(context).secondary,
+            backgroundColor: AppTheme.of(context).secondary,
           ),
         );
         Navigator.of(context).pop();

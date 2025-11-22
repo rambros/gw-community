@@ -1,7 +1,7 @@
 import '/data/services/supabase/supabase.dart';
 import '/data/repositories/group_repository.dart';
 import '/ui/core/ui/flutter_flow_icon_button.dart';
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/utils/flutter_flow_util.dart';
 import '/ui/community/group_edit_page/group_edit_page.dart';
 import '/utils/context_extensions.dart';
@@ -33,7 +33,7 @@ class GroupCard extends StatelessWidget {
         width: MediaQuery.sizeOf(context).width * 1.0,
         height: 96.0,
         decoration: BoxDecoration(
-          color: FlutterFlowTheme.of(context).primaryBackground,
+          color: AppTheme.of(context).primaryBackground,
           boxShadow: const [
             BoxShadow(
               blurRadius: 15.0,
@@ -44,7 +44,7 @@ class GroupCard extends StatelessWidget {
           ],
           borderRadius: BorderRadius.circular(12.0),
           border: Border.all(
-            color: FlutterFlowTheme.of(context).primaryBackground,
+            color: AppTheme.of(context).primaryBackground,
           ),
         ),
         child: Row(
@@ -83,11 +83,11 @@ class GroupCard extends StatelessWidget {
                         Expanded(
                           child: Text(
                             groupRow.name!,
-                            style: FlutterFlowTheme.of(context).titleMedium.override(
+                            style: AppTheme.of(context).titleMedium.override(
                                   font: GoogleFonts.lexendDeca(
                                     fontWeight: FontWeight.w500,
                                   ),
-                                  color: FlutterFlowTheme.of(context).secondary,
+                                  color: AppTheme.of(context).secondary,
                                   fontSize: 18.0,
                                 ),
                             overflow: TextOverflow.ellipsis,
@@ -100,11 +100,11 @@ class GroupCard extends StatelessWidget {
                       children: [
                         Text(
                           'Last post 3 days ago', // Placeholder as in original
-                          style: FlutterFlowTheme.of(context).bodySmall.override(
+                          style: AppTheme.of(context).bodySmall.override(
                                 font: GoogleFonts.lexendDeca(
                                   fontWeight: FontWeight.normal,
                                 ),
-                                color: FlutterFlowTheme.of(context).secondary,
+                                color: AppTheme.of(context).secondary,
                                 fontSize: 14.0,
                               ),
                         ),
@@ -118,11 +118,11 @@ class GroupCard extends StatelessWidget {
                             groupRow.numberMembers,
                             formatType: FormatType.compact,
                           )} members',
-                          style: FlutterFlowTheme.of(context).bodyMedium.override(
+                          style: AppTheme.of(context).bodyMedium.override(
                                 font: GoogleFonts.lexendDeca(
                                   fontWeight: FontWeight.w500,
                                 ),
-                                color: FlutterFlowTheme.of(context).primary,
+                                color: AppTheme.of(context).primary,
                                 fontSize: 12.0,
                               ),
                         ),
@@ -143,7 +143,7 @@ class GroupCard extends StatelessWidget {
                     buttonSize: 40.0,
                     icon: Icon(
                       Icons.edit,
-                      color: FlutterFlowTheme.of(context).primary,
+                      color: AppTheme.of(context).primary,
                       size: 16.0,
                     ),
                     onPressed: () async {
@@ -164,7 +164,7 @@ class GroupCard extends StatelessWidget {
                     buttonSize: 40.0,
                     icon: Icon(
                       Icons.delete_outline,
-                      color: FlutterFlowTheme.of(context).primary,
+                      color: AppTheme.of(context).primary,
                       size: 24.0,
                     ),
                     onPressed: () async {
@@ -200,11 +200,11 @@ class GroupCard extends StatelessWidget {
                               content: Text(
                                 'Group deleted with success',
                                 style: TextStyle(
-                                  color: FlutterFlowTheme.of(context).primaryText,
+                                  color: AppTheme.of(context).primaryText,
                                 ),
                               ),
                               duration: const Duration(milliseconds: 4000),
-                              backgroundColor: FlutterFlowTheme.of(context).secondary,
+                              backgroundColor: AppTheme.of(context).secondary,
                             ),
                           );
                           onUpdate?.call();

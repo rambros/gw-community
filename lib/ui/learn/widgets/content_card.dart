@@ -4,7 +4,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
 
 import '/data/services/supabase/supabase.dart';
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/utils/flutter_flow_util.dart';
 import '/ui/learn/content_view/content_view.dart';
 
@@ -48,7 +48,7 @@ class ContentCard extends StatelessWidget {
           width: double.infinity,
           height: 110.0,
           decoration: BoxDecoration(
-            color: FlutterFlowTheme.of(context).primaryBackground,
+            color: AppTheme.of(context).primaryBackground,
             boxShadow: const [
               BoxShadow(
                 blurRadius: 8.0,
@@ -59,7 +59,7 @@ class ContentCard extends StatelessWidget {
             ],
             borderRadius: BorderRadius.circular(12.0),
             border: Border.all(
-              color: FlutterFlowTheme.of(context).primaryBackground,
+              color: AppTheme.of(context).primaryBackground,
               width: 1.0,
             ),
           ),
@@ -94,16 +94,16 @@ class ContentCard extends StatelessWidget {
                                       ),
                                       textAlign: TextAlign.start,
                                       minFontSize: 12.0,
-                                      style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                      style: AppTheme.of(context).bodyMedium.override(
                                             font: GoogleFonts.lexendDeca(
                                               fontWeight: FontWeight.w600,
-                                              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                              fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                             ),
-                                            color: FlutterFlowTheme.of(context).secondary,
+                                            color: AppTheme.of(context).secondary,
                                             fontSize: 14.0,
                                             letterSpacing: 0.0,
                                             fontWeight: FontWeight.w600,
-                                            fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                            fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                           ),
                                     ),
                                   ),
@@ -114,15 +114,15 @@ class ContentCard extends StatelessWidget {
                               (List<String> listAuthors) {
                                 return listAuthors.join(', ');
                               }(contentRow.authorsNames.toList()),
-                              style: FlutterFlowTheme.of(context).bodyMedium.override(
+                              style: AppTheme.of(context).bodyMedium.override(
                                     font: GoogleFonts.lexendDeca(
-                                      fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                      fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                      fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                     ),
-                                    color: FlutterFlowTheme.of(context).secondary,
+                                    color: AppTheme.of(context).secondary,
                                     letterSpacing: 0.0,
-                                    fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                    fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                    fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                   ),
                             ),
                             Flexible(
@@ -147,15 +147,15 @@ class ContentCard extends StatelessWidget {
                                           ),
                                           textAlign: TextAlign.start,
                                           maxLines: 2,
-                                          style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                          style: AppTheme.of(context).bodyMedium.override(
                                                 font: GoogleFonts.lexendDeca(
                                                   fontWeight: FontWeight.w300,
-                                                  fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                                  fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                                 ),
-                                                color: FlutterFlowTheme.of(context).secondary,
+                                                color: AppTheme.of(context).secondary,
                                                 letterSpacing: 0.0,
                                                 fontWeight: FontWeight.w300,
-                                                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                                fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                               ),
                                         )),
                                       ),
@@ -174,7 +174,7 @@ class ContentCard extends StatelessWidget {
                             if (contentRow.midiaType == 'audio') {
                               return Icon(
                                 Icons.audiotrack_sharp,
-                                color: FlutterFlowTheme.of(context).primary,
+                                color: AppTheme.of(context).primary,
                                 size: 32.0,
                               );
                             } else if (contentRow.midiaType == 'text') {
@@ -182,7 +182,7 @@ class ContentCard extends StatelessWidget {
                                 alignment: const AlignmentDirectional(0.0, 0.0),
                                 child: Icon(
                                   Icons.text_snippet,
-                                  color: FlutterFlowTheme.of(context).primary,
+                                  color: AppTheme.of(context).primary,
                                   size: 32.0,
                                 ),
                               );
@@ -191,7 +191,7 @@ class ContentCard extends StatelessWidget {
                                 alignment: const AlignmentDirectional(0.0, 0.0),
                                 child: Icon(
                                   Icons.ondemand_video,
-                                  color: FlutterFlowTheme.of(context).primary,
+                                  color: AppTheme.of(context).primary,
                                   size: 34.0,
                                 ),
                               );
@@ -200,7 +200,7 @@ class ContentCard extends StatelessWidget {
                                 width: 4.0,
                                 height: 4.0,
                                 decoration: BoxDecoration(
-                                  color: FlutterFlowTheme.of(context).secondaryBackground,
+                                  color: AppTheme.of(context).secondaryBackground,
                                 ),
                               );
                             }

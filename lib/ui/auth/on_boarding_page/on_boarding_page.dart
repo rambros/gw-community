@@ -10,7 +10,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart' as smooth_page
 
 import '/ui/core/ui/flutter_flow_animations.dart';
 import '/ui/core/ui/flutter_flow_icon_button.dart';
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/utils/flutter_flow_util.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/ui/auth/on_boarding_page/view_model/on_boarding_view_model.dart';
@@ -339,10 +339,10 @@ class _OnBoardingPageState extends State<OnBoardingPage> with TickerProviderStat
           },
           child: Scaffold(
             key: scaffoldKey,
-            backgroundColor: FlutterFlowTheme.of(context).alternate,
+            backgroundColor: AppTheme.of(context).alternate,
             appBar: AppBar(
-              backgroundColor: FlutterFlowTheme.of(context).alternate,
-              iconTheme: IconThemeData(color: FlutterFlowTheme.of(context).secondary),
+              backgroundColor: AppTheme.of(context).alternate,
+              iconTheme: IconThemeData(color: AppTheme.of(context).secondary),
               automaticallyImplyLeading: true,
               actions: const [],
               centerTitle: false,
@@ -383,15 +383,15 @@ class _OnBoardingPageState extends State<OnBoardingPage> with TickerProviderStat
                                     children: [
                                       Text(
                                         'Journey',
-                                        style: FlutterFlowTheme.of(context).headlineMedium.override(
+                                        style: AppTheme.of(context).headlineMedium.override(
                                               font: GoogleFonts.lexendDeca(
-                                                fontWeight: FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                                                fontStyle: FlutterFlowTheme.of(context).headlineMedium.fontStyle,
+                                                fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
+                                                fontStyle: AppTheme.of(context).headlineMedium.fontStyle,
                                               ),
                                               fontSize: 26.0,
                                               letterSpacing: 0.0,
-                                              fontWeight: FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                                              fontStyle: FlutterFlowTheme.of(context).headlineMedium.fontStyle,
+                                              fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
+                                              fontStyle: AppTheme.of(context).headlineMedium.fontStyle,
                                             ),
                                       ).animateOnPageLoad(animationsMap['textOnPageLoadAnimation1']!),
                                       Padding(
@@ -399,16 +399,16 @@ class _OnBoardingPageState extends State<OnBoardingPage> with TickerProviderStat
                                         child: Text(
                                           'Welcome to a wonderful journey! A journey to learn, create and share good wishes that have an impact. Good wishes are a way for self-transformation and world transformation. You will find inspirations, meditations, daily practices and companionship…',
                                           textAlign: TextAlign.center,
-                                          style: FlutterFlowTheme.of(context).labelMedium.override(
+                                          style: AppTheme.of(context).labelMedium.override(
                                                 font: GoogleFonts.poppins(
-                                                  fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                                                  fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                                                  fontWeight: AppTheme.of(context).labelMedium.fontWeight,
+                                                  fontStyle: AppTheme.of(context).labelMedium.fontStyle,
                                                 ),
-                                                color: FlutterFlowTheme.of(context).secondary,
+                                                color: AppTheme.of(context).secondary,
                                                 fontSize: 16.0,
                                                 letterSpacing: 0.0,
-                                                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                                                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                                                fontWeight: AppTheme.of(context).labelMedium.fontWeight,
+                                                fontStyle: AppTheme.of(context).labelMedium.fontStyle,
                                               ),
                                         ).animateOnPageLoad(animationsMap['textOnPageLoadAnimation2']!),
                                       ),
@@ -426,7 +426,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> with TickerProviderStat
                                               buttonSize: 60.0,
                                               icon: Icon(
                                                 Icons.navigate_next_rounded,
-                                                color: FlutterFlowTheme.of(context).secondary,
+                                                color: AppTheme.of(context).secondary,
                                                 size: 30.0,
                                               ),
                                               onPressed: () async {
@@ -461,15 +461,15 @@ class _OnBoardingPageState extends State<OnBoardingPage> with TickerProviderStat
                                     children: [
                                       Text(
                                         'Learn',
-                                        style: FlutterFlowTheme.of(context).headlineMedium.override(
+                                        style: AppTheme.of(context).headlineMedium.override(
                                               font: GoogleFonts.lexendDeca(
-                                                fontWeight: FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                                                fontStyle: FlutterFlowTheme.of(context).headlineMedium.fontStyle,
+                                                fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
+                                                fontStyle: AppTheme.of(context).headlineMedium.fontStyle,
                                               ),
                                               fontSize: 26.0,
                                               letterSpacing: 0.0,
-                                              fontWeight: FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                                              fontStyle: FlutterFlowTheme.of(context).headlineMedium.fontStyle,
+                                              fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
+                                              fontStyle: AppTheme.of(context).headlineMedium.fontStyle,
                                             ),
                                       ).animateOnPageLoad(animationsMap['textOnPageLoadAnimation3']!),
                                       Padding(
@@ -477,16 +477,16 @@ class _OnBoardingPageState extends State<OnBoardingPage> with TickerProviderStat
                                         child: Text(
                                           'When you feel that you would like to learn more, clarify or deepen your understanding and experience, new content and references are available to help you with your practice and personal progress…',
                                           textAlign: TextAlign.center,
-                                          style: FlutterFlowTheme.of(context).labelMedium.override(
+                                          style: AppTheme.of(context).labelMedium.override(
                                                 font: GoogleFonts.poppins(
-                                                  fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                                                  fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                                                  fontWeight: AppTheme.of(context).labelMedium.fontWeight,
+                                                  fontStyle: AppTheme.of(context).labelMedium.fontStyle,
                                                 ),
-                                                color: FlutterFlowTheme.of(context).secondary,
+                                                color: AppTheme.of(context).secondary,
                                                 fontSize: 16.0,
                                                 letterSpacing: 0.0,
-                                                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                                                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                                                fontWeight: AppTheme.of(context).labelMedium.fontWeight,
+                                                fontStyle: AppTheme.of(context).labelMedium.fontStyle,
                                               ),
                                         ).animateOnPageLoad(animationsMap['textOnPageLoadAnimation4']!),
                                       ),
@@ -504,7 +504,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> with TickerProviderStat
                                               buttonSize: 60.0,
                                               icon: Icon(
                                                 Icons.navigate_next_rounded,
-                                                color: FlutterFlowTheme.of(context).secondary,
+                                                color: AppTheme.of(context).secondary,
                                                 size: 30.0,
                                               ),
                                               onPressed: () async {
@@ -539,15 +539,15 @@ class _OnBoardingPageState extends State<OnBoardingPage> with TickerProviderStat
                                     children: [
                                       Text(
                                         'Community',
-                                        style: FlutterFlowTheme.of(context).headlineMedium.override(
+                                        style: AppTheme.of(context).headlineMedium.override(
                                               font: GoogleFonts.lexendDeca(
-                                                fontWeight: FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                                                fontStyle: FlutterFlowTheme.of(context).headlineMedium.fontStyle,
+                                                fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
+                                                fontStyle: AppTheme.of(context).headlineMedium.fontStyle,
                                               ),
                                               fontSize: 26.0,
                                               letterSpacing: 0.0,
-                                              fontWeight: FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                                              fontStyle: FlutterFlowTheme.of(context).headlineMedium.fontStyle,
+                                              fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
+                                              fontStyle: AppTheme.of(context).headlineMedium.fontStyle,
                                             ),
                                       ).animateOnPageLoad(animationsMap['textOnPageLoadAnimation5']!),
                                       Padding(
@@ -555,16 +555,16 @@ class _OnBoardingPageState extends State<OnBoardingPage> with TickerProviderStat
                                         child: Text(
                                           'Collective good wishes are powerful. As you move along you will be part of a community of good wishers, available to help one another through the exchange of a heart-felt feelings that gives hope, strength and support… the basis for a new world.',
                                           textAlign: TextAlign.center,
-                                          style: FlutterFlowTheme.of(context).labelMedium.override(
+                                          style: AppTheme.of(context).labelMedium.override(
                                                 font: GoogleFonts.poppins(
-                                                  fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                                                  fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                                                  fontWeight: AppTheme.of(context).labelMedium.fontWeight,
+                                                  fontStyle: AppTheme.of(context).labelMedium.fontStyle,
                                                 ),
-                                                color: FlutterFlowTheme.of(context).secondary,
+                                                color: AppTheme.of(context).secondary,
                                                 fontSize: 16.0,
                                                 letterSpacing: 0.0,
-                                                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                                                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                                                fontWeight: AppTheme.of(context).labelMedium.fontWeight,
+                                                fontStyle: AppTheme.of(context).labelMedium.fontStyle,
                                               ),
                                         ).animateOnPageLoad(animationsMap['textOnPageLoadAnimation6']!),
                                       ),
@@ -582,7 +582,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> with TickerProviderStat
                                               buttonSize: 60.0,
                                               icon: Icon(
                                                 Icons.navigate_next_rounded,
-                                                color: FlutterFlowTheme.of(context).secondary,
+                                                color: AppTheme.of(context).secondary,
                                                 size: 30.0,
                                               ),
                                               onPressed: () async {
@@ -601,7 +601,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> with TickerProviderStat
                               width: 100.0,
                               height: 100.0,
                               decoration: BoxDecoration(
-                                color: FlutterFlowTheme.of(context).alternate,
+                                color: AppTheme.of(context).alternate,
                                 image: const DecorationImage(
                                   fit: BoxFit.cover,
                                   image: NetworkImage(
@@ -619,7 +619,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> with TickerProviderStat
                                     width: 100.0,
                                     height: 100.0,
                                     decoration: BoxDecoration(
-                                      color: FlutterFlowTheme.of(context).alternate,
+                                      color: AppTheme.of(context).alternate,
                                     ),
                                     child: Padding(
                                       padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 100.0),
@@ -652,29 +652,29 @@ class _OnBoardingPageState extends State<OnBoardingPage> with TickerProviderStat
                                           ),
                                           Text(
                                             'Your Journey Begins',
-                                            style: FlutterFlowTheme.of(context).headlineMedium.override(
+                                            style: AppTheme.of(context).headlineMedium.override(
                                                   font: GoogleFonts.lexendDeca(
-                                                    fontWeight: FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                                                    fontStyle: FlutterFlowTheme.of(context).headlineMedium.fontStyle,
+                                                    fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
+                                                    fontStyle: AppTheme.of(context).headlineMedium.fontStyle,
                                                   ),
                                                   letterSpacing: 0.0,
-                                                  fontWeight: FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                                                  fontStyle: FlutterFlowTheme.of(context).headlineMedium.fontStyle,
+                                                  fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
+                                                  fontStyle: AppTheme.of(context).headlineMedium.fontStyle,
                                                 ),
                                           ).animateOnPageLoad(animationsMap['textOnPageLoadAnimation7']!),
                                           Padding(
                                             padding: const EdgeInsetsDirectional.fromSTEB(24.0, 12.0, 24.0, 0.0),
                                             child: Text(
                                               'Sign up below in order to get started!',
-                                              style: FlutterFlowTheme.of(context).titleSmall.override(
+                                              style: AppTheme.of(context).titleSmall.override(
                                                     font: GoogleFonts.lexendDeca(
-                                                      fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                                                      fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
+                                                      fontWeight: AppTheme.of(context).titleSmall.fontWeight,
+                                                      fontStyle: AppTheme.of(context).titleSmall.fontStyle,
                                                     ),
-                                                    color: FlutterFlowTheme.of(context).secondaryText,
+                                                    color: AppTheme.of(context).secondaryText,
                                                     letterSpacing: 0.0,
-                                                    fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                                                    fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
+                                                    fontWeight: AppTheme.of(context).titleSmall.fontWeight,
+                                                    fontStyle: AppTheme.of(context).titleSmall.fontStyle,
                                                   ),
                                             ).animateOnPageLoad(animationsMap['textOnPageLoadAnimation8']!),
                                           ),
@@ -692,16 +692,16 @@ class _OnBoardingPageState extends State<OnBoardingPage> with TickerProviderStat
                                                 height: 50.0,
                                                 padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
                                                 iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                                                color: FlutterFlowTheme.of(context).primary,
-                                                textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                                                color: AppTheme.of(context).primary,
+                                                textStyle: AppTheme.of(context).titleSmall.override(
                                                       font: GoogleFonts.lexendDeca(
-                                                        fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                                                        fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
+                                                        fontWeight: AppTheme.of(context).titleSmall.fontWeight,
+                                                        fontStyle: AppTheme.of(context).titleSmall.fontStyle,
                                                       ),
                                                       color: Colors.white,
                                                       letterSpacing: 0.0,
-                                                      fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                                                      fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
+                                                      fontWeight: AppTheme.of(context).titleSmall.fontWeight,
+                                                      fontStyle: AppTheme.of(context).titleSmall.fontStyle,
                                                     ),
                                                 elevation: 2.0,
                                                 borderSide: const BorderSide(
@@ -738,8 +738,8 @@ class _OnBoardingPageState extends State<OnBoardingPage> with TickerProviderStat
                                 radius: 16.0,
                                 dotWidth: 16.0,
                                 dotHeight: 4.0,
-                                dotColor: FlutterFlowTheme.of(context).accent1,
-                                activeDotColor: FlutterFlowTheme.of(context).primary,
+                                dotColor: AppTheme.of(context).accent1,
+                                activeDotColor: AppTheme.of(context).primary,
                                 paintStyle: PaintingStyle.fill,
                               ),
                             ),

@@ -1,4 +1,4 @@
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/utils/flutter_flow_util.dart';
 
 import 'widgets/sharings_tab_widget.dart';
@@ -77,22 +77,22 @@ class _CommunityPageState extends State<CommunityPage> with TickerProviderStateM
         builder: (context, viewModel, child) {
           return Scaffold(
             key: scaffoldKey,
-            backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+            backgroundColor: AppTheme.of(context).primaryBackground,
             appBar: AppBar(
-              backgroundColor: FlutterFlowTheme.of(context).primary,
+              backgroundColor: AppTheme.of(context).primary,
               automaticallyImplyLeading: false,
               title: Text(
                 'Community',
-                style: FlutterFlowTheme.of(context).bodyMedium.override(
+                style: AppTheme.of(context).bodyMedium.override(
                       font: GoogleFonts.lexendDeca(
-                        fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                        fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                        fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                        fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                       ),
                       color: Colors.white,
                       fontSize: 20.0,
                       letterSpacing: 0.0,
-                      fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                      fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                      fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                      fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                     ),
               ),
               actions: const [],
@@ -111,19 +111,19 @@ class _CommunityPageState extends State<CommunityPage> with TickerProviderStateM
                         Align(
                           alignment: const Alignment(0, 0),
                           child: TabBar(
-                            labelColor: FlutterFlowTheme.of(context).primary,
-                            labelStyle: FlutterFlowTheme.of(context).bodyMedium.override(
+                            labelColor: AppTheme.of(context).primary,
+                            labelStyle: AppTheme.of(context).bodyMedium.override(
                                   font: GoogleFonts.lexendDeca(
-                                    fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                    fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                    fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                   ),
                                   fontSize: 18.0,
                                   letterSpacing: 0.0,
-                                  fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                  fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                  fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                 ),
                             unselectedLabelStyle: const TextStyle(),
-                            indicatorColor: FlutterFlowTheme.of(context).secondary,
+                            indicatorColor: AppTheme.of(context).secondary,
                             isScrollable: true,
                             labelPadding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
                             tabs: const [

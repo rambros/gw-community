@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/data/services/supabase/supabase.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '/utils/custom_functions.dart' as functions;
@@ -51,7 +51,7 @@ class JourneyStepItemWidget extends StatelessWidget {
                                 width: 2.0,
                                 height: 86.0,
                                 decoration: BoxDecoration(
-                                  color: FlutterFlowTheme.of(context).primary,
+                                  color: AppTheme.of(context).primary,
                                 ),
                               ),
                             ),
@@ -68,7 +68,7 @@ class JourneyStepItemWidget extends StatelessWidget {
                 width: 100.0,
                 height: 80.0,
                 decoration: BoxDecoration(
-                  color: FlutterFlowTheme.of(context).secondary,
+                  color: AppTheme.of(context).secondary,
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
@@ -76,30 +76,30 @@ class JourneyStepItemWidget extends StatelessWidget {
                   children: [
                     Text(
                       stepRow.title ?? 'Step Title',
-                      style: FlutterFlowTheme.of(context).bodyMedium.override(
+                      style: AppTheme.of(context).bodyMedium.override(
                             font: GoogleFonts.lexendDeca(
                               fontWeight: FontWeight.w500,
-                              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                              fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                             ),
-                            color: FlutterFlowTheme.of(context).primaryText,
+                            color: AppTheme.of(context).primaryText,
                             fontSize: 16.0,
                             letterSpacing: 0.0,
                             fontWeight: FontWeight.w500,
-                            fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                            fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                           ),
                     ),
                     Text(
                       stepRow.description ?? 'Description',
-                      style: FlutterFlowTheme.of(context).bodyMedium.override(
+                      style: AppTheme.of(context).bodyMedium.override(
                             font: GoogleFonts.lexendDeca(
                               fontWeight: FontWeight.w300,
-                              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                              fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                             ),
-                            color: FlutterFlowTheme.of(context).primaryText,
+                            color: AppTheme.of(context).primaryText,
                             fontSize: 14.0,
                             letterSpacing: 0.0,
                             fontWeight: FontWeight.w300,
-                            fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                            fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                           ),
                     ),
                   ],
@@ -122,10 +122,10 @@ class JourneyStepItemWidget extends StatelessWidget {
           width: 28.0,
           height: 28.0,
           decoration: BoxDecoration(
-            color: FlutterFlowTheme.of(context).primaryBackground,
+            color: AppTheme.of(context).primaryBackground,
             shape: BoxShape.circle,
             border: Border.all(
-              color: FlutterFlowTheme.of(context).primary,
+              color: AppTheme.of(context).primary,
               width: 2.0,
             ),
           ),
@@ -135,16 +135,16 @@ class JourneyStepItemWidget extends StatelessWidget {
             child: Text(
               stepRow.stepNumber?.toString() ?? '0',
               textAlign: TextAlign.center,
-              style: FlutterFlowTheme.of(context).bodyMedium.override(
+              style: AppTheme.of(context).bodyMedium.override(
                     font: GoogleFonts.lexendDeca(
-                      fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                      fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                      fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                      fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                     ),
-                    color: FlutterFlowTheme.of(context).secondary,
+                    color: AppTheme.of(context).secondary,
                     fontSize: 16.0,
                     letterSpacing: 0.0,
-                    fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                    fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                    fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                    fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                   ),
             ),
           ),
@@ -154,16 +154,16 @@ class JourneyStepItemWidget extends StatelessWidget {
           width: 28.0,
           height: 28.0,
           decoration: BoxDecoration(
-            color: FlutterFlowTheme.of(context).primaryBackground,
+            color: AppTheme.of(context).primaryBackground,
             shape: BoxShape.circle,
             border: Border.all(
-              color: FlutterFlowTheme.of(context).primary,
+              color: AppTheme.of(context).primary,
               width: 2.0,
             ),
           ),
           child: Icon(
             Icons.lock,
-            color: FlutterFlowTheme.of(context).secondary,
+            color: AppTheme.of(context).secondary,
             size: 20.0,
           ),
         );
@@ -173,16 +173,16 @@ class JourneyStepItemWidget extends StatelessWidget {
         width: 28.0,
         height: 28.0,
         decoration: BoxDecoration(
-          color: FlutterFlowTheme.of(context).primaryBackground,
+          color: AppTheme.of(context).primaryBackground,
           shape: BoxShape.circle,
           border: Border.all(
-            color: FlutterFlowTheme.of(context).primary,
+            color: AppTheme.of(context).primary,
             width: 2.0,
           ),
         ),
         child: Icon(
           Icons.lock,
-          color: FlutterFlowTheme.of(context).secondary,
+          color: AppTheme.of(context).secondary,
           size: 20.0,
         ),
       );
@@ -192,7 +192,7 @@ class JourneyStepItemWidget extends StatelessWidget {
         width: 28.0,
         height: 28.0,
         decoration: BoxDecoration(
-          color: FlutterFlowTheme.of(context).primary,
+          color: AppTheme.of(context).primary,
           shape: BoxShape.circle,
         ),
         child: Padding(
@@ -200,16 +200,16 @@ class JourneyStepItemWidget extends StatelessWidget {
           child: Text(
             stepRow.stepNumber?.toString() ?? '0',
             textAlign: TextAlign.center,
-            style: FlutterFlowTheme.of(context).bodyMedium.override(
+            style: AppTheme.of(context).bodyMedium.override(
                   font: GoogleFonts.lexendDeca(
-                    fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                    fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                    fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                    fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                   ),
-                  color: FlutterFlowTheme.of(context).secondary,
+                  color: AppTheme.of(context).secondary,
                   fontSize: 16.0,
                   letterSpacing: 0.0,
-                  fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                  fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                  fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                 ),
           ),
         ),

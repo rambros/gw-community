@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/ui/core/ui/flutter_flow_icon_button.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/ui/core/widgets/audio_player_widget.dart';
@@ -33,9 +33,9 @@ class StepAudioPlayerPage extends StatelessWidget {
         FocusManager.instance.primaryFocus?.unfocus();
       },
       child: Scaffold(
-        backgroundColor: FlutterFlowTheme.of(context).black600,
+        backgroundColor: AppTheme.of(context).black600,
         appBar: AppBar(
-          backgroundColor: FlutterFlowTheme.of(context).primary,
+          backgroundColor: AppTheme.of(context).primary,
           automaticallyImplyLeading: false,
           leading: FlutterFlowIconButton(
             borderColor: Colors.transparent,
@@ -53,15 +53,15 @@ class StepAudioPlayerPage extends StatelessWidget {
           ),
           title: Text(
             typeStep ?? 'Inspiration',
-            style: FlutterFlowTheme.of(context).titleLarge.override(
+            style: AppTheme.of(context).titleLarge.override(
                   font: GoogleFonts.poppins(
-                    fontWeight: FlutterFlowTheme.of(context).titleLarge.fontWeight,
-                    fontStyle: FlutterFlowTheme.of(context).titleLarge.fontStyle,
+                    fontWeight: AppTheme.of(context).titleLarge.fontWeight,
+                    fontStyle: AppTheme.of(context).titleLarge.fontStyle,
                   ),
                   fontSize: 20.0,
                   letterSpacing: 0.0,
-                  fontWeight: FlutterFlowTheme.of(context).titleLarge.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).titleLarge.fontStyle,
+                  fontWeight: AppTheme.of(context).titleLarge.fontWeight,
+                  fontStyle: AppTheme.of(context).titleLarge.fontStyle,
                 ),
           ),
           actions: const [],
@@ -78,15 +78,15 @@ class StepAudioPlayerPage extends StatelessWidget {
                 child: Text(
                   audioTitle!,
                   textAlign: TextAlign.center,
-                  style: FlutterFlowTheme.of(context).titleLarge.override(
+                  style: AppTheme.of(context).titleLarge.override(
                         font: GoogleFonts.poppins(
-                          fontWeight: FlutterFlowTheme.of(context).titleLarge.fontWeight,
-                          fontStyle: FlutterFlowTheme.of(context).titleLarge.fontStyle,
+                          fontWeight: AppTheme.of(context).titleLarge.fontWeight,
+                          fontStyle: AppTheme.of(context).titleLarge.fontStyle,
                         ),
                         fontSize: 16.0,
                         letterSpacing: 0.0,
-                        fontWeight: FlutterFlowTheme.of(context).titleLarge.fontWeight,
-                        fontStyle: FlutterFlowTheme.of(context).titleLarge.fontStyle,
+                        fontWeight: AppTheme.of(context).titleLarge.fontWeight,
+                        fontStyle: AppTheme.of(context).titleLarge.fontStyle,
                       ),
                 ),
               ),
@@ -112,7 +112,7 @@ class StepAudioPlayerPage extends StatelessWidget {
                       audioUrl: stepAudioUrl!,
                       audioTitle: audioTitle!,
                       audioArt: audioArt!,
-                      colorButton: FlutterFlowTheme.of(context).primary,
+                      colorButton: AppTheme.of(context).primary,
                     ),
                   ),
                 ),
@@ -136,21 +136,21 @@ class StepAudioPlayerPage extends StatelessWidget {
                         height: 40.0,
                         padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
                         iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                        iconColor: FlutterFlowTheme.of(context).primaryBackground,
-                        color: FlutterFlowTheme.of(context).secondaryText,
-                        textStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                        iconColor: AppTheme.of(context).primaryBackground,
+                        color: AppTheme.of(context).secondaryText,
+                        textStyle: AppTheme.of(context).labelLarge.override(
                               font: GoogleFonts.poppins(
-                                fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                                fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                                fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                               ),
-                              color: FlutterFlowTheme.of(context).primaryText,
+                              color: AppTheme.of(context).primaryText,
                               letterSpacing: 0.0,
-                              fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                              fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                              fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                             ),
                         elevation: 1.0,
                         borderSide: BorderSide(
-                          color: FlutterFlowTheme.of(context).primary,
+                          color: AppTheme.of(context).primary,
                           width: 0.5,
                         ),
                         borderRadius: BorderRadius.circular(20.0),

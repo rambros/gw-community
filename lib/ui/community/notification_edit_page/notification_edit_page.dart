@@ -2,7 +2,7 @@ import '/data/services/supabase/supabase.dart';
 import '/data/repositories/notification_repository.dart';
 import '/ui/core/ui/flutter_flow_drop_down.dart';
 import '/ui/core/ui/flutter_flow_icon_button.dart';
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/utils/flutter_flow_util.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/ui/core/ui/form_field_controller.dart';
@@ -63,9 +63,9 @@ class _NotificationEditPageState
             },
             child: Scaffold(
               key: scaffoldKey,
-              backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+              backgroundColor: AppTheme.of(context).primaryBackground,
               appBar: AppBar(
-                backgroundColor: FlutterFlowTheme.of(context).primary,
+                backgroundColor: AppTheme.of(context).primary,
                 automaticallyImplyLeading: false,
                 leading: FlutterFlowIconButton(
                   borderColor: Colors.transparent,
@@ -81,13 +81,13 @@ class _NotificationEditPageState
                 ),
                 title: Text(
                   'Edit Notification',
-                  style: FlutterFlowTheme.of(context).titleLarge.override(
+                  style: AppTheme.of(context).titleLarge.override(
                         font: GoogleFonts.poppins(
-                          fontWeight: FlutterFlowTheme.of(context)
+                          fontWeight: AppTheme.of(context)
                               .titleLarge
                               .fontWeight,
                           fontStyle:
-                              FlutterFlowTheme.of(context).titleLarge.fontStyle,
+                              AppTheme.of(context).titleLarge.fontStyle,
                         ),
                         fontSize: 20.0,
                         letterSpacing: 0.0,
@@ -113,10 +113,10 @@ class _NotificationEditPageState
                                 8.0, 8.0, 8.0, 0.0),
                             child: Text(
                               viewModel.errorMessage!,
-                              style: FlutterFlowTheme.of(context)
+                              style: AppTheme.of(context)
                                   .labelMedium
                                   .copyWith(
-                                    color: FlutterFlowTheme.of(context).error,
+                                    color: AppTheme.of(context).error,
                                   ),
                             ),
                           ),
@@ -147,13 +147,13 @@ class _NotificationEditPageState
               children: [
                 Text(
                   valueOrDefault<String>(sharing.displayName, 'name'),
-                  style: FlutterFlowTheme.of(context).bodyLarge.override(
+                  style: AppTheme.of(context).bodyLarge.override(
                         font: GoogleFonts.inter(
                           fontWeight: FontWeight.normal,
                           fontStyle:
-                              FlutterFlowTheme.of(context).bodyLarge.fontStyle,
+                              AppTheme.of(context).bodyLarge.fontStyle,
                         ),
-                        color: FlutterFlowTheme.of(context).secondary,
+                        color: AppTheme.of(context).secondary,
                         fontSize: 16.0,
                         letterSpacing: 0.0,
                       ),
@@ -161,16 +161,16 @@ class _NotificationEditPageState
                 if (sharing.groupName != null && sharing.groupName!.isNotEmpty)
                   Text(
                     'From group ${sharing.groupName}',
-                    style: FlutterFlowTheme.of(context).bodyMedium.override(
+                    style: AppTheme.of(context).bodyMedium.override(
                           font: GoogleFonts.lexendDeca(
-                            fontWeight: FlutterFlowTheme.of(context)
+                            fontWeight: AppTheme.of(context)
                                 .bodyMedium
                                 .fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context)
+                            fontStyle: AppTheme.of(context)
                                 .bodyMedium
                                 .fontStyle,
                           ),
-                          color: FlutterFlowTheme.of(context).primary,
+                          color: AppTheme.of(context).primary,
                           fontSize: 12.0,
                           letterSpacing: 0.0,
                         ),
@@ -179,15 +179,15 @@ class _NotificationEditPageState
                   viewModel.visibility == 'everyone'
                       ? 'Sharing for everyone'
                       : 'Sharing only for this group',
-                  style: FlutterFlowTheme.of(context).bodyMedium.override(
+                  style: AppTheme.of(context).bodyMedium.override(
                         font: GoogleFonts.lexendDeca(
-                          fontWeight: FlutterFlowTheme.of(context)
+                          fontWeight: AppTheme.of(context)
                               .bodyMedium
                               .fontWeight,
                           fontStyle:
-                              FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                              AppTheme.of(context).bodyMedium.fontStyle,
                         ),
-                        color: FlutterFlowTheme.of(context).primary,
+                        color: AppTheme.of(context).primary,
                         fontSize: 12.0,
                         letterSpacing: 0.0,
                       ),
@@ -209,14 +209,14 @@ class _NotificationEditPageState
             controller: viewModel.titleController,
             focusNode: viewModel.titleFocusNode,
             decoration: _inputDecoration(context, 'Title'),
-            style: FlutterFlowTheme.of(context).bodyMedium.override(
+            style: AppTheme.of(context).bodyMedium.override(
                   font: GoogleFonts.lexendDeca(
                     fontWeight:
-                        FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+                        AppTheme.of(context).bodyMedium.fontWeight,
                     fontStyle:
-                        FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                        AppTheme.of(context).bodyMedium.fontStyle,
                   ),
-                  color: FlutterFlowTheme.of(context).secondary,
+                  color: AppTheme.of(context).secondary,
                   letterSpacing: 0.0,
                 ),
           ),
@@ -227,14 +227,14 @@ class _NotificationEditPageState
             controller: viewModel.descriptionController,
             focusNode: viewModel.descriptionFocusNode,
             decoration: _inputDecoration(context, 'Details'),
-            style: FlutterFlowTheme.of(context).bodyMedium.override(
+            style: AppTheme.of(context).bodyMedium.override(
                   font: GoogleFonts.lexendDeca(
                     fontWeight:
-                        FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+                        AppTheme.of(context).bodyMedium.fontWeight,
                     fontStyle:
-                        FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                        AppTheme.of(context).bodyMedium.fontStyle,
                   ),
-                  color: FlutterFlowTheme.of(context).secondary,
+                  color: AppTheme.of(context).secondary,
                   letterSpacing: 0.0,
                 ),
             maxLines: 12,
@@ -250,16 +250,16 @@ class _NotificationEditPageState
                       const EdgeInsetsDirectional.fromSTEB(4.0, 0.0, 16.0, 0.0),
                   child: Text(
                     'Visibility',
-                    style: FlutterFlowTheme.of(context).bodyMedium.override(
+                    style: AppTheme.of(context).bodyMedium.override(
                           font: GoogleFonts.lexendDeca(
-                            fontWeight: FlutterFlowTheme.of(context)
+                            fontWeight: AppTheme.of(context)
                                 .bodyMedium
                                 .fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context)
+                            fontStyle: AppTheme.of(context)
                                 .bodyMedium
                                 .fontStyle,
                           ),
-                          color: FlutterFlowTheme.of(context).primary,
+                          color: AppTheme.of(context).primary,
                           fontSize: 16.0,
                           letterSpacing: 0.0,
                         ),
@@ -275,20 +275,20 @@ class _NotificationEditPageState
                   onChanged: viewModel.setVisibility,
                   width: 180.0,
                   height: 50.0,
-                  textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
+                  textStyle: AppTheme.of(context).bodyMedium.override(
                         font: GoogleFonts.lexendDeca(
-                          fontWeight: FlutterFlowTheme.of(context)
+                          fontWeight: AppTheme.of(context)
                               .bodyMedium
                               .fontWeight,
                           fontStyle:
-                              FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                              AppTheme.of(context).bodyMedium.fontStyle,
                         ),
-                        color: FlutterFlowTheme.of(context).secondary,
+                        color: AppTheme.of(context).secondary,
                         letterSpacing: 0.0,
                       ),
-                  fillColor: FlutterFlowTheme.of(context).primaryBackground,
+                  fillColor: AppTheme.of(context).primaryBackground,
                   elevation: 2.0,
-                  borderColor: FlutterFlowTheme.of(context).alternate,
+                  borderColor: AppTheme.of(context).alternate,
                   borderWidth: 1.0,
                   borderRadius: 16.0,
                   margin: const EdgeInsetsDirectional.fromSTEB(
@@ -305,33 +305,33 @@ class _NotificationEditPageState
   InputDecoration _inputDecoration(BuildContext context, String label) {
     return InputDecoration(
       labelText: label,
-      labelStyle: FlutterFlowTheme.of(context).labelLarge.override(
+      labelStyle: AppTheme.of(context).labelLarge.override(
             font: GoogleFonts.poppins(
-              fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-              fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+              fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+              fontStyle: AppTheme.of(context).labelLarge.fontStyle,
             ),
-            color: FlutterFlowTheme.of(context).primary,
+            color: AppTheme.of(context).primary,
             fontSize: 16.0,
             letterSpacing: 0.0,
           ),
-      hintStyle: FlutterFlowTheme.of(context).bodySmall.override(
+      hintStyle: AppTheme.of(context).bodySmall.override(
             font: GoogleFonts.lexendDeca(
-              fontWeight: FlutterFlowTheme.of(context).bodySmall.fontWeight,
-              fontStyle: FlutterFlowTheme.of(context).bodySmall.fontStyle,
+              fontWeight: AppTheme.of(context).bodySmall.fontWeight,
+              fontStyle: AppTheme.of(context).bodySmall.fontStyle,
             ),
-            color: FlutterFlowTheme.of(context).alternate,
+            color: AppTheme.of(context).alternate,
             letterSpacing: 0.0,
           ),
       enabledBorder: OutlineInputBorder(
         borderSide: BorderSide(
-          color: FlutterFlowTheme.of(context).alternate,
+          color: AppTheme.of(context).alternate,
           width: 1.0,
         ),
         borderRadius: BorderRadius.circular(16.0),
       ),
       focusedBorder: OutlineInputBorder(
         borderSide: BorderSide(
-          color: FlutterFlowTheme.of(context).alternate,
+          color: AppTheme.of(context).alternate,
           width: 1.0,
         ),
         borderRadius: BorderRadius.circular(16.0),
@@ -357,20 +357,20 @@ class _NotificationEditPageState
                 height: 40.0,
                 padding:
                     const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-                color: FlutterFlowTheme.of(context).primaryBackground,
-                textStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                color: AppTheme.of(context).primaryBackground,
+                textStyle: AppTheme.of(context).labelLarge.override(
                       font: GoogleFonts.poppins(
                         fontWeight:
-                            FlutterFlowTheme.of(context).labelLarge.fontWeight,
+                            AppTheme.of(context).labelLarge.fontWeight,
                         fontStyle:
-                            FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                            AppTheme.of(context).labelLarge.fontStyle,
                       ),
-                      color: FlutterFlowTheme.of(context).secondary,
+                      color: AppTheme.of(context).secondary,
                       letterSpacing: 0.0,
                     ),
                 elevation: 0.0,
                 borderSide: BorderSide(
-                  color: FlutterFlowTheme.of(context).secondaryBackground,
+                  color: AppTheme.of(context).secondaryBackground,
                   width: 0.5,
                 ),
                 borderRadius: BorderRadius.circular(20.0),
@@ -388,10 +388,10 @@ class _NotificationEditPageState
                         content: Text(
                           'Notification updated with success',
                           style: TextStyle(
-                            color: FlutterFlowTheme.of(context).primaryText,
+                            color: AppTheme.of(context).primaryText,
                           ),
                         ),
-                        backgroundColor: FlutterFlowTheme.of(context).secondary,
+                        backgroundColor: AppTheme.of(context).secondary,
                       ),
                     );
                     context.goNamed(
@@ -410,20 +410,20 @@ class _NotificationEditPageState
               height: 40.0,
               padding:
                   const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-              color: FlutterFlowTheme.of(context).primary,
-              textStyle: FlutterFlowTheme.of(context).labelLarge.override(
+              color: AppTheme.of(context).primary,
+              textStyle: AppTheme.of(context).labelLarge.override(
                     font: GoogleFonts.poppins(
                       fontWeight:
-                          FlutterFlowTheme.of(context).labelLarge.fontWeight,
+                          AppTheme.of(context).labelLarge.fontWeight,
                       fontStyle:
-                          FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                          AppTheme.of(context).labelLarge.fontStyle,
                     ),
-                    color: FlutterFlowTheme.of(context).primaryBackground,
+                    color: AppTheme.of(context).primaryBackground,
                     letterSpacing: 0.0,
                   ),
               elevation: 1.0,
               borderSide: BorderSide(
-                color: FlutterFlowTheme.of(context).secondaryBackground,
+                color: AppTheme.of(context).secondaryBackground,
                 width: 0.5,
               ),
               borderRadius: BorderRadius.circular(20.0),

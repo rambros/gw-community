@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
 
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/utils/flutter_flow_util.dart';
 import '/ui/learn/widgets/content_card.dart';
@@ -55,16 +55,16 @@ class _LearnListPageState extends State<LearnListPage> {
       },
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+        backgroundColor: AppTheme.of(context).primaryBackground,
         appBar: AppBar(
-          backgroundColor: FlutterFlowTheme.of(context).primary,
+          backgroundColor: AppTheme.of(context).primary,
           automaticallyImplyLeading: false,
           title: Text(
             'Learn',
-            style: FlutterFlowTheme.of(context).headlineMedium.override(
+            style: AppTheme.of(context).headlineMedium.override(
                   font: GoogleFonts.lexendDeca(
-                    fontWeight: FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                    fontStyle: FlutterFlowTheme.of(context).headlineMedium.fontStyle,
+                    fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
+                    fontStyle: AppTheme.of(context).headlineMedium.fontStyle,
                   ),
                   color: Colors.white,
                   fontSize: 22.0,
@@ -88,7 +88,7 @@ class _LearnListPageState extends State<LearnListPage> {
                       child: Container(
                         constraints: const BoxConstraints(maxWidth: 1370.0),
                         decoration: BoxDecoration(
-                          color: FlutterFlowTheme.of(context).primaryBackground,
+                          color: AppTheme.of(context).primaryBackground,
                         ),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
@@ -104,12 +104,12 @@ class _LearnListPageState extends State<LearnListPage> {
                                 padding: const EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 12.0, 0.0),
                                 child: Text(
                                   'Portal Content Library',
-                                  style: FlutterFlowTheme.of(context).headlineMedium.override(
+                                  style: AppTheme.of(context).headlineMedium.override(
                                         font: GoogleFonts.lexendDeca(
-                                          fontWeight: FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                                          fontStyle: FlutterFlowTheme.of(context).headlineMedium.fontStyle,
+                                          fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
+                                          fontStyle: AppTheme.of(context).headlineMedium.fontStyle,
                                         ),
-                                        color: FlutterFlowTheme.of(context).primary,
+                                        color: AppTheme.of(context).primary,
                                       ),
                                 ),
                               ),
@@ -139,20 +139,20 @@ class _LearnListPageState extends State<LearnListPage> {
                                               textInputAction: TextInputAction.search,
                                               decoration: InputDecoration(
                                                 labelText: 'Search all content...',
-                                                labelStyle: FlutterFlowTheme.of(context).labelMedium
-                                                    .copyWith(color: FlutterFlowTheme.of(context).primary),
-                                                hintStyle: FlutterFlowTheme.of(context).labelMedium
-                                                    .copyWith(color: FlutterFlowTheme.of(context).primary),
+                                                labelStyle: AppTheme.of(context).labelMedium
+                                                    .copyWith(color: AppTheme.of(context).primary),
+                                                hintStyle: AppTheme.of(context).labelMedium
+                                                    .copyWith(color: AppTheme.of(context).primary),
                                                 enabledBorder: OutlineInputBorder(
                                                   borderSide: BorderSide(
-                                                    color: FlutterFlowTheme.of(context).alternate,
+                                                    color: AppTheme.of(context).alternate,
                                                     width: 2.0,
                                                   ),
                                                   borderRadius: BorderRadius.circular(12.0),
                                                 ),
                                                 focusedBorder: OutlineInputBorder(
                                                   borderSide: BorderSide(
-                                                    color: FlutterFlowTheme.of(context).primary,
+                                                    color: AppTheme.of(context).primary,
                                                     width: 2.0,
                                                   ),
                                                   borderRadius: BorderRadius.circular(12.0),
@@ -161,15 +161,15 @@ class _LearnListPageState extends State<LearnListPage> {
                                                     const EdgeInsetsDirectional.fromSTEB(20.0, 0.0, 0.0, 0.0),
                                                 suffixIcon: Icon(
                                                   Icons.search_rounded,
-                                                  color: FlutterFlowTheme.of(context).primary,
+                                                  color: AppTheme.of(context).primary,
                                                 ),
                                               ),
-                                              style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                              style: AppTheme.of(context).bodyMedium.override(
                                                     font: GoogleFonts.lexendDeca(
-                                                      fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                                      fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                                      fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                                      fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                                     ),
-                                                    color: FlutterFlowTheme.of(context).primary,
+                                                    color: AppTheme.of(context).primary,
                                                   ),
                                             ),
                                           ),
@@ -177,12 +177,12 @@ class _LearnListPageState extends State<LearnListPage> {
                                       ),
                                       Text(
                                         'or ',
-                                        style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                        style: AppTheme.of(context).bodyMedium.override(
                                               font: GoogleFonts.lexendDeca(
-                                                fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                                fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                                fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                               ),
-                                              color: FlutterFlowTheme.of(context).primary,
+                                              color: AppTheme.of(context).primary,
                                               fontSize: 18.0,
                                             ),
                                       ),
@@ -221,13 +221,13 @@ class _LearnListPageState extends State<LearnListPage> {
                                           options: FFButtonOptions(
                                             height: 44.0,
                                             padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-                                            color: FlutterFlowTheme.of(context).primary,
-                                            textStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                                            color: AppTheme.of(context).primary,
+                                            textStyle: AppTheme.of(context).labelLarge.override(
                                                   font: GoogleFonts.poppins(
-                                                    fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                                                    fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                                                    fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                                                    fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                                                   ),
-                                                  color: FlutterFlowTheme.of(context).primaryBackground,
+                                                  color: AppTheme.of(context).primaryBackground,
                                                 ),
                                             elevation: 1.0,
                                             borderRadius: BorderRadius.circular(20.0),
@@ -260,12 +260,12 @@ class _LearnListPageState extends State<LearnListPage> {
                                               (viewModel.isSearchActive || viewModel.isFilterActive)
                                                   ? 'List of Contents'
                                                   : 'List of All Content',
-                                              style: FlutterFlowTheme.of(context).labelLarge.override(
+                                              style: AppTheme.of(context).labelLarge.override(
                                                     font: GoogleFonts.poppins(
                                                       fontWeight: FontWeight.w600,
-                                                      fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                                                      fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                                                     ),
-                                                    color: FlutterFlowTheme.of(context).primary,
+                                                    color: AppTheme.of(context).primary,
                                                   ),
                                             ),
                                           ),
@@ -286,17 +286,17 @@ class _LearnListPageState extends State<LearnListPage> {
                                         options: FFButtonOptions(
                                           height: 40.0,
                                           padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-                                          color: FlutterFlowTheme.of(context).primaryBackground,
-                                          textStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                                          color: AppTheme.of(context).primaryBackground,
+                                          textStyle: AppTheme.of(context).labelLarge.override(
                                                 font: GoogleFonts.poppins(
-                                                  fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                                                  fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                                                  fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                                                  fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                                                 ),
-                                                color: FlutterFlowTheme.of(context).secondary,
+                                                color: AppTheme.of(context).secondary,
                                               ),
                                           elevation: 0.0,
                                           borderSide: BorderSide(
-                                            color: FlutterFlowTheme.of(context).secondaryBackground,
+                                            color: AppTheme.of(context).secondaryBackground,
                                             width: 0.5,
                                           ),
                                           borderRadius: BorderRadius.circular(20.0),
@@ -317,12 +317,12 @@ class _LearnListPageState extends State<LearnListPage> {
                                     viewModel.filterDescription,
                                     textAlign: TextAlign.start,
                                     maxLines: 2,
-                                    style: FlutterFlowTheme.of(context).labelLarge.override(
+                                    style: AppTheme.of(context).labelLarge.override(
                                           font: GoogleFonts.poppins(
                                             fontWeight: FontWeight.w600,
-                                            fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                                            fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                                           ),
-                                          color: FlutterFlowTheme.of(context).primary,
+                                          color: AppTheme.of(context).primary,
                                           fontSize: 12.0,
                                         ),
                                   ),
@@ -341,7 +341,7 @@ class _LearnListPageState extends State<LearnListPage> {
                                             width: 50.0,
                                             height: 50.0,
                                             child: SpinKitRipple(
-                                              color: FlutterFlowTheme.of(context).primary,
+                                              color: AppTheme.of(context).primary,
                                               size: 50.0,
                                             ),
                                           ),

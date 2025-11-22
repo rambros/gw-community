@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/ui/core/ui/flutter_flow_icon_button.dart';
 
 class StepTextViewPage extends StatelessWidget {
@@ -24,9 +24,9 @@ class StepTextViewPage extends StatelessWidget {
         FocusManager.instance.primaryFocus?.unfocus();
       },
       child: Scaffold(
-        backgroundColor: FlutterFlowTheme.of(context).secondary,
+        backgroundColor: AppTheme.of(context).secondary,
         appBar: AppBar(
-          backgroundColor: FlutterFlowTheme.of(context).primary,
+          backgroundColor: AppTheme.of(context).primary,
           automaticallyImplyLeading: false,
           leading: FlutterFlowIconButton(
             borderColor: Colors.transparent,
@@ -44,15 +44,15 @@ class StepTextViewPage extends StatelessWidget {
           ),
           title: Text(
             'Daily Practice',
-            style: FlutterFlowTheme.of(context).titleLarge.override(
+            style: AppTheme.of(context).titleLarge.override(
                   font: GoogleFonts.poppins(
-                    fontWeight: FlutterFlowTheme.of(context).titleLarge.fontWeight,
-                    fontStyle: FlutterFlowTheme.of(context).titleLarge.fontStyle,
+                    fontWeight: AppTheme.of(context).titleLarge.fontWeight,
+                    fontStyle: AppTheme.of(context).titleLarge.fontStyle,
                   ),
                   fontSize: 20.0,
                   letterSpacing: 0.0,
-                  fontWeight: FlutterFlowTheme.of(context).titleLarge.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).titleLarge.fontStyle,
+                  fontWeight: AppTheme.of(context).titleLarge.fontWeight,
+                  fontStyle: AppTheme.of(context).titleLarge.fontStyle,
                 ),
           ),
           actions: const [],
@@ -65,7 +65,7 @@ class StepTextViewPage extends StatelessWidget {
             width: double.infinity,
             height: double.infinity,
             decoration: BoxDecoration(
-              color: FlutterFlowTheme.of(context).secondary,
+              color: AppTheme.of(context).secondary,
             ),
             child: Padding(
               padding: const EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 8.0),
@@ -83,15 +83,15 @@ class StepTextViewPage extends StatelessWidget {
                           Text(
                             stepTextTitle ?? 'prompt',
                             textAlign: TextAlign.center,
-                            style: FlutterFlowTheme.of(context).titleMedium.override(
+                            style: AppTheme.of(context).titleMedium.override(
                                   font: GoogleFonts.lexendDeca(
-                                    fontWeight: FlutterFlowTheme.of(context).titleMedium.fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                                    fontWeight: AppTheme.of(context).titleMedium.fontWeight,
+                                    fontStyle: AppTheme.of(context).titleMedium.fontStyle,
                                   ),
-                                  color: FlutterFlowTheme.of(context).tertiary,
+                                  color: AppTheme.of(context).tertiary,
                                   letterSpacing: 0.0,
-                                  fontWeight: FlutterFlowTheme.of(context).titleMedium.fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                                  fontWeight: AppTheme.of(context).titleMedium.fontWeight,
+                                  fontStyle: AppTheme.of(context).titleMedium.fontStyle,
                                 ),
                           ),
                         ],
@@ -100,15 +100,15 @@ class StepTextViewPage extends StatelessWidget {
                     SelectionArea(
                       child: Text(
                         stepTextContent ?? 'text',
-                        style: FlutterFlowTheme.of(context).bodyMedium.override(
+                        style: AppTheme.of(context).bodyMedium.override(
                               font: GoogleFonts.lexendDeca(
-                                fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                               ),
-                              color: FlutterFlowTheme.of(context).primaryText,
+                              color: AppTheme.of(context).primaryText,
                               letterSpacing: 0.0,
-                              fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                              fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                              fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                             ),
                       ),
                     ),

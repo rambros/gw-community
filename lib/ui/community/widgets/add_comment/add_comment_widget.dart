@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 
 import '/ui/core/widgets/user_avatar.dart';
 import '/data/repositories/sharing_repository.dart';
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/utils/flutter_flow_util.dart';
 import '/index.dart';
@@ -64,7 +64,7 @@ class _AddCommentView extends StatelessWidget {
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          color: FlutterFlowTheme.of(context).secondaryBackground,
+          color: AppTheme.of(context).secondaryBackground,
           boxShadow: const [
             BoxShadow(
               blurRadius: 5.0,
@@ -100,16 +100,16 @@ class _AddCommentView extends StatelessWidget {
                         autofocus: true,
                         decoration: InputDecoration(
                           hintText: 'Write something...',
-                          hintStyle: FlutterFlowTheme.of(context).labelSmall.override(
+                          hintStyle: AppTheme.of(context).labelSmall.override(
                                 font: GoogleFonts.poppins(
-                                  fontWeight: FlutterFlowTheme.of(context).labelSmall.fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context).labelSmall.fontStyle,
+                                  fontWeight: AppTheme.of(context).labelSmall.fontWeight,
+                                  fontStyle: AppTheme.of(context).labelSmall.fontStyle,
                                 ),
-                                color: FlutterFlowTheme.of(context).secondary,
+                                color: AppTheme.of(context).secondary,
                                 fontSize: 14.0,
                                 letterSpacing: 0.0,
-                                fontWeight: FlutterFlowTheme.of(context).labelSmall.fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context).labelSmall.fontStyle,
+                                fontWeight: AppTheme.of(context).labelSmall.fontWeight,
+                                fontStyle: AppTheme.of(context).labelSmall.fontStyle,
                               ),
                           enabledBorder: UnderlineInputBorder(
                             borderSide: const BorderSide(
@@ -127,29 +127,29 @@ class _AddCommentView extends StatelessWidget {
                           ),
                           errorBorder: UnderlineInputBorder(
                             borderSide: BorderSide(
-                              color: FlutterFlowTheme.of(context).error,
+                              color: AppTheme.of(context).error,
                               width: 1.0,
                             ),
                             borderRadius: BorderRadius.circular(4.0),
                           ),
                           focusedErrorBorder: UnderlineInputBorder(
                             borderSide: BorderSide(
-                              color: FlutterFlowTheme.of(context).error,
+                              color: AppTheme.of(context).error,
                               width: 1.0,
                             ),
                             borderRadius: BorderRadius.circular(4.0),
                           ),
                           contentPadding: const EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 8.0, 12.0),
                         ),
-                        style: FlutterFlowTheme.of(context).bodyMedium.override(
+                        style: AppTheme.of(context).bodyMedium.override(
                               font: GoogleFonts.lexendDeca(
-                                fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                               ),
-                              color: FlutterFlowTheme.of(context).secondary,
+                              color: AppTheme.of(context).secondary,
                               letterSpacing: 0.0,
-                              fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                              fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                              fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                             ),
                         maxLines: 8,
                         minLines: 3,
@@ -162,7 +162,7 @@ class _AddCommentView extends StatelessWidget {
             Divider(
               height: 12.0,
               thickness: 2.0,
-              color: FlutterFlowTheme.of(context).alternate,
+              color: AppTheme.of(context).alternate,
             ),
             Padding(
               padding: const EdgeInsetsDirectional.fromSTEB(12.0, 4.0, 12.0, 12.0),
@@ -175,9 +175,9 @@ class _AddCommentView extends StatelessWidget {
                         padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 12, 0),
                         child: Text(
                           viewModel.errorMessage!,
-                          style: FlutterFlowTheme.of(context).labelSmall.override(
+                          style: AppTheme.of(context).labelSmall.override(
                                 font: GoogleFonts.poppins(),
-                                color: FlutterFlowTheme.of(context).error,
+                                color: AppTheme.of(context).error,
                                 letterSpacing: 0.0,
                               ),
                           textAlign: TextAlign.end,
@@ -206,25 +206,25 @@ class _AddCommentView extends StatelessWidget {
                       width: 90.0,
                       height: 40.0,
                       padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-                      color: FlutterFlowTheme.of(context).primary,
-                      textStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                      color: AppTheme.of(context).primary,
+                      textStyle: AppTheme.of(context).labelLarge.override(
                             font: GoogleFonts.poppins(
-                              fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                              fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                              fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                             ),
-                            color: FlutterFlowTheme.of(context).primaryBackground,
+                            color: AppTheme.of(context).primaryBackground,
                             letterSpacing: 0.0,
-                            fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                            fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                            fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                           ),
                       elevation: 1.0,
                       borderSide: BorderSide(
-                        color: FlutterFlowTheme.of(context).secondaryBackground,
+                        color: AppTheme.of(context).secondaryBackground,
                         width: 0.5,
                       ),
                       borderRadius: BorderRadius.circular(20.0),
-                      disabledColor: FlutterFlowTheme.of(context).alternate,
-                      disabledTextColor: FlutterFlowTheme.of(context).secondaryBackground,
+                      disabledColor: AppTheme.of(context).alternate,
+                      disabledTextColor: AppTheme.of(context).secondaryBackground,
                     ),
                   ),
                 ],

@@ -4,7 +4,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/ui/core/ui/flutter_flow_icon_button.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 import 'view_model/user_edit_profile_view_model.dart';
@@ -36,9 +36,9 @@ class _UserEditProfilePageState extends State<UserEditProfilePage> {
 
     return Scaffold(
       key: scaffoldKey,
-      backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+      backgroundColor: AppTheme.of(context).primaryBackground,
       appBar: AppBar(
-        backgroundColor: FlutterFlowTheme.of(context).primary,
+        backgroundColor: AppTheme.of(context).primary,
         automaticallyImplyLeading: false,
         leading: FlutterFlowIconButton(
           borderColor: Colors.transparent,
@@ -46,7 +46,7 @@ class _UserEditProfilePageState extends State<UserEditProfilePage> {
           buttonSize: 46.0,
           icon: Icon(
             Icons.arrow_back_rounded,
-            color: FlutterFlowTheme.of(context).primaryBackground,
+            color: AppTheme.of(context).primaryBackground,
             size: 25.0,
           ),
           onPressed: () async {
@@ -55,15 +55,15 @@ class _UserEditProfilePageState extends State<UserEditProfilePage> {
         ),
         title: Text(
           'Your Profile',
-          style: FlutterFlowTheme.of(context).headlineMedium.override(
+          style: AppTheme.of(context).headlineMedium.override(
                 font: GoogleFonts.lexendDeca(
-                  fontWeight: FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).headlineMedium.fontStyle,
+                  fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
+                  fontStyle: AppTheme.of(context).headlineMedium.fontStyle,
                 ),
-                color: FlutterFlowTheme.of(context).primaryBackground,
+                color: AppTheme.of(context).primaryBackground,
                 letterSpacing: 0.0,
-                fontWeight: FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).headlineMedium.fontStyle,
+                fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
+                fontStyle: AppTheme.of(context).headlineMedium.fontStyle,
               ),
         ),
         actions: const [],
@@ -78,7 +78,7 @@ class _UserEditProfilePageState extends State<UserEditProfilePage> {
                   width: 50.0,
                   height: 50.0,
                   child: SpinKitRipple(
-                    color: FlutterFlowTheme.of(context).primary,
+                    color: AppTheme.of(context).primary,
                     size: 50.0,
                   ),
                 ),
@@ -93,7 +93,7 @@ class _UserEditProfilePageState extends State<UserEditProfilePage> {
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
                           viewModel.errorMessage!,
-                          style: TextStyle(color: FlutterFlowTheme.of(context).error),
+                          style: TextStyle(color: AppTheme.of(context).error),
                         ),
                       ),
                     Column(
@@ -114,38 +114,38 @@ class _UserEditProfilePageState extends State<UserEditProfilePage> {
                                     obscureText: false,
                                     decoration: InputDecoration(
                                       labelText: 'First Name',
-                                      labelStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                                      labelStyle: AppTheme.of(context).labelLarge.override(
                                             font: GoogleFonts.poppins(
-                                              fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                                              fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                                              fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                                              fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                                             ),
-                                            color: FlutterFlowTheme.of(context).primary,
+                                            color: AppTheme.of(context).primary,
                                             fontSize: 16.0,
                                             letterSpacing: 0.0,
-                                            fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                                            fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                                            fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                                            fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                                           ),
                                       hintText: 'FirstName',
-                                      hintStyle: FlutterFlowTheme.of(context).bodySmall.override(
+                                      hintStyle: AppTheme.of(context).bodySmall.override(
                                             font: GoogleFonts.lexendDeca(
-                                              fontWeight: FlutterFlowTheme.of(context).bodySmall.fontWeight,
-                                              fontStyle: FlutterFlowTheme.of(context).bodySmall.fontStyle,
+                                              fontWeight: AppTheme.of(context).bodySmall.fontWeight,
+                                              fontStyle: AppTheme.of(context).bodySmall.fontStyle,
                                             ),
-                                            color: FlutterFlowTheme.of(context).alternate,
+                                            color: AppTheme.of(context).alternate,
                                             letterSpacing: 0.0,
-                                            fontWeight: FlutterFlowTheme.of(context).bodySmall.fontWeight,
-                                            fontStyle: FlutterFlowTheme.of(context).bodySmall.fontStyle,
+                                            fontWeight: AppTheme.of(context).bodySmall.fontWeight,
+                                            fontStyle: AppTheme.of(context).bodySmall.fontStyle,
                                           ),
                                       enabledBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
-                                          color: FlutterFlowTheme.of(context).alternate,
+                                          color: AppTheme.of(context).alternate,
                                           width: 1.0,
                                         ),
                                         borderRadius: BorderRadius.circular(16.0),
                                       ),
                                       focusedBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
-                                          color: FlutterFlowTheme.of(context).alternate,
+                                          color: AppTheme.of(context).alternate,
                                           width: 1.0,
                                         ),
                                         borderRadius: BorderRadius.circular(16.0),
@@ -165,18 +165,18 @@ class _UserEditProfilePageState extends State<UserEditProfilePage> {
                                         borderRadius: BorderRadius.circular(16.0),
                                       ),
                                       filled: true,
-                                      fillColor: FlutterFlowTheme.of(context).primaryBackground,
+                                      fillColor: AppTheme.of(context).primaryBackground,
                                     ),
-                                    style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                    style: AppTheme.of(context).bodyMedium.override(
                                           font: GoogleFonts.lexendDeca(
-                                            fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                            fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                            fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                            fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                           ),
-                                          color: FlutterFlowTheme.of(context).secondary,
+                                          color: AppTheme.of(context).secondary,
                                           fontSize: 14.0,
                                           letterSpacing: 0.0,
-                                          fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                          fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                          fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                          fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                         ),
                                   ),
                                 ),
@@ -191,38 +191,38 @@ class _UserEditProfilePageState extends State<UserEditProfilePage> {
                                     obscureText: false,
                                     decoration: InputDecoration(
                                       labelText: 'Last Name',
-                                      labelStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                                      labelStyle: AppTheme.of(context).labelLarge.override(
                                             font: GoogleFonts.poppins(
-                                              fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                                              fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                                              fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                                              fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                                             ),
-                                            color: FlutterFlowTheme.of(context).primary,
+                                            color: AppTheme.of(context).primary,
                                             fontSize: 16.0,
                                             letterSpacing: 0.0,
-                                            fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                                            fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                                            fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                                            fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                                           ),
                                       hintText: 'Last Name',
-                                      hintStyle: FlutterFlowTheme.of(context).bodySmall.override(
+                                      hintStyle: AppTheme.of(context).bodySmall.override(
                                             font: GoogleFonts.lexendDeca(
-                                              fontWeight: FlutterFlowTheme.of(context).bodySmall.fontWeight,
-                                              fontStyle: FlutterFlowTheme.of(context).bodySmall.fontStyle,
+                                              fontWeight: AppTheme.of(context).bodySmall.fontWeight,
+                                              fontStyle: AppTheme.of(context).bodySmall.fontStyle,
                                             ),
-                                            color: FlutterFlowTheme.of(context).alternate,
+                                            color: AppTheme.of(context).alternate,
                                             letterSpacing: 0.0,
-                                            fontWeight: FlutterFlowTheme.of(context).bodySmall.fontWeight,
-                                            fontStyle: FlutterFlowTheme.of(context).bodySmall.fontStyle,
+                                            fontWeight: AppTheme.of(context).bodySmall.fontWeight,
+                                            fontStyle: AppTheme.of(context).bodySmall.fontStyle,
                                           ),
                                       enabledBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
-                                          color: FlutterFlowTheme.of(context).alternate,
+                                          color: AppTheme.of(context).alternate,
                                           width: 1.0,
                                         ),
                                         borderRadius: BorderRadius.circular(16.0),
                                       ),
                                       focusedBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
-                                          color: FlutterFlowTheme.of(context).alternate,
+                                          color: AppTheme.of(context).alternate,
                                           width: 1.0,
                                         ),
                                         borderRadius: BorderRadius.circular(16.0),
@@ -244,16 +244,16 @@ class _UserEditProfilePageState extends State<UserEditProfilePage> {
                                       filled: true,
                                       fillColor: const Color(0xFFF9FAFB),
                                     ),
-                                    style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                    style: AppTheme.of(context).bodyMedium.override(
                                           font: GoogleFonts.lexendDeca(
-                                            fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                            fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                            fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                            fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                           ),
-                                          color: FlutterFlowTheme.of(context).secondary,
+                                          color: AppTheme.of(context).secondary,
                                           fontSize: 14.0,
                                           letterSpacing: 0.0,
-                                          fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                          fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                          fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                          fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                         ),
                                   ),
                                 ),
@@ -271,15 +271,15 @@ class _UserEditProfilePageState extends State<UserEditProfilePage> {
                                 padding: const EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 12.0, 0.0),
                                 child: Text(
                                   'Hide my last name',
-                                  style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                  style: AppTheme.of(context).bodyMedium.override(
                                         font: GoogleFonts.lexendDeca(
-                                          fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                          fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                          fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                          fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                         ),
-                                        color: FlutterFlowTheme.of(context).primary,
+                                        color: AppTheme.of(context).primary,
                                         letterSpacing: 0.0,
-                                        fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                        fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                        fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                       ),
                                 ),
                               ),
@@ -288,7 +288,7 @@ class _UserEditProfilePageState extends State<UserEditProfilePage> {
                                 onChanged: (newValue) async {
                                   viewModel.setHideLastName(newValue);
                                 },
-                                activeThumbColor: FlutterFlowTheme.of(context).primary,
+                                activeThumbColor: AppTheme.of(context).primary,
                               ),
                             ],
                           ),
@@ -308,37 +308,37 @@ class _UserEditProfilePageState extends State<UserEditProfilePage> {
                                     obscureText: false,
                                     decoration: InputDecoration(
                                       labelText: 'Display Name',
-                                      labelStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                                      labelStyle: AppTheme.of(context).labelLarge.override(
                                             font: GoogleFonts.poppins(
-                                              fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                                              fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                                              fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                                              fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                                             ),
-                                            color: FlutterFlowTheme.of(context).primary,
+                                            color: AppTheme.of(context).primary,
                                             fontSize: 16.0,
                                             letterSpacing: 0.0,
-                                            fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                                            fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                                            fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                                            fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                                           ),
-                                      hintStyle: FlutterFlowTheme.of(context).bodySmall.override(
+                                      hintStyle: AppTheme.of(context).bodySmall.override(
                                             font: GoogleFonts.lexendDeca(
-                                              fontWeight: FlutterFlowTheme.of(context).bodySmall.fontWeight,
-                                              fontStyle: FlutterFlowTheme.of(context).bodySmall.fontStyle,
+                                              fontWeight: AppTheme.of(context).bodySmall.fontWeight,
+                                              fontStyle: AppTheme.of(context).bodySmall.fontStyle,
                                             ),
-                                            color: FlutterFlowTheme.of(context).alternate,
+                                            color: AppTheme.of(context).alternate,
                                             letterSpacing: 0.0,
-                                            fontWeight: FlutterFlowTheme.of(context).bodySmall.fontWeight,
-                                            fontStyle: FlutterFlowTheme.of(context).bodySmall.fontStyle,
+                                            fontWeight: AppTheme.of(context).bodySmall.fontWeight,
+                                            fontStyle: AppTheme.of(context).bodySmall.fontStyle,
                                           ),
                                       enabledBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
-                                          color: FlutterFlowTheme.of(context).alternate,
+                                          color: AppTheme.of(context).alternate,
                                           width: 1.0,
                                         ),
                                         borderRadius: BorderRadius.circular(16.0),
                                       ),
                                       focusedBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
-                                          color: FlutterFlowTheme.of(context).alternate,
+                                          color: AppTheme.of(context).alternate,
                                           width: 1.0,
                                         ),
                                         borderRadius: BorderRadius.circular(16.0),
@@ -360,16 +360,16 @@ class _UserEditProfilePageState extends State<UserEditProfilePage> {
                                       filled: true,
                                       fillColor: const Color(0xFFF9FAFB),
                                     ),
-                                    style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                    style: AppTheme.of(context).bodyMedium.override(
                                           font: GoogleFonts.lexendDeca(
-                                            fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                            fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                            fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                            fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                           ),
-                                          color: FlutterFlowTheme.of(context).secondary,
+                                          color: AppTheme.of(context).secondary,
                                           fontSize: 14.0,
                                           letterSpacing: 0.0,
-                                          fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                          fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                          fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                          fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                         ),
                                   ),
                                 ),
@@ -391,38 +391,38 @@ class _UserEditProfilePageState extends State<UserEditProfilePage> {
                                     obscureText: false,
                                     decoration: InputDecoration(
                                       labelText: ' Info  (Optional)',
-                                      labelStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                                      labelStyle: AppTheme.of(context).labelLarge.override(
                                             font: GoogleFonts.poppins(
-                                              fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                                              fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                                              fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                                              fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                                             ),
-                                            color: FlutterFlowTheme.of(context).primary,
+                                            color: AppTheme.of(context).primary,
                                             fontSize: 16.0,
                                             letterSpacing: 0.0,
-                                            fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                                            fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                                            fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                                            fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                                           ),
                                       hintText: '(Optional) Info about you that you want to share',
-                                      hintStyle: FlutterFlowTheme.of(context).bodySmall.override(
+                                      hintStyle: AppTheme.of(context).bodySmall.override(
                                             font: GoogleFonts.lexendDeca(
-                                              fontWeight: FlutterFlowTheme.of(context).bodySmall.fontWeight,
-                                              fontStyle: FlutterFlowTheme.of(context).bodySmall.fontStyle,
+                                              fontWeight: AppTheme.of(context).bodySmall.fontWeight,
+                                              fontStyle: AppTheme.of(context).bodySmall.fontStyle,
                                             ),
-                                            color: FlutterFlowTheme.of(context).alternate,
+                                            color: AppTheme.of(context).alternate,
                                             letterSpacing: 0.0,
-                                            fontWeight: FlutterFlowTheme.of(context).bodySmall.fontWeight,
-                                            fontStyle: FlutterFlowTheme.of(context).bodySmall.fontStyle,
+                                            fontWeight: AppTheme.of(context).bodySmall.fontWeight,
+                                            fontStyle: AppTheme.of(context).bodySmall.fontStyle,
                                           ),
                                       enabledBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
-                                          color: FlutterFlowTheme.of(context).alternate,
+                                          color: AppTheme.of(context).alternate,
                                           width: 1.0,
                                         ),
                                         borderRadius: BorderRadius.circular(16.0),
                                       ),
                                       focusedBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
-                                          color: FlutterFlowTheme.of(context).alternate,
+                                          color: AppTheme.of(context).alternate,
                                           width: 1.0,
                                         ),
                                         borderRadius: BorderRadius.circular(16.0),
@@ -442,18 +442,18 @@ class _UserEditProfilePageState extends State<UserEditProfilePage> {
                                         borderRadius: BorderRadius.circular(16.0),
                                       ),
                                       filled: true,
-                                      fillColor: FlutterFlowTheme.of(context).primaryBackground,
+                                      fillColor: AppTheme.of(context).primaryBackground,
                                     ),
-                                    style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                    style: AppTheme.of(context).bodyMedium.override(
                                           font: GoogleFonts.lexendDeca(
-                                            fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                            fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                            fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                            fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                           ),
-                                          color: FlutterFlowTheme.of(context).secondary,
+                                          color: AppTheme.of(context).secondary,
                                           fontSize: 14.0,
                                           letterSpacing: 0.0,
-                                          fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                          fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                          fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                          fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                         ),
                                     maxLines: 8,
                                   ),
@@ -479,20 +479,20 @@ class _UserEditProfilePageState extends State<UserEditProfilePage> {
                                     height: 40.0,
                                     padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
                                     iconPadding: const EdgeInsets.all(0.0),
-                                    color: FlutterFlowTheme.of(context).primaryBackground,
-                                    textStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                                    color: AppTheme.of(context).primaryBackground,
+                                    textStyle: AppTheme.of(context).labelLarge.override(
                                           font: GoogleFonts.poppins(
-                                            fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                                            fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                                            fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                                            fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                                           ),
-                                          color: FlutterFlowTheme.of(context).secondary,
+                                          color: AppTheme.of(context).secondary,
                                           letterSpacing: 0.0,
-                                          fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                                          fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                                          fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                                          fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                                         ),
                                     elevation: 0.0,
                                     borderSide: BorderSide(
-                                      color: FlutterFlowTheme.of(context).secondaryBackground,
+                                      color: AppTheme.of(context).secondaryBackground,
                                       width: 0.5,
                                     ),
                                     borderRadius: BorderRadius.circular(20.0),
@@ -510,16 +510,16 @@ class _UserEditProfilePageState extends State<UserEditProfilePage> {
                                     height: 40.0,
                                     padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
                                     iconPadding: const EdgeInsets.all(0.0),
-                                    color: FlutterFlowTheme.of(context).primary,
-                                    textStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                                    color: AppTheme.of(context).primary,
+                                    textStyle: AppTheme.of(context).labelLarge.override(
                                           font: GoogleFonts.poppins(
-                                            fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                                            fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                                            fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                                            fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                                           ),
                                           color: Colors.white,
                                           letterSpacing: 0.0,
-                                          fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                                          fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                                          fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                                          fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                                         ),
                                     elevation: 0.0,
                                     borderSide: const BorderSide(

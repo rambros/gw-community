@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '/data/services/supabase/supabase.dart';
 import '/ui/core/ui/flutter_flow_icon_button.dart';
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/utils/flutter_flow_util.dart';
 
 /// Widget que exibe os botões de ação do sharing
@@ -58,7 +58,7 @@ class SharingActionsWidget extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15.0),
             border: Border.all(
-              color: FlutterFlowTheme.of(context).alternate,
+              color: AppTheme.of(context).alternate,
               width: 1.0,
             ),
           ),
@@ -78,7 +78,7 @@ class SharingActionsWidget extends StatelessWidget {
                       icon: Icon(
                         Icons.comment_rounded,
                         color:
-                            isLocked ? FlutterFlowTheme.of(context).alternate : FlutterFlowTheme.of(context).secondary,
+                            isLocked ? AppTheme.of(context).alternate : AppTheme.of(context).secondary,
                         size: 28.0,
                       ),
                       onPressed: isLocked ? null : onComment,
@@ -92,7 +92,7 @@ class SharingActionsWidget extends StatelessWidget {
                       sharing.comments?.toString(),
                       '0',
                     ),
-                    style: FlutterFlowTheme.of(context).bodyMedium.override(
+                    style: AppTheme.of(context).bodyMedium.override(
                           font: GoogleFonts.lexendDeca(),
                           fontSize: 17.0,
                           letterSpacing: 0.0,
@@ -116,7 +116,7 @@ class SharingActionsWidget extends StatelessWidget {
         buttonSize: 40.0,
         icon: Icon(
           Icons.delete,
-          color: FlutterFlowTheme.of(context).secondary,
+          color: AppTheme.of(context).secondary,
           size: 26.0,
         ),
         onPressed: onDelete,
@@ -133,7 +133,7 @@ class SharingActionsWidget extends StatelessWidget {
         buttonSize: 40.0,
         icon: Icon(
           Icons.lock,
-          color: FlutterFlowTheme.of(context).secondary,
+          color: AppTheme.of(context).secondary,
           size: 26.0,
         ),
         onPressed: onToggleLock,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/utils/flutter_flow_util.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/ui/community/group_add_page/group_add_page.dart';
@@ -30,14 +30,14 @@ class GroupsTabWidget extends StatelessWidget {
               children: [
                 Text(
                   'My Groups',
-                  style: FlutterFlowTheme.of(context).headlineSmall.override(
+                  style: AppTheme.of(context).headlineSmall.override(
                         font: GoogleFonts.lexendDeca(
-                          fontWeight: FlutterFlowTheme.of(context).headlineSmall.fontWeight,
-                          fontStyle: FlutterFlowTheme.of(context).headlineSmall.fontStyle,
+                          fontWeight: AppTheme.of(context).headlineSmall.fontWeight,
+                          fontStyle: AppTheme.of(context).headlineSmall.fontStyle,
                         ),
                         letterSpacing: 0.0,
-                        fontWeight: FlutterFlowTheme.of(context).headlineSmall.fontWeight,
-                        fontStyle: FlutterFlowTheme.of(context).headlineSmall.fontStyle,
+                        fontWeight: AppTheme.of(context).headlineSmall.fontWeight,
+                        fontStyle: AppTheme.of(context).headlineSmall.fontStyle,
                       ),
                 ),
                 Padding(
@@ -60,20 +60,20 @@ class GroupsTabWidget extends StatelessWidget {
                       height: 40.0,
                       padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
                       iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      color: FlutterFlowTheme.of(context).primary,
-                      textStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                      color: AppTheme.of(context).primary,
+                      textStyle: AppTheme.of(context).labelLarge.override(
                             font: GoogleFonts.poppins(
-                              fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                              fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                              fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                             ),
-                            color: FlutterFlowTheme.of(context).primaryBackground,
+                            color: AppTheme.of(context).primaryBackground,
                             letterSpacing: 0.0,
-                            fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                            fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                            fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                           ),
                       elevation: 1.0,
                       borderSide: BorderSide(
-                        color: FlutterFlowTheme.of(context).secondaryBackground,
+                        color: AppTheme.of(context).secondaryBackground,
                         width: 0.5,
                       ),
                       borderRadius: BorderRadius.circular(20.0),
@@ -141,14 +141,14 @@ class GroupsTabWidget extends StatelessWidget {
               children: [
                 Text(
                   'Popular Groups',
-                  style: FlutterFlowTheme.of(context).headlineSmall.override(
+                  style: AppTheme.of(context).headlineSmall.override(
                         font: GoogleFonts.lexendDeca(
-                          fontWeight: FlutterFlowTheme.of(context).headlineSmall.fontWeight,
-                          fontStyle: FlutterFlowTheme.of(context).headlineSmall.fontStyle,
+                          fontWeight: AppTheme.of(context).headlineSmall.fontWeight,
+                          fontStyle: AppTheme.of(context).headlineSmall.fontStyle,
                         ),
                         letterSpacing: 0.0,
-                        fontWeight: FlutterFlowTheme.of(context).headlineSmall.fontWeight,
-                        fontStyle: FlutterFlowTheme.of(context).headlineSmall.fontStyle,
+                        fontWeight: AppTheme.of(context).headlineSmall.fontWeight,
+                        fontStyle: AppTheme.of(context).headlineSmall.fontStyle,
                       ),
                 ),
                 Padding(
@@ -171,20 +171,20 @@ class GroupsTabWidget extends StatelessWidget {
                       height: 40.0,
                       padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
                       iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      color: FlutterFlowTheme.of(context).primary,
-                      textStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                      color: AppTheme.of(context).primary,
+                      textStyle: AppTheme.of(context).labelLarge.override(
                             font: GoogleFonts.poppins(
-                              fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                              fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                              fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                             ),
-                            color: FlutterFlowTheme.of(context).primaryBackground,
+                            color: AppTheme.of(context).primaryBackground,
                             letterSpacing: 0.0,
-                            fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                            fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                            fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                           ),
                       elevation: 1.0,
                       borderSide: BorderSide(
-                        color: FlutterFlowTheme.of(context).secondaryBackground,
+                        color: AppTheme.of(context).secondaryBackground,
                         width: 0.5,
                       ),
                       borderRadius: BorderRadius.circular(20.0),

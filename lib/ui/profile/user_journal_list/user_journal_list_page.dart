@@ -4,7 +4,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/utils/flutter_flow_util.dart';
 import '/ui/core/ui/flutter_flow_icon_button.dart';
 import '/index.dart';
@@ -38,9 +38,9 @@ class _UserJournalListPageState extends State<UserJournalListPage> {
 
     return Scaffold(
       key: scaffoldKey,
-      backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+      backgroundColor: AppTheme.of(context).primaryBackground,
       appBar: AppBar(
-        backgroundColor: FlutterFlowTheme.of(context).primary,
+        backgroundColor: AppTheme.of(context).primary,
         automaticallyImplyLeading: false,
         leading: FlutterFlowIconButton(
           borderColor: Colors.transparent,
@@ -48,7 +48,7 @@ class _UserJournalListPageState extends State<UserJournalListPage> {
           buttonSize: 46.0,
           icon: Icon(
             Icons.arrow_back_rounded,
-            color: FlutterFlowTheme.of(context).primaryBackground,
+            color: AppTheme.of(context).primaryBackground,
             size: 25.0,
           ),
           onPressed: () async {
@@ -57,15 +57,15 @@ class _UserJournalListPageState extends State<UserJournalListPage> {
         ),
         title: Text(
           'Your Journal',
-          style: FlutterFlowTheme.of(context).headlineMedium.override(
+          style: AppTheme.of(context).headlineMedium.override(
                 font: GoogleFonts.lexendDeca(
-                  fontWeight: FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).headlineMedium.fontStyle,
+                  fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
+                  fontStyle: AppTheme.of(context).headlineMedium.fontStyle,
                 ),
-                color: FlutterFlowTheme.of(context).primaryBackground,
+                color: AppTheme.of(context).primaryBackground,
                 letterSpacing: 0.0,
-                fontWeight: FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).headlineMedium.fontStyle,
+                fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
+                fontStyle: AppTheme.of(context).headlineMedium.fontStyle,
               ),
         ),
         actions: const [],
@@ -86,7 +86,7 @@ class _UserJournalListPageState extends State<UserJournalListPage> {
           width: 50.0,
           height: 50.0,
           child: SpinKitRipple(
-            color: FlutterFlowTheme.of(context).primary,
+            color: AppTheme.of(context).primary,
             size: 50.0,
           ),
         ),
@@ -97,7 +97,7 @@ class _UserJournalListPageState extends State<UserJournalListPage> {
       return Center(
         child: Text(
           viewModel.errorMessage!,
-          style: FlutterFlowTheme.of(context).bodyMedium,
+          style: AppTheme.of(context).bodyMedium,
         ),
       );
     }
@@ -108,7 +108,7 @@ class _UserJournalListPageState extends State<UserJournalListPage> {
       return Center(
         child: Text(
           'No journal entries found.',
-          style: FlutterFlowTheme.of(context).bodyMedium,
+          style: AppTheme.of(context).bodyMedium,
         ),
       );
     }
@@ -154,7 +154,7 @@ class _UserJournalListPageState extends State<UserJournalListPage> {
                   child: Container(
                     width: MediaQuery.sizeOf(context).width * 0.9,
                     decoration: BoxDecoration(
-                      color: FlutterFlowTheme.of(context).primaryBackground,
+                      color: AppTheme.of(context).primaryBackground,
                       boxShadow: const [
                         BoxShadow(
                           blurRadius: 15.0,
@@ -192,16 +192,16 @@ class _UserJournalListPageState extends State<UserJournalListPage> {
                                           locale: FFLocalizations.of(context).languageCode,
                                         ),
                                         minFontSize: 12.0,
-                                        style: FlutterFlowTheme.of(context).titleMedium.override(
+                                        style: AppTheme.of(context).titleMedium.override(
                                               font: GoogleFonts.lexendDeca(
                                                 fontWeight: FontWeight.w500,
-                                                fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                                                fontStyle: AppTheme.of(context).titleMedium.fontStyle,
                                               ),
-                                              color: FlutterFlowTheme.of(context).secondary,
+                                              color: AppTheme.of(context).secondary,
                                               fontSize: 14.0,
                                               letterSpacing: 0.0,
                                               fontWeight: FontWeight.w500,
-                                              fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                                              fontStyle: AppTheme.of(context).titleMedium.fontStyle,
                                             ),
                                       ),
                                     ],
@@ -215,15 +215,15 @@ class _UserJournalListPageState extends State<UserJournalListPage> {
                                         entry.journeyTitle,
                                         'Journey',
                                       ),
-                                      style: FlutterFlowTheme.of(context).titleMedium.override(
+                                      style: AppTheme.of(context).titleMedium.override(
                                             font: GoogleFonts.lexendDeca(
                                               fontWeight: FontWeight.w300,
-                                              fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                                              fontStyle: AppTheme.of(context).titleMedium.fontStyle,
                                             ),
                                             fontSize: 12.0,
                                             letterSpacing: 0.0,
                                             fontWeight: FontWeight.w300,
-                                            fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                                            fontStyle: AppTheme.of(context).titleMedium.fontStyle,
                                           ),
                                     ),
                                   ],
@@ -233,15 +233,15 @@ class _UserJournalListPageState extends State<UserJournalListPage> {
                                   children: [
                                     Text(
                                       '${entry.stepNumber?.toString()} - ${entry.stepTitle}',
-                                      style: FlutterFlowTheme.of(context).titleMedium.override(
+                                      style: AppTheme.of(context).titleMedium.override(
                                             font: GoogleFonts.lexendDeca(
                                               fontWeight: FontWeight.w300,
-                                              fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                                              fontStyle: AppTheme.of(context).titleMedium.fontStyle,
                                             ),
                                             fontSize: 12.0,
                                             letterSpacing: 0.0,
                                             fontWeight: FontWeight.w300,
-                                            fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                                            fontStyle: AppTheme.of(context).titleMedium.fontStyle,
                                           ),
                                     ),
                                   ],
@@ -257,16 +257,16 @@ class _UserJournalListPageState extends State<UserJournalListPage> {
                                             entry.journalSaved,
                                             'Your journal entry',
                                           ),
-                                          style: FlutterFlowTheme.of(context).bodySmall.override(
+                                          style: AppTheme.of(context).bodySmall.override(
                                                 font: GoogleFonts.lexendDeca(
                                                   fontWeight: FontWeight.normal,
-                                                  fontStyle: FlutterFlowTheme.of(context).bodySmall.fontStyle,
+                                                  fontStyle: AppTheme.of(context).bodySmall.fontStyle,
                                                 ),
-                                                color: FlutterFlowTheme.of(context).secondary,
+                                                color: AppTheme.of(context).secondary,
                                                 fontSize: 14.0,
                                                 letterSpacing: 0.0,
                                                 fontWeight: FontWeight.normal,
-                                                fontStyle: FlutterFlowTheme.of(context).bodySmall.fontStyle,
+                                                fontStyle: AppTheme.of(context).bodySmall.fontStyle,
                                               ),
                                         ),
                                       ),

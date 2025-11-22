@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/utils/flutter_flow_util.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/ui/core/ui/flutter_flow_icon_button.dart';
@@ -34,9 +34,9 @@ class _UserJourneysViewPageState extends State<UserJourneysViewPage> {
     final viewModel = context.watch<UserJourneysViewModel>();
 
     return Scaffold(
-      backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+      backgroundColor: AppTheme.of(context).primaryBackground,
       appBar: AppBar(
-        backgroundColor: FlutterFlowTheme.of(context).primary,
+        backgroundColor: AppTheme.of(context).primary,
         automaticallyImplyLeading: false,
         leading: FlutterFlowIconButton(
           borderColor: Colors.transparent,
@@ -44,7 +44,7 @@ class _UserJourneysViewPageState extends State<UserJourneysViewPage> {
           buttonSize: 46.0,
           icon: Icon(
             Icons.arrow_back_rounded,
-            color: FlutterFlowTheme.of(context).primaryBackground,
+            color: AppTheme.of(context).primaryBackground,
             size: 25.0,
           ),
           onPressed: () async {
@@ -53,15 +53,15 @@ class _UserJourneysViewPageState extends State<UserJourneysViewPage> {
         ),
         title: Text(
           'Your Journeys',
-          style: FlutterFlowTheme.of(context).headlineMedium.override(
+          style: AppTheme.of(context).headlineMedium.override(
                 font: GoogleFonts.lexendDeca(
-                  fontWeight: FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).headlineMedium.fontStyle,
+                  fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
+                  fontStyle: AppTheme.of(context).headlineMedium.fontStyle,
                 ),
-                color: FlutterFlowTheme.of(context).primaryBackground,
+                color: AppTheme.of(context).primaryBackground,
                 letterSpacing: 0.0,
-                fontWeight: FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).headlineMedium.fontStyle,
+                fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
+                fontStyle: AppTheme.of(context).headlineMedium.fontStyle,
               ),
         ),
         actions: const [],
@@ -76,7 +76,7 @@ class _UserJourneysViewPageState extends State<UserJourneysViewPage> {
                   width: 50.0,
                   height: 50.0,
                   child: SpinKitRipple(
-                    color: FlutterFlowTheme.of(context).primary,
+                    color: AppTheme.of(context).primary,
                     size: 50.0,
                   ),
                 ),
@@ -85,9 +85,9 @@ class _UserJourneysViewPageState extends State<UserJourneysViewPage> {
                 ? Center(
                     child: Text(
                       viewModel.errorMessage!,
-                      style: FlutterFlowTheme.of(context).bodyMedium.override(
+                      style: AppTheme.of(context).bodyMedium.override(
                             font: GoogleFonts.readexPro(
-                              color: FlutterFlowTheme.of(context).error,
+                              color: AppTheme.of(context).error,
                             ),
                           ),
                     ),
@@ -114,7 +114,7 @@ class _UserJourneysViewPageState extends State<UserJourneysViewPage> {
                               width: MediaQuery.sizeOf(context).width * 0.9,
                               height: 110.0,
                               decoration: BoxDecoration(
-                                color: FlutterFlowTheme.of(context).primaryBackground,
+                                color: AppTheme.of(context).primaryBackground,
                                 boxShadow: const [
                                   BoxShadow(
                                     blurRadius: 15.0,
@@ -152,16 +152,16 @@ class _UserJourneysViewPageState extends State<UserJourneysViewPage> {
                                                     journey.title,
                                                     'title',
                                                   ),
-                                                  style: FlutterFlowTheme.of(context).titleMedium.override(
+                                                  style: AppTheme.of(context).titleMedium.override(
                                                         font: GoogleFonts.lexendDeca(
                                                           fontWeight: FontWeight.w500,
-                                                          fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                                                          fontStyle: AppTheme.of(context).titleMedium.fontStyle,
                                                         ),
-                                                        color: FlutterFlowTheme.of(context).secondary,
+                                                        color: AppTheme.of(context).secondary,
                                                         fontSize: 18.0,
                                                         letterSpacing: 0.0,
                                                         fontWeight: FontWeight.w500,
-                                                        fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                                                        fontStyle: AppTheme.of(context).titleMedium.fontStyle,
                                                       ),
                                                 ),
                                               ],
@@ -175,7 +175,7 @@ class _UserJourneysViewPageState extends State<UserJourneysViewPage> {
                                                 child: Text(
                                                   'Completed  ${journey.stepsCompleted?.toString()} of ${journey.stepsTotal?.toString()} steps',
                                                   style: GoogleFonts.lexendDeca(
-                                                    color: FlutterFlowTheme.of(context).secondary,
+                                                    color: AppTheme.of(context).secondary,
                                                     fontWeight: FontWeight.normal,
                                                     fontSize: 12.0,
                                                   ),
@@ -210,24 +210,24 @@ class _UserJourneysViewPageState extends State<UserJourneysViewPage> {
                                                           const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
                                                       iconPadding:
                                                           const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                                                      color: FlutterFlowTheme.of(context).primary,
-                                                      textStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                                                      color: AppTheme.of(context).primary,
+                                                      textStyle: AppTheme.of(context).labelLarge.override(
                                                             font: GoogleFonts.poppins(
                                                               fontWeight:
-                                                                  FlutterFlowTheme.of(context).labelLarge.fontWeight,
+                                                                  AppTheme.of(context).labelLarge.fontWeight,
                                                               fontStyle:
-                                                                  FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                                                                  AppTheme.of(context).labelLarge.fontStyle,
                                                             ),
-                                                            color: FlutterFlowTheme.of(context).primaryBackground,
+                                                            color: AppTheme.of(context).primaryBackground,
                                                             letterSpacing: 0.0,
                                                             fontWeight:
-                                                                FlutterFlowTheme.of(context).labelLarge.fontWeight,
+                                                                AppTheme.of(context).labelLarge.fontWeight,
                                                             fontStyle:
-                                                                FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                                                                AppTheme.of(context).labelLarge.fontStyle,
                                                           ),
                                                       elevation: 1.0,
                                                       borderSide: BorderSide(
-                                                        color: FlutterFlowTheme.of(context).secondaryBackground,
+                                                        color: AppTheme.of(context).secondaryBackground,
                                                         width: 0.5,
                                                       ),
                                                       borderRadius: BorderRadius.circular(20.0),

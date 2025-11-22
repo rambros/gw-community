@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '/data/services/supabase/supabase.dart';
 import '/ui/core/widgets/user_avatar.dart';
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/utils/flutter_flow_util.dart';
 
 /// Widget que exibe o cabeçalho do sharing com informações do autor
@@ -19,7 +19,7 @@ class SharingHeaderWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       clipBehavior: Clip.antiAliasWithSaveLayer,
-      color: FlutterFlowTheme.of(context).primaryBackground,
+      color: AppTheme.of(context).primaryBackground,
       elevation: 0.0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.0),
@@ -46,11 +46,11 @@ class SharingHeaderWidget extends StatelessWidget {
                         sharing.displayName,
                         'name',
                       ),
-                      style: FlutterFlowTheme.of(context).bodyLarge.override(
+                      style: AppTheme.of(context).bodyLarge.override(
                             font: GoogleFonts.inter(
                               fontWeight: FontWeight.normal,
                             ),
-                            color: FlutterFlowTheme.of(context).secondary,
+                            color: AppTheme.of(context).secondary,
                             fontSize: 16.0,
                             letterSpacing: 0.0,
                             fontWeight: FontWeight.normal,
@@ -59,9 +59,9 @@ class SharingHeaderWidget extends StatelessWidget {
                     if (sharing.groupName != null && sharing.groupName != '')
                       Text(
                         'From group ${sharing.groupName}',
-                        style: FlutterFlowTheme.of(context).bodyMedium.override(
+                        style: AppTheme.of(context).bodyMedium.override(
                               font: GoogleFonts.lexendDeca(),
-                              color: FlutterFlowTheme.of(context).primary,
+                              color: AppTheme.of(context).primary,
                               fontSize: 12.0,
                               letterSpacing: 0.0,
                             ),
@@ -83,9 +83,9 @@ class SharingHeaderWidget extends StatelessWidget {
 
     return Text(
       text,
-      style: FlutterFlowTheme.of(context).bodyMedium.override(
+      style: AppTheme.of(context).bodyMedium.override(
             font: GoogleFonts.lexendDeca(),
-            color: FlutterFlowTheme.of(context).primary,
+            color: AppTheme.of(context).primary,
             fontSize: 12.0,
             letterSpacing: 0.0,
           ),

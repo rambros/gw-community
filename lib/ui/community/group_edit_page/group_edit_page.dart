@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/utils/flutter_flow_util.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/ui/core/ui/flutter_flow_icon_button.dart';
@@ -50,9 +50,9 @@ class GroupEditPageView extends StatelessWidget {
         FocusManager.instance.primaryFocus?.unfocus();
       },
       child: Scaffold(
-        backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+        backgroundColor: AppTheme.of(context).primaryBackground,
         appBar: AppBar(
-          backgroundColor: FlutterFlowTheme.of(context).primary,
+          backgroundColor: AppTheme.of(context).primary,
           automaticallyImplyLeading: false,
           leading: FlutterFlowIconButton(
             borderColor: Colors.transparent,
@@ -70,9 +70,9 @@ class GroupEditPageView extends StatelessWidget {
           ),
           title: Text(
             'Edit Group',
-            style: FlutterFlowTheme.of(context).titleLarge.override(
+            style: AppTheme.of(context).titleLarge.override(
                   font: GoogleFonts.poppins(
-                    fontWeight: FlutterFlowTheme.of(context).titleLarge.fontWeight,
+                    fontWeight: AppTheme.of(context).titleLarge.fontWeight,
                   ),
                   fontSize: 20.0,
                 ),
@@ -88,7 +88,7 @@ class GroupEditPageView extends StatelessWidget {
                     width: 50.0,
                     height: 50.0,
                     child: SpinKitRipple(
-                      color: FlutterFlowTheme.of(context).primary,
+                      color: AppTheme.of(context).primary,
                       size: 50.0,
                     ),
                   ),
@@ -110,20 +110,20 @@ class GroupEditPageView extends StatelessWidget {
                                 controller: viewModel.nameController,
                                 decoration: InputDecoration(
                                   labelText: 'Name',
-                                  labelStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                                  labelStyle: AppTheme.of(context).labelLarge.override(
                                         font: GoogleFonts.poppins(),
-                                        color: FlutterFlowTheme.of(context).primary,
+                                        color: AppTheme.of(context).primary,
                                       ),
                                   enabledBorder: OutlineInputBorder(
                                     borderSide: BorderSide(
-                                      color: FlutterFlowTheme.of(context).alternate,
+                                      color: AppTheme.of(context).alternate,
                                       width: 1.0,
                                     ),
                                     borderRadius: BorderRadius.circular(16.0),
                                   ),
                                   focusedBorder: OutlineInputBorder(
                                     borderSide: BorderSide(
-                                      color: FlutterFlowTheme.of(context).alternate,
+                                      color: AppTheme.of(context).alternate,
                                       width: 1.0,
                                     ),
                                     borderRadius: BorderRadius.circular(16.0),
@@ -131,9 +131,9 @@ class GroupEditPageView extends StatelessWidget {
                                   filled: true,
                                   fillColor: const Color(0xFFF9FAFB),
                                 ),
-                                style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                style: AppTheme.of(context).bodyMedium.override(
                                       font: GoogleFonts.lexendDeca(),
-                                      color: FlutterFlowTheme.of(context).secondary,
+                                      color: AppTheme.of(context).secondary,
                                     ),
                                 validator: (val) {
                                   if (val == null || val.isEmpty) {
@@ -150,20 +150,20 @@ class GroupEditPageView extends StatelessWidget {
                                 controller: viewModel.descriptionController,
                                 decoration: InputDecoration(
                                   labelText: 'Description',
-                                  labelStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                                  labelStyle: AppTheme.of(context).labelLarge.override(
                                         font: GoogleFonts.poppins(),
-                                        color: FlutterFlowTheme.of(context).primary,
+                                        color: AppTheme.of(context).primary,
                                       ),
                                   enabledBorder: OutlineInputBorder(
                                     borderSide: BorderSide(
-                                      color: FlutterFlowTheme.of(context).alternate,
+                                      color: AppTheme.of(context).alternate,
                                       width: 1.0,
                                     ),
                                     borderRadius: BorderRadius.circular(16.0),
                                   ),
                                   focusedBorder: OutlineInputBorder(
                                     borderSide: BorderSide(
-                                      color: FlutterFlowTheme.of(context).alternate,
+                                      color: AppTheme.of(context).alternate,
                                       width: 1.0,
                                     ),
                                     borderRadius: BorderRadius.circular(16.0),
@@ -171,9 +171,9 @@ class GroupEditPageView extends StatelessWidget {
                                   filled: true,
                                   fillColor: const Color(0xFFF9FAFB),
                                 ),
-                                style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                style: AppTheme.of(context).bodyMedium.override(
                                       font: GoogleFonts.lexendDeca(),
-                                      color: FlutterFlowTheme.of(context).secondary,
+                                      color: AppTheme.of(context).secondary,
                                     ),
                                 maxLines: 5,
                                 validator: (val) {
@@ -191,20 +191,20 @@ class GroupEditPageView extends StatelessWidget {
                                 controller: viewModel.welcomeMessageController,
                                 decoration: InputDecoration(
                                   labelText: 'Welcome message',
-                                  labelStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                                  labelStyle: AppTheme.of(context).labelLarge.override(
                                         font: GoogleFonts.poppins(),
-                                        color: FlutterFlowTheme.of(context).primary,
+                                        color: AppTheme.of(context).primary,
                                       ),
                                   enabledBorder: OutlineInputBorder(
                                     borderSide: BorderSide(
-                                      color: FlutterFlowTheme.of(context).alternate,
+                                      color: AppTheme.of(context).alternate,
                                       width: 1.0,
                                     ),
                                     borderRadius: BorderRadius.circular(16.0),
                                   ),
                                   focusedBorder: OutlineInputBorder(
                                     borderSide: BorderSide(
-                                      color: FlutterFlowTheme.of(context).alternate,
+                                      color: AppTheme.of(context).alternate,
                                       width: 1.0,
                                     ),
                                     borderRadius: BorderRadius.circular(16.0),
@@ -212,9 +212,9 @@ class GroupEditPageView extends StatelessWidget {
                                   filled: true,
                                   fillColor: const Color(0xFFF9FAFB),
                                 ),
-                                style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                style: AppTheme.of(context).bodyMedium.override(
                                       font: GoogleFonts.lexendDeca(),
-                                      color: FlutterFlowTheme.of(context).secondary,
+                                      color: AppTheme.of(context).secondary,
                                     ),
                                 maxLines: 5,
                                 validator: (val) {
@@ -232,20 +232,20 @@ class GroupEditPageView extends StatelessWidget {
                                 controller: viewModel.policyMessageController,
                                 decoration: InputDecoration(
                                   labelText: 'Policy message',
-                                  labelStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                                  labelStyle: AppTheme.of(context).labelLarge.override(
                                         font: GoogleFonts.poppins(),
-                                        color: FlutterFlowTheme.of(context).primary,
+                                        color: AppTheme.of(context).primary,
                                       ),
                                   enabledBorder: OutlineInputBorder(
                                     borderSide: BorderSide(
-                                      color: FlutterFlowTheme.of(context).alternate,
+                                      color: AppTheme.of(context).alternate,
                                       width: 1.0,
                                     ),
                                     borderRadius: BorderRadius.circular(16.0),
                                   ),
                                   focusedBorder: OutlineInputBorder(
                                     borderSide: BorderSide(
-                                      color: FlutterFlowTheme.of(context).alternate,
+                                      color: AppTheme.of(context).alternate,
                                       width: 1.0,
                                     ),
                                     borderRadius: BorderRadius.circular(16.0),
@@ -253,9 +253,9 @@ class GroupEditPageView extends StatelessWidget {
                                   filled: true,
                                   fillColor: const Color(0xFFF9FAFB),
                                 ),
-                                style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                style: AppTheme.of(context).bodyMedium.override(
                                       font: GoogleFonts.lexendDeca(),
-                                      color: FlutterFlowTheme.of(context).secondary,
+                                      color: AppTheme.of(context).secondary,
                                     ),
                                 maxLines: 5,
                                 validator: (val) {
@@ -278,17 +278,17 @@ class GroupEditPageView extends StatelessWidget {
                                   onMultiSelectChanged: (val) => viewModel.setSelectedManagers(val),
                                   width: double.infinity,
                                   height: 50.0,
-                                  textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
+                                  textStyle: AppTheme.of(context).bodyMedium.override(
                                         font: GoogleFonts.lexendDeca(),
-                                        color: FlutterFlowTheme.of(context).secondary,
+                                        color: AppTheme.of(context).secondary,
                                       ),
                                   hintText: 'Select Managers/ facilitators',
                                   icon: Icon(
                                     Icons.keyboard_arrow_down_rounded,
-                                    color: FlutterFlowTheme.of(context).secondaryText,
+                                    color: AppTheme.of(context).secondaryText,
                                     size: 24.0,
                                   ),
-                                  fillColor: FlutterFlowTheme.of(context).primaryBackground,
+                                  fillColor: AppTheme.of(context).primaryBackground,
                                   elevation: 2.0,
                                   borderColor: Colors.transparent,
                                   borderWidth: 0.0,
@@ -308,7 +308,7 @@ class GroupEditPageView extends StatelessWidget {
                                 width: double.infinity,
                                 height: MediaQuery.sizeOf(context).height * 0.32,
                                 decoration: BoxDecoration(
-                                  color: FlutterFlowTheme.of(context).primaryBackground,
+                                  color: AppTheme.of(context).primaryBackground,
                                 ),
                                 child: Padding(
                                   padding: const EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
@@ -341,14 +341,14 @@ class GroupEditPageView extends StatelessWidget {
                                                   children: [
                                                     Icon(
                                                       Icons.add_a_photo,
-                                                      color: FlutterFlowTheme.of(context).secondaryText,
+                                                      color: AppTheme.of(context).secondaryText,
                                                       size: 32.0,
                                                     ),
                                                     Padding(
                                                       padding: const EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 0.0),
                                                       child: Text(
                                                         'Upload Image',
-                                                        style: FlutterFlowTheme.of(context).bodySmall,
+                                                        style: AppTheme.of(context).bodySmall,
                                                       ),
                                                     ),
                                                   ],
@@ -378,8 +378,8 @@ class GroupEditPageView extends StatelessWidget {
                                   height: 50.0,
                                   padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
                                   iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                                  color: FlutterFlowTheme.of(context).primary,
-                                  textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                                  color: AppTheme.of(context).primary,
+                                  textStyle: AppTheme.of(context).titleSmall.override(
                                         font: GoogleFonts.lexendDeca(),
                                         color: Colors.white,
                                       ),

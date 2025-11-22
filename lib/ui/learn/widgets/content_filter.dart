@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/ui/core/ui/flutter_flow_animations.dart';
 import '/ui/core/ui/flutter_flow_drop_down.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
@@ -173,7 +173,7 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
             width: double.infinity,
             height: double.infinity,
             decoration: BoxDecoration(
-              color: FlutterFlowTheme.of(context).primaryBackground.withValues(alpha: 0.82),
+              color: AppTheme.of(context).primaryBackground.withValues(alpha: 0.82),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.max,
@@ -189,7 +189,7 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
                         maxWidth: 600.0,
                       ),
                       decoration: BoxDecoration(
-                        color: FlutterFlowTheme.of(context).secondaryBackground,
+                        color: AppTheme.of(context).secondaryBackground,
                         boxShadow: const [
                           BoxShadow(
                             blurRadius: 12.0,
@@ -209,7 +209,7 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
                               padding: const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 0.0, 0.0),
                               child: Text(
                                 'Content Filter',
-                                style: FlutterFlowTheme.of(context).headlineMedium,
+                                style: AppTheme.of(context).headlineMedium,
                               ),
                             ),
                             // Author Dropdown
@@ -230,17 +230,17 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
                               },
                               width: double.infinity,
                               height: 50.0,
-                              textStyle: FlutterFlowTheme.of(context).bodyMedium,
+                              textStyle: AppTheme.of(context).bodyMedium,
                               hintText: 'Select Author',
                               searchHintText: 'Search for an author...',
                               icon: Icon(
                                 Icons.keyboard_arrow_down_rounded,
-                                color: FlutterFlowTheme.of(context).secondaryText,
+                                color: AppTheme.of(context).secondaryText,
                                 size: 24.0,
                               ),
-                              fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+                              fillColor: AppTheme.of(context).secondaryBackground,
                               elevation: 2.0,
-                              borderColor: FlutterFlowTheme.of(context).alternate,
+                              borderColor: AppTheme.of(context).alternate,
                               borderWidth: 2.0,
                               borderRadius: 12.0,
                               margin: const EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
@@ -267,17 +267,17 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
                               },
                               width: double.infinity,
                               height: 50.0,
-                              textStyle: FlutterFlowTheme.of(context).bodyMedium,
+                              textStyle: AppTheme.of(context).bodyMedium,
                               hintText: 'Select Event',
                               searchHintText: 'Search for an event...',
                               icon: Icon(
                                 Icons.keyboard_arrow_down_rounded,
-                                color: FlutterFlowTheme.of(context).secondaryText,
+                                color: AppTheme.of(context).secondaryText,
                                 size: 24.0,
                               ),
-                              fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+                              fillColor: AppTheme.of(context).secondaryBackground,
                               elevation: 2.0,
-                              borderColor: FlutterFlowTheme.of(context).alternate,
+                              borderColor: AppTheme.of(context).alternate,
                               borderWidth: 2.0,
                               borderRadius: 12.0,
                               margin: const EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
@@ -304,17 +304,17 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
                               },
                               width: double.infinity,
                               height: 50.0,
-                              textStyle: FlutterFlowTheme.of(context).bodyMedium,
+                              textStyle: AppTheme.of(context).bodyMedium,
                               hintText: 'Select Year',
                               searchHintText: 'Search for a year...',
                               icon: Icon(
                                 Icons.keyboard_arrow_down_rounded,
-                                color: FlutterFlowTheme.of(context).secondaryText,
+                                color: AppTheme.of(context).secondaryText,
                                 size: 24.0,
                               ),
-                              fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+                              fillColor: AppTheme.of(context).secondaryBackground,
                               elevation: 2.0,
-                              borderColor: FlutterFlowTheme.of(context).alternate,
+                              borderColor: AppTheme.of(context).alternate,
                               borderWidth: 2.0,
                               borderRadius: 12.0,
                               margin: const EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
@@ -341,17 +341,17 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
                               },
                               width: double.infinity,
                               height: 50.0,
-                              textStyle: FlutterFlowTheme.of(context).bodyMedium,
+                              textStyle: AppTheme.of(context).bodyMedium,
                               hintText: 'Select Journey',
                               searchHintText: 'Search for a journey...',
                               icon: Icon(
                                 Icons.keyboard_arrow_down_rounded,
-                                color: FlutterFlowTheme.of(context).secondaryText,
+                                color: AppTheme.of(context).secondaryText,
                                 size: 24.0,
                               ),
-                              fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+                              fillColor: AppTheme.of(context).secondaryBackground,
                               elevation: 2.0,
-                              borderColor: FlutterFlowTheme.of(context).alternate,
+                              borderColor: AppTheme.of(context).alternate,
                               borderWidth: 2.0,
                               borderRadius: 12.0,
                               margin: const EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
@@ -378,17 +378,17 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
                               },
                               width: double.infinity,
                               height: 50.0,
-                              textStyle: FlutterFlowTheme.of(context).bodyMedium,
+                              textStyle: AppTheme.of(context).bodyMedium,
                               hintText: 'Select Group',
                               searchHintText: 'Search for a group...',
                               icon: Icon(
                                 Icons.keyboard_arrow_down_rounded,
-                                color: FlutterFlowTheme.of(context).secondaryText,
+                                color: AppTheme.of(context).secondaryText,
                                 size: 24.0,
                               ),
-                              fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+                              fillColor: AppTheme.of(context).secondaryBackground,
                               elevation: 2.0,
-                              borderColor: FlutterFlowTheme.of(context).alternate,
+                              borderColor: AppTheme.of(context).alternate,
                               borderWidth: 2.0,
                               borderRadius: 12.0,
                               margin: const EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
@@ -415,17 +415,17 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
                               },
                               width: double.infinity,
                               height: 50.0,
-                              textStyle: FlutterFlowTheme.of(context).bodyMedium,
+                              textStyle: AppTheme.of(context).bodyMedium,
                               hintText: 'Select Topics',
                               searchHintText: 'Search for topics...',
                               icon: Icon(
                                 Icons.keyboard_arrow_down_rounded,
-                                color: FlutterFlowTheme.of(context).secondaryText,
+                                color: AppTheme.of(context).secondaryText,
                                 size: 24.0,
                               ),
-                              fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+                              fillColor: AppTheme.of(context).secondaryBackground,
                               elevation: 2.0,
-                              borderColor: FlutterFlowTheme.of(context).alternate,
+                              borderColor: AppTheme.of(context).alternate,
                               borderWidth: 2.0,
                               borderRadius: 12.0,
                               margin: const EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
@@ -446,17 +446,17 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
                                     options: FFButtonOptions(
                                       height: 40.0,
                                       padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-                                      color: FlutterFlowTheme.of(context).secondaryBackground,
-                                      textStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                                      color: AppTheme.of(context).secondaryBackground,
+                                      textStyle: AppTheme.of(context).labelLarge.override(
                                             font: GoogleFonts.poppins(
-                                              fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                                              fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                                              fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                                              fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                                             ),
-                                            color: FlutterFlowTheme.of(context).primary,
+                                            color: AppTheme.of(context).primary,
                                           ),
                                       elevation: 0.0,
                                       borderSide: BorderSide(
-                                        color: FlutterFlowTheme.of(context).secondaryBackground,
+                                        color: AppTheme.of(context).secondaryBackground,
                                         width: 0.5,
                                       ),
                                       borderRadius: BorderRadius.circular(20.0),
@@ -468,17 +468,17 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
                                     options: FFButtonOptions(
                                       height: 44.0,
                                       padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-                                      color: FlutterFlowTheme.of(context).primary,
-                                      textStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                                      color: AppTheme.of(context).primary,
+                                      textStyle: AppTheme.of(context).labelLarge.override(
                                             font: GoogleFonts.poppins(
-                                              fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                                              fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                                              fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                                              fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                                             ),
-                                            color: FlutterFlowTheme.of(context).primaryBackground,
+                                            color: AppTheme.of(context).primaryBackground,
                                           ),
                                       elevation: 1.0,
                                       borderSide: BorderSide(
-                                        color: FlutterFlowTheme.of(context).secondaryBackground,
+                                        color: AppTheme.of(context).secondaryBackground,
                                         width: 0.5,
                                       ),
                                       borderRadius: BorderRadius.circular(20.0),
@@ -514,18 +514,18 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
         children: [
           Text(
             label,
-            style: FlutterFlowTheme.of(context).bodyMedium.override(
+            style: AppTheme.of(context).bodyMedium.override(
                   font: GoogleFonts.lexendDeca(
-                    fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                    fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                    fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                    fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                   ),
-                  color: FlutterFlowTheme.of(context).primary,
+                  color: AppTheme.of(context).primary,
                 ),
           ),
           if (hasValue && onClear != null)
             IconButton(
               onPressed: onClear,
-              icon: Icon(Icons.close, color: FlutterFlowTheme.of(context).primary, size: 18.0),
+              icon: Icon(Icons.close, color: AppTheme.of(context).primary, size: 18.0),
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(),
               splashRadius: 16.0,

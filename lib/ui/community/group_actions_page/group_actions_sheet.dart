@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/utils/flutter_flow_util.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/data/repositories/group_repository.dart';
@@ -44,7 +44,7 @@ class GroupActionsSheetView extends StatelessWidget {
       width: double.infinity,
       height: 210.0,
       decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).secondaryBackground,
+        color: AppTheme.of(context).secondaryBackground,
         boxShadow: const [
           BoxShadow(
             blurRadius: 5.0,
@@ -86,10 +86,10 @@ class GroupActionsSheetView extends StatelessWidget {
                           content: Text(
                             'Left the group successfully',
                             style: TextStyle(
-                              color: FlutterFlowTheme.of(context).primaryText,
+                              color: AppTheme.of(context).primaryText,
                             ),
                           ),
-                          backgroundColor: FlutterFlowTheme.of(context).secondary,
+                          backgroundColor: AppTheme.of(context).secondary,
                         ),
                       );
                     }
@@ -105,10 +105,10 @@ class GroupActionsSheetView extends StatelessWidget {
                   height: 60.0,
                   padding: EdgeInsets.zero,
                   iconAlignment: IconAlignment.start,
-                  color: FlutterFlowTheme.of(context).primaryBackground,
-                  textStyle: FlutterFlowTheme.of(context).bodyLarge.override(
+                  color: AppTheme.of(context).primaryBackground,
+                  textStyle: AppTheme.of(context).bodyLarge.override(
                         font: GoogleFonts.poppins(),
-                        color: FlutterFlowTheme.of(context).secondary,
+                        color: AppTheme.of(context).secondary,
                       ),
                   elevation: 2.0,
                   borderSide: const BorderSide(
@@ -130,10 +130,10 @@ class GroupActionsSheetView extends StatelessWidget {
                   width: double.infinity,
                   height: 60.0,
                   padding: EdgeInsets.zero,
-                  color: FlutterFlowTheme.of(context).secondaryBackground,
-                  textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                  color: AppTheme.of(context).secondaryBackground,
+                  textStyle: AppTheme.of(context).titleSmall.override(
                         font: GoogleFonts.lexendDeca(),
-                        color: FlutterFlowTheme.of(context).secondary,
+                        color: AppTheme.of(context).secondary,
                         fontSize: 16.0,
                       ),
                   elevation: 0.0,

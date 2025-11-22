@@ -2,7 +2,7 @@ import '/data/services/supabase/supabase.dart';
 import '/ui/core/widgets/user_avatar.dart';
 import '/ui/core/ui/flutter_flow_drop_down.dart';
 import '/ui/core/ui/flutter_flow_icon_button.dart';
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/utils/flutter_flow_util.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/ui/core/ui/form_field_controller.dart';
@@ -59,7 +59,7 @@ class _SharingEditPageContent extends StatelessWidget {
         FocusManager.instance.primaryFocus?.unfocus();
       },
       child: Scaffold(
-        backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+        backgroundColor: AppTheme.of(context).primaryBackground,
         appBar: _buildAppBar(context),
         body: _buildBody(context, viewModel),
       ),
@@ -68,7 +68,7 @@ class _SharingEditPageContent extends StatelessWidget {
 
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
-      backgroundColor: FlutterFlowTheme.of(context).primary,
+      backgroundColor: AppTheme.of(context).primary,
       automaticallyImplyLeading: false,
       leading: FlutterFlowIconButton(
         borderColor: Colors.transparent,
@@ -84,15 +84,15 @@ class _SharingEditPageContent extends StatelessWidget {
       ),
       title: Text(
         'Edit Sharing',
-        style: FlutterFlowTheme.of(context).titleLarge.override(
+        style: AppTheme.of(context).titleLarge.override(
               font: GoogleFonts.poppins(
-                fontWeight: FlutterFlowTheme.of(context).titleLarge.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).titleLarge.fontStyle,
+                fontWeight: AppTheme.of(context).titleLarge.fontWeight,
+                fontStyle: AppTheme.of(context).titleLarge.fontStyle,
               ),
               fontSize: 20.0,
               letterSpacing: 0.0,
-              fontWeight: FlutterFlowTheme.of(context).titleLarge.fontWeight,
-              fontStyle: FlutterFlowTheme.of(context).titleLarge.fontStyle,
+              fontWeight: AppTheme.of(context).titleLarge.fontWeight,
+              fontStyle: AppTheme.of(context).titleLarge.fontStyle,
             ),
       ),
       actions: const [],
@@ -158,9 +158,9 @@ class _SharingEditPageContent extends StatelessWidget {
                 children: [
                   Text(
                     valueOrDefault<String>(sharing.displayName, 'name'),
-                    style: FlutterFlowTheme.of(context).bodyLarge.override(
+                    style: AppTheme.of(context).bodyLarge.override(
                           font: GoogleFonts.inter(fontWeight: FontWeight.normal),
-                          color: FlutterFlowTheme.of(context).secondary,
+                          color: AppTheme.of(context).secondary,
                           fontSize: 16.0,
                           letterSpacing: 0.0,
                         ),
@@ -168,9 +168,9 @@ class _SharingEditPageContent extends StatelessWidget {
                   if (sharing.groupName != null && sharing.groupName != '')
                     Text(
                       'From group ${sharing.groupName}',
-                      style: FlutterFlowTheme.of(context).bodyMedium.override(
+                      style: AppTheme.of(context).bodyMedium.override(
                             font: GoogleFonts.lexendDeca(),
-                            color: FlutterFlowTheme.of(context).primary,
+                            color: AppTheme.of(context).primary,
                             fontSize: 12.0,
                             letterSpacing: 0.0,
                           ),
@@ -195,9 +195,9 @@ class _SharingEditPageContent extends StatelessWidget {
 
     return Text(
       isEveryone ? 'Sharing for everyone' : 'Sharing only for this group',
-      style: FlutterFlowTheme.of(context).bodyMedium.override(
+      style: AppTheme.of(context).bodyMedium.override(
             font: GoogleFonts.lexendDeca(),
-            color: FlutterFlowTheme.of(context).primary,
+            color: AppTheme.of(context).primary,
             fontSize: 12.0,
             letterSpacing: 0.0,
           ),
@@ -214,28 +214,28 @@ class _SharingEditPageContent extends StatelessWidget {
         obscureText: false,
         decoration: InputDecoration(
           labelText: 'Title',
-          labelStyle: FlutterFlowTheme.of(context).labelLarge.override(
+          labelStyle: AppTheme.of(context).labelLarge.override(
                 font: GoogleFonts.poppins(),
-                color: FlutterFlowTheme.of(context).primary,
+                color: AppTheme.of(context).primary,
                 fontSize: 18.0,
                 letterSpacing: 0.0,
               ),
           hintText: '[Some title for your experience...]',
-          hintStyle: FlutterFlowTheme.of(context).bodySmall.override(
+          hintStyle: AppTheme.of(context).bodySmall.override(
                 font: GoogleFonts.lexendDeca(),
-                color: FlutterFlowTheme.of(context).secondary,
+                color: AppTheme.of(context).secondary,
                 letterSpacing: 0.0,
               ),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: FlutterFlowTheme.of(context).alternate,
+              color: AppTheme.of(context).alternate,
               width: 1.0,
             ),
             borderRadius: BorderRadius.circular(16.0),
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: FlutterFlowTheme.of(context).alternate,
+              color: AppTheme.of(context).alternate,
               width: 1.0,
             ),
             borderRadius: BorderRadius.circular(16.0),
@@ -251,9 +251,9 @@ class _SharingEditPageContent extends StatelessWidget {
           filled: true,
           fillColor: const Color(0xFFF9FAFB),
         ),
-        style: FlutterFlowTheme.of(context).bodyMedium.override(
+        style: AppTheme.of(context).bodyMedium.override(
               font: GoogleFonts.lexendDeca(),
-              color: FlutterFlowTheme.of(context).secondary,
+              color: AppTheme.of(context).secondary,
               fontSize: 14.0,
               letterSpacing: 0.0,
             ),
@@ -273,28 +273,28 @@ class _SharingEditPageContent extends StatelessWidget {
         obscureText: false,
         decoration: InputDecoration(
           labelText: 'Experience',
-          labelStyle: FlutterFlowTheme.of(context).labelLarge.override(
+          labelStyle: AppTheme.of(context).labelLarge.override(
                 font: GoogleFonts.poppins(),
-                color: FlutterFlowTheme.of(context).primary,
+                color: AppTheme.of(context).primary,
                 fontSize: 18.0,
                 letterSpacing: 0.0,
               ),
           hintText: '[your experience...]',
-          hintStyle: FlutterFlowTheme.of(context).bodySmall.override(
+          hintStyle: AppTheme.of(context).bodySmall.override(
                 font: GoogleFonts.lexendDeca(),
-                color: FlutterFlowTheme.of(context).secondary,
+                color: AppTheme.of(context).secondary,
                 letterSpacing: 0.0,
               ),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: FlutterFlowTheme.of(context).alternate,
+              color: AppTheme.of(context).alternate,
               width: 1.0,
             ),
             borderRadius: BorderRadius.circular(16.0),
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: FlutterFlowTheme.of(context).alternate,
+              color: AppTheme.of(context).alternate,
               width: 1.0,
             ),
             borderRadius: BorderRadius.circular(16.0),
@@ -310,9 +310,9 @@ class _SharingEditPageContent extends StatelessWidget {
           filled: true,
           fillColor: const Color(0xFFF9FAFB),
         ),
-        style: FlutterFlowTheme.of(context).bodyMedium.override(
+        style: AppTheme.of(context).bodyMedium.override(
               font: GoogleFonts.lexendDeca(),
-              color: FlutterFlowTheme.of(context).secondary,
+              color: AppTheme.of(context).secondary,
               letterSpacing: 0.0,
             ),
         maxLines: 20,
@@ -331,9 +331,9 @@ class _SharingEditPageContent extends StatelessWidget {
             padding: const EdgeInsetsDirectional.fromSTEB(4.0, 0.0, 16.0, 0.0),
             child: Text(
               'Visibility',
-              style: FlutterFlowTheme.of(context).bodyMedium.override(
+              style: AppTheme.of(context).bodyMedium.override(
                     font: GoogleFonts.lexendDeca(),
-                    color: FlutterFlowTheme.of(context).primary,
+                    color: AppTheme.of(context).primary,
                     fontSize: 16.0,
                     letterSpacing: 0.0,
                   ),
@@ -346,12 +346,12 @@ class _SharingEditPageContent extends StatelessWidget {
             onChanged: viewModel.setVisibility,
             width: 180.0,
             height: 50.0,
-            textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
+            textStyle: AppTheme.of(context).bodyMedium.override(
                   font: GoogleFonts.lexendDeca(),
                   fontSize: 16.0,
                   letterSpacing: 0.0,
                 ),
-            fillColor: FlutterFlowTheme.of(context).primaryBackground,
+            fillColor: AppTheme.of(context).primaryBackground,
             elevation: 2.0,
             borderColor: Colors.transparent,
             borderWidth: 0.0,
@@ -371,9 +371,9 @@ class _SharingEditPageContent extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Text(
         viewModel.errorMessage!,
-        style: FlutterFlowTheme.of(context).bodyMedium.override(
+        style: AppTheme.of(context).bodyMedium.override(
               font: GoogleFonts.lexendDeca(),
-              color: FlutterFlowTheme.of(context).error,
+              color: AppTheme.of(context).error,
               letterSpacing: 0.0,
             ),
       ),
@@ -385,9 +385,9 @@ class _SharingEditPageContent extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Text(
         viewModel.successMessage!,
-        style: FlutterFlowTheme.of(context).bodyMedium.override(
+        style: AppTheme.of(context).bodyMedium.override(
               font: GoogleFonts.lexendDeca(),
-              color: FlutterFlowTheme.of(context).success,
+              color: AppTheme.of(context).success,
               letterSpacing: 0.0,
             ),
       ),
@@ -411,15 +411,15 @@ class _SharingEditPageContent extends StatelessWidget {
                 height: 40.0,
                 padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
                 iconPadding: const EdgeInsets.all(0.0),
-                color: FlutterFlowTheme.of(context).primaryBackground,
-                textStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                color: AppTheme.of(context).primaryBackground,
+                textStyle: AppTheme.of(context).labelLarge.override(
                       font: GoogleFonts.poppins(),
-                      color: FlutterFlowTheme.of(context).secondary,
+                      color: AppTheme.of(context).secondary,
                       letterSpacing: 0.0,
                     ),
                 elevation: 0.0,
                 borderSide: BorderSide(
-                  color: FlutterFlowTheme.of(context).secondaryBackground,
+                  color: AppTheme.of(context).secondaryBackground,
                   width: 0.5,
                 ),
                 borderRadius: BorderRadius.circular(20.0),
@@ -436,15 +436,15 @@ class _SharingEditPageContent extends StatelessWidget {
                 height: 40.0,
                 padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
                 iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                color: FlutterFlowTheme.of(context).primary,
-                textStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                color: AppTheme.of(context).primary,
+                textStyle: AppTheme.of(context).labelLarge.override(
                       font: GoogleFonts.poppins(),
-                      color: FlutterFlowTheme.of(context).primaryBackground,
+                      color: AppTheme.of(context).primaryBackground,
                       letterSpacing: 0.0,
                     ),
                 elevation: 1.0,
                 borderSide: BorderSide(
-                  color: FlutterFlowTheme.of(context).secondaryBackground,
+                  color: AppTheme.of(context).secondaryBackground,
                   width: 0.5,
                 ),
                 borderRadius: BorderRadius.circular(20.0),

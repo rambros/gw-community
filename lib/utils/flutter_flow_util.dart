@@ -5,20 +5,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:collection/collection.dart';
 import 'package:from_css_color/from_css_color.dart';
+import 'package:provider/provider.dart';
 import 'dart:math' show pow, pi, sin;
 import 'package:intl/intl.dart';
 import 'package:json_path/json_path.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:url_launcher/url_launcher.dart';
 
-import '../main.dart';
+import '/ui/core/app/view_model/app_view_model.dart';
 
 export 'keep_alive_wrapper.dart';
 export 'lat_lng.dart';
 export 'place.dart';
 export 'uploaded_file.dart';
 export '../app_state.dart';
-export '/ui/core/flutter_flow_model.dart';
+
 export 'dart:math' show min, max;
 export 'dart:typed_data' show Uint8List;
 export 'dart:convert' show jsonEncode, jsonDecode;
@@ -400,9 +401,10 @@ extension IterableExt<T> on Iterable<T> {
       toList().asMap().map((index, value) => MapEntry(index, func(index, value))).values.toList();
 }
 
-void setAppLanguage(BuildContext context, String language) => MyApp.of(context).setLocale(language);
+void setAppLanguage(BuildContext context, String language) => context.read<AppViewModel>().setLocale(language);
 
-void setDarkModeSetting(BuildContext context, ThemeMode themeMode) => MyApp.of(context).setThemeMode(themeMode);
+void setDarkModeSetting(BuildContext context, ThemeMode themeMode) =>
+    context.read<AppViewModel>().setThemeMode(themeMode);
 
 void showSnackbar(
   BuildContext context,
@@ -568,5 +570,7 @@ extension ListUniqueExt<T> on Iterable<T> {
   }
 }
 
-String getCurrentRoute(BuildContext context) => context.mounted ? MyApp.of(context).getRoute() : '';
-List<String> getCurrentRouteStack(BuildContext context) => context.mounted ? MyApp.of(context).getRouteStack() : [];
+String getCurrentRoute(BuildContext context) => context.mounted ? context.read<AppViewModel>().getRoute() : '';
+
+List<String> getCurrentRouteStack(BuildContext context) =>
+    context.mounted ? context.read<AppViewModel>().getRouteStack() : [];

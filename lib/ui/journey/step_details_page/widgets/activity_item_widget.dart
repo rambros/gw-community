@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/data/services/supabase/supabase.dart';
 
 class ActivityItemWidget extends StatelessWidget {
@@ -34,7 +34,7 @@ class ActivityItemWidget extends StatelessWidget {
               child: Container(
                 width: 100.0,
                 decoration: BoxDecoration(
-                  color: FlutterFlowTheme.of(context).secondary,
+                  color: AppTheme.of(context).secondary,
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -42,36 +42,36 @@ class ActivityItemWidget extends StatelessWidget {
                   children: [
                     Text(
                       activity.activityLabel ?? 'activity',
-                      style: FlutterFlowTheme.of(context).bodyMedium.override(
+                      style: AppTheme.of(context).bodyMedium.override(
                             font: GoogleFonts.lexendDeca(
                               fontWeight: FontWeight.w500,
-                              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                              fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                             ),
                             color: activity.activityStatus == 'open'
-                                ? FlutterFlowTheme.of(context).primaryText
-                                : FlutterFlowTheme.of(context).alternate,
+                                ? AppTheme.of(context).primaryText
+                                : AppTheme.of(context).alternate,
                             fontSize: 16.0,
                             letterSpacing: 0.0,
                             fontWeight: FontWeight.w500,
-                            fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                            fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                           ),
                     ),
                     const SizedBox(height: 2.0),
                     AutoSizeText(
                       activity.activityPrompt ?? 'prompt',
                       minFontSize: 13.0,
-                      style: FlutterFlowTheme.of(context).bodyMedium.override(
+                      style: AppTheme.of(context).bodyMedium.override(
                             font: GoogleFonts.lexendDeca(
                               fontWeight: FontWeight.w300,
-                              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                              fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                             ),
                             color: activity.activityStatus == 'open'
-                                ? FlutterFlowTheme.of(context).primaryText
-                                : FlutterFlowTheme.of(context).alternate,
+                                ? AppTheme.of(context).primaryText
+                                : AppTheme.of(context).alternate,
                             fontSize: 14.0,
                             letterSpacing: 0.0,
                             fontWeight: FontWeight.w300,
-                            fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                            fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                           ),
                       overflow: TextOverflow.visible,
                     ),
@@ -110,7 +110,7 @@ class ActivityItemWidget extends StatelessWidget {
                       alignment: const AlignmentDirectional(0.0, 0.0),
                       child: FaIcon(
                         FontAwesomeIcons.solidPenToSquare,
-                        color: FlutterFlowTheme.of(context).primaryBackground,
+                        color: AppTheme.of(context).primaryBackground,
                         size: 24.0,
                       ),
                     ),
@@ -126,7 +126,7 @@ class ActivityItemWidget extends StatelessWidget {
                       ),
                       child: Icon(
                         Icons.check_circle_outlined,
-                        color: FlutterFlowTheme.of(context).alternate,
+                        color: AppTheme.of(context).alternate,
                         size: 28.0,
                       ),
                     ),
@@ -153,7 +153,7 @@ class ActivityItemWidget extends StatelessWidget {
               width: 60.0,
               height: 60.0,
               decoration: BoxDecoration(
-                color: FlutterFlowTheme.of(context).secondary,
+                color: AppTheme.of(context).secondary,
               ),
               child: _getActivityIcon(context),
             ),
@@ -165,8 +165,8 @@ class ActivityItemWidget extends StatelessWidget {
 
   Widget _getActivityIcon(BuildContext context) {
     final iconColor = activity.activityStatus == 'open'
-        ? FlutterFlowTheme.of(context).primaryBackground
-        : FlutterFlowTheme.of(context).alternate;
+        ? AppTheme.of(context).primaryBackground
+        : AppTheme.of(context).alternate;
 
     if (activity.activityType == 'audio') {
       return Align(

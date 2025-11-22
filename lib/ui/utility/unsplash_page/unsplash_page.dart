@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 import 'view_model/unsplash_view_model.dart';
 
@@ -63,7 +63,7 @@ class _UnsplashPageState extends State<UnsplashPage> {
                                 Text(
                                   'Unsplash Image',
                                   textAlign: TextAlign.center,
-                                  style: FlutterFlowTheme.of(context).headlineMedium.override(
+                                  style: AppTheme.of(context).headlineMedium.override(
                                         font: GoogleFonts.lexendDeca(),
                                       ),
                                 ),
@@ -102,8 +102,8 @@ class _UnsplashPageState extends State<UnsplashPage> {
                               options: FFButtonOptions(
                                 width: 130.0,
                                 height: 40.0,
-                                color: FlutterFlowTheme.of(context).primary,
-                                textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                                color: AppTheme.of(context).primary,
+                                textStyle: AppTheme.of(context).titleSmall.override(
                                       font: GoogleFonts.lexendDeca(),
                                       color: Colors.white,
                                     ),

@@ -4,7 +4,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import 'view_model/home_view_model.dart';
 import 'widgets/home_journey_card.dart';
 import 'widgets/home_event_card.dart';
@@ -38,7 +38,7 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       key: scaffoldKey,
-      backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+      backgroundColor: AppTheme.of(context).primaryBackground,
       body: SafeArea(
         top: true,
         child: viewModel.isLoading && viewModel.userProfile == null
@@ -47,7 +47,7 @@ class _HomePageState extends State<HomePage> {
                   width: 50.0,
                   height: 50.0,
                   child: SpinKitRipple(
-                    color: FlutterFlowTheme.of(context).primary,
+                    color: AppTheme.of(context).primary,
                     size: 50.0,
                   ),
                 ),
@@ -130,9 +130,9 @@ class _HomePageState extends State<HomePage> {
         children: [
           Text(
             'Welcome, ',
-            style: FlutterFlowTheme.of(context).headlineSmall.override(
+            style: AppTheme.of(context).headlineSmall.override(
                   font: GoogleFonts.lexendDeca(
-                    fontWeight: FlutterFlowTheme.of(context).headlineSmall.fontWeight,
+                    fontWeight: AppTheme.of(context).headlineSmall.fontWeight,
                   ),
                 ),
           ),
@@ -141,9 +141,9 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsetsDirectional.fromSTEB(0.0, 3.0, 0.0, 0.0),
               child: Text(
                 viewModel.userProfile!.firstName!,
-                style: FlutterFlowTheme.of(context).headlineSmall.override(
+                style: AppTheme.of(context).headlineSmall.override(
                       font: GoogleFonts.lexendDeca(
-                        fontWeight: FlutterFlowTheme.of(context).headlineSmall.fontWeight,
+                        fontWeight: AppTheme.of(context).headlineSmall.fontWeight,
                       ),
                     ),
               ),
@@ -161,7 +161,7 @@ class _HomePageState extends State<HomePage> {
         Text(
           'Where are a community of nn well wishers\ncreating together a new world',
           textAlign: TextAlign.center,
-          style: FlutterFlowTheme.of(context).bodyMedium.override(
+          style: AppTheme.of(context).bodyMedium.override(
                 font: GoogleFonts.lexendDeca(),
                 color: Colors.black,
                 fontSize: 16.0,
@@ -182,9 +182,9 @@ class _HomePageState extends State<HomePage> {
             child: Text(
               title,
               textAlign: TextAlign.start,
-              style: FlutterFlowTheme.of(context).headlineSmall.override(
+              style: AppTheme.of(context).headlineSmall.override(
                     font: GoogleFonts.lexendDeca(),
-                    color: FlutterFlowTheme.of(context).secondary,
+                    color: AppTheme.of(context).secondary,
                   ),
             ),
           ),

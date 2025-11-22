@@ -2,7 +2,7 @@ import '/data/services/supabase/supabase.dart';
 import '/ui/core/widgets/user_avatar.dart';
 import '/data/repositories/event_repository.dart';
 import '/ui/core/ui/flutter_flow_icon_button.dart';
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/utils/flutter_flow_util.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/index.dart';
@@ -74,9 +74,9 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
             canPop: false,
             child: Scaffold(
               key: scaffoldKey,
-              backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+              backgroundColor: AppTheme.of(context).primaryBackground,
               appBar: AppBar(
-                backgroundColor: FlutterFlowTheme.of(context).primary,
+                backgroundColor: AppTheme.of(context).primary,
                 automaticallyImplyLeading: false,
                 leading: FlutterFlowIconButton(
                   borderColor: Colors.transparent,
@@ -103,12 +103,12 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                 ),
                 title: Text(
                   'Event Details',
-                  style: FlutterFlowTheme.of(context).titleLarge.override(
+                  style: AppTheme.of(context).titleLarge.override(
                         font: GoogleFonts.poppins(
-                          fontWeight: FlutterFlowTheme.of(context).titleLarge.fontWeight,
-                          fontStyle: FlutterFlowTheme.of(context).titleLarge.fontStyle,
+                          fontWeight: AppTheme.of(context).titleLarge.fontWeight,
+                          fontStyle: AppTheme.of(context).titleLarge.fontStyle,
                         ),
-                        color: FlutterFlowTheme.of(context).primaryBackground,
+                        color: AppTheme.of(context).primaryBackground,
                         fontSize: 20.0,
                         letterSpacing: 0.0,
                       ),
@@ -122,7 +122,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                     ? Center(
                         child: CircularProgressIndicator(
                           valueColor: AlwaysStoppedAnimation<Color>(
-                            FlutterFlowTheme.of(context).primary,
+                            AppTheme.of(context).primary,
                           ),
                         ),
                       )
@@ -136,8 +136,8 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                                 padding: const EdgeInsets.all(16.0),
                                 child: Text(
                                   viewModel.errorMessage!,
-                                  style: FlutterFlowTheme.of(context).labelMedium.copyWith(
-                                        color: FlutterFlowTheme.of(context).error,
+                                  style: AppTheme.of(context).labelMedium.copyWith(
+                                        color: AppTheme.of(context).error,
                                       ),
                                 ),
                               ),
@@ -182,40 +182,40 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          color: FlutterFlowTheme.of(context).primaryBackground,
+          color: AppTheme.of(context).primaryBackground,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               valueOrDefault<String>(event.title, 'Title'),
-              style: FlutterFlowTheme.of(context).headlineMedium.override(
+              style: AppTheme.of(context).headlineMedium.override(
                     font: GoogleFonts.lexendDeca(
-                      fontWeight: FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                      fontStyle: FlutterFlowTheme.of(context).headlineMedium.fontStyle,
+                      fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
+                      fontStyle: AppTheme.of(context).headlineMedium.fontStyle,
                     ),
-                    color: FlutterFlowTheme.of(context).secondary,
+                    color: AppTheme.of(context).secondary,
                     letterSpacing: 0.0,
                   ),
             ),
             Text(
               'Facilitated by ${event.facilitatorName ?? '-'}',
-              style: FlutterFlowTheme.of(context).titleSmall.override(
+              style: AppTheme.of(context).titleSmall.override(
                     font: GoogleFonts.lexendDeca(
-                      fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                      fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
+                      fontWeight: AppTheme.of(context).titleSmall.fontWeight,
+                      fontStyle: AppTheme.of(context).titleSmall.fontStyle,
                     ),
                     letterSpacing: 0.0,
                   ),
             ),
             Text(
               viewModel.isPublic ? 'Open for everyone' : 'Open only for this group',
-              style: FlutterFlowTheme.of(context).bodyMedium.override(
+              style: AppTheme.of(context).bodyMedium.override(
                     font: GoogleFonts.lexendDeca(
-                      fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                      fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                      fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                      fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                     ),
-                    color: FlutterFlowTheme.of(context).primary,
+                    color: AppTheme.of(context).primary,
                     fontSize: 12.0,
                     letterSpacing: 0.0,
                   ),
@@ -227,7 +227,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                   padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 12.0, 0.0),
                   child: FaIcon(
                     FontAwesomeIcons.calendarDays,
-                    color: FlutterFlowTheme.of(context).secondary,
+                    color: AppTheme.of(context).secondary,
                     size: 32.0,
                   ),
                 ),
@@ -242,12 +242,12 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                       event.eventTime?.time,
                       locale: FFLocalizations.of(context).languageCode,
                     )}',
-                    style: FlutterFlowTheme.of(context).bodyMedium.override(
+                    style: AppTheme.of(context).bodyMedium.override(
                           font: GoogleFonts.lexendDeca(
-                            fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                            fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                            fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                           ),
-                          color: FlutterFlowTheme.of(context).secondary,
+                          color: AppTheme.of(context).secondary,
                           fontSize: 16.0,
                           letterSpacing: 0.0,
                         ),
@@ -261,18 +261,18 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                   padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 12.0, 0.0),
                   child: FaIcon(
                     FontAwesomeIcons.clock,
-                    color: FlutterFlowTheme.of(context).secondary,
+                    color: AppTheme.of(context).secondary,
                     size: 32.0,
                   ),
                 ),
                 Text(
                   '${event.duration ?? 0} min',
-                  style: FlutterFlowTheme.of(context).bodyMedium.override(
+                  style: AppTheme.of(context).bodyMedium.override(
                         font: GoogleFonts.lexendDeca(
-                          fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                          fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                          fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                          fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                         ),
-                        color: FlutterFlowTheme.of(context).secondary,
+                        color: AppTheme.of(context).secondary,
                         fontSize: 16.0,
                         letterSpacing: 0.0,
                       ),
@@ -283,12 +283,12 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
               padding: const EdgeInsetsDirectional.fromSTEB(0.0, 12.0, 0.0, 0.0),
               child: Text(
                 valueOrDefault<String>(event.description, 'description'),
-                style: FlutterFlowTheme.of(context).bodySmall.override(
+                style: AppTheme.of(context).bodySmall.override(
                       font: GoogleFonts.lexendDeca(
-                        fontWeight: FlutterFlowTheme.of(context).bodySmall.fontWeight,
-                        fontStyle: FlutterFlowTheme.of(context).bodySmall.fontStyle,
+                        fontWeight: AppTheme.of(context).bodySmall.fontWeight,
+                        fontStyle: AppTheme.of(context).bodySmall.fontStyle,
                       ),
-                      color: FlutterFlowTheme.of(context).secondary,
+                      color: AppTheme.of(context).secondary,
                       letterSpacing: 0.0,
                     ),
               ),
@@ -307,7 +307,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          color: FlutterFlowTheme.of(context).primaryBackground,
+          color: AppTheme.of(context).primaryBackground,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -316,12 +316,12 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
               padding: const EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 0.0, 0.0),
               child: Text(
                 '${viewModel.participantsCount} People Registered',
-                style: FlutterFlowTheme.of(context).bodyMedium.override(
+                style: AppTheme.of(context).bodyMedium.override(
                       font: GoogleFonts.lexendDeca(
-                        fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                        fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                        fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                        fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                       ),
-                      color: FlutterFlowTheme.of(context).secondary,
+                      color: AppTheme.of(context).secondary,
                       fontSize: 16.0,
                       letterSpacing: 0.0,
                     ),
@@ -332,7 +332,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
                   'No registrations yet.',
-                  style: FlutterFlowTheme.of(context).labelMedium,
+                  style: AppTheme.of(context).labelMedium,
                 ),
               )
             else
@@ -356,10 +356,10 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                             padding: const EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 0.0),
                             child: Text(
                               valueOrDefault<String>(participant.displayName, 'name'),
-                              style: FlutterFlowTheme.of(context).bodyMedium.override(
+                              style: AppTheme.of(context).bodyMedium.override(
                                     font: GoogleFonts.lexendDeca(
-                                      fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                      fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                      fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                     ),
                                     letterSpacing: 0.0,
                                   ),
@@ -385,7 +385,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          color: FlutterFlowTheme.of(context).primaryBackground,
+          color: AppTheme.of(context).primaryBackground,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -406,10 +406,10 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                               content: Text(
                                 'You are registered with success',
                                 style: TextStyle(
-                                  color: FlutterFlowTheme.of(context).primaryText,
+                                  color: AppTheme.of(context).primaryText,
                                 ),
                               ),
-                              backgroundColor: FlutterFlowTheme.of(context).secondary,
+                              backgroundColor: AppTheme.of(context).secondary,
                             ),
                           );
                         },
@@ -418,18 +418,18 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                     width: 160.0,
                     height: 40.0,
                     padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-                    color: FlutterFlowTheme.of(context).primary,
-                    textStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                    color: AppTheme.of(context).primary,
+                    textStyle: AppTheme.of(context).labelLarge.override(
                           font: GoogleFonts.poppins(
-                            fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                            fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                            fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                           ),
-                          color: FlutterFlowTheme.of(context).primaryBackground,
+                          color: AppTheme.of(context).primaryBackground,
                           letterSpacing: 0.0,
                         ),
                     elevation: 1.0,
                     borderSide: BorderSide(
-                      color: FlutterFlowTheme.of(context).secondaryBackground,
+                      color: AppTheme.of(context).secondaryBackground,
                       width: 0.5,
                     ),
                     borderRadius: BorderRadius.circular(20.0),
@@ -452,10 +452,10 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                               content: Text(
                                 'You are unsubscribed with success',
                                 style: TextStyle(
-                                  color: FlutterFlowTheme.of(context).primaryText,
+                                  color: AppTheme.of(context).primaryText,
                                 ),
                               ),
-                              backgroundColor: FlutterFlowTheme.of(context).secondary,
+                              backgroundColor: AppTheme.of(context).secondary,
                             ),
                           );
                         },
@@ -464,18 +464,18 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                     width: 160.0,
                     height: 40.0,
                     padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-                    color: FlutterFlowTheme.of(context).primary,
-                    textStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                    color: AppTheme.of(context).primary,
+                    textStyle: AppTheme.of(context).labelLarge.override(
                           font: GoogleFonts.poppins(
-                            fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                            fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                            fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                           ),
-                          color: FlutterFlowTheme.of(context).primaryBackground,
+                          color: AppTheme.of(context).primaryBackground,
                           letterSpacing: 0.0,
                         ),
                     elevation: 1.0,
                     borderSide: BorderSide(
-                      color: FlutterFlowTheme.of(context).secondaryBackground,
+                      color: AppTheme.of(context).secondaryBackground,
                       width: 0.5,
                     ),
                     borderRadius: BorderRadius.circular(20.0),
@@ -498,7 +498,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          color: FlutterFlowTheme.of(context).primaryBackground,
+          color: AppTheme.of(context).primaryBackground,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -542,10 +542,10 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                         content: Text(
                           'Event deleted with success',
                           style: TextStyle(
-                            color: FlutterFlowTheme.of(context).primaryText,
+                            color: AppTheme.of(context).primaryText,
                           ),
                         ),
-                        backgroundColor: FlutterFlowTheme.of(context).secondary,
+                        backgroundColor: AppTheme.of(context).secondary,
                       ),
                     );
                     context.goNamed(CommunityPage.routeName);
@@ -554,18 +554,18 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                   options: FFButtonOptions(
                     height: 40.0,
                     padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-                    color: FlutterFlowTheme.of(context).primaryBackground,
-                    textStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                    color: AppTheme.of(context).primaryBackground,
+                    textStyle: AppTheme.of(context).labelLarge.override(
                           font: GoogleFonts.poppins(
-                            fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                            fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                            fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                           ),
-                          color: FlutterFlowTheme.of(context).secondary,
+                          color: AppTheme.of(context).secondary,
                           letterSpacing: 0.0,
                         ),
                     elevation: 0.0,
                     borderSide: BorderSide(
-                      color: FlutterFlowTheme.of(context).secondaryBackground,
+                      color: AppTheme.of(context).secondaryBackground,
                       width: 0.5,
                     ),
                     borderRadius: BorderRadius.circular(20.0),
@@ -604,18 +604,18 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                 options: FFButtonOptions(
                   height: 40.0,
                   padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-                  color: FlutterFlowTheme.of(context).primary,
-                  textStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                  color: AppTheme.of(context).primary,
+                  textStyle: AppTheme.of(context).labelLarge.override(
                         font: GoogleFonts.poppins(
-                          fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                          fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                          fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                          fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                         ),
-                        color: FlutterFlowTheme.of(context).primaryBackground,
+                        color: AppTheme.of(context).primaryBackground,
                         letterSpacing: 0.0,
                       ),
                   elevation: 1.0,
                   borderSide: BorderSide(
-                    color: FlutterFlowTheme.of(context).secondaryBackground,
+                    color: AppTheme.of(context).secondaryBackground,
                     width: 0.5,
                   ),
                   borderRadius: BorderRadius.circular(20.0),

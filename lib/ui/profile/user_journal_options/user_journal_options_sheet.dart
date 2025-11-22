@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
 
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/utils/flutter_flow_util.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/data/services/supabase/supabase.dart';
@@ -31,7 +31,7 @@ class _UserJournalOptionsSheetState extends State<UserJournalOptionsSheet> {
       width: double.infinity,
       height: 270.0,
       decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).primaryBackground,
+        color: AppTheme.of(context).primaryBackground,
         boxShadow: const [
           BoxShadow(
             blurRadius: 5.0,
@@ -79,16 +79,16 @@ class _UserJournalOptionsSheetState extends State<UserJournalOptionsSheet> {
                 height: 60.0,
                 padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
                 iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                color: FlutterFlowTheme.of(context).primaryBackground,
-                textStyle: FlutterFlowTheme.of(context).bodyLarge.override(
+                color: AppTheme.of(context).primaryBackground,
+                textStyle: AppTheme.of(context).bodyLarge.override(
                       font: GoogleFonts.poppins(
                         fontWeight: FontWeight.w500,
-                        fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
+                        fontStyle: AppTheme.of(context).bodyLarge.fontStyle,
                       ),
-                      color: FlutterFlowTheme.of(context).secondary,
+                      color: AppTheme.of(context).secondary,
                       letterSpacing: 0.0,
                       fontWeight: FontWeight.w500,
-                      fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
+                      fontStyle: AppTheme.of(context).bodyLarge.fontStyle,
                     ),
                 elevation: 2.0,
                 borderSide: const BorderSide(
@@ -135,11 +135,11 @@ class _UserJournalOptionsSheetState extends State<UserJournalOptionsSheet> {
                                   content: Text(
                                     'Journal saved',
                                     style: TextStyle(
-                                      color: FlutterFlowTheme.of(context).primaryText,
+                                      color: AppTheme.of(context).primaryText,
                                     ),
                                   ),
                                   duration: const Duration(milliseconds: 4000),
-                                  backgroundColor: FlutterFlowTheme.of(context).secondary,
+                                  backgroundColor: AppTheme.of(context).secondary,
                                 ),
                               );
                               context.safePop();
@@ -149,11 +149,11 @@ class _UserJournalOptionsSheetState extends State<UserJournalOptionsSheet> {
                                   content: Text(
                                     viewModel.errorMessage!,
                                     style: TextStyle(
-                                      color: FlutterFlowTheme.of(context).error,
+                                      color: AppTheme.of(context).error,
                                     ),
                                   ),
                                   duration: const Duration(milliseconds: 4000),
-                                  backgroundColor: FlutterFlowTheme.of(context).secondary,
+                                  backgroundColor: AppTheme.of(context).secondary,
                                 ),
                               );
                             }
@@ -170,16 +170,16 @@ class _UserJournalOptionsSheetState extends State<UserJournalOptionsSheet> {
                   height: 60.0,
                   padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
                   iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                  color: FlutterFlowTheme.of(context).primaryBackground,
-                  textStyle: FlutterFlowTheme.of(context).bodyLarge.override(
+                  color: AppTheme.of(context).primaryBackground,
+                  textStyle: AppTheme.of(context).bodyLarge.override(
                         font: GoogleFonts.poppins(
                           fontWeight: FontWeight.w500,
-                          fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
+                          fontStyle: AppTheme.of(context).bodyLarge.fontStyle,
                         ),
-                        color: FlutterFlowTheme.of(context).error,
+                        color: AppTheme.of(context).error,
                         letterSpacing: 0.0,
                         fontWeight: FontWeight.w500,
-                        fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
+                        fontStyle: AppTheme.of(context).bodyLarge.fontStyle,
                       ),
                   elevation: 2.0,
                   borderSide: const BorderSide(
@@ -206,18 +206,18 @@ class _UserJournalOptionsSheetState extends State<UserJournalOptionsSheet> {
                   height: 60.0,
                   padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
                   iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                  iconColor: FlutterFlowTheme.of(context).secondary,
-                  color: FlutterFlowTheme.of(context).primaryBackground,
-                  textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                  iconColor: AppTheme.of(context).secondary,
+                  color: AppTheme.of(context).primaryBackground,
+                  textStyle: AppTheme.of(context).titleSmall.override(
                         font: GoogleFonts.lexendDeca(
                           fontWeight: FontWeight.normal,
-                          fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
+                          fontStyle: AppTheme.of(context).titleSmall.fontStyle,
                         ),
-                        color: FlutterFlowTheme.of(context).secondary,
+                        color: AppTheme.of(context).secondary,
                         fontSize: 16.0,
                         letterSpacing: 0.0,
                         fontWeight: FontWeight.normal,
-                        fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
+                        fontStyle: AppTheme.of(context).titleSmall.fontStyle,
                       ),
                   elevation: 0.0,
                   borderSide: const BorderSide(

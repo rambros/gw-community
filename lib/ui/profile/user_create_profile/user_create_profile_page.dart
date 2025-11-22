@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 
-import '/ui/core/themes/flutter_flow_theme.dart';
+import '/ui/core/themes/app_theme.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/ui/core/ui/flutter_flow_icon_button.dart';
 import 'view_model/user_create_profile_view_model.dart';
@@ -28,9 +28,9 @@ class _UserCreateProfilePageState extends State<UserCreateProfilePage> {
 
     return Scaffold(
       key: scaffoldKey,
-      backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+      backgroundColor: AppTheme.of(context).primaryBackground,
       appBar: AppBar(
-        backgroundColor: FlutterFlowTheme.of(context).primary,
+        backgroundColor: AppTheme.of(context).primary,
         automaticallyImplyLeading: false,
         leading: FlutterFlowIconButton(
           borderColor: Colors.transparent,
@@ -49,16 +49,16 @@ class _UserCreateProfilePageState extends State<UserCreateProfilePage> {
         title: Text(
           'Sign Up',
           textAlign: TextAlign.center,
-          style: FlutterFlowTheme.of(context).bodyMedium.override(
+          style: AppTheme.of(context).bodyMedium.override(
                 font: GoogleFonts.lexendDeca(
                   fontWeight: FontWeight.w500,
-                  fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                  fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                 ),
-                color: FlutterFlowTheme.of(context).primaryBackground,
+                color: AppTheme.of(context).primaryBackground,
                 fontSize: 20.0,
                 letterSpacing: 0.0,
                 fontWeight: FontWeight.w500,
-                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
               ),
         ),
         actions: const [],
@@ -88,16 +88,16 @@ class _UserCreateProfilePageState extends State<UserCreateProfilePage> {
                       ),
                       Text(
                         'What\'s your name?',
-                        style: FlutterFlowTheme.of(context).titleMedium.override(
+                        style: AppTheme.of(context).titleMedium.override(
                               font: GoogleFonts.lexendDeca(
-                                fontWeight: FlutterFlowTheme.of(context).titleMedium.fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                                fontWeight: AppTheme.of(context).titleMedium.fontWeight,
+                                fontStyle: AppTheme.of(context).titleMedium.fontStyle,
                               ),
-                              color: FlutterFlowTheme.of(context).secondary,
+                              color: AppTheme.of(context).secondary,
                               fontSize: 20.0,
                               letterSpacing: 0.0,
-                              fontWeight: FlutterFlowTheme.of(context).titleMedium.fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                              fontWeight: AppTheme.of(context).titleMedium.fontWeight,
+                              fontStyle: AppTheme.of(context).titleMedium.fontStyle,
                             ),
                       ),
                       Padding(
@@ -112,15 +112,15 @@ class _UserCreateProfilePageState extends State<UserCreateProfilePage> {
                                 child: Text(
                                   'We are creating a community of real people and prefer real names. Please, enter your first and last names.',
                                   textAlign: TextAlign.center,
-                                  style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                  style: AppTheme.of(context).bodyMedium.override(
                                         font: GoogleFonts.lexendDeca(
-                                          fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                          fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                          fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                          fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                         ),
-                                        color: FlutterFlowTheme.of(context).primary,
+                                        color: AppTheme.of(context).primary,
                                         letterSpacing: 0.0,
-                                        fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                        fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                        fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                       ),
                                 ),
                               ),
@@ -142,38 +142,38 @@ class _UserCreateProfilePageState extends State<UserCreateProfilePage> {
                                   obscureText: false,
                                   decoration: InputDecoration(
                                     labelText: 'First Name',
-                                    labelStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                                    labelStyle: AppTheme.of(context).labelLarge.override(
                                           font: GoogleFonts.poppins(
-                                            fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                                            fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                                            fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                                            fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                                           ),
-                                          color: FlutterFlowTheme.of(context).primary,
+                                          color: AppTheme.of(context).primary,
                                           fontSize: 16.0,
                                           letterSpacing: 0.0,
-                                          fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                                          fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                                          fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                                          fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                                         ),
                                     hintText: 'FirstName',
-                                    hintStyle: FlutterFlowTheme.of(context).bodySmall.override(
+                                    hintStyle: AppTheme.of(context).bodySmall.override(
                                           font: GoogleFonts.lexendDeca(
-                                            fontWeight: FlutterFlowTheme.of(context).bodySmall.fontWeight,
-                                            fontStyle: FlutterFlowTheme.of(context).bodySmall.fontStyle,
+                                            fontWeight: AppTheme.of(context).bodySmall.fontWeight,
+                                            fontStyle: AppTheme.of(context).bodySmall.fontStyle,
                                           ),
-                                          color: FlutterFlowTheme.of(context).alternate,
+                                          color: AppTheme.of(context).alternate,
                                           letterSpacing: 0.0,
-                                          fontWeight: FlutterFlowTheme.of(context).bodySmall.fontWeight,
-                                          fontStyle: FlutterFlowTheme.of(context).bodySmall.fontStyle,
+                                          fontWeight: AppTheme.of(context).bodySmall.fontWeight,
+                                          fontStyle: AppTheme.of(context).bodySmall.fontStyle,
                                         ),
                                     enabledBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: FlutterFlowTheme.of(context).alternate,
+                                        color: AppTheme.of(context).alternate,
                                         width: 1.0,
                                       ),
                                       borderRadius: BorderRadius.circular(16.0),
                                     ),
                                     focusedBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: FlutterFlowTheme.of(context).alternate,
+                                        color: AppTheme.of(context).alternate,
                                         width: 1.0,
                                       ),
                                       borderRadius: BorderRadius.circular(16.0),
@@ -195,16 +195,16 @@ class _UserCreateProfilePageState extends State<UserCreateProfilePage> {
                                     filled: true,
                                     fillColor: const Color(0xFFF9FAFB),
                                   ),
-                                  style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                  style: AppTheme.of(context).bodyMedium.override(
                                         font: GoogleFonts.lexendDeca(
-                                          fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                          fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                          fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                          fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                         ),
-                                        color: FlutterFlowTheme.of(context).secondary,
+                                        color: AppTheme.of(context).secondary,
                                         fontSize: 14.0,
                                         letterSpacing: 0.0,
-                                        fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                        fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                        fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                       ),
                                 ),
                               ),
@@ -218,38 +218,38 @@ class _UserCreateProfilePageState extends State<UserCreateProfilePage> {
                                   obscureText: false,
                                   decoration: InputDecoration(
                                     labelText: 'Last Name',
-                                    labelStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                                    labelStyle: AppTheme.of(context).labelLarge.override(
                                           font: GoogleFonts.poppins(
-                                            fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                                            fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                                            fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                                            fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                                           ),
-                                          color: FlutterFlowTheme.of(context).primary,
+                                          color: AppTheme.of(context).primary,
                                           fontSize: 16.0,
                                           letterSpacing: 0.0,
-                                          fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                                          fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                                          fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                                          fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                                         ),
                                     hintText: 'Last Name',
-                                    hintStyle: FlutterFlowTheme.of(context).bodySmall.override(
+                                    hintStyle: AppTheme.of(context).bodySmall.override(
                                           font: GoogleFonts.lexendDeca(
-                                            fontWeight: FlutterFlowTheme.of(context).bodySmall.fontWeight,
-                                            fontStyle: FlutterFlowTheme.of(context).bodySmall.fontStyle,
+                                            fontWeight: AppTheme.of(context).bodySmall.fontWeight,
+                                            fontStyle: AppTheme.of(context).bodySmall.fontStyle,
                                           ),
-                                          color: FlutterFlowTheme.of(context).alternate,
+                                          color: AppTheme.of(context).alternate,
                                           letterSpacing: 0.0,
-                                          fontWeight: FlutterFlowTheme.of(context).bodySmall.fontWeight,
-                                          fontStyle: FlutterFlowTheme.of(context).bodySmall.fontStyle,
+                                          fontWeight: AppTheme.of(context).bodySmall.fontWeight,
+                                          fontStyle: AppTheme.of(context).bodySmall.fontStyle,
                                         ),
                                     enabledBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: FlutterFlowTheme.of(context).alternate,
+                                        color: AppTheme.of(context).alternate,
                                         width: 1.0,
                                       ),
                                       borderRadius: BorderRadius.circular(16.0),
                                     ),
                                     focusedBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: FlutterFlowTheme.of(context).alternate,
+                                        color: AppTheme.of(context).alternate,
                                         width: 1.0,
                                       ),
                                       borderRadius: BorderRadius.circular(16.0),
@@ -271,16 +271,16 @@ class _UserCreateProfilePageState extends State<UserCreateProfilePage> {
                                     filled: true,
                                     fillColor: const Color(0xFFF9FAFB),
                                   ),
-                                  style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                  style: AppTheme.of(context).bodyMedium.override(
                                         font: GoogleFonts.lexendDeca(
-                                          fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                          fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                          fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                          fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                         ),
-                                        color: FlutterFlowTheme.of(context).secondary,
+                                        color: AppTheme.of(context).secondary,
                                         fontSize: 14.0,
                                         letterSpacing: 0.0,
-                                        fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                        fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                        fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                       ),
                                 ),
                               ),
@@ -299,15 +299,15 @@ class _UserCreateProfilePageState extends State<UserCreateProfilePage> {
                                 child: Text(
                                   'You can hide your Last Name in your Profile if you like.',
                                   textAlign: TextAlign.center,
-                                  style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                  style: AppTheme.of(context).bodyMedium.override(
                                         font: GoogleFonts.lexendDeca(
-                                          fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                          fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                          fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                          fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                         ),
-                                        color: FlutterFlowTheme.of(context).primary,
+                                        color: AppTheme.of(context).primary,
                                         letterSpacing: 0.0,
-                                        fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                        fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                        fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                       ),
                                 ),
                               ),
@@ -346,7 +346,7 @@ class _UserCreateProfilePageState extends State<UserCreateProfilePage> {
                                   TextSpan(
                                     text: 'Terms & Conditions ',
                                     style: TextStyle(
-                                      color: FlutterFlowTheme.of(context).secondary,
+                                      color: AppTheme.of(context).secondary,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -357,20 +357,20 @@ class _UserCreateProfilePageState extends State<UserCreateProfilePage> {
                                   TextSpan(
                                     text: 'Privacy Policy.',
                                     style: TextStyle(
-                                      color: FlutterFlowTheme.of(context).secondary,
+                                      color: AppTheme.of(context).secondary,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   )
                                 ],
-                                style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                style: AppTheme.of(context).bodyMedium.override(
                                       font: GoogleFonts.lexendDeca(
-                                        fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                        fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                        fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                       ),
-                                      color: FlutterFlowTheme.of(context).primary,
+                                      color: AppTheme.of(context).primary,
                                       letterSpacing: 0.0,
-                                      fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                                      fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                      fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                     ),
                               ),
                             ),
@@ -394,20 +394,20 @@ class _UserCreateProfilePageState extends State<UserCreateProfilePage> {
                               height: 50.0,
                               padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
                               iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                              color: FlutterFlowTheme.of(context).primary,
-                              textStyle: FlutterFlowTheme.of(context).labelLarge.override(
+                              color: AppTheme.of(context).primary,
+                              textStyle: AppTheme.of(context).labelLarge.override(
                                     font: GoogleFonts.poppins(
-                                      fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                                      fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                                      fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                                     ),
-                                    color: FlutterFlowTheme.of(context).primary.withValues(alpha: 0.5),
+                                    color: AppTheme.of(context).primary.withValues(alpha: 0.5),
                                     letterSpacing: 0.0,
-                                    fontWeight: FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                                    fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                                    fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                                   ),
                               elevation: 1.0,
                               borderSide: BorderSide(
-                                color: FlutterFlowTheme.of(context).secondaryBackground,
+                                color: AppTheme.of(context).secondaryBackground,
                                 width: 0.5,
                               ),
                               borderRadius: BorderRadius.circular(20.0),
@@ -425,7 +425,7 @@ class _UserCreateProfilePageState extends State<UserCreateProfilePage> {
                 color: Colors.black.withValues(alpha: 0.5),
                 child: Center(
                   child: SpinKitRipple(
-                    color: FlutterFlowTheme.of(context).primary,
+                    color: AppTheme.of(context).primary,
                     size: 50.0,
                   ),
                 ),

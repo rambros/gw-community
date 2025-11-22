@@ -3,17 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-abstract class FlutterFlowTheme {
-  static FlutterFlowTheme of(BuildContext context) {
+abstract class AppTheme {
+  static AppTheme of(BuildContext context) {
     return LightModeTheme();
   }
-
-  @Deprecated('Use primary instead')
-  Color get primaryColor => primary;
-  @Deprecated('Use secondary instead')
-  Color get secondaryColor => secondary;
-  @Deprecated('Use tertiary instead')
-  Color get tertiaryColor => tertiary;
 
   late Color primary;
   late Color secondary;
@@ -44,35 +37,6 @@ abstract class FlutterFlowTheme {
   late Color black600;
   late Color tertiary400;
   late Color textColor;
-
-  @Deprecated('Use displaySmallFamily instead')
-  String get title1Family => displaySmallFamily;
-  @Deprecated('Use displaySmall instead')
-  TextStyle get title1 => typography.displaySmall;
-  @Deprecated('Use headlineMediumFamily instead')
-  String get title2Family => typography.headlineMediumFamily;
-  @Deprecated('Use headlineMedium instead')
-  TextStyle get title2 => typography.headlineMedium;
-  @Deprecated('Use headlineSmallFamily instead')
-  String get title3Family => typography.headlineSmallFamily;
-  @Deprecated('Use headlineSmall instead')
-  TextStyle get title3 => typography.headlineSmall;
-  @Deprecated('Use titleMediumFamily instead')
-  String get subtitle1Family => typography.titleMediumFamily;
-  @Deprecated('Use titleMedium instead')
-  TextStyle get subtitle1 => typography.titleMedium;
-  @Deprecated('Use titleSmallFamily instead')
-  String get subtitle2Family => typography.titleSmallFamily;
-  @Deprecated('Use titleSmall instead')
-  TextStyle get subtitle2 => typography.titleSmall;
-  @Deprecated('Use bodyMediumFamily instead')
-  String get bodyText1Family => typography.bodyMediumFamily;
-  @Deprecated('Use bodyMedium instead')
-  TextStyle get bodyText1 => typography.bodyMedium;
-  @Deprecated('Use bodySmallFamily instead')
-  String get bodyText2Family => typography.bodySmallFamily;
-  @Deprecated('Use bodySmall instead')
-  TextStyle get bodyText2 => typography.bodySmall;
 
   String get displayLargeFamily => typography.displayLargeFamily;
   bool get displayLargeIsCustom => typography.displayLargeIsCustom;
@@ -123,14 +87,7 @@ abstract class FlutterFlowTheme {
   Typography get typography => ThemeTypography(this);
 }
 
-class LightModeTheme extends FlutterFlowTheme {
-  @Deprecated('Use primary instead')
-  Color get primaryColor => primary;
-  @Deprecated('Use secondary instead')
-  Color get secondaryColor => secondary;
-  @Deprecated('Use tertiary instead')
-  Color get tertiaryColor => tertiary;
-
+class LightModeTheme extends AppTheme {
   late Color primary = const Color(0xFF7C52A0);
   late Color secondary = const Color(0xFF340964);
   late Color tertiary = const Color(0xFFFCC612);
@@ -213,7 +170,7 @@ abstract class Typography {
 class ThemeTypography extends Typography {
   ThemeTypography(this.theme);
 
-  final FlutterFlowTheme theme;
+  final AppTheme theme;
 
   String get displayLargeFamily => 'Poppins';
   bool get displayLargeIsCustom => false;
@@ -339,8 +296,7 @@ extension TextStyleHelper on TextStyle {
   }) {
     if (useGoogleFonts && fontFamily != null) {
       font = GoogleFonts.getFont(fontFamily,
-          fontWeight: fontWeight ?? this.fontWeight,
-          fontStyle: fontStyle ?? this.fontStyle);
+          fontWeight: fontWeight ?? this.fontWeight, fontStyle: fontStyle ?? this.fontStyle);
     }
 
     return font != null
