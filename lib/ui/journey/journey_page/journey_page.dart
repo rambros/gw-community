@@ -201,20 +201,31 @@ class _JourneyPageState extends State<JourneyPage> {
               alignment: const AlignmentDirectional(0.0, 0.0),
               child: Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(4.0, 32.0, 4.0, 0.0),
-                child: ListView.builder(
-                  padding: EdgeInsets.zero,
-                  primary: false,
-                  shrinkWrap: true,
-                  scrollDirection: Axis.vertical,
-                  itemCount: viewModel.userSteps.length,
-                  itemBuilder: (context, index) {
-                    final step = viewModel.userSteps[index];
-                    final isLastStep = index == viewModel.userSteps.length - 1;
+                child: Builder(
+                  builder: (context) {
+                    // Encontra o índice do primeiro step 'open' (step atual)
+                    final currentStepIndex = viewModel.userSteps.indexWhere(
+                      (s) => s.stepStatus == 'open',
+                    );
 
-                    return JourneyStepItemWidget(
-                      stepRow: step,
-                      isLastStep: isLastStep,
-                      onTap: () => _handleStepTap(context, viewModel, step),
+                    return ListView.builder(
+                      padding: EdgeInsets.zero,
+                      primary: false,
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      itemCount: viewModel.userSteps.length,
+                      itemBuilder: (context, index) {
+                        final step = viewModel.userSteps[index];
+                        final isLastStep = index == viewModel.userSteps.length - 1;
+                        final isCurrentStep = index == currentStepIndex;
+
+                        return JourneyStepItemWidget(
+                          stepRow: step,
+                          isLastStep: isLastStep,
+                          isCurrentStep: isCurrentStep,
+                          onTap: () => _handleStepTap(context, viewModel, step),
+                        );
+                      },
                     );
                   },
                 ),
@@ -237,9 +248,9 @@ class _JourneyPageState extends State<JourneyPage> {
     );
   }
 
-  void _handleStepTap(BuildContext context, JourneyViewModel viewModel, CcViewUserStepsRow step) {
+  Future<void> _handleStepTap(BuildContext context, JourneyViewModel viewModel, CcViewUserStepsRow step) async {
     if (viewModel.canNavigateToStep(step, viewModel.userSteps.indexOf(step))) {
-      context.pushNamed(
+      await context.pushNamed(
         StepDetailsPage.routeName,
         queryParameters: {
           'userStepRow': serializeParam(
@@ -255,6 +266,11 @@ class _JourneyPageState extends State<JourneyPage> {
           ),
         },
       );
+
+      // Recarrega os dados ao voltar da página de detalhes
+      if (mounted) {
+        await viewModel.loadJourneyData();
+      }
     }
   }
 }

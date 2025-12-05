@@ -40,4 +40,10 @@ class CcJourneysRow extends SupabaseDataRow {
 
   String? get status => getField<String>('status');
   set status(String? value) => setField<String>('status', value);
+
+  bool get enableDateControl => getField<bool>('enable_date_control') ?? true;
+  set enableDateControl(bool value) => setField<bool>('enable_date_control', value);
+
+  int get daysToWaitBetweenSteps => getField<int>('days_to_wait_between_steps') ?? 1;
+  set daysToWaitBetweenSteps(int value) => setField<int>('days_to_wait_between_steps', value);
 }

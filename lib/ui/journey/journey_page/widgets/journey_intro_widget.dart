@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import '/ui/core/themes/app_theme.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/data/services/supabase/supabase.dart';
@@ -44,26 +45,32 @@ class JourneyIntroWidget extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 8.0, 0.0),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Expanded(
-                child: Text(
-                  journey.description ?? 'Description',
-                  textAlign: TextAlign.start,
-                  style: AppTheme.of(context).bodyMedium.override(
-                        font: GoogleFonts.lexendDeca(
-                          fontWeight: FontWeight.w300,
-                          fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                        ),
-                        color: AppTheme.of(context).primaryText,
-                        letterSpacing: 0.0,
-                        fontWeight: FontWeight.w300,
-                        fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                ),
+          child: Html(
+            data: journey.description ?? '<p>Description</p>',
+            style: {
+              "body": Style(
+                margin: Margins.zero,
+                padding: HtmlPaddings.zero,
+                fontSize: FontSize(14.0),
+                fontFamily: GoogleFonts.lexendDeca().fontFamily,
+                fontWeight: FontWeight.w300,
+                color: AppTheme.of(context).primaryText,
               ),
-            ],
+              "p": Style(
+                margin: Margins.only(bottom: 8.0),
+              ),
+              "h1, h2, h3, h4, h5, h6": Style(
+                margin: Margins.only(bottom: 8.0, top: 8.0),
+                fontWeight: FontWeight.bold,
+              ),
+              "ul, ol": Style(
+                margin: Margins.only(left: 16.0, bottom: 8.0),
+              ),
+              "a": Style(
+                color: AppTheme.of(context).primary,
+                textDecoration: TextDecoration.underline,
+              ),
+            },
           ),
         ),
         Padding(

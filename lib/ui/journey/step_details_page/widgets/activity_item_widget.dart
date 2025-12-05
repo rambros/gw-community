@@ -87,54 +87,29 @@ class ActivityItemWidget extends StatelessWidget {
   }
 
   Widget _buildStatusIndicator(BuildContext context) {
-    return Align(
-      alignment: const AlignmentDirectional(0.0, 0.0),
-      child: Padding(
-        padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 12.0, 0.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Stack(
-              children: [
-                if (activity.activityStatus == 'open')
-                  Align(
-                    alignment: const AlignmentDirectional(0.0, 1.0),
-                    child: Container(
-                      width: 28.0,
-                      height: 28.0,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                      ),
-                      alignment: const AlignmentDirectional(0.0, 0.0),
-                      child: FaIcon(
-                        FontAwesomeIcons.solidPenToSquare,
-                        color: AppTheme.of(context).primaryBackground,
-                        size: 24.0,
-                      ),
-                    ),
-                  ),
-                if (activity.activityStatus == 'completed')
-                  Align(
-                    alignment: const AlignmentDirectional(0.0, 1.0),
-                    child: Container(
-                      width: 28.0,
-                      height: 28.0,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.check_circle_outlined,
-                        color: AppTheme.of(context).alternate,
-                        size: 28.0,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ],
+    final isCompleted = activity.activityStatus == 'completed';
+
+    return Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 12.0, 0.0),
+      child: Container(
+        width: 28.0,
+        height: 28.0,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: isCompleted
+                ? AppTheme.of(context).alternate
+                : AppTheme.of(context).primaryBackground,
+            width: 2.0,
+          ),
         ),
+        child: isCompleted
+            ? Icon(
+                Icons.check,
+                color: AppTheme.of(context).alternate,
+                size: 18.0,
+              )
+            : null,
       ),
     );
   }

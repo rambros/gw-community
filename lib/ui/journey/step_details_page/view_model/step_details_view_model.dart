@@ -33,13 +33,31 @@ class StepDetailsViewModel extends ChangeNotifier {
     _clearError();
 
     try {
-      _activities = await _repository.getUserActivities(
+      if (userStepRow.id == null) {
+        _setError('Invalid step ID');
+        _setLoading(false);
+        return;
+      }
+
+      final activities = await _repository.getUserActivities(
         currentUserUid,
         userStepRow.id!,
       );
+      
+      // Remove duplicates based on activity ID using a Map
+      final activitiesMap = <int, CcViewUserActivitiesRow>{};
+      for (final activity in activities) {
+        final activityId = activity.id;
+        if (activityId != null && !activitiesMap.containsKey(activityId)) {
+          activitiesMap[activityId] = activity;
+        }
+      }
+      _activities = activitiesMap.values.toList()
+        ..sort((a, b) => (a.orderInStep ?? 0).compareTo(b.orderInStep ?? 0));
+      
       notifyListeners();
-    } catch (e) {
-      _setError('Error loading activities: $e');
+    } catch (e, stackTrace) {
+      _setError('Error loading activities: $e\n$stackTrace');
     } finally {
       _setLoading(false);
     }

@@ -6,14 +6,15 @@ class JourneyViewModel extends ChangeNotifier {
   final JourneysRepository _repository;
   final String currentUserUid;
   final int journeyId;
-  final List<int> startedJourneys;
+  List<int> _startedJourneys;
 
   JourneyViewModel({
     required JourneysRepository repository,
     required this.currentUserUid,
     required this.journeyId,
-    required this.startedJourneys,
-  }) : _repository = repository {
+    required List<int> startedJourneys,
+  })  : _repository = repository,
+        _startedJourneys = List<int>.from(startedJourneys) {
     loadJourneyData();
   }
 
@@ -34,7 +35,7 @@ class JourneyViewModel extends ChangeNotifier {
   List<CcViewUserStepsRow> _userSteps = [];
   List<CcViewUserStepsRow> get userSteps => _userSteps;
 
-  bool get isJourneyStarted => startedJourneys.contains(journeyId);
+  bool get isJourneyStarted => _startedJourneys.contains(journeyId);
 
   // ========== COMMANDS ==========
 
@@ -51,7 +52,18 @@ class JourneyViewModel extends ChangeNotifier {
         ]);
 
         _userJourney = results[0] as CcViewUserJourneysRow?;
-        _userSteps = results[1] as List<CcViewUserStepsRow>;
+        final steps = results[1] as List<CcViewUserStepsRow>;
+        
+        // Remove duplicates based on step ID using a Map
+        final stepsMap = <int, CcViewUserStepsRow>{};
+        for (final step in steps) {
+          final stepId = step.id;
+          if (stepId != null && !stepsMap.containsKey(stepId)) {
+            stepsMap[stepId] = step;
+          }
+        }
+        _userSteps = stepsMap.values.toList()
+          ..sort((a, b) => (a.stepNumber ?? 0).compareTo(b.stepNumber ?? 0));
       } else {
         // Load journey info
         _journey = await _repository.getJourneyById(journeyId);
@@ -69,13 +81,15 @@ class JourneyViewModel extends ChangeNotifier {
     BuildContext context,
     Function(List<int>) onUpdateStartedJourneys,
   ) async {
+    _setLoading(true);
     try {
       await _repository.startJourney(currentUserUid, journeyId);
 
-      if (!startedJourneys.contains(journeyId)) {
-        final updatedList = [...startedJourneys, journeyId];
-        await _repository.updateUserStartedJourneys(currentUserUid, updatedList);
-        onUpdateStartedJourneys(updatedList);
+      if (!_startedJourneys.contains(journeyId)) {
+        _startedJourneys = [..._startedJourneys, journeyId];
+        await _repository.updateUserStartedJourneys(currentUserUid, _startedJourneys);
+        onUpdateStartedJourneys(_startedJourneys);
+        notifyListeners();
       }
 
       if (context.mounted) {
@@ -91,14 +105,26 @@ class JourneyViewModel extends ChangeNotifier {
       await loadJourneyData();
     } catch (e) {
       _setError('Error starting journey: $e');
+    } finally {
+      _setLoading(false);
     }
   }
 
   bool canNavigateToStep(CcViewUserStepsRow step, int stepIndex) {
     if (step.stepStatus == 'open') {
-      // First step or step that started more than 1 day ago
-      return step.stepNumber == 1 ||
-          (step.dateStarted != null && DateTime.now().difference(step.dateStarted!).inDays >= 1);
+      // First step is always accessible
+      if (step.stepNumber == 1) return true;
+
+      // Get configuration from user journey (comes from cc_journeys via VIEW)
+      final enableDateControl = _userJourney?.enableDateControl ?? true;
+      final daysToWait = _userJourney?.daysToWaitBetweenSteps ?? 1;
+
+      // If date control is disabled, all open steps are accessible
+      if (!enableDateControl) return true;
+
+      // If date control is enabled, check if enough days have passed
+      return step.dateStarted != null &&
+             DateTime.now().difference(step.dateStarted!).inDays >= daysToWait;
     } else if (step.stepStatus == 'completed') {
       return true;
     }

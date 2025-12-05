@@ -248,12 +248,18 @@ class _StepDetailsPageState extends State<StepDetailsPage> {
     StepDetailsViewModel viewModel,
     CcViewUserActivitiesRow activity,
   ) async {
+    // Captura o GoRouter antes da operação assíncrona para evitar
+    // usar um context desativado após o await
+    final router = GoRouter.of(context);
+
     await viewModel.handleActivityTap(
       context,
       activity,
       (routeName, params) {
+        if (!mounted) return;
+
         if (routeName == 'stepAudioPlayerPage') {
-          context.pushNamed(
+          router.pushNamed(
             StepAudioPlayerPage.routeName,
             queryParameters: {
               'stepAudioUrl': serializeParam(params['stepAudioUrl'], ParamType.String),
@@ -271,7 +277,7 @@ class _StepDetailsPageState extends State<StepDetailsPage> {
             },
           );
         } else if (routeName == 'stepTextViewPage') {
-          context.pushNamed(
+          router.pushNamed(
             StepTextViewPage.routeName,
             queryParameters: {
               'stepTextTitle': serializeParam(params['stepTextTitle'], ParamType.String),
@@ -286,7 +292,7 @@ class _StepDetailsPageState extends State<StepDetailsPage> {
             },
           );
         } else {
-          context.pushNamed(
+          router.pushNamed(
             StepJournalPage.routeName,
             queryParameters: {
               'activityRow': serializeParam(params['activityRow'], ParamType.SupabaseRow),

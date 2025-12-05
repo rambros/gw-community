@@ -191,6 +191,11 @@ class _JourneyStepDetailsPageState extends State<JourneyStepDetailsPage> {
   }
 
   Widget _buildStepsList(BuildContext context, JourneyViewModel viewModel) {
+    // Encontra o índice do primeiro step 'open' (step atual)
+    final currentStepIndex = viewModel.userSteps.indexWhere(
+      (s) => s.stepStatus == 'open',
+    );
+
     return ListView.separated(
       padding: EdgeInsets.zero,
       primary: false,
@@ -201,10 +206,12 @@ class _JourneyStepDetailsPageState extends State<JourneyStepDetailsPage> {
       itemBuilder: (context, index) {
         final step = viewModel.userSteps[index];
         final isLastStep = functions.isLastStep(index, viewModel.userJourney?.stepsTotal) == false;
+        final isCurrentStep = index == currentStepIndex;
 
         return JourneyStepItemWidget(
           stepRow: step,
           isLastStep: isLastStep,
+          isCurrentStep: isCurrentStep,
           onTap: () => _handleStepTap(context, viewModel, step),
         );
       },
