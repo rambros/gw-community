@@ -68,7 +68,7 @@ class StepTextViewPage extends StatelessWidget {
               color: AppTheme.of(context).secondary,
             ),
             child: Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 8.0),
+              padding: const EdgeInsetsDirectional.fromSTEB(24.0, 12.0, 24.0, 8.0),
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,

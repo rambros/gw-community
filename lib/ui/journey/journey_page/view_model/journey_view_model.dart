@@ -111,7 +111,17 @@ class JourneyViewModel extends ChangeNotifier {
   }
 
   bool canNavigateToStep(CcViewUserStepsRow step, int stepIndex) {
+    if (step.stepStatus == 'completed') {
+      return true;
+    }
+
     if (step.stepStatus == 'open') {
+      // Encontra o índice do primeiro step 'open' (step atual)
+      final currentStepIndex = _userSteps.indexWhere((s) => s.stepStatus == 'open');
+
+      // Só o step atual (primeiro open) pode ser acessado
+      if (stepIndex != currentStepIndex) return false;
+
       // First step is always accessible
       if (step.stepNumber == 1) return true;
 
@@ -119,15 +129,14 @@ class JourneyViewModel extends ChangeNotifier {
       final enableDateControl = _userJourney?.enableDateControl ?? true;
       final daysToWait = _userJourney?.daysToWaitBetweenSteps ?? 1;
 
-      // If date control is disabled, all open steps are accessible
+      // If date control is disabled, current open step is accessible
       if (!enableDateControl) return true;
 
       // If date control is enabled, check if enough days have passed
       return step.dateStarted != null &&
              DateTime.now().difference(step.dateStarted!).inDays >= daysToWait;
-    } else if (step.stepStatus == 'completed') {
-      return true;
     }
+
     return false;
   }
 

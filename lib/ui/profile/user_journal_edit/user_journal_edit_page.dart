@@ -42,6 +42,10 @@ class _UserJournalEditPageState extends State<UserJournalEditPage> {
       if (widget.userJournalEntryRow != null) {
         context.read<UserJournalEditViewModel>().setJournalEntry(widget.userJournalEntryRow!);
       }
+      // Posiciona o cursor no final do texto
+      _textController.selection = TextSelection.fromPosition(
+        TextPosition(offset: _textController.text.length),
+      );
     });
   }
 

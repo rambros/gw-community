@@ -2,6 +2,57 @@ import '/data/services/supabase/supabase.dart';
 import '/utils/flutter_flow_util.dart';
 
 class StepActivitiesRepository {
+  /// Syncs missing activities for a user step.
+  /// This is needed when activities are added to a step after the user
+  /// has already started the journey.
+  Future<void> syncMissingActivities(
+    String userId,
+    int userStepId,
+    int journeyStepId,
+  ) async {
+    // Get all step activities defined for this journey step
+    final stepActivities = await CcStepActivitiesTable().queryRows(
+      queryFn: (q) => q.eqOrNull('step_id', journeyStepId).order('order_in_step', ascending: true),
+    );
+
+    if (stepActivities.isEmpty) {
+      return;
+    }
+
+    // Get existing user activities for this step
+    final existingUserActivities = await CcUserActivitiesTable().queryRows(
+      queryFn: (q) => q.eqOrNull('user_step_id', userStepId).eqOrNull('user_id', userId),
+    );
+
+    // Find which step_activity_ids already have user_activities
+    final existingStepActivityIds = existingUserActivities
+        .map((ua) => ua.stepActivityId)
+        .whereType<int>()
+        .toSet();
+
+    // Create user_activities for missing step activities
+    final now = getCurrentTimestamp;
+    final nowIsoString = supaSerialize<DateTime>(now);
+    final newActivitiesPayload = <Map<String, dynamic>>[];
+
+    for (final activity in stepActivities) {
+      if (!existingStepActivityIds.contains(activity.id)) {
+        newActivitiesPayload.add({
+          'step_activity_id': activity.id,
+          'user_step_id': userStepId,
+          'user_id': userId,
+          'date_started': nowIsoString,
+          'activity_status': 'open',
+          'journal_saved': activity.journal,
+        });
+      }
+    }
+
+    if (newActivitiesPayload.isNotEmpty) {
+      await SupaFlow.client.from('cc_user_activities').insert(newActivitiesPayload);
+    }
+  }
+
   Future<List<CcViewUserActivitiesRow>> getUserActivities(
     String userId,
     int userStepId,

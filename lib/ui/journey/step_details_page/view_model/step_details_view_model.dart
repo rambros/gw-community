@@ -39,6 +39,15 @@ class StepDetailsViewModel extends ChangeNotifier {
         return;
       }
 
+      // Sync missing activities (for activities added after journey started)
+      if (userStepRow.journeyStepId != null) {
+        await _repository.syncMissingActivities(
+          currentUserUid,
+          userStepRow.id!,
+          userStepRow.journeyStepId!,
+        );
+      }
+
       final activities = await _repository.getUserActivities(
         currentUserUid,
         userStepRow.id!,
