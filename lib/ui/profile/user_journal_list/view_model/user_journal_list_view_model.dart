@@ -4,13 +4,13 @@ import '/data/services/supabase/supabase.dart';
 
 class UserJournalListViewModel extends ChangeNotifier {
   final UserProfileRepository _repository;
-  final String _currentUserUid;
 
   UserJournalListViewModel({
     required UserProfileRepository repository,
-    required String currentUserUid,
-  })  : _repository = repository,
-        _currentUserUid = currentUserUid;
+  }) : _repository = repository;
+
+  /// Gets the current user ID dynamically from Supabase auth
+  String get _currentUserUid => SupaFlow.client.auth.currentUser?.id ?? '';
 
   List<CcViewUserJournalRow> _journalEntries = [];
   List<CcViewUserJournalRow> get journalEntries => _journalEntries;

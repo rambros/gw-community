@@ -136,8 +136,7 @@ class ContentCard extends StatelessWidget {
                                     Expanded(
                                       child: Padding(
                                         padding: const EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 0.0),
-                                        child: SelectionArea(
-                                            child: Text(
+                                        child: Text(
                                           valueOrDefault<String>(
                                             contentRow.description,
                                             'description',
@@ -157,7 +156,7 @@ class ContentCard extends StatelessWidget {
                                                 fontWeight: FontWeight.w300,
                                                 fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                               ),
-                                        )),
+                                        ),
                                       ),
                                     ),
                                   ],

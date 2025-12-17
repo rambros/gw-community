@@ -13,8 +13,6 @@ import 'utils/internationalization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
-import '/utils/context_extensions.dart';
-
 // Repositories
 import '/data/repositories/auth_repository.dart';
 import '/data/repositories/auth_repository_impl.dart';
@@ -137,32 +135,27 @@ void main() async {
         ChangeNotifierProvider(
           create: (context) => SharingViewViewModel(
             repository: context.read<SharingRepository>(),
-            currentUserUid: context.currentUserIdOrEmpty,
             appState: context.read<FFAppState>(),
           ),
         ),
         ChangeNotifierProvider(
           create: (context) => UserProfileViewModel(
             repository: context.read<UserProfileRepository>(),
-            currentUserUid: context.currentUserIdOrEmpty,
           ),
         ),
         ChangeNotifierProvider(
           create: (context) => UserEditProfileViewModel(
             repository: context.read<UserProfileRepository>(),
-            currentUserUid: context.currentUserIdOrEmpty,
           ),
         ),
         ChangeNotifierProvider(
           create: (context) => UserCreateProfileViewModel(
             repository: context.read<UserProfileRepository>(),
-            currentUserUid: context.currentUserIdOrEmpty,
           ),
         ),
         ChangeNotifierProvider(
           create: (context) => UserJournalListViewModel(
             repository: context.read<UserProfileRepository>(),
-            currentUserUid: context.currentUserIdOrEmpty,
           ),
         ),
         ChangeNotifierProvider(
@@ -183,13 +176,11 @@ void main() async {
         ChangeNotifierProvider(
           create: (context) => UserJourneysViewModel(
             repository: context.read<UserProfileRepository>(),
-            currentUserUid: context.currentUserIdOrEmpty,
           ),
         ),
         ChangeNotifierProvider(
           create: (context) => HomeViewModel(
             repository: context.read<HomeRepository>(),
-            currentUserUid: context.currentUserIdOrEmpty,
           ),
         ),
         ChangeNotifierProvider(
@@ -203,7 +194,6 @@ void main() async {
         ChangeNotifierProvider(
           create: (context) => JourneysListViewModel(
             repository: context.read<JourneysRepository>(),
-            currentUserUid: context.currentUserIdOrEmpty,
           ),
         ),
       ],

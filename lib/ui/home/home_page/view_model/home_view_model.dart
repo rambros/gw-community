@@ -6,12 +6,13 @@ import '/utils/flutter_flow_util.dart';
 
 class HomeViewModel extends ChangeNotifier {
   final HomeRepository _repository;
-  final String currentUserUid;
 
   HomeViewModel({
     required HomeRepository repository,
-    required this.currentUserUid,
   }) : _repository = repository;
+
+  /// Gets the current user ID dynamically from Supabase auth
+  String get currentUserUid => SupaFlow.client.auth.currentUser?.id ?? '';
 
   // ========== STATE ==========
 

@@ -16,10 +16,10 @@ class UserJourneysViewModel extends ChangeNotifier {
 
   UserJourneysViewModel({
     required UserProfileRepository repository,
-    required this.currentUserUid,
   }) : _repository = repository;
 
-  final String currentUserUid;
+  /// Gets the current user ID dynamically from Supabase auth
+  String get currentUserUid => SupaFlow.client.auth.currentUser?.id ?? '';
 
   Future<void> loadJourneys() async {
     _isLoading = true;

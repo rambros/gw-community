@@ -1,5 +1,5 @@
 {
-  "debug.toolBarLocation": "docked",
+  "debug.toolBarLocation": "floating",
   "debug.openDebug": "openOnDebugBreak",
   "dart.debugExternalPackageLibraries": true,
   "dart.debugSdkLibraries": false,

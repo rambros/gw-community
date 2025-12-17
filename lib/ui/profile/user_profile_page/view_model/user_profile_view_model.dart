@@ -5,12 +5,13 @@ import '/data/services/supabase/supabase.dart';
 
 class UserProfileViewModel extends ChangeNotifier {
   final UserProfileRepository _repository;
-  final String currentUserUid;
 
   UserProfileViewModel({
     required UserProfileRepository repository,
-    required this.currentUserUid,
   }) : _repository = repository;
+
+  /// Gets the current user ID dynamically from Supabase auth
+  String get currentUserUid => SupaFlow.client.auth.currentUser?.id ?? '';
 
   // ========== STATE ==========
 

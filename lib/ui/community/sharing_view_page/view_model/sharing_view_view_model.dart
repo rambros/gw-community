@@ -8,14 +8,15 @@ import '/app_state.dart';
 /// Segue padrão MVVM estilo Compass
 class SharingViewViewModel extends ChangeNotifier {
   final SharingRepository _repository;
-  final String currentUserUid;
   final FFAppState appState;
 
   SharingViewViewModel({
     required SharingRepository repository,
-    required this.currentUserUid,
     required this.appState,
   }) : _repository = repository;
+
+  /// Gets the current user ID dynamically from Supabase auth
+  String get currentUserUid => SupaFlow.client.auth.currentUser?.id ?? '';
 
   // ========== STATE ==========
 

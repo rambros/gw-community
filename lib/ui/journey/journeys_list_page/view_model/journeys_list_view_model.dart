@@ -4,14 +4,15 @@ import '/data/services/supabase/supabase.dart';
 
 class JourneysListViewModel extends ChangeNotifier {
   final JourneysRepository _repository;
-  final String currentUserUid;
 
   JourneysListViewModel({
     required JourneysRepository repository,
-    required this.currentUserUid,
   }) : _repository = repository {
     loadData();
   }
+
+  /// Gets the current user ID dynamically from Supabase auth
+  String get currentUserUid => SupaFlow.client.auth.currentUser?.id ?? '';
 
   // ========== STATE ==========
 

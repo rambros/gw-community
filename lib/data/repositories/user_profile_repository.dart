@@ -12,10 +12,36 @@ class UserProfileRepository {
   /// Resets the user's journey.
   /// Deletes the journey with ID 1 for the user and updates the user's started journeys list.
   Future<void> resetJourney(String userId, List<int> currentStartedJourneys) async {
-    // Delete on cascade: user_journeys, user_activities, user_steps
-    await CcUserJourneysTable().delete(
-      matchingRows: (rows) => rows.eqOrNull('user_id', userId).eqOrNull('journey_id', 1),
+    // First, get the user_journey record to find its ID
+    final userJourneys = await CcUserJourneysTable().queryRows(
+      queryFn: (q) => q.eq('user_id', userId).eq('journey_id', 1),
     );
+
+    if (userJourneys.isNotEmpty) {
+      final userJourneyId = userJourneys.first.id;
+
+      // Get all user_steps for this journey to delete their activities
+      final userSteps = await CcUserStepsTable().queryRows(
+        queryFn: (q) => q.eq('user_journey_id', userJourneyId),
+      );
+
+      // Delete user_activities for each user_step
+      for (final step in userSteps) {
+        await CcUserActivitiesTable().delete(
+          matchingRows: (rows) => rows.eq('user_step_id', step.id),
+        );
+      }
+
+      // Delete user_steps for this journey
+      await CcUserStepsTable().delete(
+        matchingRows: (rows) => rows.eq('user_journey_id', userJourneyId),
+      );
+
+      // Delete user_journey
+      await CcUserJourneysTable().delete(
+        matchingRows: (rows) => rows.eq('id', userJourneyId),
+      );
+    }
 
     // Update user's started_journeys list
     final updatedJourneys = currentStartedJourneys.where((e) => e != 1).toList();
@@ -24,7 +50,7 @@ class UserProfileRepository {
       data: {
         'started_journeys': updatedJourneys,
       },
-      matchingRows: (rows) => rows.eqOrNull('id', userId),
+      matchingRows: (rows) => rows.eq('id', userId),
     );
   }
 

@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import '/data/repositories/user_profile_repository.dart';
+import '/data/services/supabase/supabase.dart';
 import '/app_state.dart';
 import '/index.dart';
 import 'package:go_router/go_router.dart';
 
 class UserCreateProfileViewModel extends ChangeNotifier {
   final UserProfileRepository _repository;
-  final String currentUserUid;
 
   UserCreateProfileViewModel({
     required UserProfileRepository repository,
-    required this.currentUserUid,
   }) : _repository = repository;
+
+  /// Gets the current user ID dynamically from Supabase auth
+  String get currentUserUid => SupaFlow.client.auth.currentUser?.id ?? '';
 
   // ========== STATE ==========
 

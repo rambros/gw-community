@@ -41,15 +41,15 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
           key: scaffoldKey,
           backgroundColor: AppTheme.of(context).primaryBackground,
           appBar: AppBar(
-            backgroundColor: AppTheme.of(context).primaryBackground,
+            backgroundColor: AppTheme.of(context).primary,
             automaticallyImplyLeading: false,
             leading: InkWell(
               onTap: () async {
                 context.pop();
               },
-              child: Icon(
+              child: const Icon(
                 Icons.arrow_back_rounded,
-                color: AppTheme.of(context).secondaryText,
+                color: Colors.white,
                 size: 24.0,
               ),
             ),
@@ -60,14 +60,14 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                       fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
                       fontStyle: AppTheme.of(context).headlineMedium.fontStyle,
                     ),
-                    color: AppTheme.of(context).secondaryText,
+                    color: Colors.white,
                     fontSize: 22.0,
                     letterSpacing: 0.0,
                   ),
             ),
             actions: const [],
-            centerTitle: false,
-            elevation: 0.0,
+            centerTitle: true,
+            elevation: 4.0,
           ),
           body: Container(
             width: double.infinity,
