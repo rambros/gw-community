@@ -315,8 +315,8 @@ dynamic deserializeParam<T>(
             return LocalRow(data);
           case == CcViewNotificationsUsersRow:
             return CcViewNotificationsUsersRow(data);
-          case == CcUsersRow:
-            return CcUsersRow(data);
+          case == CcMembersRow:
+            return CcMembersRow(data);
           default:
             return null;
         }

@@ -39,8 +39,8 @@ class SharingAddViewModel extends ChangeNotifier {
   String get visibility => _visibility;
 
   // User data
-  CcUsersRow? _currentUser;
-  CcUsersRow? get currentUser => _currentUser;
+  CcMembersRow? _currentUser;
+  CcMembersRow? get currentUser => _currentUser;
 
   // Loading state
   bool _isLoading = false;

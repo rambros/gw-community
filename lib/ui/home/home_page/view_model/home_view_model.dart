@@ -21,8 +21,8 @@ class HomeViewModel extends ChangeNotifier {
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
 
-  CcUsersRow? _userProfile;
-  CcUsersRow? get userProfile => _userProfile;
+  CcMembersRow? _userProfile;
+  CcMembersRow? get userProfile => _userProfile;
 
   List<CcUserJourneysRow> _userJourneys = [];
   List<CcUserJourneysRow> get userJourneys => _userJourneys;

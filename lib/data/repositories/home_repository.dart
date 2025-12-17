@@ -2,8 +2,8 @@ import '/data/services/supabase/supabase.dart';
 
 class HomeRepository {
   /// Fetches the user profile by ID
-  Future<CcUsersRow?> getUserProfile(String userId) async {
-    final rows = await CcUsersTable().queryRows(
+  Future<CcMembersRow?> getUserProfile(String userId) async {
+    final rows = await CcMembersTable().queryRows(
       queryFn: (q) => q.eqOrNull('id', userId),
     );
     return rows.isNotEmpty ? rows.first : null;

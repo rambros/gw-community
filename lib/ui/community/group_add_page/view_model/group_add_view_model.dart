@@ -32,8 +32,8 @@ class GroupAddViewModel extends ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
-  List<CcUsersRow> _availableManagers = [];
-  List<CcUsersRow> get availableManagers => _availableManagers;
+  List<CcMembersRow> _availableManagers = [];
+  List<CcMembersRow> get availableManagers => _availableManagers;
 
   // Initialization
   Future<void> init() async {

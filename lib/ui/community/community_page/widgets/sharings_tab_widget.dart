@@ -31,7 +31,7 @@ class SharingsTabWidget extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsetsDirectional.fromSTEB(8.0, 8.0, 8.0, 0.0),
                   child: Text(
-                    'Sharing experiences ',
+                    'Experiences',
                     style: AppTheme.of(context).titleSmall.override(
                           font: GoogleFonts.lexendDeca(
                             fontWeight: FontWeight.w500,
@@ -59,7 +59,7 @@ class SharingsTabWidget extends StatelessWidget {
                         },
                       );
                     },
-                    text: 'New sharing',
+                    text: 'New experience',
                     options: FFButtonOptions(
                       height: 40.0,
                       padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
@@ -127,7 +127,7 @@ class SharingsTabWidget extends StatelessWidget {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(
-                              'Sharing deleted with success',
+                              'Experience deleted with success',
                               style: TextStyle(
                                 color: AppTheme.of(context).primaryText,
                               ),

@@ -227,7 +227,7 @@ class GroupDetailsPageView extends StatelessWidget {
                         unselectedLabelStyle: const TextStyle(),
                         indicatorColor: AppTheme.of(context).secondary,
                         tabs: const [
-                          Tab(text: 'Share'),
+                          Tab(text: 'Experiences'),
                           Tab(text: 'Events'),
                           Tab(text: 'Notifications'),
                           Tab(text: 'About'),

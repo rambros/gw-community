@@ -158,11 +158,11 @@ class FFAppState extends ChangeNotifier {
   void clearJourneyCache() => _journeyManager.clear();
   void clearJourneyCacheKey(String? uniqueKey) => _journeyManager.clearRequest(uniqueKey);
 
-  final _userRowManager = FutureRequestManager<List<CcUsersRow>>();
-  Future<List<CcUsersRow>> userRow({
+  final _userRowManager = FutureRequestManager<List<CcMembersRow>>();
+  Future<List<CcMembersRow>> userRow({
     String? uniqueQueryKey,
     bool? overrideCache,
-    required Future<List<CcUsersRow>> Function() requestFn,
+    required Future<List<CcMembersRow>> Function() requestFn,
   }) =>
       _userRowManager.performRequest(
         uniqueQueryKey: uniqueQueryKey,

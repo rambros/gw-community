@@ -125,30 +125,30 @@ class GroupRepository {
   }
 
   /// Fetches available users for selection (e.g. for managers)
-  Future<List<CcUsersRow>> getAvailableUsers() async {
-    final result = await CcUsersTable().queryRows(
+  Future<List<CcMembersRow>> getAvailableUsers() async {
+    final result = await CcMembersTable().queryRows(
       queryFn: (q) => q.order('full_name', ascending: true),
     );
     return result;
   }
 
   /// Fetches users with specific role (e.g. Group Manager)
-  Future<List<CcUsersRow>> getGroupManagers() async {
-    final result = await CcUsersTable().queryRows(
+  Future<List<CcMembersRow>> getGroupManagers() async {
+    final result = await CcMembersTable().queryRows(
       queryFn: (q) => q.containsOrNull('user_role', '{Group Manager}').order('full_name', ascending: true),
     );
     return result;
   }
 
   /// Fetches users who are members of a group
-  Future<List<CcUsersRow>> getGroupMembersAsUsers(int groupId) async {
+  Future<List<CcMembersRow>> getGroupMembersAsUsers(int groupId) async {
     final members = await getGroupMembers(groupId);
     if (members.isEmpty) return [];
 
     final userIds = members.map((m) => m.userId).where((id) => id != null).cast<String>().toList();
     if (userIds.isEmpty) return [];
 
-    final result = await CcUsersTable().queryRows(
+    final result = await CcMembersTable().queryRows(
       queryFn: (q) => q.filter('id', 'in', userIds).order('full_name', ascending: true),
     );
     return result;

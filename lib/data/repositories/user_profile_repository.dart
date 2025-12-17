@@ -2,8 +2,8 @@ import '/data/services/supabase/supabase.dart';
 
 class UserProfileRepository {
   /// Fetches the user profile by ID.
-  Future<CcUsersRow?> getUserProfile(String userId) async {
-    final result = await CcUsersTable().querySingleRow(
+  Future<CcMembersRow?> getUserProfile(String userId) async {
+    final result = await CcMembersTable().querySingleRow(
       queryFn: (q) => q.eqOrNull('id', userId),
     );
     return result.isNotEmpty ? result.first : null;
@@ -20,7 +20,7 @@ class UserProfileRepository {
     // Update user's started_journeys list
     final updatedJourneys = currentStartedJourneys.where((e) => e != 1).toList();
 
-    await CcUsersTable().update(
+    await CcMembersTable().update(
       data: {
         'started_journeys': updatedJourneys,
       },
@@ -30,7 +30,7 @@ class UserProfileRepository {
 
   /// Updates the user profile.
   Future<void> updateProfile(String userId, Map<String, dynamic> data) async {
-    await CcUsersTable().update(
+    await CcMembersTable().update(
       data: data,
       matchingRows: (rows) => rows.eqOrNull('id', userId),
     );

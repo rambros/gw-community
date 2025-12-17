@@ -39,7 +39,7 @@ class JourneysRepository {
   }
 
   Future<void> updateUserStartedJourneys(String userId, List<int> startedJourneys) async {
-    await CcUsersTable().update(
+    await CcMembersTable().update(
       data: {
         'started_journeys': startedJourneys,
       },

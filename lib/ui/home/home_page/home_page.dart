@@ -82,7 +82,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
 
-                    _buildSectionTitle(context, 'Upcomming Events'),
+                    _buildSectionTitle(context, 'Upcoming Events'),
 
                     // Events List
                     ListView.builder(

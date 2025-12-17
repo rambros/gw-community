@@ -83,7 +83,7 @@ class _SharingAddPageContent extends StatelessWidget {
         onPressed: () => context.pop(),
       ),
       title: Text(
-        'New Sharing',
+        'New Experience',
         style: AppTheme.of(context).titleLarge.override(
               font: GoogleFonts.poppins(
                 fontWeight: AppTheme.of(context).titleLarge.fontWeight,
@@ -429,12 +429,12 @@ class _SharingAddPageContent extends StatelessWidget {
               ),
             ),
           ),
-          // Botão Add Sharing
+          // Botão Add Experience
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
             child: FFButtonWidget(
               onPressed: viewModel.isSaving || !viewModel.canSave() ? null : () => viewModel.saveCommand(context),
-              text: viewModel.isSaving ? 'Saving...' : 'Add Sharing',
+              text: viewModel.isSaving ? 'Saving...' : 'Add Experience',
               options: FFButtonOptions(
                 height: 40.0,
                 padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),

@@ -28,8 +28,8 @@ class GroupDetailsViewModel extends ChangeNotifier {
   Stream<List<CcViewNotificationsUsersRow>>? _notificationsStream;
 
   // Data for About tab
-  List<CcUsersRow> _members = [];
-  List<CcUsersRow> get members => _members;
+  List<CcMembersRow> _members = [];
+  List<CcMembersRow> get members => _members;
   bool _isLoadingMembers = false;
   bool get isLoadingMembers => _isLoadingMembers;
 

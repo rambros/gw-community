@@ -47,12 +47,12 @@ class SharingViewViewModel extends ChangeNotifier {
       _comments = commentsResult;
 
       if (_sharing == null) {
-        _setError('Sharing não encontrado');
+        _setError('Experience not found');
       }
 
       notifyListeners();
     } catch (e) {
-      _setError('Erro ao carregar sharing: $e');
+      _setError('Error loading experience: $e');
     } finally {
       _setLoading(false);
     }
@@ -64,7 +64,7 @@ class SharingViewViewModel extends ChangeNotifier {
   /// Navega de volta para a página de comunidade após deletar
   Future<void> deleteSharingCommand(BuildContext context, int sharingId) async {
     if (!canDelete()) {
-      _setError('Você não tem permissão para deletar este sharing');
+      _setError('You do not have permission to delete this experience');
       return;
     }
 
@@ -75,7 +75,7 @@ class SharingViewViewModel extends ChangeNotifier {
         Navigator.pop(context);
       }
     } catch (e) {
-      _setError('Erro ao deletar sharing: $e');
+      _setError('Error deleting experience: $e');
     }
   }
 
@@ -83,7 +83,7 @@ class SharingViewViewModel extends ChangeNotifier {
   /// Quando locked, usuários não podem comentar
   Future<void> toggleLockCommand(int sharingId) async {
     if (!canLock()) {
-      _setError('Você não tem permissão para bloquear este sharing');
+      _setError('You do not have permission to lock this experience');
       return;
     }
 
@@ -95,7 +95,7 @@ class SharingViewViewModel extends ChangeNotifier {
       // Recarregar sharing para obter estado atualizado
       await loadSharing(sharingId);
     } catch (e) {
-      _setError('Erro ao alterar bloqueio: $e');
+      _setError('Error toggling lock: $e');
     }
   }
 
@@ -109,7 +109,7 @@ class SharingViewViewModel extends ChangeNotifier {
       _comments = await _repository.getComments(sharingId);
       notifyListeners();
     } catch (e) {
-      _setError('Erro ao deletar comentário: $e');
+      _setError('Error deleting comment: $e');
     }
   }
 
@@ -124,7 +124,7 @@ class SharingViewViewModel extends ChangeNotifier {
 
       notifyListeners();
     } catch (e) {
-      _setError('Erro ao recarregar comentários: $e');
+      _setError('Error reloading comments: $e');
     }
   }
 

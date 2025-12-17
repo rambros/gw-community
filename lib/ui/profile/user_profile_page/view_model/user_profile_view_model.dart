@@ -20,8 +20,8 @@ class UserProfileViewModel extends ChangeNotifier {
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
 
-  CcUsersRow? _userProfile;
-  CcUsersRow? get userProfile => _userProfile;
+  CcMembersRow? _userProfile;
+  CcMembersRow? get userProfile => _userProfile;
 
   // ========== COMMANDS ==========
 
@@ -34,7 +34,7 @@ class UserProfileViewModel extends ChangeNotifier {
       _userProfile = await _repository.getUserProfile(currentUserUid);
       notifyListeners();
     } catch (e) {
-      _setError('Erro ao carregar perfil: $e');
+      _setError('Error loading profile: $e');
     } finally {
       _setLoading(false);
     }
@@ -48,7 +48,7 @@ class UserProfileViewModel extends ChangeNotifier {
     _clearError();
 
     try {
-      // The original code used userProfilePageCcUsersRow!.startedJourneys.toList()
+      // The original code used userProfilePageCcMembersRow!.startedJourneys.toList()
       // We assume _userProfile is loaded.
       final currentStartedJourneys = _userProfile!.startedJourneys;
 
@@ -57,7 +57,7 @@ class UserProfileViewModel extends ChangeNotifier {
       // Auth logout logic from original code
       await _signOut();
     } catch (e) {
-      _setError('Erro ao resetar jornada: $e');
+      _setError('Error resetting journey: $e');
       rethrow; // Allow UI to handle specific navigation/feedback if needed, or just catch here.
     } finally {
       _setLoading(false);
@@ -73,7 +73,7 @@ class UserProfileViewModel extends ChangeNotifier {
         FFAppState().onboardingDone = false;
       });
     } catch (e) {
-      _setError('Erro ao resetar onboarding: $e');
+      _setError('Error resetting onboarding: $e');
       rethrow;
     }
   }
@@ -86,7 +86,7 @@ class UserProfileViewModel extends ChangeNotifier {
     try {
       await _signOut();
     } catch (e) {
-      _setError('Erro ao sair: $e');
+      _setError('Error signing out: $e');
       rethrow;
     } finally {
       _setLoading(false);

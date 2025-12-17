@@ -30,7 +30,7 @@ class SharingEditPage extends StatelessWidget {
     if (sharingRow == null) {
       return const Scaffold(
         body: Center(
-          child: Text('Sharing não encontrado'),
+          child: Text('Experience not found'),
         ),
       );
     }
@@ -83,7 +83,7 @@ class _SharingEditPageContent extends StatelessWidget {
         onPressed: () => context.pop(),
       ),
       title: Text(
-        'Edit Sharing',
+        'Edit Experience',
         style: AppTheme.of(context).titleLarge.override(
               font: GoogleFonts.poppins(
                 fontWeight: AppTheme.of(context).titleLarge.fontWeight,
@@ -194,7 +194,7 @@ class _SharingEditPageContent extends StatelessWidget {
     }
 
     return Text(
-      isEveryone ? 'Sharing for everyone' : 'Sharing only for this group',
+      isEveryone ? 'Visible to everyone' : 'Visible only for this group',
       style: AppTheme.of(context).bodyMedium.override(
             font: GoogleFonts.lexendDeca(),
             color: AppTheme.of(context).primary,
@@ -431,7 +431,7 @@ class _SharingEditPageContent extends StatelessWidget {
             padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
             child: FFButtonWidget(
               onPressed: viewModel.isSaving || !viewModel.canSave() ? null : () => viewModel.saveCommand(context),
-              text: viewModel.isSaving ? 'Saving...' : 'Save Sharing',
+              text: viewModel.isSaving ? 'Saving...' : 'Save Experience',
               options: FFButtonOptions(
                 height: 40.0,
                 padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),

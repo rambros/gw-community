@@ -53,7 +53,7 @@ class SharingEditViewModel extends ChangeNotifier {
   /// Salva as alterações do sharing
   Future<void> saveCommand(BuildContext context) async {
     if (!canSave()) {
-      _setError('Por favor, preencha todos os campos obrigatórios');
+      _setError('Please fill in all required fields');
       return;
     }
 
@@ -69,7 +69,7 @@ class SharingEditViewModel extends ChangeNotifier {
         privacy: originalSharing.privacy ?? 'public',
       );
 
-      _setSuccess('Sharing atualizado com sucesso');
+      _setSuccess('Experience updated successfully');
 
       // Aguardar um pouco para mostrar mensagem
       await Future.delayed(const Duration(milliseconds: 500));
@@ -87,7 +87,7 @@ class SharingEditViewModel extends ChangeNotifier {
         );
       }
     } catch (e) {
-      _setError('Erro ao salvar sharing: $e');
+      _setError('Error saving experience: $e');
     } finally {
       _setSaving(false);
     }
@@ -123,7 +123,7 @@ class SharingEditViewModel extends ChangeNotifier {
   /// Verifica se o título é válido (não vazio)
   String? validateTitle(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return 'Título é obrigatório';
+      return 'Title is required';
     }
     return null;
   }
@@ -131,7 +131,7 @@ class SharingEditViewModel extends ChangeNotifier {
   /// Verifica se o texto é válido (não vazio)
   String? validateText(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return 'Texto é obrigatório';
+      return 'Text is required';
     }
     return null;
   }

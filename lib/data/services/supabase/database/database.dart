@@ -55,4 +55,4 @@ export 'tables/cc_view_group_facilitators.dart';
 export 'tables/user_recording_event_counts.dart';
 export 'tables/local.dart';
 export 'tables/cc_view_notifications_users.dart';
-export 'tables/cc_users.dart';
+export 'tables/cc_members.dart';

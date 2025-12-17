@@ -89,7 +89,7 @@ class _SharingViewPageState extends State<SharingViewPage> {
         },
       ),
       title: Text(
-        'Sharing',
+        'Experience',
         style: AppTheme.of(context).titleLarge.override(
               font: GoogleFonts.poppins(
                 fontWeight: AppTheme.of(context).titleLarge.fontWeight,
@@ -144,7 +144,7 @@ class _SharingViewPageState extends State<SharingViewPage> {
     if (viewModel.sharing == null) {
       return Center(
         child: Text(
-          'Sharing não encontrado',
+          'Experience not found',
           style: AppTheme.of(context).bodyMedium.override(
                 font: GoogleFonts.lexendDeca(),
                 letterSpacing: 0.0,
@@ -230,7 +230,7 @@ class _SharingViewPageState extends State<SharingViewPage> {
       return Padding(
         padding: const EdgeInsets.all(16.0),
         child: Text(
-          'Nenhum comentário ainda',
+          'No comments yet',
           style: AppTheme.of(context).bodyMedium.override(
                 font: GoogleFonts.lexendDeca(),
                 letterSpacing: 0.0,
@@ -314,8 +314,8 @@ class _SharingViewPageState extends State<SharingViewPage> {
           builder: (alertDialogContext) {
             return WebViewAware(
               child: AlertDialog(
-                title: const Text('Deletion of Sharing'),
-                content: const Text('Confirm deletion of this sharing?'),
+                title: const Text('Deletion of Experience'),
+                content: const Text('Confirm deletion of this experience?'),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.pop(alertDialogContext, false),

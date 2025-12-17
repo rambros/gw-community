@@ -1,18 +1,18 @@
 import '../database.dart';
 
-class CcUsersTable extends SupabaseTable<CcUsersRow> {
+class CcMembersTable extends SupabaseTable<CcMembersRow> {
   @override
-  String get tableName => 'cc_users';
+  String get tableName => 'cc_members';
 
   @override
-  CcUsersRow createRow(Map<String, dynamic> data) => CcUsersRow(data);
+  CcMembersRow createRow(Map<String, dynamic> data) => CcMembersRow(data);
 }
 
-class CcUsersRow extends SupabaseDataRow {
-  CcUsersRow(super.data);
+class CcMembersRow extends SupabaseDataRow {
+  CcMembersRow(super.data);
 
   @override
-  SupabaseTable get table => CcUsersTable();
+  SupabaseTable get table => CcMembersTable();
 
   String get id => getField<String>('id')!;
   set id(String value) => setField<String>('id', value);

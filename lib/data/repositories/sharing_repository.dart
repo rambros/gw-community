@@ -141,8 +141,8 @@ class SharingRepository {
   /// Busca informações do usuário por ID
   ///
   /// Retorna null se o usuário não for encontrado
-  Future<CcUsersRow?> getUserById(String userId) async {
-    final result = await CcUsersTable().querySingleRow(
+  Future<CcMembersRow?> getUserById(String userId) async {
+    final result = await CcMembersTable().querySingleRow(
       queryFn: (q) => q.eqOrNull('id', userId),
     );
     return result.isNotEmpty ? result.first : null;

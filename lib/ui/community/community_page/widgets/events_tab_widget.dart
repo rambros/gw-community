@@ -86,7 +86,7 @@ class _EventsTabWidgetState extends State<EventsTabWidget> {
                               hoverColor: Colors.transparent,
                               highlightColor: Colors.transparent,
                               onTap: () async {
-                                FFAppState().typeSelectedEvent = 'upcomming';
+                                FFAppState().typeSelectedEvent = 'upcoming';
                                 safeSetState(() {});
                               },
                               child: Text(

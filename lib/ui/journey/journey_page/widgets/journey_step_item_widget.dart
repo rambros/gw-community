@@ -52,19 +52,17 @@ class JourneyStepItemWidget extends StatelessWidget {
                         ),
                       ),
                     // Step indicator on top
-                    Padding(
-                      padding: const EdgeInsets.only(top: 0.0),
-                      child: _buildStepIndicator(context),
-                    ),
+                    _buildStepIndicator(context),
                   ],
                 ),
               ),
               // Content column
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 12.0),
+                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
                   child: Column(
-                    mainAxisSize: MainAxisSize.min,
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(

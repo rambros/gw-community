@@ -44,7 +44,7 @@ class UserEditProfileViewModel extends ChangeNotifier {
       }
       notifyListeners();
     } catch (e) {
-      _setError('Erro ao carregar perfil: $e');
+      _setError('Error loading profile: $e');
     } finally {
       _setLoading(false);
     }
@@ -91,7 +91,7 @@ class UserEditProfileViewModel extends ChangeNotifier {
         Navigator.pop(context);
       }
     } catch (e) {
-      _setError('Erro ao salvar perfil: $e');
+      _setError('Error saving profile: $e');
     } finally {
       _setLoading(false);
     }

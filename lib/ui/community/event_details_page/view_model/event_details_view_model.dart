@@ -23,13 +23,13 @@ class EventDetailsViewModel extends ChangeNotifier {
 
   int? _eventId;
   CcEventsRow? _event;
-  List<CcUsersRow> _participants = [];
+  List<CcMembersRow> _participants = [];
   bool _isLoading = false;
   bool _isActionInProgress = false;
   String? _errorMessage;
 
   CcEventsRow? get event => _event;
-  List<CcUsersRow> get participants => _participants;
+  List<CcMembersRow> get participants => _participants;
   bool get isLoading => _isLoading;
   bool get isActionInProgress => _isActionInProgress;
   String? get errorMessage => _errorMessage;

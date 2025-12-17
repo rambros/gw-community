@@ -128,7 +128,7 @@ class _CommunityPageState extends State<CommunityPage> with TickerProviderStateM
                             labelPadding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
                             tabs: const [
                               Tab(
-                                text: 'Sharings',
+                                text: 'Experiences',
                               ),
 
                               // Manage groups that are obtained by an action when user click on groups tab

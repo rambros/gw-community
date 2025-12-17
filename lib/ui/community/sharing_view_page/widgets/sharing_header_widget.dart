@@ -79,7 +79,7 @@ class SharingHeaderWidget extends StatelessWidget {
 
   Widget _buildVisibilityText(BuildContext context) {
     final isEveryone = sharing.visibility == 'everyone';
-    final text = isEveryone ? 'Sharing for everyone' : 'Sharing only for this group';
+    final text = isEveryone ? 'Visible to everyone' : 'Visible only for this group';
 
     return Text(
       text,

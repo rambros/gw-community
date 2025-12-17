@@ -28,8 +28,8 @@ class AddNotificationViewModel extends ChangeNotifier {
   String _visibility = 'group_only';
   String get visibility => _visibility;
 
-  CcUsersRow? _currentUser;
-  CcUsersRow? get currentUser => _currentUser;
+  CcMembersRow? _currentUser;
+  CcMembersRow? get currentUser => _currentUser;
 
   bool _isLoadingUser = false;
   bool get isLoadingUser => _isLoadingUser;

@@ -10,7 +10,7 @@ class EventRepository {
     return result.isNotEmpty ? result.first : null;
   }
 
-  Future<List<CcUsersRow>> getParticipants(int eventId) async {
+  Future<List<CcMembersRow>> getParticipants(int eventId) async {
     final response = await SupaFlow.client.rpc(
       'get_list_participants',
       params: {
@@ -19,7 +19,7 @@ class EventRepository {
     );
 
     if (response is List) {
-      return response.map((row) => CcUsersRow(row as Map<String, dynamic>)).toList();
+      return response.map((row) => CcMembersRow(row as Map<String, dynamic>)).toList();
     }
     return [];
   }
