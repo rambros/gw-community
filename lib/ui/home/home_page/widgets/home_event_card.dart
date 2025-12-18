@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import '/ui/core/themes/app_theme.dart';
 import '/utils/flutter_flow_util.dart';
@@ -86,9 +85,7 @@ class HomeEventCard extends StatelessWidget {
                                 Text(
                                   'from  Good Wishes Team',
                                   style: AppTheme.of(context).titleMedium.override(
-                                        font: GoogleFonts.lexendDeca(
-                                          fontWeight: FontWeight.w300,
-                                        ),
+                                        fontWeight: FontWeight.w300,
                                         fontSize: 12.0,
                                       ),
                                 ),
@@ -106,9 +103,6 @@ class HomeEventCard extends StatelessWidget {
                                     ),
                                     minFontSize: 12.0,
                                     style: AppTheme.of(context).titleMedium.override(
-                                          font: GoogleFonts.lexendDeca(
-                                            fontWeight: FontWeight.w500,
-                                          ),
                                           color: AppTheme.of(context).secondary,
                                           fontSize: 18.0,
                                         ),
@@ -127,9 +121,8 @@ class HomeEventCard extends StatelessWidget {
                                       eventRow.eventDate,
                                       locale: FFLocalizations.of(context).languageCode,
                                     ),
-                                    style: GoogleFonts.lexendDeca(
+                                    style: AppTheme.of(context).bodySmall.override(
                                       color: AppTheme.of(context).secondary,
-                                      fontWeight: FontWeight.normal,
                                       fontSize: 12.0,
                                     ),
                                   ),

@@ -75,10 +75,10 @@ class HomeViewModel extends ChangeNotifier {
     // "FFAppState().loginUser = LoginUserStruct(...)"
     if (_userProfile != null) {
       FFAppState().loginUser = LoginUserStruct(
-        fullName: _userProfile?.fullName,
+        fullName: _userProfile?.displayName,
         email: _userProfile?.email,
         userId: _userProfile?.id,
-        roles: _userProfile?.userRole,
+        roles: _userProfile?.userRole ?? [],
         displayName: _userProfile?.displayName,
         photoUrl: _userProfile?.photoUrl == null || _userProfile?.photoUrl == '' ? '' : _userProfile?.photoUrl,
         firstName: _userProfile?.firstName,

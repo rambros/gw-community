@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '/ui/core/themes/app_theme.dart';
+import '/ui/journey/themes/journey_theme_extension.dart';
 import '/utils/flutter_flow_util.dart';
 import '/data/services/supabase/supabase.dart';
 import '/data/repositories/journeys_repository.dart';
@@ -72,16 +72,8 @@ class _JourneyPageState extends State<JourneyPage> {
           automaticallyImplyLeading: false,
           title: Text(
             'Journey',
-            style: AppTheme.of(context).bodyMedium.override(
-                  font: GoogleFonts.lexendDeca(
-                    fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                    fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                  ),
+            style: AppTheme.of(context).journey.pageTitle.override(
                   color: Colors.white,
-                  fontSize: 20.0,
-                  letterSpacing: 0.0,
-                  fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                  fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                 ),
           ),
           actions: const [],
@@ -180,16 +172,8 @@ class _JourneyPageState extends State<JourneyPage> {
                       child: Text(
                         'Welcome back, ${context.read<FFAppState>().loginUser.firstName}',
                         textAlign: TextAlign.center,
-                        style: AppTheme.of(context).bodyMedium.override(
-                              font: GoogleFonts.lexendDeca(
-                                fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                                fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                              ),
+                        style: AppTheme.of(context).journey.bodyText.override(
                               color: AppTheme.of(context).tertiary,
-                              fontSize: 16.0,
-                              letterSpacing: 0.0,
-                              fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                              fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                             ),
                       ),
                     ),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '/ui/core/themes/app_theme.dart';
+import '/ui/journey/themes/journey_theme_extension.dart';
 import '/utils/flutter_flow_util.dart';
 import '/ui/core/ui/flutter_flow_icon_button.dart';
 import '/data/services/supabase/supabase.dart';
@@ -91,16 +91,8 @@ class _StepDetailsPageState extends State<StepDetailsPage> {
           ),
           title: Text(
             'Step ${widget.userStepRow?.stepNumber?.toString()}',
-            style: AppTheme.of(context).bodyMedium.override(
-                  font: GoogleFonts.lexendDeca(
-                    fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                    fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                  ),
+            style: AppTheme.of(context).journey.pageTitle.override(
                   color: Colors.white,
-                  fontSize: 20.0,
-                  letterSpacing: 0.0,
-                  fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                  fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                 ),
           ),
           actions: const [],
@@ -138,16 +130,8 @@ class _StepDetailsPageState extends State<StepDetailsPage> {
                         child: Text(
                           widget.userStepRow?.title ?? 'step',
                           textAlign: TextAlign.center,
-                          style: AppTheme.of(context).bodyMedium.override(
-                                font: GoogleFonts.lexendDeca(
-                                  fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                                  fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                                ),
+                          style: AppTheme.of(context).journey.stepTitle.override(
                                 color: AppTheme.of(context).tertiary,
-                                fontSize: 16.0,
-                                letterSpacing: 0.0,
-                                fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                                fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                               ),
                         ),
                       ),
@@ -168,16 +152,8 @@ class _StepDetailsPageState extends State<StepDetailsPage> {
                         child: Text(
                           widget.userStepRow?.description ?? 'description',
                           textAlign: TextAlign.center,
-                          style: AppTheme.of(context).bodyMedium.override(
-                                font: GoogleFonts.lexendDeca(
-                                  fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                                  fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                                ),
+                          style: AppTheme.of(context).journey.stepDescription.override(
                                 color: AppTheme.of(context).primaryText,
-                                fontSize: 14.0,
-                                letterSpacing: 0.0,
-                                fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                                fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                               ),
                         ),
                       ),

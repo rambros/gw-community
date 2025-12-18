@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '/ui/core/themes/app_theme.dart';
+import '/ui/journey/themes/journey_theme_extension.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class JourneyCardWidget extends StatelessWidget {
   const JourneyCardWidget({
@@ -59,16 +59,8 @@ class JourneyCardWidget extends StatelessWidget {
                         children: [
                           Text(
                             title,
-                            style: AppTheme.of(context).titleMedium.override(
-                                  font: GoogleFonts.lexendDeca(
-                                    fontWeight: FontWeight.w500,
-                                    fontStyle: AppTheme.of(context).titleMedium.fontStyle,
-                                  ),
+                            style: AppTheme.of(context).journey.stepTitle.override(
                                   color: AppTheme.of(context).secondary,
-                                  fontSize: 18.0,
-                                  letterSpacing: 0.0,
-                                  fontWeight: FontWeight.w500,
-                                  fontStyle: AppTheme.of(context).titleMedium.fontStyle,
                                 ),
                           ),
                         ],
@@ -81,11 +73,9 @@ class JourneyCardWidget extends StatelessWidget {
                           padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 12.0),
                           child: Text(
                             'Completed $stepsCompleted of $stepsTotal steps',
-                            style: GoogleFonts.lexendDeca(
-                              color: AppTheme.of(context).secondary,
-                              fontWeight: FontWeight.normal,
-                              fontSize: 12.0,
-                            ),
+                            style: AppTheme.of(context).journey.caption.override(
+                                  color: AppTheme.of(context).secondary,
+                                ),
                           ),
                         ),
                       ],
@@ -104,16 +94,8 @@ class JourneyCardWidget extends StatelessWidget {
                               padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
                               iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
                               color: AppTheme.of(context).secondary,
-                              textStyle: AppTheme.of(context).titleSmall.override(
-                                    font: GoogleFonts.lexendDeca(
-                                      fontWeight: AppTheme.of(context).titleSmall.fontWeight,
-                                      fontStyle: AppTheme.of(context).titleSmall.fontStyle,
-                                    ),
+                              textStyle: AppTheme.of(context).journey.buttonText.override(
                                     color: Colors.white,
-                                    fontSize: 12.0,
-                                    letterSpacing: 0.0,
-                                    fontWeight: AppTheme.of(context).titleSmall.fontWeight,
-                                    fontStyle: AppTheme.of(context).titleSmall.fontStyle,
                                   ),
                               borderSide: const BorderSide(
                                 color: Colors.transparent,

@@ -5,7 +5,6 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '/ui/core/themes/app_theme.dart';
 import '/utils/flutter_flow_util.dart';
-import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/data/services/supabase/supabase.dart';
 import '../view_model/group_details_view_model.dart';
 import '/index.dart';
@@ -19,18 +18,16 @@ class GroupNotificationsTab extends StatelessWidget {
     final viewModel = context.watch<GroupDetailsViewModel>();
     final group = viewModel.group;
 
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(8.0, 8.0, 8.0, 0.0),
+    return Stack(
+      children: [
+        SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 8.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
                   child: Text(
                     'Notifications',
                     style: AppTheme.of(context).titleSmall.override(
@@ -41,46 +38,7 @@ class GroupNotificationsTab extends StatelessWidget {
                         ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
-                  child: FFButtonWidget(
-                    onPressed: () async {
-                      context.pushNamed(
-                        NotificationAddPage.routeName,
-                        queryParameters: {
-                          'groupId': serializeParam(
-                            group.id,
-                            ParamType.int,
-                          ),
-                          'groupName': serializeParam(
-                            group.name,
-                            ParamType.String,
-                          ),
-                        }.withoutNulls,
-                      );
-                    },
-                    text: 'New notification',
-                    options: FFButtonOptions(
-                      height: 40.0,
-                      padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-                      iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      color: AppTheme.of(context).primary,
-                      textStyle: AppTheme.of(context).labelLarge.override(
-                            font: GoogleFonts.poppins(),
-                            color: AppTheme.of(context).primaryBackground,
-                          ),
-                      elevation: 1.0,
-                      borderSide: BorderSide(
-                        color: AppTheme.of(context).secondaryBackground,
-                        width: 0.5,
-                      ),
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+              ),
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 0.0),
             child: StreamBuilder<List<CcViewNotificationsUsersRow>>(
@@ -219,6 +177,49 @@ class GroupNotificationsTab extends StatelessWidget {
           ),
         ],
       ),
+    ),
+    Positioned(
+      bottom: 16.0,
+      right: 16.0,
+      child: FloatingActionButton.extended(
+        onPressed: () async {
+          context.pushNamed(
+            NotificationAddPage.routeName,
+            queryParameters: {
+              'groupId': serializeParam(
+                group.id,
+                ParamType.int,
+              ),
+              'groupName': serializeParam(
+                group.name,
+                ParamType.String,
+              ),
+            }.withoutNulls,
+            extra: <String, dynamic>{
+              kTransitionInfoKey: const TransitionInfo(
+                hasTransition: true,
+                transitionType: PageTransitionType.fade,
+                duration: Duration(milliseconds: 0),
+              ),
+            },
+          );
+        },
+        backgroundColor: AppTheme.of(context).primary,
+        elevation: 8.0,
+        icon: Icon(
+          Icons.add,
+          color: AppTheme.of(context).primaryBackground,
+        ),
+        label: Text(
+          'New notification',
+          style: AppTheme.of(context).labelLarge.override(
+                font: GoogleFonts.poppins(),
+                color: AppTheme.of(context).primaryBackground,
+              ),
+        ),
+      ),
+    ),
+    ],
     );
   }
 }

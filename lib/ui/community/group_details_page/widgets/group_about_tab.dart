@@ -61,11 +61,11 @@ class GroupAboutTab extends StatelessWidget {
                       children: [
                         UserAvatar(
                           imageUrl: member.photoUrl,
-                          fullName: member.fullName,
+                          fullName: member.displayName,
                         ),
                         const SizedBox(width: 12.0),
                         Text(
-                          member.displayName ?? member.fullName ?? 'Unknown',
+                          member.displayName ?? 'Unknown',
                           style: AppTheme.of(context).bodyMedium,
                         ),
                       ],

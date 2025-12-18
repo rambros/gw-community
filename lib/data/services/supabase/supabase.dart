@@ -16,13 +16,15 @@ class SupaFlow {
   final _supabase = Supabase.instance.client;
   static SupabaseClient get client => instance._supabase;
 
-  static Future initialize() => Supabase.initialize(
-        url: _kSupabaseUrl,
-        headers: {
-          'X-Client-Info': 'flutterflow',
-        },
-        anonKey: _kSupabaseAnonKey,
-        debug: false,
-        authOptions: const FlutterAuthClientOptions(authFlowType: AuthFlowType.implicit),
-      );
+  static Future initialize() async {
+    await Supabase.initialize(
+      url: _kSupabaseUrl,
+      headers: {
+        'X-Client-Info': 'flutterflow',
+      },
+      anonKey: _kSupabaseAnonKey,
+      // Use pkce flow for native apps (persists session)
+      authOptions: const FlutterAuthClientOptions(authFlowType: AuthFlowType.pkce),
+    );
+  }
 }

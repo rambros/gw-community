@@ -128,9 +128,6 @@ class _SharingAddPageContent extends StatelessWidget {
               // Header com avatar e informações do usuário
               _buildHeader(context, viewModel),
 
-              // Campo de título
-              _buildTitleField(context, viewModel),
-
               // Campo de texto/experiência
               _buildTextField(context, viewModel),
 
@@ -160,7 +157,7 @@ class _SharingAddPageContent extends StatelessWidget {
         children: [
           UserAvatar(
             imageUrl: user?.photoUrl,
-            fullName: user?.fullName,
+            fullName: user?.displayName,
           ),
           Expanded(
             child: Padding(
@@ -207,82 +204,23 @@ class _SharingAddPageContent extends StatelessWidget {
     );
   }
 
-  Widget _buildTitleField(BuildContext context, SharingAddViewModel viewModel) {
-    return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(4.0, 4.0, 4.0, 8.0),
-      child: TextFormField(
-        controller: viewModel.titleController,
-        focusNode: viewModel.titleFocusNode,
-        autofocus: false,
-        obscureText: false,
-        decoration: InputDecoration(
-          labelText: 'Title',
-          labelStyle: AppTheme.of(context).labelLarge.override(
-                font: GoogleFonts.poppins(),
-                color: AppTheme.of(context).primary,
-                fontSize: 18.0,
-                letterSpacing: 0.0,
-              ),
-          hintText: '[Some title for your experience...]',
-          hintStyle: AppTheme.of(context).bodySmall.override(
-                font: GoogleFonts.lexendDeca(),
-                color: AppTheme.of(context).alternate,
-                letterSpacing: 0.0,
-              ),
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: AppTheme.of(context).alternate,
-              width: 1.0,
-            ),
-            borderRadius: BorderRadius.circular(16.0),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: AppTheme.of(context).alternate,
-              width: 1.0,
-            ),
-            borderRadius: BorderRadius.circular(16.0),
-          ),
-          errorBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: Color(0x00000000), width: 1.0),
-            borderRadius: BorderRadius.circular(16.0),
-          ),
-          focusedErrorBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: Color(0x00000000), width: 1.0),
-            borderRadius: BorderRadius.circular(16.0),
-          ),
-          filled: true,
-          fillColor: const Color(0xFFF9FAFB),
-        ),
-        style: AppTheme.of(context).bodyMedium.override(
-              font: GoogleFonts.lexendDeca(),
-              color: AppTheme.of(context).secondary,
-              fontSize: 14.0,
-              letterSpacing: 0.0,
-            ),
-        maxLines: 2,
-        validator: viewModel.validateTitle,
-      ),
-    );
-  }
-
   Widget _buildTextField(BuildContext context, SharingAddViewModel viewModel) {
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(4.0, 8.0, 4.0, 4.0),
       child: TextFormField(
         controller: viewModel.textController,
         focusNode: viewModel.textFocusNode,
-        autofocus: false,
+        autofocus: true,
         obscureText: false,
         decoration: InputDecoration(
-          labelText: 'Experience',
+          labelText: 'Share your experience',
           labelStyle: AppTheme.of(context).labelLarge.override(
                 font: GoogleFonts.poppins(),
                 color: AppTheme.of(context).primary,
                 fontSize: 18.0,
                 letterSpacing: 0.0,
               ),
-          hintText: '[your experience...]',
+          hintText: 'Write about your experience...',
           hintStyle: AppTheme.of(context).bodySmall.override(
                 font: GoogleFonts.lexendDeca(),
                 color: AppTheme.of(context).alternate,
@@ -318,7 +256,8 @@ class _SharingAddPageContent extends StatelessWidget {
               color: AppTheme.of(context).secondary,
               letterSpacing: 0.0,
             ),
-        maxLines: 20,
+        maxLines: null,
+        minLines: 20,
         validator: viewModel.validateText,
       ),
     );

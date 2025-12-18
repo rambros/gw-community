@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '/ui/core/themes/app_theme.dart';
+import '/ui/journey/themes/journey_theme_extension.dart';
 import '/ui/core/ui/flutter_flow_icon_button.dart';
 
 class StepTextViewPage extends StatelessWidget {
@@ -44,16 +44,7 @@ class StepTextViewPage extends StatelessWidget {
           ),
           title: Text(
             'Daily Practice',
-            style: AppTheme.of(context).titleLarge.override(
-                  font: GoogleFonts.poppins(
-                    fontWeight: AppTheme.of(context).titleLarge.fontWeight,
-                    fontStyle: AppTheme.of(context).titleLarge.fontStyle,
-                  ),
-                  fontSize: 20.0,
-                  letterSpacing: 0.0,
-                  fontWeight: AppTheme.of(context).titleLarge.fontWeight,
-                  fontStyle: AppTheme.of(context).titleLarge.fontStyle,
-                ),
+            style: AppTheme.of(context).journey.pageTitle,
           ),
           actions: const [],
           centerTitle: true,
@@ -83,15 +74,8 @@ class StepTextViewPage extends StatelessWidget {
                           Text(
                             stepTextTitle ?? 'prompt',
                             textAlign: TextAlign.center,
-                            style: AppTheme.of(context).titleMedium.override(
-                                  font: GoogleFonts.lexendDeca(
-                                    fontWeight: AppTheme.of(context).titleMedium.fontWeight,
-                                    fontStyle: AppTheme.of(context).titleMedium.fontStyle,
-                                  ),
+                            style: AppTheme.of(context).journey.stepTitle.override(
                                   color: AppTheme.of(context).tertiary,
-                                  letterSpacing: 0.0,
-                                  fontWeight: AppTheme.of(context).titleMedium.fontWeight,
-                                  fontStyle: AppTheme.of(context).titleMedium.fontStyle,
                                 ),
                           ),
                         ],
@@ -100,15 +84,8 @@ class StepTextViewPage extends StatelessWidget {
                     SelectionArea(
                       child: Text(
                         stepTextContent ?? 'text',
-                        style: AppTheme.of(context).bodyMedium.override(
-                              font: GoogleFonts.lexendDeca(
-                                fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                                fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                              ),
+                        style: AppTheme.of(context).journey.bodyText.override(
                               color: AppTheme.of(context).primaryText,
-                              letterSpacing: 0.0,
-                              fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                              fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                             ),
                       ),
                     ),

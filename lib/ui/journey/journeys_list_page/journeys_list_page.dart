@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '/ui/core/themes/app_theme.dart';
+import '/ui/journey/themes/journey_theme_extension.dart';
 import '/utils/flutter_flow_util.dart';
 
 import 'view_model/journeys_list_view_model.dart';
@@ -54,16 +54,8 @@ class _JourneysListPageState extends State<JourneysListPage> with TickerProvider
         automaticallyImplyLeading: false,
         title: Text(
           'Journeys',
-          style: AppTheme.of(context).bodyMedium.override(
-                font: GoogleFonts.lexendDeca(
-                  fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                  fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                ),
+          style: AppTheme.of(context).journey.pageTitle.override(
                 color: Colors.white,
-                fontSize: 20.0,
-                letterSpacing: 0.0,
-                fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
               ),
         ),
         actions: const [],
@@ -83,16 +75,7 @@ class _JourneysListPageState extends State<JourneysListPage> with TickerProvider
                     child: TabBar(
                       labelColor: AppTheme.of(context).primaryText,
                       unselectedLabelColor: AppTheme.of(context).alternate,
-                      labelStyle: AppTheme.of(context).titleMedium.override(
-                            font: GoogleFonts.lexendDeca(
-                              fontWeight: AppTheme.of(context).titleMedium.fontWeight,
-                              fontStyle: AppTheme.of(context).titleMedium.fontStyle,
-                            ),
-                            fontSize: 16.0,
-                            letterSpacing: 0.0,
-                            fontWeight: AppTheme.of(context).titleMedium.fontWeight,
-                            fontStyle: AppTheme.of(context).titleMedium.fontStyle,
-                          ),
+                      labelStyle: AppTheme.of(context).journey.sectionTitle,
                       unselectedLabelStyle: const TextStyle(),
                       indicatorColor: AppTheme.of(context).primary,
                       padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 0.0),

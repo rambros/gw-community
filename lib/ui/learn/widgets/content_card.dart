@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
 
 import '/data/services/supabase/supabase.dart';
 import '/ui/core/themes/app_theme.dart';
+import '/ui/learn/themes/learn_theme_extension.dart';
 import '/utils/flutter_flow_util.dart';
 import '/ui/learn/content_view/content_view.dart';
 
@@ -94,16 +94,8 @@ class ContentCard extends StatelessWidget {
                                       ),
                                       textAlign: TextAlign.start,
                                       minFontSize: 12.0,
-                                      style: AppTheme.of(context).bodyMedium.override(
-                                            font: GoogleFonts.lexendDeca(
-                                              fontWeight: FontWeight.w600,
-                                              fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                                            ),
+                                      style: AppTheme.of(context).learn.contentTitle.override(
                                             color: AppTheme.of(context).secondary,
-                                            fontSize: 14.0,
-                                            letterSpacing: 0.0,
-                                            fontWeight: FontWeight.w600,
-                                            fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                           ),
                                     ),
                                   ),
@@ -114,15 +106,8 @@ class ContentCard extends StatelessWidget {
                               (List<String> listAuthors) {
                                 return listAuthors.join(', ');
                               }(contentRow.authorsNames.toList()),
-                              style: AppTheme.of(context).bodyMedium.override(
-                                    font: GoogleFonts.lexendDeca(
-                                      fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                                      fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                                    ),
+                              style: AppTheme.of(context).learn.metadata.override(
                                     color: AppTheme.of(context).secondary,
-                                    letterSpacing: 0.0,
-                                    fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                                    fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                   ),
                             ),
                             Flexible(
@@ -141,20 +126,14 @@ class ContentCard extends StatelessWidget {
                                             contentRow.description,
                                             'description',
                                           ).maybeHandleOverflow(
-                                            maxChars: 115,
+                                            maxChars: 150,
                                             replacement: '…',
                                           ),
                                           textAlign: TextAlign.start,
-                                          maxLines: 2,
-                                          style: AppTheme.of(context).bodyMedium.override(
-                                                font: GoogleFonts.lexendDeca(
-                                                  fontWeight: FontWeight.w300,
-                                                  fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                                                ),
+                                          maxLines: 3,
+                                          style: AppTheme.of(context).learn.bodyLight.override(
                                                 color: AppTheme.of(context).secondary,
-                                                letterSpacing: 0.0,
-                                                fontWeight: FontWeight.w300,
-                                                fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
+                                                fontSize: 12.0,
                                               ),
                                         ),
                                       ),

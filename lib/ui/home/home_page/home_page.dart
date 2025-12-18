@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '/ui/core/themes/app_theme.dart';
@@ -130,22 +129,14 @@ class _HomePageState extends State<HomePage> {
         children: [
           Text(
             'Welcome, ',
-            style: AppTheme.of(context).headlineSmall.override(
-                  font: GoogleFonts.lexendDeca(
-                    fontWeight: AppTheme.of(context).headlineSmall.fontWeight,
-                  ),
-                ),
+            style: AppTheme.of(context).headlineSmall,
           ),
           if (viewModel.userProfile != null)
             Padding(
               padding: const EdgeInsetsDirectional.fromSTEB(0.0, 3.0, 0.0, 0.0),
               child: Text(
                 viewModel.userProfile!.firstName!,
-                style: AppTheme.of(context).headlineSmall.override(
-                      font: GoogleFonts.lexendDeca(
-                        fontWeight: AppTheme.of(context).headlineSmall.fontWeight,
-                      ),
-                    ),
+                style: AppTheme.of(context).headlineSmall,
               ),
             ),
         ],
@@ -162,7 +153,6 @@ class _HomePageState extends State<HomePage> {
           'Where are a community of nn well wishers\ncreating together a new world',
           textAlign: TextAlign.center,
           style: AppTheme.of(context).bodyMedium.override(
-                font: GoogleFonts.lexendDeca(),
                 color: Colors.black,
                 fontSize: 16.0,
               ),
@@ -183,7 +173,6 @@ class _HomePageState extends State<HomePage> {
               title,
               textAlign: TextAlign.start,
               style: AppTheme.of(context).headlineSmall.override(
-                    font: GoogleFonts.lexendDeca(),
                     color: AppTheme.of(context).secondary,
                   ),
             ),

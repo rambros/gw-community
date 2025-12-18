@@ -80,7 +80,7 @@ class SharingCardWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildHeader(context),
-                  _buildTitle(context),
+                  _buildText(context),
                   _buildActions(context),
                 ],
               ),
@@ -101,6 +101,7 @@ class SharingCardWidget extends StatelessWidget {
             key: Key('Keys09_${index}_of_$totalCount'),
             imageUrl: sharingRow.photoUrl,
             fullName: sharingRow.fullName,
+            size: 36.0,
           ),
           Expanded(
             child: Padding(
@@ -176,31 +177,26 @@ class SharingCardWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildTitle(BuildContext context) {
+  Widget _buildText(BuildContext context) {
+    final text = sharingRow.text?.trim() ?? '';
+
+    // If text is empty, don't show anything
+    if (text.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 16.0),
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            valueOrDefault<String>(
-              sharingRow.title,
-              'title',
+      padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 16.0),
+      child: Text(
+        text,
+        maxLines: 3,
+        overflow: TextOverflow.ellipsis,
+        style: AppTheme.of(context).bodyMedium.override(
+              font: GoogleFonts.inter(),
+              color: AppTheme.of(context).secondary,
+              fontSize: 14.0,
+              letterSpacing: 0.0,
             ),
-            style: AppTheme.of(context).bodyLarge.override(
-                  font: GoogleFonts.inter(
-                    fontWeight: FontWeight.w500,
-                    fontStyle: AppTheme.of(context).bodyLarge.fontStyle,
-                  ),
-                  color: AppTheme.of(context).primary,
-                  fontSize: 16.0,
-                  letterSpacing: 0.0,
-                  fontWeight: FontWeight.w500,
-                  fontStyle: AppTheme.of(context).bodyLarge.fontStyle,
-                ),
-          ),
-        ],
       ),
     );
   }

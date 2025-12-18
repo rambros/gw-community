@@ -138,12 +138,12 @@ class SharingRepository {
     });
   }
 
-  /// Busca informações do usuário por ID
+  /// Busca informações do usuário por auth user ID
   ///
   /// Retorna null se o usuário não for encontrado
-  Future<CcMembersRow?> getUserById(String userId) async {
+  Future<CcMembersRow?> getUserById(String authUserId) async {
     final result = await CcMembersTable().querySingleRow(
-      queryFn: (q) => q.eqOrNull('id', userId),
+      queryFn: (q) => q.eqOrNull('auth_user_id', authUserId),
     );
     return result.isNotEmpty ? result.first : null;
   }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '/config/app_config.dart';
 import '/ui/core/themes/app_theme.dart';
+import '/ui/journey/themes/journey_theme_extension.dart';
 import '/data/services/supabase/supabase.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '/utils/custom_functions.dart' as functions;
 
 class JourneyStepItemWidget extends StatelessWidget {
@@ -67,34 +67,18 @@ class JourneyStepItemWidget extends StatelessWidget {
                     children: [
                       Text(
                         stepRow.title ?? 'Step Title',
-                        style: AppTheme.of(context).bodyMedium.override(
-                              font: GoogleFonts.lexendDeca(
-                                fontWeight: FontWeight.w500,
-                                fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                              ),
+                        style: AppTheme.of(context).journey.stepTitle.override(
                               color: (stepRow.stepStatus != 'open' && stepRow.stepStatus != 'closed')
                                   ? AppTheme.of(context).alternate
                                   : AppTheme.of(context).primaryText,
-                              fontSize: 16.0,
-                              letterSpacing: 0.0,
-                              fontWeight: FontWeight.w500,
-                              fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                             ),
                       ),
                       Text(
                         stepRow.description ?? 'Description',
-                        style: AppTheme.of(context).bodyMedium.override(
-                              font: GoogleFonts.lexendDeca(
-                                fontWeight: FontWeight.w300,
-                                fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                              ),
+                        style: AppTheme.of(context).journey.stepDescription.override(
                               color: (stepRow.stepStatus != 'open' && stepRow.stepStatus != 'closed')
                                   ? AppTheme.of(context).alternate
                                   : AppTheme.of(context).primaryText,
-                              fontSize: 14.0,
-                              letterSpacing: 0.0,
-                              fontWeight: FontWeight.w300,
-                              fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                             ),
                       ),
                     ],
@@ -122,16 +106,8 @@ class JourneyStepItemWidget extends StatelessWidget {
         child: Text(
           stepRow.stepNumber?.toString() ?? '0',
           textAlign: TextAlign.center,
-          style: AppTheme.of(context).bodyMedium.override(
-                font: GoogleFonts.lexendDeca(
-                  fontWeight: FontWeight.w600,
-                  fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                ),
+          style: AppTheme.of(context).journey.stepNumber.override(
                 color: AppTheme.of(context).primaryBackground,
-                fontSize: 14.0,
-                letterSpacing: 0.0,
-                fontWeight: FontWeight.w600,
-                fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
               ),
         ),
       );
@@ -160,16 +136,8 @@ class JourneyStepItemWidget extends StatelessWidget {
           child: Text(
             stepRow.stepNumber?.toString() ?? '0',
             textAlign: TextAlign.center,
-            style: AppTheme.of(context).bodyMedium.override(
-                  font: GoogleFonts.lexendDeca(
-                    fontWeight: FontWeight.w600,
-                    fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                  ),
+            style: AppTheme.of(context).journey.stepNumber.override(
                   color: AppTheme.of(context).secondary,
-                  fontSize: 14.0,
-                  letterSpacing: 0.0,
-                  fontWeight: FontWeight.w600,
-                  fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                 ),
           ),
         );

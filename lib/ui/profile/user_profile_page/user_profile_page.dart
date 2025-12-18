@@ -112,7 +112,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     children: [
                       Text(
                         valueOrDefault<String>(
-                          userProfile?.fullName,
+                          userProfile?.displayName,
                           'Name',
                         ),
                         style: AppTheme.of(context).headlineSmall.override(

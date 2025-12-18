@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '/data/services/supabase/supabase.dart';
 import '/ui/core/themes/app_theme.dart';
+import '/ui/community/themes/community_theme_extension.dart';
 import '/utils/flutter_flow_util.dart';
 import '/index.dart';
 
@@ -83,56 +83,31 @@ class EventCardWidget extends StatelessWidget {
                     if (userRegistered == true)
                       Text(
                         'Registered',
-                        style: AppTheme.of(context).titleMedium.override(
-                              font: GoogleFonts.lexendDeca(
-                                fontWeight: FontWeight.w300,
-                                fontStyle: AppTheme.of(context).titleMedium.fontStyle,
-                              ),
+                        style: AppTheme.of(context).community.caption.override(
                               color: AppTheme.of(context).primary,
-                              fontSize: 12.0,
-                              letterSpacing: 0.0,
-                              fontWeight: FontWeight.w300,
-                              fontStyle: AppTheme.of(context).titleMedium.fontStyle,
                             ),
                       ),
                     Padding(
                       padding: const EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 3.0),
                       child: Text(
                         eventName ?? '',
-                        style: AppTheme.of(context).titleMedium.override(
-                              font: GoogleFonts.lexendDeca(
-                                fontWeight: FontWeight.w500,
-                                fontStyle: AppTheme.of(context).titleMedium.fontStyle,
-                              ),
+                        style: AppTheme.of(context).community.cardTitle.override(
                               color: AppTheme.of(context).secondary,
-                              fontSize: 18.0,
-                              letterSpacing: 0.0,
-                              fontWeight: FontWeight.w500,
-                              fontStyle: AppTheme.of(context).titleMedium.fontStyle,
                             ),
                       ),
                     ),
                     Text(
                       'by ${facilitator ?? '-'}',
-                      style: GoogleFonts.lexendDeca(
-                        color: AppTheme.of(context).secondary,
-                        fontWeight: FontWeight.normal,
-                        fontSize: 12.0,
-                      ),
+                      style: AppTheme.of(context).community.metadata.override(
+                            color: AppTheme.of(context).secondary,
+                          ),
                     ),
                     Padding(
                       padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 0.0),
                       child: Text(
                         '$date, $time',
-                        style: AppTheme.of(context).bodySmall.override(
-                              font: GoogleFonts.lexendDeca(
-                                fontWeight: FontWeight.normal,
-                                fontStyle: AppTheme.of(context).bodySmall.fontStyle,
-                              ),
+                        style: AppTheme.of(context).community.metadata.override(
                               color: AppTheme.of(context).secondary,
-                              letterSpacing: 0.0,
-                              fontWeight: AppTheme.of(context).bodySmall.fontWeight,
-                              fontStyle: AppTheme.of(context).bodySmall.fontStyle,
                             ),
                       ),
                     ),

@@ -44,11 +44,10 @@ class UserCreateProfileViewModel extends ChangeNotifier {
       final fullName = '$firstName $lastName';
 
       await _repository.updateProfile(currentUserUid, {
-        'full_name': fullName,
         'first_name': firstName,
         'last_name': lastName,
-        'hide_last_name': false,
         'display_name': fullName,
+        'hide_last_name': false,
       });
 
       FFAppState().updateLoginUserStruct(

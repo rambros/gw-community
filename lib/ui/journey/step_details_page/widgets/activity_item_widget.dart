@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '/ui/core/themes/app_theme.dart';
+import '/ui/journey/themes/journey_theme_extension.dart';
 import '/data/services/supabase/supabase.dart';
 
 class ActivityItemWidget extends StatelessWidget {
@@ -38,35 +38,19 @@ class ActivityItemWidget extends StatelessWidget {
                 children: [
                   Text(
                     activity.activityLabel ?? 'activity',
-                    style: AppTheme.of(context).bodyMedium.override(
-                          font: GoogleFonts.lexendDeca(
-                            fontWeight: FontWeight.w500,
-                            fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                          ),
+                    style: AppTheme.of(context).journey.stepTitle.override(
                           color: activity.activityStatus == 'open'
                               ? AppTheme.of(context).primaryText
                               : AppTheme.of(context).alternate,
-                          fontSize: 16.0,
-                          letterSpacing: 0.0,
-                          fontWeight: FontWeight.w500,
-                          fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                         ),
                   ),
                   const SizedBox(height: 2.0),
                   Text(
                     activity.activityPrompt ?? 'prompt',
-                    style: AppTheme.of(context).bodyMedium.override(
-                          font: GoogleFonts.lexendDeca(
-                            fontWeight: FontWeight.w300,
-                            fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                          ),
+                    style: AppTheme.of(context).journey.stepDescription.override(
                           color: activity.activityStatus == 'open'
                               ? AppTheme.of(context).primaryText
                               : AppTheme.of(context).alternate,
-                          fontSize: 14.0,
-                          letterSpacing: 0.0,
-                          fontWeight: FontWeight.w300,
-                          fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                         ),
                   ),
                 ],

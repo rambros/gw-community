@@ -286,7 +286,7 @@ class GroupAddPageView extends StatelessWidget {
                                 child: FlutterFlowDropDown<String>(
                                   multiSelectController: FormListFieldController<String>(viewModel.selectedManagerIds),
                                   options: viewModel.availableManagers.map((e) => e.id).toList(),
-                                  optionLabels: viewModel.availableManagers.map((e) => e.fullName!).toList(),
+                                  optionLabels: viewModel.availableManagers.map((e) => e.displayName ?? 'Unknown').toList(),
                                   onMultiSelectChanged: (val) => viewModel.setSelectedManagers(val),
                                   width: double.infinity,
                                   height: 50.0,

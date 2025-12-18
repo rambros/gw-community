@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
 
@@ -68,12 +67,8 @@ class _LearnListPageState extends State<LearnListPage> {
           backgroundColor: AppTheme.of(context).primary,
           automaticallyImplyLeading: false,
           title: Text(
-            'Learn',
+            'Library',
             style: AppTheme.of(context).headlineMedium.override(
-                  font: GoogleFonts.lexendDeca(
-                    fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
-                    fontStyle: AppTheme.of(context).headlineMedium.fontStyle,
-                  ),
                   color: Colors.white,
                   fontSize: 22.0,
                 ),
@@ -113,10 +108,6 @@ class _LearnListPageState extends State<LearnListPage> {
                                 child: Text(
                                   'Portal Content Library',
                                   style: AppTheme.of(context).headlineMedium.override(
-                                        font: GoogleFonts.lexendDeca(
-                                          fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
-                                          fontStyle: AppTheme.of(context).headlineMedium.fontStyle,
-                                        ),
                                         color: AppTheme.of(context).primary,
                                       ),
                                 ),
@@ -175,10 +166,6 @@ class _LearnListPageState extends State<LearnListPage> {
                                                 ),
                                               ),
                                               style: AppTheme.of(context).bodyMedium.override(
-                                                    font: GoogleFonts.lexendDeca(
-                                                      fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                                                      fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                                                    ),
                                                     color: AppTheme.of(context).primary,
                                                   ),
                                             ),
@@ -188,10 +175,6 @@ class _LearnListPageState extends State<LearnListPage> {
                                       Text(
                                         'or ',
                                         style: AppTheme.of(context).bodyMedium.override(
-                                              font: GoogleFonts.lexendDeca(
-                                                fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                                                fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                                              ),
                                               color: AppTheme.of(context).primary,
                                               fontSize: 18.0,
                                             ),
@@ -233,10 +216,6 @@ class _LearnListPageState extends State<LearnListPage> {
                                             padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
                                             color: AppTheme.of(context).primary,
                                             textStyle: AppTheme.of(context).labelLarge.override(
-                                                  font: GoogleFonts.poppins(
-                                                    fontWeight: AppTheme.of(context).labelLarge.fontWeight,
-                                                    fontStyle: AppTheme.of(context).labelLarge.fontStyle,
-                                                  ),
                                                   color: AppTheme.of(context).primaryBackground,
                                                 ),
                                             elevation: 1.0,
@@ -271,10 +250,7 @@ class _LearnListPageState extends State<LearnListPage> {
                                                   ? 'List of Contents'
                                                   : 'List of All Content',
                                               style: AppTheme.of(context).labelLarge.override(
-                                                    font: GoogleFonts.poppins(
-                                                      fontWeight: FontWeight.w600,
-                                                      fontStyle: AppTheme.of(context).labelLarge.fontStyle,
-                                                    ),
+                                                    fontWeight: FontWeight.w600,
                                                     color: AppTheme.of(context).primary,
                                                   ),
                                             ),
@@ -298,10 +274,6 @@ class _LearnListPageState extends State<LearnListPage> {
                                           padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
                                           color: AppTheme.of(context).primaryBackground,
                                           textStyle: AppTheme.of(context).labelLarge.override(
-                                                font: GoogleFonts.poppins(
-                                                  fontWeight: AppTheme.of(context).labelLarge.fontWeight,
-                                                  fontStyle: AppTheme.of(context).labelLarge.fontStyle,
-                                                ),
                                                 color: AppTheme.of(context).secondary,
                                               ),
                                           elevation: 0.0,
@@ -328,10 +300,7 @@ class _LearnListPageState extends State<LearnListPage> {
                                     textAlign: TextAlign.start,
                                     maxLines: 2,
                                     style: AppTheme.of(context).labelLarge.override(
-                                          font: GoogleFonts.poppins(
-                                            fontWeight: FontWeight.w600,
-                                            fontStyle: AppTheme.of(context).labelLarge.fontStyle,
-                                          ),
+                                          fontWeight: FontWeight.w600,
                                           color: AppTheme.of(context).primary,
                                           fontSize: 12.0,
                                         ),
@@ -356,35 +325,66 @@ class _LearnListPageState extends State<LearnListPage> {
                                             ),
                                           ),
                                         )
-                                      : ListView.separated(
-                                          controller: _scrollController,
-                                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 12.0),
-                                          scrollDirection: Axis.vertical,
-                                          itemCount: viewModel.contentList.length + (viewModel.isLoadingMore ? 1 : 0),
-                                          separatorBuilder: (_, __) => const SizedBox(height: 8.0),
-                                          itemBuilder: (context, index) {
-                                            if (index == viewModel.contentList.length) {
-                                              return Center(
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(8.0),
-                                                  child: SizedBox(
-                                                    width: 30.0,
-                                                    height: 30.0,
-                                                    child: SpinKitThreeBounce(
-                                                      color: AppTheme.of(context).primary,
-                                                      size: 20.0,
+                                      : viewModel.contentList.isEmpty
+                                          ? Center(
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(24.0),
+                                                child: Column(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    Icon(
+                                                      Icons.search_off,
+                                                      size: 64.0,
+                                                      color: AppTheme.of(context).alternate,
                                                     ),
-                                                  ),
+                                                    const SizedBox(height: 16.0),
+                                                    Text(
+                                                      'No content found',
+                                                      style: AppTheme.of(context).headlineSmall.override(
+                                                            color: AppTheme.of(context).secondaryText,
+                                                          ),
+                                                    ),
+                                                    const SizedBox(height: 8.0),
+                                                    Text(
+                                                      'Try adjusting your filters or search terms',
+                                                      textAlign: TextAlign.center,
+                                                      style: AppTheme.of(context).bodyMedium.override(
+                                                            color: AppTheme.of(context).alternate,
+                                                          ),
+                                                    ),
+                                                  ],
                                                 ),
-                                              );
-                                            }
-                                            final contentRow = viewModel.contentList[index];
-                                            return ContentCard(
-                                              key: Key('content_card_$index'),
-                                              contentRow: contentRow,
-                                            );
-                                          },
-                                        ),
+                                              ),
+                                            )
+                                          : ListView.separated(
+                                              controller: _scrollController,
+                                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 12.0),
+                                              scrollDirection: Axis.vertical,
+                                              itemCount: viewModel.contentList.length + (viewModel.isLoadingMore ? 1 : 0),
+                                              separatorBuilder: (_, __) => const SizedBox(height: 8.0),
+                                              itemBuilder: (context, index) {
+                                                if (index == viewModel.contentList.length) {
+                                                  return Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: SizedBox(
+                                                        width: 30.0,
+                                                        height: 30.0,
+                                                        child: SpinKitThreeBounce(
+                                                          color: AppTheme.of(context).primary,
+                                                          size: 20.0,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  );
+                                                }
+                                                final contentRow = viewModel.contentList[index];
+                                                return ContentCard(
+                                                  key: Key('content_card_$index'),
+                                                  contentRow: contentRow,
+                                                );
+                                              },
+                                            ),
                                 ),
                               ),
                             ),

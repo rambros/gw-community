@@ -66,7 +66,6 @@ class AppStateNotifier extends ChangeNotifier {
   }
 
   void stopShowingSplashImage() {
-    print('🛑 AppStateNotifier: stopShowingSplashImage called');
     showSplashImage = false;
     notifyListeners();
   }
@@ -74,7 +73,7 @@ class AppStateNotifier extends ChangeNotifier {
 
 GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
       initialLocation: '/',
-      debugLogDiagnostics: true,
+      debugLogDiagnostics: false,
       refreshListenable: appStateNotifier,
       navigatorKey: appNavigatorKey,
       errorBuilder: (context, state) => appStateNotifier.loggedIn ? const NavBarPage() : const LoginPage(),
@@ -83,13 +82,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: '_initialize',
           path: '/',
           builder: (context, _) {
-            print(
-                '🔄 Router: Rebuilding root route. Loading: ${appStateNotifier.loading}, LoggedIn: ${appStateNotifier.loggedIn}, ShowSplash: ${appStateNotifier.showSplashImage}');
             if (appStateNotifier.loading) {
-              print('👉 Router: Returning SplashPage');
               return const SplashPage();
             }
-            print('👉 Router: Returning ${appStateNotifier.loggedIn ? "NavBarPage" : "LoginPage"}');
             return appStateNotifier.loggedIn ? const NavBarPage() : const LoginPage();
           },
         ),

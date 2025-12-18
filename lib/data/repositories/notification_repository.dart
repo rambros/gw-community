@@ -3,9 +3,9 @@ import '/data/services/supabase/supabase.dart';
 import '/utils/flutter_flow_util.dart';
 
 class NotificationRepository {
-  Future<CcMembersRow?> getUserById(String userId) async {
+  Future<CcMembersRow?> getUserById(String authUserId) async {
     final result = await CcMembersTable().querySingleRow(
-      queryFn: (q) => q.eqOrNull('id', userId),
+      queryFn: (q) => q.eqOrNull('auth_user_id', authUserId),
     );
     return result.isNotEmpty ? result.first : null;
   }

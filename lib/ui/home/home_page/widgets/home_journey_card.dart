@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '/ui/core/themes/app_theme.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
@@ -71,9 +70,6 @@ class HomeJourneyCard extends StatelessWidget {
                             'Journey',
                           ),
                           style: AppTheme.of(context).titleMedium.override(
-                                font: GoogleFonts.lexendDeca(
-                                  fontWeight: FontWeight.w500,
-                                ),
                                 color: AppTheme.of(context).secondary,
                                 fontSize: 18.0,
                               ),
@@ -88,9 +84,8 @@ class HomeJourneyCard extends StatelessWidget {
                         padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 12.0),
                         child: Text(
                           'Completed 0 of ${journeyDetails?.stepsTotal?.toString()} steps',
-                          style: GoogleFonts.lexendDeca(
+                          style: AppTheme.of(context).bodySmall.override(
                             color: AppTheme.of(context).secondary,
-                            fontWeight: FontWeight.normal,
                             fontSize: 12.0,
                           ),
                         ),
@@ -114,9 +109,7 @@ class HomeJourneyCard extends StatelessWidget {
                             iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
                             color: AppTheme.of(context).secondary,
                             textStyle: AppTheme.of(context).titleSmall.override(
-                                  font: GoogleFonts.lexendDeca(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                  fontWeight: FontWeight.bold,
                                   color: Colors.white,
                                   fontSize: 12.0,
                                 ),
@@ -183,9 +176,6 @@ class HomeJourneyCard extends StatelessWidget {
                             'title',
                           ),
                           style: AppTheme.of(context).titleMedium.override(
-                                font: GoogleFonts.lexendDeca(
-                                  fontWeight: FontWeight.w500,
-                                ),
                                 color: AppTheme.of(context).secondary,
                                 fontSize: 18.0,
                               ),
@@ -200,9 +190,8 @@ class HomeJourneyCard extends StatelessWidget {
                         padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 12.0),
                         child: Text(
                           'Completed ${userJourneyProgress?.stepsCompleted?.toString()} of ${userJourneyProgress?.stepsTotal?.toString()} steps',
-                          style: GoogleFonts.lexendDeca(
+                          style: AppTheme.of(context).bodySmall.override(
                             color: AppTheme.of(context).secondary,
-                            fontWeight: FontWeight.normal,
                             fontSize: 12.0,
                           ),
                         ),
@@ -236,7 +225,6 @@ class HomeJourneyCard extends StatelessWidget {
                               iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
                               color: AppTheme.of(context).primary,
                               textStyle: AppTheme.of(context).labelLarge.override(
-                                    font: GoogleFonts.poppins(),
                                     color: AppTheme.of(context).primaryBackground,
                                   ),
                               elevation: 1.0,

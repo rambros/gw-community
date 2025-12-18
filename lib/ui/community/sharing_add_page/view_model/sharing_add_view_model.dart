@@ -21,7 +21,8 @@ class SharingAddViewModel extends ChangeNotifier {
     this.groupName,
     String? privacy,
   })  : _repository = repository,
-        privacy = privacy ?? 'public' {
+        privacy = privacy ?? 'public',
+        _visibility = (groupId != null && groupName != null && groupName.isNotEmpty) ? 'group_only' : 'everyone' {
     _init();
   }
 
@@ -35,7 +36,7 @@ class SharingAddViewModel extends ChangeNotifier {
   final FocusNode textFocusNode = FocusNode();
 
   // Visibility dropdown
-  String _visibility = 'group_only';
+  late String _visibility;
   String get visibility => _visibility;
 
   // User data
@@ -92,14 +93,6 @@ class SharingAddViewModel extends ChangeNotifier {
 
   // ========== VALIDATIONS ==========
 
-  /// Valida o campo de título
-  String? validateTitle(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Title is required';
-    }
-    return null;
-  }
-
   /// Valida o campo de texto/experiência
   String? validateText(String? value) {
     if (value == null || value.trim().isEmpty) {
@@ -110,7 +103,7 @@ class SharingAddViewModel extends ChangeNotifier {
 
   /// Verifica se o formulário pode ser salvo
   bool canSave() {
-    return titleController.text.trim().isNotEmpty && textController.text.trim().isNotEmpty && !_isSaving;
+    return textController.text.trim().isNotEmpty && !_isSaving;
   }
 
   // ========== COMMANDS ==========
@@ -135,9 +128,13 @@ class SharingAddViewModel extends ChangeNotifier {
     _clearSuccess();
 
     try {
+      // Generate title from first 50 characters of text
+      final text = textController.text.trim();
+      final autoTitle = text.length > 50 ? '${text.substring(0, 50)}...' : text;
+
       await _repository.createSharing(
-        title: titleController.text.trim(),
-        text: textController.text.trim(),
+        title: autoTitle,
+        text: text,
         privacy: privacy,
         userId: currentUserUid,
         visibility: _visibility,
@@ -161,7 +158,6 @@ class SharingAddViewModel extends ChangeNotifier {
   /// Cancela a criação do sharing
   void cancelCommand(BuildContext context) {
     // Clear form
-    titleController.clear();
     textController.clear();
 
     // Navigate back

@@ -5,12 +5,15 @@ class CommunityRepository {
     return SupaFlow.client
         .from("cc_view_sharings_users")
         .stream(primaryKey: ['id'])
-        .eqOrNull(
-          'visibility',
-          'everyone',
-        )
-        .order('updated_at')
-        .map((list) => list.map((item) => CcViewSharingsUsersRow(item)).toList());
+        .eq('visibility', 'everyone')
+        .order('updated_at', ascending: false)
+        .map((list) {
+          // Debug: Log para verificar nomes
+          if (list.isNotEmpty) {
+            print('DEBUG: First sharing - display_name: ${list.first['display_name']}, full_name: ${list.first['full_name']}');
+          }
+          return list.map((item) => CcViewSharingsUsersRow(item)).toList();
+        });
   }
 
   Future<List<CcEventsRow>> getEvents(String currentUserUid) async {

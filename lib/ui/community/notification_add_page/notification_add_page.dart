@@ -144,7 +144,7 @@ class _NotificationAddPageState extends State<NotificationAddPage> {
         children: [
           UserAvatar(
             imageUrl: viewModel.currentUser?.photoUrl,
-            fullName: viewModel.currentUser?.fullName,
+            fullName: viewModel.currentUser?.displayName,
           ),
           Expanded(
             child: Padding(

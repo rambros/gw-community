@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '/ui/core/themes/app_theme.dart';
+import '/ui/journey/themes/journey_theme_extension.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/data/services/supabase/supabase.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class JourneyIntroWidget extends StatelessWidget {
   const JourneyIntroWidget({
@@ -29,15 +30,8 @@ class JourneyIntroWidget extends StatelessWidget {
             children: [
               Text(
                 journey.title ?? 'Journey Title',
-                style: AppTheme.of(context).titleMedium.override(
-                      font: GoogleFonts.lexendDeca(
-                        fontWeight: AppTheme.of(context).titleMedium.fontWeight,
-                        fontStyle: AppTheme.of(context).titleMedium.fontStyle,
-                      ),
+                style: AppTheme.of(context).journey.sectionTitle.override(
                       color: AppTheme.of(context).tertiary,
-                      letterSpacing: 0.0,
-                      fontWeight: AppTheme.of(context).titleMedium.fontWeight,
-                      fontStyle: AppTheme.of(context).titleMedium.fontStyle,
                     ),
               ),
             ],
@@ -90,15 +84,8 @@ class JourneyIntroWidget extends StatelessWidget {
                       padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
                       iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
                       color: AppTheme.of(context).primary,
-                      textStyle: AppTheme.of(context).labelLarge.override(
-                            font: GoogleFonts.poppins(
-                              fontWeight: AppTheme.of(context).labelLarge.fontWeight,
-                              fontStyle: AppTheme.of(context).labelLarge.fontStyle,
-                            ),
+                      textStyle: AppTheme.of(context).journey.buttonText.override(
                             color: AppTheme.of(context).primaryBackground,
-                            letterSpacing: 0.0,
-                            fontWeight: AppTheme.of(context).labelLarge.fontWeight,
-                            fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                           ),
                       elevation: 1.0,
                       borderSide: BorderSide(

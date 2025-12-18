@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import '/ui/core/themes/app_theme.dart';
+import '/ui/journey/themes/journey_theme_extension.dart';
 import '/ui/core/ui/flutter_flow_icon_button.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/ui/core/widgets/audio_player_widget.dart';
@@ -53,16 +53,7 @@ class StepAudioPlayerPage extends StatelessWidget {
           ),
           title: Text(
             typeStep ?? 'Inspiration',
-            style: AppTheme.of(context).titleLarge.override(
-                  font: GoogleFonts.poppins(
-                    fontWeight: AppTheme.of(context).titleLarge.fontWeight,
-                    fontStyle: AppTheme.of(context).titleLarge.fontStyle,
-                  ),
-                  fontSize: 20.0,
-                  letterSpacing: 0.0,
-                  fontWeight: AppTheme.of(context).titleLarge.fontWeight,
-                  fontStyle: AppTheme.of(context).titleLarge.fontStyle,
-                ),
+            style: AppTheme.of(context).journey.pageTitle,
           ),
           actions: const [],
           centerTitle: true,
@@ -78,16 +69,7 @@ class StepAudioPlayerPage extends StatelessWidget {
                 child: Text(
                   audioTitle!,
                   textAlign: TextAlign.center,
-                  style: AppTheme.of(context).titleLarge.override(
-                        font: GoogleFonts.poppins(
-                          fontWeight: AppTheme.of(context).titleLarge.fontWeight,
-                          fontStyle: AppTheme.of(context).titleLarge.fontStyle,
-                        ),
-                        fontSize: 16.0,
-                        letterSpacing: 0.0,
-                        fontWeight: AppTheme.of(context).titleLarge.fontWeight,
-                        fontStyle: AppTheme.of(context).titleLarge.fontStyle,
-                      ),
+                  style: AppTheme.of(context).journey.stepTitle,
                 ),
               ),
               Row(
@@ -138,15 +120,8 @@ class StepAudioPlayerPage extends StatelessWidget {
                         iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
                         iconColor: AppTheme.of(context).primaryBackground,
                         color: AppTheme.of(context).secondaryText,
-                        textStyle: AppTheme.of(context).labelLarge.override(
-                              font: GoogleFonts.poppins(
-                                fontWeight: AppTheme.of(context).labelLarge.fontWeight,
-                                fontStyle: AppTheme.of(context).labelLarge.fontStyle,
-                              ),
+                        textStyle: AppTheme.of(context).journey.buttonText.override(
                               color: AppTheme.of(context).primaryText,
-                              letterSpacing: 0.0,
-                              fontWeight: AppTheme.of(context).labelLarge.fontWeight,
-                              fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                             ),
                         elevation: 1.0,
                         borderSide: BorderSide(

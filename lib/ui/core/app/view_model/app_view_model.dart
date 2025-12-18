@@ -27,6 +27,7 @@ class AppViewModel extends ChangeNotifier {
     appStateNotifier = AppStateNotifier.instance;
     router = createRouter(appStateNotifier);
 
+    // Initialize with current user from auth immediately
     _userSubscription = authRepository.authUserChanges.listen((user) {
       appStateNotifier.update(user);
     });

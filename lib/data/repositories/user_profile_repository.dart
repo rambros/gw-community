@@ -1,20 +1,20 @@
 import '/data/services/supabase/supabase.dart';
 
 class UserProfileRepository {
-  /// Fetches the user profile by ID.
-  Future<CcMembersRow?> getUserProfile(String userId) async {
+  /// Fetches the user profile by auth user ID.
+  Future<CcMembersRow?> getUserProfile(String authUserId) async {
     final result = await CcMembersTable().querySingleRow(
-      queryFn: (q) => q.eqOrNull('id', userId),
+      queryFn: (q) => q.eqOrNull('auth_user_id', authUserId),
     );
     return result.isNotEmpty ? result.first : null;
   }
 
   /// Resets the user's journey.
   /// Deletes the journey with ID 1 for the user and updates the user's started journeys list.
-  Future<void> resetJourney(String userId, List<int> currentStartedJourneys) async {
+  Future<void> resetJourney(String authUserId, List<int> currentStartedJourneys) async {
     // First, get the user_journey record to find its ID
     final userJourneys = await CcUserJourneysTable().queryRows(
-      queryFn: (q) => q.eq('user_id', userId).eq('journey_id', 1),
+      queryFn: (q) => q.eq('user_id', authUserId).eq('journey_id', 1),
     );
 
     if (userJourneys.isNotEmpty) {
@@ -43,23 +43,23 @@ class UserProfileRepository {
       );
     }
 
-    // Update user's started_journeys list
+    // Update user's started_journeys list in cc_members
     final updatedJourneys = currentStartedJourneys.where((e) => e != 1).toList();
 
     await CcMembersTable().update(
       data: {
         'started_journeys': updatedJourneys,
       },
-      matchingRows: (rows) => rows.eq('id', userId),
+      matchingRows: (rows) => rows.eq('auth_user_id', authUserId),
     );
   }
 
   /// Updates the user profile.
-  Future<void> updateProfile(String userId, Map<String, dynamic> data) async {
-    await CcMembersTable().update(
-      data: data,
-      matchingRows: (rows) => rows.eqOrNull('id', userId),
-    );
+  Future<void> updateProfile(String authUserId, Map<String, dynamic> data) async {
+    await SupaFlow.client
+        .from('cc_members')
+        .update(data)
+        .eq('auth_user_id', authUserId);
   }
 
   /// Fetches the user's journal entries.

@@ -41,7 +41,7 @@ class UserEditProfileViewModel extends ChangeNotifier {
         firstNameController.text = userProfile.firstName ?? '';
         lastNameController.text = userProfile.lastName ?? '';
         displayNameController.text = userProfile.displayName ?? '';
-        bioController.text = userProfile.info ?? '';
+        bioController.text = userProfile.bio ?? '';
         _hideLastName = userProfile.hideLastName ?? false;
       }
       notifyListeners();
@@ -85,7 +85,7 @@ class UserEditProfileViewModel extends ChangeNotifier {
         'first_name': firstNameController.text,
         'last_name': lastNameController.text,
         'display_name': displayNameController.text,
-        'info': bioController.text,
+        'bio': bioController.text,
         'hide_last_name': _hideLastName,
       });
 

@@ -38,12 +38,12 @@ class JourneysRepository {
     return result;
   }
 
-  Future<void> updateUserStartedJourneys(String userId, List<int> startedJourneys) async {
+  Future<void> updateUserStartedJourneys(String authUserId, List<int> startedJourneys) async {
     await CcMembersTable().update(
       data: {
         'started_journeys': startedJourneys,
       },
-      matchingRows: (rows) => rows.eqOrNull('id', userId),
+      matchingRows: (rows) => rows.eqOrNull('auth_user_id', authUserId),
     );
   }
 

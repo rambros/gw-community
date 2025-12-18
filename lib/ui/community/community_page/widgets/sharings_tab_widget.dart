@@ -18,20 +18,18 @@ class SharingsTabWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final viewModel = Provider.of<CommunityViewModel>(context);
 
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(8.0, 8.0, 8.0, 0.0),
+    return Stack(
+      children: [
+        SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 8.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
                   child: Text(
-                    'Experiences',
+                    'Sharing experiences that inspire',
                     style: AppTheme.of(context).titleSmall.override(
                           font: GoogleFonts.lexendDeca(
                             fontWeight: FontWeight.w500,
@@ -44,54 +42,46 @@ class SharingsTabWidget extends StatelessWidget {
                         ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
-                  child: FFButtonWidget(
-                    onPressed: () async {
-                      context.pushNamed(
-                        SharingAddPage.routeName,
-                        extra: <String, dynamic>{
-                          kTransitionInfoKey: const TransitionInfo(
-                            hasTransition: true,
-                            transitionType: PageTransitionType.fade,
-                            duration: Duration(milliseconds: 0),
-                          ),
-                        },
-                      );
-                    },
-                    text: 'New experience',
-                    options: FFButtonOptions(
-                      height: 40.0,
-                      padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-                      iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      color: AppTheme.of(context).primary,
-                      textStyle: AppTheme.of(context).labelLarge.override(
-                            font: GoogleFonts.poppins(
-                              fontWeight: AppTheme.of(context).labelLarge.fontWeight,
-                              fontStyle: AppTheme.of(context).labelLarge.fontStyle,
-                            ),
-                            color: AppTheme.of(context).primaryBackground,
-                            letterSpacing: 0.0,
-                            fontWeight: AppTheme.of(context).labelLarge.fontWeight,
-                            fontStyle: AppTheme.of(context).labelLarge.fontStyle,
-                          ),
-                      elevation: 1.0,
-                      borderSide: BorderSide(
-                        color: AppTheme.of(context).secondaryBackground,
-                        width: 0.5,
-                      ),
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+              ),
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 0.0),
             child: StreamBuilder<List<CcViewSharingsUsersRow>>(
               stream: viewModel.sharingsListSupabaseStream,
               builder: (context, snapshot) {
+                // Show error if any
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(24.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.error_outline,
+                            size: 64.0,
+                            color: AppTheme.of(context).error,
+                          ),
+                          const SizedBox(height: 16.0),
+                          Text(
+                            'Error loading experiences',
+                            style: AppTheme.of(context).headlineSmall.override(
+                                  color: AppTheme.of(context).error,
+                                ),
+                          ),
+                          const SizedBox(height: 8.0),
+                          Text(
+                            '${snapshot.error}',
+                            textAlign: TextAlign.center,
+                            style: AppTheme.of(context).bodyMedium.override(
+                                  color: AppTheme.of(context).secondaryText,
+                                ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+
                 // Customize what your widget looks like when it's loading.
                 if (!snapshot.hasData) {
                   return Center(
@@ -106,6 +96,40 @@ class SharingsTabWidget extends StatelessWidget {
                   );
                 }
                 List<CcViewSharingsUsersRow> sharingsListCcViewSharingsUsersRowList = snapshot.data!;
+
+                // Show empty state if no data
+                if (sharingsListCcViewSharingsUsersRowList.isEmpty) {
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(24.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.people_outline,
+                            size: 64.0,
+                            color: AppTheme.of(context).alternate,
+                          ),
+                          const SizedBox(height: 16.0),
+                          Text(
+                            'No experiences yet',
+                            style: AppTheme.of(context).headlineSmall.override(
+                                  color: AppTheme.of(context).secondaryText,
+                                ),
+                          ),
+                          const SizedBox(height: 8.0),
+                          Text(
+                            'Be the first to share an experience with everyone',
+                            textAlign: TextAlign.center,
+                            style: AppTheme.of(context).bodyMedium.override(
+                                  color: AppTheme.of(context).alternate,
+                                ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }
 
                 return ListView.builder(
                   padding: EdgeInsets.zero,
@@ -155,6 +179,45 @@ class SharingsTabWidget extends StatelessWidget {
           ),
         ],
       ),
+    ),
+    Positioned(
+      bottom: 16.0,
+      right: 16.0,
+      child: FloatingActionButton.extended(
+        onPressed: () async {
+          context.pushNamed(
+            SharingAddPage.routeName,
+            extra: <String, dynamic>{
+              kTransitionInfoKey: const TransitionInfo(
+                hasTransition: true,
+                transitionType: PageTransitionType.fade,
+                duration: Duration(milliseconds: 0),
+              ),
+            },
+          );
+        },
+        backgroundColor: AppTheme.of(context).primary,
+        elevation: 8.0,
+        icon: Icon(
+          Icons.add,
+          color: AppTheme.of(context).primaryBackground,
+        ),
+        label: Text(
+          'New experience',
+          style: AppTheme.of(context).labelLarge.override(
+                font: GoogleFonts.poppins(
+                  fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                  fontStyle: AppTheme.of(context).labelLarge.fontStyle,
+                ),
+                color: AppTheme.of(context).primaryBackground,
+                letterSpacing: 0.0,
+                fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                fontStyle: AppTheme.of(context).labelLarge.fontStyle,
+              ),
+        ),
+      ),
+    ),
+    ],
     );
   }
 }

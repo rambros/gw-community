@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '/ui/core/themes/app_theme.dart';
+import '/ui/journey/themes/journey_theme_extension.dart';
 import '/ui/core/ui/flutter_flow_icon_button.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/data/services/supabase/supabase.dart';
@@ -93,16 +93,7 @@ class _StepJournalPageState extends State<StepJournalPage> {
             ),
             title: Text(
               'My Journal',
-              style: AppTheme.of(context).titleLarge.override(
-                    font: GoogleFonts.poppins(
-                      fontWeight: AppTheme.of(context).titleLarge.fontWeight,
-                      fontStyle: AppTheme.of(context).titleLarge.fontStyle,
-                    ),
-                    fontSize: 20.0,
-                    letterSpacing: 0.0,
-                    fontWeight: AppTheme.of(context).titleLarge.fontWeight,
-                    fontStyle: AppTheme.of(context).titleLarge.fontStyle,
-                  ),
+              style: AppTheme.of(context).journey.pageTitle,
             ),
             actions: const [],
             centerTitle: true,
@@ -131,16 +122,8 @@ class _StepJournalPageState extends State<StepJournalPage> {
                             child: Text(
                               widget.activityRow?.activityPrompt ?? 'prompt',
                               textAlign: TextAlign.center,
-                              style: AppTheme.of(context).titleMedium.override(
-                                    font: GoogleFonts.lexendDeca(
-                                      fontWeight: AppTheme.of(context).titleMedium.fontWeight,
-                                      fontStyle: AppTheme.of(context).titleMedium.fontStyle,
-                                    ),
+                              style: AppTheme.of(context).journey.stepTitle.override(
                                     color: AppTheme.of(context).tertiary,
-                                    fontSize: 16.0,
-                                    letterSpacing: 0.0,
-                                    fontWeight: AppTheme.of(context).titleMedium.fontWeight,
-                                    fontStyle: AppTheme.of(context).titleMedium.fontStyle,
                                   ),
                             ),
                           ),
@@ -163,38 +146,15 @@ class _StepJournalPageState extends State<StepJournalPage> {
                               autofocus: true,
                               obscureText: false,
                               decoration: InputDecoration(
-                                labelStyle: AppTheme.of(context).labelMedium.override(
-                                      font: GoogleFonts.poppins(
-                                        fontWeight: AppTheme.of(context).labelMedium.fontWeight,
-                                        fontStyle: AppTheme.of(context).labelMedium.fontStyle,
-                                      ),
-                                      letterSpacing: 0.0,
-                                      fontWeight: AppTheme.of(context).labelMedium.fontWeight,
-                                      fontStyle: AppTheme.of(context).labelMedium.fontStyle,
-                                    ),
-                                hintStyle: AppTheme.of(context).labelMedium.override(
-                                      font: GoogleFonts.poppins(
-                                        fontWeight: AppTheme.of(context).labelMedium.fontWeight,
-                                        fontStyle: AppTheme.of(context).labelMedium.fontStyle,
-                                      ),
-                                      letterSpacing: 0.0,
-                                      fontWeight: AppTheme.of(context).labelMedium.fontWeight,
-                                      fontStyle: AppTheme.of(context).labelMedium.fontStyle,
-                                    ),
+                                labelStyle: AppTheme.of(context).journey.bodyText,
+                                hintStyle: AppTheme.of(context).journey.bodyText,
                                 enabledBorder: InputBorder.none,
                                 focusedBorder: InputBorder.none,
                                 errorBorder: InputBorder.none,
                                 focusedErrorBorder: InputBorder.none,
                               ),
-                              style: AppTheme.of(context).bodyMedium.override(
-                                    font: GoogleFonts.lexendDeca(
-                                      fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                                      fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                                    ),
+                              style: AppTheme.of(context).journey.bodyText.override(
                                     color: AppTheme.of(context).secondary,
-                                    letterSpacing: 0.0,
-                                    fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                                    fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                   ),
                               maxLines: 50,
                               onChanged: (value) => _viewModel?.updateJournalContent(value),
@@ -214,15 +174,8 @@ class _StepJournalPageState extends State<StepJournalPage> {
                                 padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
                                 iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
                                 color: AppTheme.of(context).primary,
-                                textStyle: AppTheme.of(context).labelLarge.override(
-                                      font: GoogleFonts.poppins(
-                                        fontWeight: AppTheme.of(context).labelLarge.fontWeight,
-                                        fontStyle: AppTheme.of(context).labelLarge.fontStyle,
-                                      ),
+                                textStyle: AppTheme.of(context).journey.buttonText.override(
                                       color: AppTheme.of(context).primaryBackground,
-                                      letterSpacing: 0.0,
-                                      fontWeight: AppTheme.of(context).labelLarge.fontWeight,
-                                      fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                                     ),
                                 elevation: 1.0,
                                 borderSide: BorderSide(

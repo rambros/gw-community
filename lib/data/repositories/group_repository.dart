@@ -127,7 +127,7 @@ class GroupRepository {
   /// Fetches available users for selection (e.g. for managers)
   Future<List<CcMembersRow>> getAvailableUsers() async {
     final result = await CcMembersTable().queryRows(
-      queryFn: (q) => q.order('full_name', ascending: true),
+      queryFn: (q) => q.order('display_name', ascending: true),
     );
     return result;
   }
@@ -135,7 +135,7 @@ class GroupRepository {
   /// Fetches users with specific role (e.g. Group Manager)
   Future<List<CcMembersRow>> getGroupManagers() async {
     final result = await CcMembersTable().queryRows(
-      queryFn: (q) => q.containsOrNull('user_role', '{Group Manager}').order('full_name', ascending: true),
+      queryFn: (q) => q.containsOrNull('user_role', ['Group Manager']).order('display_name', ascending: true),
     );
     return result;
   }
@@ -149,7 +149,7 @@ class GroupRepository {
     if (userIds.isEmpty) return [];
 
     final result = await CcMembersTable().queryRows(
-      queryFn: (q) => q.filter('id', 'in', userIds).order('full_name', ascending: true),
+      queryFn: (q) => q.filter('id', 'in', userIds).order('display_name', ascending: true),
     );
     return result;
   }

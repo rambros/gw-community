@@ -17,6 +17,11 @@ String getUserRole() {
 String? getInitials(String fullName) {
   List<String> words = fullName.split(' ');
   List<String> initials = words.where((s) => s.isNotEmpty).toList();
+
+  if (initials.isEmpty) {
+    return null;
+  }
+
   String firstLetter = initials.first.substring(0, 1);
   String secondLetter =
       (initials.length > 1 ? initials.last.substring(0, 1) : '');

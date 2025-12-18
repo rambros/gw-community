@@ -350,7 +350,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                           UserAvatar(
                             key: Key('participant_$index'),
                             imageUrl: participant.photoUrl,
-                            fullName: participant.fullName,
+                            fullName: participant.displayName,
                           ),
                           Padding(
                             padding: const EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 0.0),

@@ -2,7 +2,15 @@
   "permissions": {
     "allow": [
       "Bash(mv:*)",
-      "Bash(flutter analyze:*)"
+      "Bash(flutter analyze:*)",
+      "Bash(mcp list-resources:*)",
+      "Bash(grep:*)",
+      "Bash(find:*)",
+      "Bash(git checkout:*)",
+      "Bash(flutter run:*)",
+      "Bash(supabase db execute:*)",
+      "Bash(flutter clean:*)",
+      "Bash(flutter pub get:*)"
     ]
   }
 }

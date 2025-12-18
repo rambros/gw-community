@@ -33,13 +33,20 @@ class GWCommunitySupabaseUser extends AppAuthUser {
 
 /// Stream of Supabase auth state changes mapped to [AppAuthUser].
 Stream<AppAuthUser> gWCommunitySupabaseUserStream() {
-  return SupaFlow.client.auth.onAuthStateChange
-      .debounce(
-        (authState) => authState.event == AuthChangeEvent.tokenRefreshed
-            ? TimerStream(authState, const Duration(seconds: 1))
-            : Stream.value(authState),
-      )
-      .map<AppAuthUser>(
-        (authState) => GWCommunitySupabaseUser(authState.session?.user),
-      );
+  // Get current user
+  final currentUser = SupaFlow.client.auth.currentUser;
+
+  // Create stream that emits current user first, then listens for changes
+  return Stream<AppAuthUser>.value(GWCommunitySupabaseUser(currentUser))
+      .concatWith([
+    SupaFlow.client.auth.onAuthStateChange
+        .debounce(
+          (authState) => authState.event == AuthChangeEvent.tokenRefreshed
+              ? TimerStream(authState, const Duration(seconds: 1))
+              : Stream.value(authState),
+        )
+        .map<AppAuthUser>(
+          (authState) => GWCommunitySupabaseUser(authState.session?.user),
+        ),
+  ]);
 }
