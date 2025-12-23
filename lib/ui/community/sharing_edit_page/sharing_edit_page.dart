@@ -114,9 +114,6 @@ class _SharingEditPageContent extends StatelessWidget {
               // Header com avatar e informações do usuário
               _buildHeader(context, viewModel),
 
-              // Campo de título
-              _buildTitleField(context, viewModel),
-
               // Campo de texto/experiência
               _buildTextField(context, viewModel),
 
@@ -141,44 +138,80 @@ class _SharingEditPageContent extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(16.0, 24.0, 16.0, 32.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          UserAvatar(
-            imageUrl: sharing.photoUrl,
-            fullName: sharing.fullName,
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(12.0, 4.0, 0.0, 0.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    valueOrDefault<String>(sharing.displayName, 'name'),
-                    style: AppTheme.of(context).bodyLarge.override(
-                          font: GoogleFonts.inter(fontWeight: FontWeight.normal),
-                          color: AppTheme.of(context).secondary,
-                          fontSize: 16.0,
-                          letterSpacing: 0.0,
-                        ),
-                  ),
-                  if (sharing.groupName != null && sharing.groupName != '')
-                    Text(
-                      'From group ${sharing.groupName}',
-                      style: AppTheme.of(context).bodyMedium.override(
-                            font: GoogleFonts.lexendDeca(),
-                            color: AppTheme.of(context).primary,
-                            fontSize: 12.0,
-                            letterSpacing: 0.0,
-                          ),
+          // Draft indicator badge
+          if (viewModel.isDraft)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12.0),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE3F2FD),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      Icons.edit_note,
+                      size: 18,
+                      color: Color(0xFF1976D2),
                     ),
-                  _buildVisibilityText(context, viewModel),
-                ],
+                    const SizedBox(width: 8),
+                    Text(
+                      'Draft - Not published yet',
+                      style: GoogleFonts.lexendDeca(
+                        fontSize: 13.0,
+                        fontWeight: FontWeight.w500,
+                        color: const Color(0xFF1976D2),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              UserAvatar(
+                imageUrl: sharing.photoUrl,
+                fullName: sharing.fullName,
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(12.0, 4.0, 0.0, 0.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        valueOrDefault<String>(sharing.displayName, 'name'),
+                        style: AppTheme.of(context).bodyLarge.override(
+                              font: GoogleFonts.inter(fontWeight: FontWeight.normal),
+                              color: AppTheme.of(context).secondary,
+                              fontSize: 16.0,
+                              letterSpacing: 0.0,
+                            ),
+                      ),
+                      if (sharing.groupName != null && sharing.groupName != '')
+                        Text(
+                          'From group ${sharing.groupName}',
+                          style: AppTheme.of(context).bodyMedium.override(
+                                font: GoogleFonts.lexendDeca(),
+                                color: AppTheme.of(context).primary,
+                                fontSize: 12.0,
+                                letterSpacing: 0.0,
+                              ),
+                        ),
+                      _buildVisibilityText(context, viewModel),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -201,65 +234,6 @@ class _SharingEditPageContent extends StatelessWidget {
             fontSize: 12.0,
             letterSpacing: 0.0,
           ),
-    );
-  }
-
-  Widget _buildTitleField(BuildContext context, SharingEditViewModel viewModel) {
-    return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(4.0, 4.0, 4.0, 8.0),
-      child: TextFormField(
-        controller: viewModel.titleController,
-        focusNode: viewModel.titleFocusNode,
-        autofocus: false,
-        obscureText: false,
-        decoration: InputDecoration(
-          labelText: 'Title',
-          labelStyle: AppTheme.of(context).labelLarge.override(
-                font: GoogleFonts.poppins(),
-                color: AppTheme.of(context).primary,
-                fontSize: 18.0,
-                letterSpacing: 0.0,
-              ),
-          hintText: '[Some title for your experience...]',
-          hintStyle: AppTheme.of(context).bodySmall.override(
-                font: GoogleFonts.lexendDeca(),
-                color: AppTheme.of(context).secondary,
-                letterSpacing: 0.0,
-              ),
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: AppTheme.of(context).alternate,
-              width: 1.0,
-            ),
-            borderRadius: BorderRadius.circular(16.0),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: AppTheme.of(context).alternate,
-              width: 1.0,
-            ),
-            borderRadius: BorderRadius.circular(16.0),
-          ),
-          errorBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: Color(0x00000000), width: 1.0),
-            borderRadius: BorderRadius.circular(16.0),
-          ),
-          focusedErrorBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: Color(0x00000000), width: 1.0),
-            borderRadius: BorderRadius.circular(16.0),
-          ),
-          filled: true,
-          fillColor: const Color(0xFFF9FAFB),
-        ),
-        style: AppTheme.of(context).bodyMedium.override(
-              font: GoogleFonts.lexendDeca(),
-              color: AppTheme.of(context).secondary,
-              fontSize: 14.0,
-              letterSpacing: 0.0,
-            ),
-        maxLines: 2,
-        validator: viewModel.validateTitle,
-      ),
     );
   }
 
@@ -395,6 +369,10 @@ class _SharingEditPageContent extends StatelessWidget {
   }
 
   Widget _buildActions(BuildContext context, SharingEditViewModel viewModel) {
+    // Texto do botão principal depende do status atual
+    final publishButtonText = viewModel.isDraft ? 'Publish' : 'Save';
+
+
     return Padding(
       padding: const EdgeInsets.all(4.0),
       child: Row(
@@ -409,7 +387,7 @@ class _SharingEditPageContent extends StatelessWidget {
               text: 'Cancel',
               options: FFButtonOptions(
                 height: 40.0,
-                padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
+                padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
                 iconPadding: const EdgeInsets.all(0.0),
                 color: AppTheme.of(context).primaryBackground,
                 textStyle: AppTheme.of(context).labelLarge.override(
@@ -426,12 +404,49 @@ class _SharingEditPageContent extends StatelessWidget {
               ),
             ),
           ),
-          // Botão Save
+          // Botão Save Draft
+          Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
+            child: FFButtonWidget(
+              onPressed: viewModel.isSaving || !viewModel.canSave()
+                  ? null
+                  : () async {
+                      final success = await viewModel.saveDraftCommand(context);
+                      if (success && context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: const Text('Draft saved'),
+                            backgroundColor: AppTheme.of(context).success,
+                          ),
+                        );
+                      }
+                    },
+              text: 'Save Draft',
+              options: FFButtonOptions(
+                height: 40.0,
+                padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+                iconPadding: const EdgeInsets.all(0.0),
+                color: AppTheme.of(context).primaryBackground,
+                textStyle: AppTheme.of(context).labelLarge.override(
+                      font: GoogleFonts.poppins(),
+                      color: AppTheme.of(context).primary,
+                      letterSpacing: 0.0,
+                    ),
+                elevation: 0.0,
+                borderSide: BorderSide(
+                  color: AppTheme.of(context).primary,
+                  width: 1.0,
+                ),
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+            ),
+          ),
+          // Botão Save/Publish
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
             child: FFButtonWidget(
               onPressed: viewModel.isSaving || !viewModel.canSave() ? null : () => viewModel.saveCommand(context),
-              text: viewModel.isSaving ? 'Saving...' : 'Save Experience',
+              text: viewModel.isSaving ? 'Saving...' : publishButtonText,
               options: FFButtonOptions(
                 height: 40.0,
                 padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),

@@ -10,7 +10,11 @@
       "Bash(flutter run:*)",
       "Bash(supabase db execute:*)",
       "Bash(flutter clean:*)",
-      "Bash(flutter pub get:*)"
+      "Bash(flutter pub get:*)",
+      "Bash(cat:*)",
+      "Bash(npx supabase db execute:*)",
+      "Bash(npx supabase:*)",
+      "Bash(pbcopy)"
     ]
   }
 }

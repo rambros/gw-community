@@ -70,7 +70,8 @@ class GroupSharingsTab extends StatelessWidget {
                     }
 
                     return ListView.builder(
-                      padding: EdgeInsets.zero,
+                      // Padding no final para não cobrir o FAB
+                      padding: const EdgeInsets.only(bottom: 80.0),
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: sharingsList.length,

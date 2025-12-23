@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '/ui/core/themes/app_theme.dart';
 import '/utils/flutter_flow_util.dart';
+import '/utils/context_extensions.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/ui/core/ui/flutter_flow_icon_button.dart';
 import '/data/repositories/group_repository.dart';
@@ -45,6 +46,7 @@ class _GroupDetailsPageState extends State<GroupDetailsPage> with TickerProvider
         context.read<EventRepository>(),
         context.read<NotificationRepository>(),
         widget.groupRow,
+        currentUserId: context.currentUserIdOrEmpty,
       )..init(this),
       child: const GroupDetailsPageView(),
     );

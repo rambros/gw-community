@@ -29,64 +29,61 @@ class JourneyStepItemWidget extends StatelessWidget {
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsetsDirectional.fromSTEB(4.0, 0.0, 4.0, 0.0),
-        child: IntrinsicHeight(
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Timeline column with continuous line
-              SizedBox(
-                width: 40.0,
-                child: Stack(
-                  alignment: Alignment.topCenter,
-                  children: [
-                    // Continuous vertical line behind the indicator
-                    if (!isLastStep)
-                      Positioned.fill(
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Container(
-                            width: 2.0,
-                            color: AppTheme.of(context).primary,
-                          ),
+        child: Stack(
+          children: [
+            // Content column
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsetsDirectional.fromSTEB(40.0, 0.0, 0.0, 12.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    stepRow.title ?? 'Step Title',
+                    style: AppTheme.of(context).journey.stepTitle.override(
+                          color: (stepRow.stepStatus != 'open' && stepRow.stepStatus != 'closed')
+                              ? AppTheme.of(context).alternate
+                              : AppTheme.of(context).primaryText,
+                        ),
+                  ),
+                  Text(
+                    stepRow.description ?? 'Description',
+                    style: AppTheme.of(context).journey.stepDescription.override(
+                          color: (stepRow.stepStatus != 'open' && stepRow.stepStatus != 'closed')
+                              ? AppTheme.of(context).alternate
+                              : AppTheme.of(context).primaryText,
+                        ),
+                  ),
+                ],
+              ),
+            ),
+            // Timeline column with continuous line
+            PositionedDirectional(
+              start: 0.0,
+              top: 0.0,
+              bottom: 0.0,
+              width: 40.0,
+              child: Stack(
+                alignment: Alignment.topCenter,
+                children: [
+                  // Continuous vertical line behind the indicator
+                  if (!isLastStep)
+                    Positioned.fill(
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Container(
+                          width: 2.0,
+                          color: AppTheme.of(context).primary,
                         ),
                       ),
-                    // Step indicator on top
-                    _buildStepIndicator(context),
-                  ],
-                ),
+                    ),
+                  // Step indicator on top
+                  _buildStepIndicator(context),
+                ],
               ),
-              // Content column
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        stepRow.title ?? 'Step Title',
-                        style: AppTheme.of(context).journey.stepTitle.override(
-                              color: (stepRow.stepStatus != 'open' && stepRow.stepStatus != 'closed')
-                                  ? AppTheme.of(context).alternate
-                                  : AppTheme.of(context).primaryText,
-                            ),
-                      ),
-                      Text(
-                        stepRow.description ?? 'Description',
-                        style: AppTheme.of(context).journey.stepDescription.override(
-                              color: (stepRow.stepStatus != 'open' && stepRow.stepStatus != 'closed')
-                                  ? AppTheme.of(context).alternate
-                                  : AppTheme.of(context).primaryText,
-                            ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

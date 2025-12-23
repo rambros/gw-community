@@ -46,4 +46,19 @@ class CcSharingsRow extends SupabaseDataRow {
 
   String? get type => getField<String>('type');
   set type(String? value) => setField<String>('type', value);
+
+  String? get moderationStatus => getField<String>('moderation_status');
+  set moderationStatus(String? value) =>
+      setField<String>('moderation_status', value);
+
+  String? get moderationReason => getField<String>('moderation_reason');
+  set moderationReason(String? value) =>
+      setField<String>('moderation_reason', value);
+
+  String? get moderatedBy => getField<String>('moderated_by');
+  set moderatedBy(String? value) => setField<String>('moderated_by', value);
+
+  DateTime? get moderatedAt => getField<DateTime>('moderated_at');
+  set moderatedAt(DateTime? value) =>
+      setField<DateTime>('moderated_at', value);
 }

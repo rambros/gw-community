@@ -139,6 +139,14 @@ class SharingViewViewModel extends ChangeNotifier {
     return _sharing!.userId == currentUserUid || _isAdmin();
   }
 
+  /// Verifica se o usuário atual pode editar o sharing
+  /// Pode editar apenas se for o autor
+  bool canEdit() {
+    if (_sharing == null) return false;
+
+    return _sharing!.userId == currentUserUid;
+  }
+
   /// Verifica se o usuário atual pode fazer lock/unlock do sharing
   /// Pode fazer lock se for o autor OU se for admin
   bool canLock() {

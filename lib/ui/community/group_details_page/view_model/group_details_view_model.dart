@@ -11,14 +11,16 @@ class GroupDetailsViewModel extends ChangeNotifier {
   final EventRepository _eventRepository;
   final NotificationRepository _notificationRepository;
   final CcGroupsRow group;
+  final String? currentUserId;
 
   GroupDetailsViewModel(
     this._groupRepository,
     this._sharingRepository,
     this._eventRepository,
     this._notificationRepository,
-    this.group,
-  );
+    this.group, {
+    this.currentUserId,
+  });
 
   late TabController tabController;
 
@@ -34,7 +36,7 @@ class GroupDetailsViewModel extends ChangeNotifier {
   bool get isLoadingMembers => _isLoadingMembers;
 
   Stream<List<CcViewSharingsUsersRow>> get sharingsStream {
-    _sharingsStream ??= _sharingRepository.getSharingsStream(group.id);
+    _sharingsStream ??= _sharingRepository.getSharingsStream(group.id, currentUserId: currentUserId);
     return _sharingsStream!;
   }
 

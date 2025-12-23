@@ -2,6 +2,7 @@ import '/ui/core/ui/flutter_flow_icon_button.dart';
 import '/ui/core/themes/app_theme.dart';
 import '/utils/flutter_flow_util.dart';
 import '../widgets/add_comment/add_comment_widget.dart';
+import '../sharing_edit_page/sharing_edit_page.dart';
 import 'view_model/sharing_view_view_model.dart';
 import 'widgets/sharing_header_widget.dart';
 import 'widgets/sharing_content_widget.dart';
@@ -213,9 +214,11 @@ class _SharingViewPageState extends State<SharingViewPage> {
             padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 4.0, 8.0),
             child: SharingActionsWidget(
               sharing: sharing,
+              canEdit: viewModel.canEdit(),
               canDelete: viewModel.canDelete(),
               canLock: viewModel.canLock(),
               onComment: () => _showAddCommentModal(context, widget.sharingId!, null),
+              onEdit: () => _handleEditSharing(context, sharing),
               onDelete: () => _handleDeleteSharing(context, viewModel),
               onToggleLock: () => viewModel.toggleLockCommand(widget.sharingId!),
             ),
@@ -302,6 +305,18 @@ class _SharingViewPageState extends State<SharingViewPage> {
 
     if (context.mounted) {
       context.read<SharingViewViewModel>().refreshComments(sharingId);
+    }
+  }
+
+  Future<void> _handleEditSharing(BuildContext context, sharing) async {
+    await context.pushNamed(
+      SharingEditPage.routeName,
+      extra: {'sharingRow': sharing},
+    );
+
+    // Recarregar dados após voltar da edição
+    if (context.mounted && widget.sharingId != null) {
+      context.read<SharingViewViewModel>().loadSharing(widget.sharingId!);
     }
   }
 

@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'package:flutter/foundation.dart';
 import '/data/services/supabase/supabase.dart';
 
 /// Repository responsável por todas as operações de dados relacionadas a Sharings e Comentários
@@ -84,13 +86,16 @@ class SharingRepository {
 
   /// Atualiza um sharing existente
   ///
-  /// Atualiza título, texto, visibilidade e privacy de um sharing
+  /// Atualiza título, texto, visibilidade e privacy de um sharing.
+  /// Se [keepAsDraft] for true, mantém como draft.
+  /// Caso contrário, resets moderation_status to 'pending' for re-review.
   Future<void> updateSharing({
     required int id,
     required String title,
     required String text,
     required String visibility,
     required String privacy,
+    bool keepAsDraft = false,
   }) async {
     await CcSharingsTable().update(
       data: {
@@ -99,24 +104,79 @@ class SharingRepository {
         'updated_at': supaSerialize<DateTime>(DateTime.now()),
         'privacy': privacy,
         'visibility': visibility,
+        // Keep as draft or reset for re-review
+        'moderation_status': keepAsDraft ? 'draft' : 'pending',
+        'moderation_reason': null,
+        'moderated_by': null,
+        'moderated_at': null,
       },
       matchingRows: (rows) => rows.eqOrNull('id', id),
     );
   }
 
   /// Retorna um stream de sharings para um grupo específico
-  Stream<List<CcViewSharingsUsersRow>> getSharingsStream(int groupId) {
-    return SupaFlow.client
-        .from("cc_view_sharings_users")
+  /// Aplica filtro de moderação: mostra apenas experiências aprovadas ou do próprio usuário
+  ///
+  /// Nota: Supabase Realtime não funciona com views, então escutamos a tabela real
+  /// e re-fazemos a query na view quando há mudanças.
+  Stream<List<CcViewSharingsUsersRow>> getSharingsStream(int groupId, {String? currentUserId}) {
+    final controller = StreamController<List<CcViewSharingsUsersRow>>();
+
+    // Carrega dados iniciais
+    _loadSharingsFromView(groupId, currentUserId).then((data) {
+      if (!controller.isClosed) {
+        controller.add(data);
+      }
+    });
+
+    // Escuta mudanças na tabela real (cc_sharings)
+    final subscription = SupaFlow.client
+        .from('cc_sharings')
         .stream(primaryKey: ['id'])
         .eq('group_id', groupId)
-        .order('updated_at')
-        .map((list) => list.map((item) => CcViewSharingsUsersRow(item)).toList());
+        .listen((_) async {
+          // Quando há mudança, re-carrega da view
+          final data = await _loadSharingsFromView(groupId, currentUserId);
+          if (!controller.isClosed) {
+            controller.add(data);
+          }
+        });
+
+    // Cleanup quando o stream for cancelado
+    controller.onCancel = () {
+      subscription.cancel();
+      controller.close();
+    };
+
+    return controller.stream;
+  }
+
+  /// Helper para carregar sharings da view com filtro de moderação
+  Future<List<CcViewSharingsUsersRow>> _loadSharingsFromView(int groupId, String? currentUserId) async {
+    final result = await CcViewSharingsUsersTable().queryRows(
+      queryFn: (q) => q.eqOrNull('group_id', groupId).order('updated_at', ascending: false),
+    );
+
+    // Filtra: approved OU do próprio usuário OU sem status (legado)
+    final filtered = result.where((item) {
+      final status = item.moderationStatus;
+      final ownerId = item.userId;
+
+      // Mostrar se: aprovado, sem status (legado), ou é do próprio usuário
+      final isApproved = status == 'approved' || status == null;
+      final isOwner = currentUserId != null && ownerId == currentUserId;
+
+      return isApproved || isOwner;
+    }).toList();
+
+    return filtered;
   }
 
   /// Cria um novo sharing
   ///
-  /// Insere um novo sharing no banco de dados com todos os campos necessários
+  /// Insere um novo sharing no banco de dados com todos os campos necessários.
+  /// Se [isDraft] for true, cria com moderation_status = 'draft' (rascunho).
+  /// Caso contrário, cria com moderation_status = 'pending' para moderação.
   Future<void> createSharing({
     required String title,
     required String text,
@@ -125,6 +185,7 @@ class SharingRepository {
     required String visibility,
     required String type,
     int? groupId,
+    bool isDraft = false,
   }) async {
     await CcSharingsTable().insert({
       'title': title,
@@ -132,9 +193,12 @@ class SharingRepository {
       'user_id': userId,
       'text': text,
       'group_id': groupId,
+      'created_at': supaSerialize<DateTime>(DateTime.now()),
       'updated_at': supaSerialize<DateTime>(DateTime.now()),
       'visibility': visibility,
       'type': type,
+      'moderation_status': isDraft ? 'draft' : 'pending',
+      'locked': false,
     });
   }
 
@@ -146,5 +210,124 @@ class SharingRepository {
       queryFn: (q) => q.eqOrNull('auth_user_id', authUserId),
     );
     return result.isNotEmpty ? result.first : null;
+  }
+
+  // ==========================================================================
+  // MODERATION METHODS
+  // ==========================================================================
+
+  /// Submit experience for moderation (sets status to pending)
+  Future<bool> submitExperienceForModeration(int experienceId) async {
+    try {
+      await CcSharingsTable().update(
+        data: {
+          'moderation_status': 'pending',
+          'moderated_by': null,
+          'moderated_at': null,
+          'moderation_reason': null,
+        },
+        matchingRows: (rows) => rows.eqOrNull('id', experienceId),
+      );
+      return true;
+    } catch (e) {
+      debugPrint('Error submitting for moderation: $e');
+      return false;
+    }
+  }
+
+  /// Create new experience with pending moderation status
+  Future<int?> createExperienceWithModeration({
+    required String title,
+    required String text,
+    required String privacy,
+    required String userId,
+    required String visibility,
+    int? groupId,
+  }) async {
+    try {
+      final result = await CcSharingsTable().insert({
+        'title': title,
+        'text': text,
+        'privacy': privacy,
+        'user_id': userId,
+        'group_id': groupId,
+        'visibility': visibility,
+        'type': 'sharing',
+        'moderation_status': 'pending',
+        'locked': false,
+        'created_at': supaSerialize<DateTime>(DateTime.now()),
+        'updated_at': supaSerialize<DateTime>(DateTime.now()),
+      });
+      return result.id;
+    } catch (e) {
+      debugPrint('Error creating experience: $e');
+      return null;
+    }
+  }
+
+  /// Get moderation status for an experience
+  Future<Map<String, dynamic>?> getModerationStatus(int experienceId) async {
+    try {
+      final result = await CcSharingsTable().querySingleRow(
+        queryFn: (q) => q.eqOrNull('id', experienceId),
+      );
+      if (result.isEmpty) return null;
+
+      final sharing = result.first;
+      return {
+        'moderation_status': sharing.data['moderation_status'],
+        'moderation_reason': sharing.data['moderation_reason'],
+        'moderated_at': sharing.data['moderated_at'],
+      };
+    } catch (e) {
+      debugPrint('Error fetching moderation status: $e');
+      return null;
+    }
+  }
+
+  /// Publish a draft experience (changes status from 'draft' to 'pending')
+  Future<bool> publishDraft(int experienceId) async {
+    try {
+      await CcSharingsTable().update(
+        data: {
+          'moderation_status': 'pending',
+          'updated_at': supaSerialize<DateTime>(DateTime.now()),
+        },
+        matchingRows: (rows) => rows.eqOrNull('id', experienceId),
+      );
+      return true;
+    } catch (e) {
+      debugPrint('Error publishing draft: $e');
+      return false;
+    }
+  }
+
+  /// Update and resubmit experience after changes requested
+  Future<bool> resubmitExperience(
+    int experienceId, {
+    String? title,
+    String? text,
+  }) async {
+    try {
+      final updates = <String, dynamic>{
+        'moderation_status': 'pending',
+        'moderation_reason': null,
+        'moderated_by': null,
+        'moderated_at': null,
+        'updated_at': supaSerialize<DateTime>(DateTime.now()),
+      };
+
+      if (title != null) updates['title'] = title;
+      if (text != null) updates['text'] = text;
+
+      await CcSharingsTable().update(
+        data: updates,
+        matchingRows: (rows) => rows.eqOrNull('id', experienceId),
+      );
+      return true;
+    } catch (e) {
+      debugPrint('Error resubmitting experience: $e');
+      return false;
+    }
   }
 }

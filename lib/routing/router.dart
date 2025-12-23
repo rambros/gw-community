@@ -434,7 +434,17 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: OnBoardingPage.routeName,
           path: OnBoardingPage.routePath,
           builder: (context, params) => const OnBoardingPage(),
-        )
+        ),
+        FFRoute(
+          name: InAppNotificationsPage.routeName,
+          path: InAppNotificationsPage.routePath,
+          builder: (context, params) => const InAppNotificationsPage(),
+        ),
+        FFRoute(
+          name: MyExperiencesPage.routeName,
+          path: MyExperiencesPage.routePath,
+          builder: (context, params) => const MyExperiencesPage(),
+        ),
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
       observers: [routeObserver],
     );

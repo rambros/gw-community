@@ -351,7 +351,7 @@ class _SharingAddPageContent extends StatelessWidget {
               text: 'Cancel',
               options: FFButtonOptions(
                 height: 40.0,
-                padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
+                padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
                 iconPadding: const EdgeInsets.all(0.0),
                 color: AppTheme.of(context).primaryBackground,
                 textStyle: AppTheme.of(context).labelLarge.override(
@@ -368,12 +368,49 @@ class _SharingAddPageContent extends StatelessWidget {
               ),
             ),
           ),
-          // Botão Add Experience
+          // Botão Save as Draft
+          Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
+            child: FFButtonWidget(
+              onPressed: viewModel.isSaving || !viewModel.canSave()
+                  ? null
+                  : () async {
+                      final success = await viewModel.saveDraftCommand(context);
+                      if (success && context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: const Text('Draft saved'),
+                            backgroundColor: AppTheme.of(context).success,
+                          ),
+                        );
+                      }
+                    },
+              text: 'Save as Draft',
+              options: FFButtonOptions(
+                height: 40.0,
+                padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+                iconPadding: const EdgeInsets.all(0.0),
+                color: AppTheme.of(context).primaryBackground,
+                textStyle: AppTheme.of(context).labelLarge.override(
+                      font: GoogleFonts.poppins(),
+                      color: AppTheme.of(context).primary,
+                      letterSpacing: 0.0,
+                    ),
+                elevation: 0.0,
+                borderSide: BorderSide(
+                  color: AppTheme.of(context).primary,
+                  width: 1.0,
+                ),
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+            ),
+          ),
+          // Botão Publish
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
             child: FFButtonWidget(
               onPressed: viewModel.isSaving || !viewModel.canSave() ? null : () => viewModel.saveCommand(context),
-              text: viewModel.isSaving ? 'Saving...' : 'Add Experience',
+              text: viewModel.isSaving ? 'Saving...' : 'Publish',
               options: FFButtonOptions(
                 height: 40.0,
                 padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),

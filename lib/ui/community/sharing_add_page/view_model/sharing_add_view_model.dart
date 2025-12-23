@@ -116,11 +116,21 @@ class SharingAddViewModel extends ChangeNotifier {
     }
   }
 
-  /// Salva o sharing
-  Future<void> saveCommand(BuildContext context) async {
+  /// Salva o sharing e publica (envia para moderação)
+  Future<bool> saveCommand(BuildContext context, {bool navigateAway = true}) async {
+    return _save(context, isDraft: false, navigateAway: navigateAway);
+  }
+
+  /// Salva como rascunho (draft) - não envia para moderação
+  Future<bool> saveDraftCommand(BuildContext context) async {
+    return _save(context, isDraft: true, navigateAway: false);
+  }
+
+  /// Método interno que salva o sharing
+  Future<bool> _save(BuildContext context, {required bool isDraft, required bool navigateAway}) async {
     if (!canSave()) {
       _setError('Please fill in all required fields');
-      return;
+      return false;
     }
 
     _setSaving(true);
@@ -140,16 +150,20 @@ class SharingAddViewModel extends ChangeNotifier {
         visibility: _visibility,
         type: SharingType.sharing.name,
         groupId: groupId,
+        isDraft: isDraft,
       );
 
-      _setSuccess('Sharing created with success');
+      _setSuccess(isDraft ? 'Draft saved' : 'Sharing created with success');
 
-      // Navigate back to community page
-      if (context.mounted) {
+      // Navigate back to community page only if not a draft
+      if (navigateAway && context.mounted) {
         context.pushNamed(CommunityPage.routeName);
       }
+
+      return true;
     } catch (e) {
       _setError('Error creating sharing: $e');
+      return false;
     } finally {
       _setSaving(false);
     }

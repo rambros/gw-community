@@ -1,19 +1,44 @@
+import 'package:flutter/foundation.dart';
+
 import '/data/services/supabase/supabase.dart';
 
 class CommunityRepository {
-  Stream<List<CcViewSharingsUsersRow>> getSharingsStream() {
+  /// Stream de sharings visíveis para todos
+  /// Mostra experiências aprovadas + experiências do próprio usuário (qualquer status)
+  Stream<List<CcViewSharingsUsersRow>> getSharingsStream({String? currentUserId}) {
     return SupaFlow.client
         .from("cc_view_sharings_users")
         .stream(primaryKey: ['id'])
         .eq('visibility', 'everyone')
         .order('updated_at', ascending: false)
         .map((list) {
-          // Debug: Log para verificar nomes
-          if (list.isNotEmpty) {
-            print('DEBUG: First sharing - display_name: ${list.first['display_name']}, full_name: ${list.first['full_name']}');
-          }
-          return list.map((item) => CcViewSharingsUsersRow(item)).toList();
+          debugPrint('getSharingsStream: received ${list.length} items from stream');
+          // Filtra: approved OU do próprio usuário OU sem status (legado)
+          final filtered = list.where((item) {
+            final status = item['moderation_status'] as String?;
+            final ownerId = item['user_id']?.toString();
+
+            // Mostrar se: aprovado, sem status (legado), ou é do próprio usuário
+            final isApproved = status == 'approved' || status == null;
+            final isOwner = currentUserId != null && ownerId == currentUserId;
+
+            debugPrint('getSharingsStream: item id=${item['id']}, status=$status, ownerId=$ownerId, isApproved=$isApproved, isOwner=$isOwner');
+
+            return isApproved || isOwner;
+          }).toList();
+          debugPrint('getSharingsStream: filtered to ${filtered.length} items');
+          return filtered.map((item) => CcViewSharingsUsersRow(item)).toList();
         });
+  }
+
+  /// Stream de sharings do próprio usuário (inclui pending, changes_requested, etc)
+  Stream<List<CcViewSharingsUsersRow>> getMyExperiencesStream(String userId) {
+    return SupaFlow.client
+        .from("cc_view_sharings_users")
+        .stream(primaryKey: ['id'])
+        .eq('user_id', userId)
+        .order('updated_at', ascending: false)
+        .map((list) => list.map((item) => CcViewSharingsUsersRow(item)).toList());
   }
 
   Future<List<CcEventsRow>> getEvents(String currentUserUid) async {

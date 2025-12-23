@@ -56,4 +56,10 @@ class CcViewSharingsUsersRow extends SupabaseDataRow {
 
   int? get comments => getField<int>('comments');
   set comments(int? value) => setField<int>('comments', value);
+
+  String? get moderationStatus => getField<String>('moderation_status');
+  set moderationStatus(String? value) => setField<String>('moderation_status', value);
+
+  String? get moderationReason => getField<String>('moderation_reason');
+  set moderationReason(String? value) => setField<String>('moderation_reason', value);
 }

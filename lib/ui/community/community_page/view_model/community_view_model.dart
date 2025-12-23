@@ -13,7 +13,12 @@ class CommunityViewModel extends ChangeNotifier {
     _init();
   }
 
+  /// Stream de experiências aprovadas visíveis para todos
   Stream<List<CcViewSharingsUsersRow>>? sharingsListSupabaseStream;
+
+  /// Stream das experiências do próprio usuário (inclui pending, changes_requested)
+  Stream<List<CcViewSharingsUsersRow>>? myExperiencesStream;
+
   List<CcEventsRow> listEvents = [];
   List<CcEventsRow> listRealEventsUpcomming = [];
   List<CcEventsRow> listRealEventsRecorded = [];
@@ -23,7 +28,8 @@ class CommunityViewModel extends ChangeNotifier {
   List<CcGroupsRow> availableGroups = [];
 
   void _init() {
-    sharingsListSupabaseStream = _repository.getSharingsStream();
+    sharingsListSupabaseStream = _repository.getSharingsStream(currentUserId: currentUserUid);
+    myExperiencesStream = _repository.getMyExperiencesStream(currentUserUid);
   }
 
   Future<void> fetchEvents(String type) async {

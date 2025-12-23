@@ -36,3 +36,5 @@ export '/ui/profile/user_journal_view/user_journal_view_page.dart' show UserJour
 export '/ui/profile/user_journal_edit/user_journal_edit_page.dart' show UserJournalEditPage;
 export '/ui/profile/user_journeys_view/user_journeys_view_page.dart' show UserJourneysViewPage;
 export '/ui/auth/on_boarding_page/on_boarding_page.dart' show OnBoardingPage;
+export '/ui/notifications/in_app_notifications_page/in_app_notifications_page.dart' show InAppNotificationsPage;
+export 'ui/community/my_experiences_page/my_experiences_page.dart' show MyExperiencesPage;

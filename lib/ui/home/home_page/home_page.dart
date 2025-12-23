@@ -4,6 +4,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 
 import '/ui/core/themes/app_theme.dart';
+import '/ui/core/widgets/notification_bell/notification_bell_widget.dart';
 import 'view_model/home_view_model.dart';
 import 'widgets/home_journey_card.dart';
 import 'widgets/home_event_card.dart';
@@ -104,16 +105,25 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildHeader(BuildContext context) {
     return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(0.0, 36.0, 0.0, 0.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
+      padding: const EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 0.0),
+      child: Stack(
         children: [
-          Image.asset(
-            'assets/images/GoodWishes_RGB_Logo_Stacked_600.png',
-            width: 300.0,
-            height: 88.0,
-            fit: BoxFit.cover,
+          // Notification bell positioned at top right
+          const Positioned(
+            top: 0,
+            right: 0,
+            child: NotificationBellWidget(),
+          ),
+          // Centered logo
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 20.0),
+              child: Image.asset(
+                'assets/images/GoodWishes_RGB_Logo_Stacked_600.png',
+                height: 88.0,
+                fit: BoxFit.contain,
+              ),
+            ),
           ),
         ],
       ),

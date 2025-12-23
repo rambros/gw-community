@@ -56,3 +56,4 @@ export 'tables/user_recording_event_counts.dart';
 export 'tables/local.dart';
 export 'tables/cc_view_notifications_users.dart';
 export 'tables/cc_members.dart';
+export 'tables/cc_notifications.dart';

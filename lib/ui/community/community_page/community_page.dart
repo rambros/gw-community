@@ -4,6 +4,7 @@ import '/utils/flutter_flow_util.dart';
 import 'widgets/sharings_tab_widget.dart';
 import 'widgets/groups_tab_widget.dart';
 import 'widgets/events_tab_widget.dart';
+import '../my_experiences_page/my_experiences_page.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -95,7 +96,35 @@ class _CommunityPageState extends State<CommunityPage> with TickerProviderStateM
                       fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                     ),
               ),
-              actions: const [],
+              actions: [
+                PopupMenuButton<String>(
+                  icon: const Icon(
+                    Icons.more_vert,
+                    color: Colors.white,
+                  ),
+                  onSelected: (value) {
+                    if (value == 'my_experiences') {
+                      context.pushNamed(MyExperiencesPage.routeName);
+                    }
+                  },
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      value: 'my_experiences',
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.article_outlined,
+                            size: 20,
+                            color: AppTheme.of(context).secondary,
+                          ),
+                          const SizedBox(width: 12),
+                          const Text('My Experiences'),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
               centerTitle: true,
               elevation: 4.0,
             ),

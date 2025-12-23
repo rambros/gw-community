@@ -7,6 +7,7 @@ import '/ui/core/themes/app_theme.dart';
 import '/utils/flutter_flow_util.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 import '../../sharing_view_page/sharing_view_page.dart';
+import '../../sharing_edit_page/sharing_edit_page.dart';
 import '/utils/context_extensions.dart';
 
 class SharingCardWidget extends StatelessWidget {
@@ -80,6 +81,7 @@ class SharingCardWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildHeader(context),
+                  _buildModerationStatus(context),
                   _buildText(context),
                   _buildActions(context),
                 ],
@@ -96,6 +98,7 @@ class SharingCardWidget extends StatelessWidget {
       padding: const EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 12.0),
       child: Row(
         mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           UserAvatar(
             key: Key('Keys09_${index}_of_$totalCount'),
@@ -105,10 +108,10 @@ class SharingCardWidget extends StatelessWidget {
           ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(12.0, 16.0, 0.0, 0.0),
+              padding: const EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 0.0),
               child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
@@ -128,51 +131,137 @@ class SharingCardWidget extends StatelessWidget {
                           fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                         ),
                   ),
-                  if (sharingRow.groupName != null && sharingRow.groupName != '')
-                    RichText(
-                      textScaler: MediaQuery.of(context).textScaler,
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: 'From group ',
-                            style: TextStyle(
-                              color: AppTheme.of(context).primary,
-                              fontSize: 12.0,
-                            ),
-                          ),
-                          TextSpan(
-                            text: '${sharingRow.groupName}',
-                            style: AppTheme.of(context).bodyMedium.override(
-                                  font: GoogleFonts.lexendDeca(
-                                    fontWeight: FontWeight.bold,
-                                    fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                                  ),
-                                  color: AppTheme.of(context).primary,
-                                  fontSize: 12.0,
-                                  letterSpacing: 0.0,
-                                  fontWeight: FontWeight.bold,
-                                  fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                                ),
-                          )
-                        ],
-                        style: AppTheme.of(context).bodyMedium.override(
-                              font: GoogleFonts.lexendDeca(
-                                fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                                fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                              ),
-                              color: AppTheme.of(context).primary,
-                              fontSize: 12.0,
-                              letterSpacing: 0.0,
-                              fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                              fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                            ),
-                      ),
-                    ),
+                  _buildVisibilityLabel(context),
                 ],
               ),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildVisibilityLabel(BuildContext context) {
+    final visibility = sharingRow.visibility;
+    final groupName = sharingRow.groupName;
+
+    // visibility == 'everyone' means visible to everyone - don't show label
+    // Any other value (including 'group', null, 'visible', etc.) means visible only for the group
+    final isEveryone = visibility == 'everyone';
+
+    // Only show label if it's group-only visibility
+    if (!isEveryone && groupName != null && groupName.isNotEmpty) {
+      return RichText(
+        textScaler: MediaQuery.of(context).textScaler,
+        text: TextSpan(
+          children: [
+            TextSpan(
+              text: 'Visible only for ',
+              style: TextStyle(
+                color: AppTheme.of(context).primary,
+                fontSize: 12.0,
+              ),
+            ),
+            TextSpan(
+              text: groupName,
+              style: AppTheme.of(context).bodyMedium.override(
+                    font: GoogleFonts.lexendDeca(
+                      fontWeight: FontWeight.bold,
+                      fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
+                    ),
+                    color: AppTheme.of(context).primary,
+                    fontSize: 12.0,
+                    letterSpacing: 0.0,
+                    fontWeight: FontWeight.bold,
+                    fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
+                  ),
+            ),
+          ],
+          style: AppTheme.of(context).bodyMedium.override(
+                font: GoogleFonts.lexendDeca(
+                  fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                  fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
+                ),
+                color: AppTheme.of(context).primary,
+                fontSize: 12.0,
+                letterSpacing: 0.0,
+                fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
+              ),
+        ),
+      );
+    }
+
+    // Don't show anything for "everyone" visibility
+    return const SizedBox.shrink();
+  }
+
+  Widget _buildModerationStatus(BuildContext context) {
+    final isOwner = context.currentUserIdOrEmpty == sharingRow.userId;
+    final status = sharingRow.moderationStatus;
+
+    // Only show for owner and when status exists and is not approved
+    if (!isOwner || status == null || status == 'approved') {
+      return const SizedBox.shrink();
+    }
+
+    Color backgroundColor;
+    Color textColor;
+    IconData icon;
+    String label;
+
+    switch (status) {
+      case 'draft':
+        backgroundColor = const Color(0xFFE3F2FD);
+        textColor = const Color(0xFF1976D2);
+        icon = Icons.edit_note;
+        label = 'Draft';
+        break;
+      case 'pending':
+        backgroundColor = AppTheme.of(context).warning.withValues(alpha: 0.15);
+        textColor = const Color(0xFFB8860B);
+        icon = Icons.hourglass_empty;
+        label = 'Pending Review';
+        break;
+      case 'rejected':
+        backgroundColor = AppTheme.of(context).error.withValues(alpha: 0.15);
+        textColor = AppTheme.of(context).error;
+        icon = Icons.cancel_outlined;
+        label = 'Rejected';
+        break;
+      case 'changes_requested':
+        backgroundColor = AppTheme.of(context).copperRed.withValues(alpha: 0.15);
+        textColor = AppTheme.of(context).copperRed;
+        icon = Icons.edit_note;
+        label = 'Changes Requested';
+        break;
+      default:
+        return const SizedBox.shrink();
+    }
+
+    return Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 12.0),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 16, color: textColor),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: GoogleFonts.lexendDeca(
+                fontSize: 12.0,
+                fontWeight: FontWeight.w500,
+                color: textColor,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -249,13 +338,15 @@ class SharingCardWidget extends StatelessWidget {
               child: FFButtonWidget(
                 onPressed: () async {
                   context.pushNamed(
-                    SharingViewPage.routeName,
-                    queryParameters: {
-                      'sharingId': serializeParam(
-                        sharingRow.id,
-                        ParamType.int,
+                    SharingEditPage.routeName,
+                    extra: <String, dynamic>{
+                      'sharingRow': sharingRow,
+                      kTransitionInfoKey: const TransitionInfo(
+                        hasTransition: true,
+                        transitionType: PageTransitionType.fade,
+                        duration: Duration(milliseconds: 0),
                       ),
-                    }.withoutNulls,
+                    },
                   );
                 },
                 text: 'Edit',

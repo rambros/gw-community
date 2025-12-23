@@ -56,16 +56,6 @@ class SharingHeaderWidget extends StatelessWidget {
                             fontWeight: FontWeight.normal,
                           ),
                     ),
-                    if (sharing.groupName != null && sharing.groupName != '')
-                      Text(
-                        'From group ${sharing.groupName}',
-                        style: AppTheme.of(context).bodyMedium.override(
-                              font: GoogleFonts.lexendDeca(),
-                              color: AppTheme.of(context).primary,
-                              fontSize: 12.0,
-                              letterSpacing: 0.0,
-                            ),
-                      ),
                     _buildVisibilityText(context),
                   ],
                 ),
@@ -79,10 +69,47 @@ class SharingHeaderWidget extends StatelessWidget {
 
   Widget _buildVisibilityText(BuildContext context) {
     final isEveryone = sharing.visibility == 'everyone';
-    final text = isEveryone ? 'Visible to everyone' : 'Visible only for this group';
+    final groupName = sharing.groupName;
 
+    // If not everyone and has a group name, show "Visible only for <group name>"
+    if (!isEveryone && groupName != null && groupName.isNotEmpty) {
+      return RichText(
+        textScaler: MediaQuery.of(context).textScaler,
+        text: TextSpan(
+          children: [
+            TextSpan(
+              text: 'Visible only for ',
+              style: TextStyle(
+                color: AppTheme.of(context).primary,
+                fontSize: 12.0,
+              ),
+            ),
+            TextSpan(
+              text: groupName,
+              style: AppTheme.of(context).bodyMedium.override(
+                    font: GoogleFonts.lexendDeca(
+                      fontWeight: FontWeight.bold,
+                    ),
+                    color: AppTheme.of(context).primary,
+                    fontSize: 12.0,
+                    letterSpacing: 0.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+          ],
+          style: AppTheme.of(context).bodyMedium.override(
+                font: GoogleFonts.lexendDeca(),
+                color: AppTheme.of(context).primary,
+                fontSize: 12.0,
+                letterSpacing: 0.0,
+              ),
+        ),
+      );
+    }
+
+    // Default: "Visible for everyone"
     return Text(
-      text,
+      'Visible for everyone',
       style: AppTheme.of(context).bodyMedium.override(
             font: GoogleFonts.lexendDeca(),
             color: AppTheme.of(context).primary,

@@ -19,9 +19,7 @@ class SharingEditViewModel extends ChangeNotifier {
 
   // ========== FORM CONTROLLERS ==========
 
-  late TextEditingController titleController;
   late TextEditingController textController;
-  late FocusNode titleFocusNode;
   late FocusNode textFocusNode;
 
   String _visibility = '';
@@ -41,20 +39,28 @@ class SharingEditViewModel extends ChangeNotifier {
   // ========== INITIALIZATION ==========
 
   void _initializeForm() {
-    titleController = TextEditingController(text: originalSharing.title ?? '');
     textController = TextEditingController(text: originalSharing.text ?? '');
-    titleFocusNode = FocusNode();
     textFocusNode = FocusNode();
     _visibility = originalSharing.visibility ?? 'everyone';
   }
 
   // ========== COMMANDS (User Actions) ==========
 
-  /// Salva as alterações do sharing
-  Future<void> saveCommand(BuildContext context) async {
+  /// Salva as alterações do sharing (publica se era draft)
+  Future<bool> saveCommand(BuildContext context, {bool navigateAway = true}) async {
+    return _save(context, keepAsDraft: false, navigateAway: navigateAway);
+  }
+
+  /// Salva como rascunho (draft) - não envia para moderação
+  Future<bool> saveDraftCommand(BuildContext context) async {
+    return _save(context, keepAsDraft: true, navigateAway: false);
+  }
+
+  /// Método interno para salvar
+  Future<bool> _save(BuildContext context, {required bool keepAsDraft, required bool navigateAway}) async {
     if (!canSave()) {
       _setError('Please fill in all required fields');
-      return;
+      return false;
     }
 
     _setSaving(true);
@@ -63,18 +69,19 @@ class SharingEditViewModel extends ChangeNotifier {
     try {
       await _repository.updateSharing(
         id: originalSharing.id!,
-        title: titleController.text.trim(),
+        title: originalSharing.title ?? '',
         text: textController.text.trim(),
         visibility: _visibility,
         privacy: originalSharing.privacy ?? 'public',
+        keepAsDraft: keepAsDraft,
       );
 
-      _setSuccess('Experience updated successfully');
+      _setSuccess(keepAsDraft ? 'Draft saved' : 'Experience updated successfully');
 
       // Aguardar um pouco para mostrar mensagem
       await Future.delayed(const Duration(milliseconds: 500));
 
-      if (context.mounted) {
+      if (navigateAway && context.mounted) {
         context.goNamed(
           'communityPage',
           extra: <String, dynamic>{
@@ -86,8 +93,11 @@ class SharingEditViewModel extends ChangeNotifier {
           },
         );
       }
+
+      return true;
     } catch (e) {
       _setError('Error saving experience: $e');
+      return false;
     } finally {
       _setSaving(false);
     }
@@ -103,7 +113,6 @@ class SharingEditViewModel extends ChangeNotifier {
 
   /// Reseta o formulário para os valores originais
   void resetForm() {
-    titleController.text = originalSharing.title ?? '';
     textController.text = originalSharing.text ?? '';
     _visibility = originalSharing.visibility ?? 'everyone';
     _clearMessages();
@@ -120,14 +129,6 @@ class SharingEditViewModel extends ChangeNotifier {
 
   // ========== VALIDATIONS ==========
 
-  /// Verifica se o título é válido (não vazio)
-  String? validateTitle(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Title is required';
-    }
-    return null;
-  }
-
   /// Verifica se o texto é válido (não vazio)
   String? validateText(String? value) {
     if (value == null || value.trim().isEmpty) {
@@ -138,19 +139,23 @@ class SharingEditViewModel extends ChangeNotifier {
 
   /// Verifica se o formulário pode ser salvo
   bool canSave() {
-    return titleController.text.trim().isNotEmpty && textController.text.trim().isNotEmpty && !_isSaving;
+    return textController.text.trim().isNotEmpty && !_isSaving;
   }
 
   /// Verifica se houve mudanças no formulário
   bool get hasChanges {
-    return titleController.text.trim() != (originalSharing.title ?? '') ||
-        textController.text.trim() != (originalSharing.text ?? '') ||
+    return textController.text.trim() != (originalSharing.text ?? '') ||
         _visibility != (originalSharing.visibility ?? 'everyone');
   }
 
   /// Verifica se o sharing pertence a um grupo
   bool get hasGroup {
     return originalSharing.groupName != null && originalSharing.groupName!.isNotEmpty;
+  }
+
+  /// Verifica se é um rascunho (draft)
+  bool get isDraft {
+    return originalSharing.moderationStatus == 'draft';
   }
 
   // ========== HELPER METHODS ==========
@@ -179,9 +184,7 @@ class SharingEditViewModel extends ChangeNotifier {
 
   @override
   void dispose() {
-    titleController.dispose();
     textController.dispose();
-    titleFocusNode.dispose();
     textFocusNode.dispose();
     super.dispose();
   }
