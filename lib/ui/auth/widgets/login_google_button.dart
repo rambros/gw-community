@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '/ui/core/ui/flutter_flow_widgets.dart';
+import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
 
 /// UI-only Google login button that delegates behavior to the caller.
 class LoginGoogleButton extends StatelessWidget {

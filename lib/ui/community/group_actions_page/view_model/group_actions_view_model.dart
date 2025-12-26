@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '/data/repositories/group_repository.dart';
+import 'package:gw_community/data/repositories/group_repository.dart';
 
 class GroupActionsViewModel extends ChangeNotifier {
   final GroupRepository _groupRepository;

@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-import '/data/services/supabase/supabase.dart';
-import '/utils/flutter_flow_util.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/utils/flutter_flow_util.dart';
 
 const _googleScopes = ['profile', 'email'];
 Future<void>? _googleSignInInit;

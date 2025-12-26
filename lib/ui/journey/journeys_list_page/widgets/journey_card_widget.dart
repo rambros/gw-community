@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '/ui/core/themes/app_theme.dart';
-import '/ui/core/ui/flutter_flow_widgets.dart';
-import '/ui/journey/themes/journey_theme_extension.dart';
+import 'package:gw_community/ui/core/themes/app_theme.dart';
+import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
+import 'package:gw_community/ui/journey/themes/journey_theme_extension.dart';
 
 class JourneyCardWidget extends StatelessWidget {
   const JourneyCardWidget({

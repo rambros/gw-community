@@ -7,12 +7,11 @@ import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
+import 'package:gw_community/data/services/api/get_streamed_response.dart';
+import 'package:gw_community/utils/uploaded_file.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:mime_type/mime_type.dart';
-
-import '/utils/uploaded_file.dart';
-import 'get_streamed_response.dart';
 
 enum ApiCallType {
   GET,

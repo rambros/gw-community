@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '/ui/core/themes/app_theme.dart';
+import 'package:gw_community/ui/core/themes/app_theme.dart';
 
 /// Journey module typography system
 /// Uses LexendDeca for titles/headings and body text

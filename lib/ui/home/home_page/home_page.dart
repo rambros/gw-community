@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:gw_community/ui/core/themes/app_theme.dart';
+import 'package:gw_community/ui/core/widgets/notification_bell/notification_bell_widget.dart';
+import 'package:gw_community/ui/home/home_page/view_model/home_view_model.dart';
+import 'package:gw_community/ui/home/home_page/widgets/home_event_card.dart';
+import 'package:gw_community/ui/home/home_page/widgets/home_journey_card.dart';
 import 'package:provider/provider.dart';
-
-import '/ui/core/themes/app_theme.dart';
-import '/ui/core/widgets/notification_bell/notification_bell_widget.dart';
-import 'view_model/home_view_model.dart';
-import 'widgets/home_event_card.dart';
-import 'widgets/home_journey_card.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

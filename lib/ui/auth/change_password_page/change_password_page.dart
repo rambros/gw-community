@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/ui/auth/change_password_page/view_model/change_password_view_model.dart';
+import 'package:gw_community/ui/core/themes/app_theme.dart';
+import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
+import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
-
-import '/ui/core/themes/app_theme.dart';
-import '/ui/core/ui/flutter_flow_widgets.dart';
-import '/utils/flutter_flow_util.dart';
-import 'view_model/change_password_view_model.dart';
 
 class ChangePasswordPage extends StatefulWidget {
   const ChangePasswordPage({super.key});

@@ -18,13 +18,12 @@ import 'package:audio_session/audio_session.dart';
 // Imports custom functions
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gw_community/ui/core/themes/app_theme.dart';
+import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
-
-import '/ui/core/themes/app_theme.dart';
-import '/utils/flutter_flow_util.dart';
 
 class SeekBar extends StatefulWidget {
   final Duration duration;

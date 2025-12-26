@@ -1,4 +1,4 @@
-import '../database.dart';
+import 'package:gw_community/data/services/supabase/database/database.dart';
 
 class ViewContentTable extends SupabaseTable<ViewContentRow> {
   @override

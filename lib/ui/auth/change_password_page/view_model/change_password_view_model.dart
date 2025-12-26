@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '/data/repositories/auth_repository.dart';
+import 'package:gw_community/data/repositories/auth_repository.dart';
 
 class ChangePasswordViewModel extends ChangeNotifier {
   final AuthRepository _repository;

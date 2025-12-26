@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import '/data/repositories/in_app_notification_repository.dart';
-import '/data/services/supabase/supabase.dart';
+import 'package:gw_community/data/repositories/in_app_notification_repository.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
 
 /// ViewModel for managing in-app notifications page state
 ///

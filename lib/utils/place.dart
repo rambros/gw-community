@@ -1,4 +1,4 @@
-import 'lat_lng.dart';
+import 'package:gw_community/utils/lat_lng.dart';
 
 class FFPlace {
   const FFPlace({

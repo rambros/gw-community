@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/index.dart';
+import 'package:gw_community/ui/community/group_details_page/view_model/group_details_view_model.dart';
+import 'package:gw_community/ui/community/widgets/event_card.dart';
+import 'package:gw_community/ui/core/themes/app_theme.dart';
+import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
-
-import '/data/services/supabase/supabase.dart';
-import '/index.dart';
-import '/ui/community/widgets/event_card.dart';
-import '/ui/core/themes/app_theme.dart';
-import '/utils/flutter_flow_util.dart';
-import '../view_model/group_details_view_model.dart';
 
 class GroupEventsTab extends StatelessWidget {
   const GroupEventsTab({super.key});

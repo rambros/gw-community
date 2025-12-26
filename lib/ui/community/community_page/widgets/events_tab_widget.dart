@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/ui/community/community_page/view_model/community_view_model.dart';
+import 'package:gw_community/ui/community/event_add_page/event_add_page.dart';
+import 'package:gw_community/ui/community/widgets/event_card.dart';
+import 'package:gw_community/ui/core/themes/app_theme.dart';
+import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
+import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
-
-import '/ui/community/event_add_page/event_add_page.dart';
-import '/ui/community/widgets/event_card.dart';
-import '/ui/core/themes/app_theme.dart';
-import '/ui/core/ui/flutter_flow_widgets.dart';
-import '/utils/flutter_flow_util.dart';
-import '../view_model/community_view_model.dart';
 
 class EventsTabWidget extends StatefulWidget {
   const EventsTabWidget({super.key});

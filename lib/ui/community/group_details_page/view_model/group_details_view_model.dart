@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '/data/repositories/event_repository.dart';
-import '/data/repositories/group_repository.dart';
-import '/data/repositories/notification_repository.dart';
-import '/data/repositories/sharing_repository.dart';
-import '/data/services/supabase/supabase.dart';
+import 'package:gw_community/data/repositories/event_repository.dart';
+import 'package:gw_community/data/repositories/group_repository.dart';
+import 'package:gw_community/data/repositories/notification_repository.dart';
+import 'package:gw_community/data/repositories/sharing_repository.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
 
 class GroupDetailsViewModel extends ChangeNotifier {
   final GroupRepository _groupRepository;

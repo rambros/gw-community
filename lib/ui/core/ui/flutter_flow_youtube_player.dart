@@ -26,9 +26,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:gw_community/utils/flutter_flow_util.dart' show routeObserver;
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
-
-import '/utils/flutter_flow_util.dart' show routeObserver;
 
 const kYoutubeAspectRatio = 16 / 9;
 final _youtubeFullScreenControllerMap = <String, YoutubePlayerController>{};

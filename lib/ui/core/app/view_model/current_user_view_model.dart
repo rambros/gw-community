@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '/data/models/structs/login_user_struct.dart';
+import 'package:gw_community/data/models/structs/login_user_struct.dart';
 
 /// ViewModel for managing the current user's profile data.
 ///

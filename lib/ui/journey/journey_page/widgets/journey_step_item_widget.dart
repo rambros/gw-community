@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '/config/app_config.dart';
-import '/data/services/supabase/supabase.dart';
-import '/ui/core/themes/app_theme.dart';
-import '/ui/journey/themes/journey_theme_extension.dart';
-import '/utils/custom_functions.dart' as functions;
+import 'package:gw_community/config/app_config.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/ui/core/themes/app_theme.dart';
+import 'package:gw_community/ui/journey/themes/journey_theme_extension.dart';
+import 'package:gw_community/utils/custom_functions.dart' as functions;
 
 class JourneyStepItemWidget extends StatelessWidget {
   const JourneyStepItemWidget({

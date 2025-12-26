@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:gw_community/data/repositories/journal_repository.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/ui/core/themes/app_theme.dart';
+import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
+import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
+import 'package:gw_community/ui/journey/step_journal_page/view_model/step_journal_view_model.dart';
+import 'package:gw_community/ui/journey/themes/journey_theme_extension.dart';
 import 'package:provider/provider.dart';
-
-import '/data/repositories/journal_repository.dart';
-import '/data/services/supabase/supabase.dart';
-import '/ui/core/themes/app_theme.dart';
-import '/ui/core/ui/flutter_flow_icon_button.dart';
-import '/ui/core/ui/flutter_flow_widgets.dart';
-import '/ui/journey/themes/journey_theme_extension.dart';
-import 'view_model/step_journal_view_model.dart';
 
 class StepJournalPage extends StatefulWidget {
   const StepJournalPage({

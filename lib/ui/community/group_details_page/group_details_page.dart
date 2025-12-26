@@ -1,25 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/data/repositories/event_repository.dart';
+import 'package:gw_community/data/repositories/group_repository.dart';
+import 'package:gw_community/data/repositories/notification_repository.dart';
+import 'package:gw_community/data/repositories/sharing_repository.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/ui/community/group_actions_page/group_actions_sheet.dart';
+import 'package:gw_community/ui/community/group_details_page/view_model/group_details_view_model.dart';
+import 'package:gw_community/ui/community/group_details_page/widgets/group_about_tab.dart';
+import 'package:gw_community/ui/community/group_details_page/widgets/group_events_tab.dart';
+import 'package:gw_community/ui/community/group_details_page/widgets/group_notifications_tab.dart';
+import 'package:gw_community/ui/community/group_details_page/widgets/group_sharings_tab.dart';
+import 'package:gw_community/ui/core/themes/app_theme.dart';
+import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
+import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
+import 'package:gw_community/utils/context_extensions.dart';
+import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
-
-import '/data/repositories/event_repository.dart';
-import '/data/repositories/group_repository.dart';
-import '/data/repositories/notification_repository.dart';
-import '/data/repositories/sharing_repository.dart';
-import '/data/services/supabase/supabase.dart';
-import '/ui/core/themes/app_theme.dart';
-import '/ui/core/ui/flutter_flow_icon_button.dart';
-import '/ui/core/ui/flutter_flow_widgets.dart';
-import '/utils/context_extensions.dart';
-import '/utils/flutter_flow_util.dart';
-import '../group_actions_page/group_actions_sheet.dart';
-import 'view_model/group_details_view_model.dart';
-import 'widgets/group_about_tab.dart';
-import 'widgets/group_events_tab.dart';
-import 'widgets/group_notifications_tab.dart';
-import 'widgets/group_sharings_tab.dart';
 
 class GroupDetailsPage extends StatefulWidget {
   final CcGroupsRow groupRow;

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '/ui/core/themes/app_theme.dart';
-import '/ui/core/ui/flutter_flow_icon_button.dart';
-import '/ui/core/ui/flutter_flow_widgets.dart';
+import 'package:gw_community/ui/core/themes/app_theme.dart';
+import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
+import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
 
 class ConfirmProfileActionDialog extends StatelessWidget {
   const ConfirmProfileActionDialog({

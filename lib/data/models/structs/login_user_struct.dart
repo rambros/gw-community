@@ -1,8 +1,8 @@
 // ignore_for_file: unnecessary_getters_setters
 
-import '/data/models/schema_util.dart';
-import '/utils/flutter_flow_util.dart';
-import 'index.dart';
+import 'package:gw_community/data/models/schema_util.dart';
+import 'package:gw_community/data/models/structs/index.dart';
+import 'package:gw_community/utils/flutter_flow_util.dart';
 
 class LoginUserStruct extends BaseStruct {
   LoginUserStruct({

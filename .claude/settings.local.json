@@ -14,7 +14,10 @@
       "Bash(cat:*)",
       "Bash(npx supabase db execute:*)",
       "Bash(npx supabase:*)",
-      "Bash(pbcopy)"
+      "Bash(pbcopy)",
+      "Bash(dart fix:*)",
+      "Bash(flutter build:*)",
+      "Bash(dart analyze:*)"
     ]
   }
 }

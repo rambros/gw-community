@@ -1,4 +1,4 @@
-import '../database.dart';
+import 'package:gw_community/data/services/supabase/database/database.dart';
 
 class AuthorTable extends SupabaseTable<AuthorRow> {
   @override

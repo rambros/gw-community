@@ -1,10 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:gw_community/data/repositories/support_repository.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:image_picker/image_picker.dart';
-
-import '/data/repositories/support_repository.dart';
-import '/data/services/supabase/supabase.dart';
 
 class RequestChatViewModel extends ChangeNotifier {
   final SupportRepository _repository;

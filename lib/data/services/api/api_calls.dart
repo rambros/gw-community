@@ -1,4 +1,4 @@
-import 'api_manager.dart';
+import 'package:gw_community/data/services/api/api_manager.dart';
 
 export 'api_manager.dart' show ApiCallResponse;
 

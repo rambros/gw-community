@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '/data/services/supabase/supabase.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
 
 class ContentViewModel extends ChangeNotifier {
   final int contentId;

@@ -1,4 +1,4 @@
-import '/data/services/supabase/supabase.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
 
 class LearnRepository {
   // Columns to select for list view to avoid fetching heavy data

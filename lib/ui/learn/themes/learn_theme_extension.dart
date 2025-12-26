@@ -1,5 +1,5 @@
-import '/ui/core/themes/app_theme.dart';
-import 'learn_typography.dart';
+import 'package:gw_community/ui/core/themes/app_theme.dart';
+import 'package:gw_community/ui/learn/themes/learn_typography.dart';
 
 /// Extension to access Learn-specific typography through AppTheme
 ///

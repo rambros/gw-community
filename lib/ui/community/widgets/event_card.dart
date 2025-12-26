@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '/data/services/supabase/supabase.dart';
-import '/index.dart';
-import '/ui/community/themes/community_theme_extension.dart';
-import '/ui/core/themes/app_theme.dart';
-import '/utils/flutter_flow_util.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/index.dart';
+import 'package:gw_community/ui/community/themes/community_theme_extension.dart';
+import 'package:gw_community/ui/core/themes/app_theme.dart';
+import 'package:gw_community/utils/flutter_flow_util.dart';
 
 class EventCardWidget extends StatelessWidget {
   const EventCardWidget({

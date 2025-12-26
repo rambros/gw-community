@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import '/data/services/supabase/supabase.dart';
-import '/ui/core/themes/app_theme.dart';
-import '/ui/core/ui/flutter_flow_widgets.dart';
-import '/ui/core/widgets/user_avatar.dart';
-import '/utils/context_extensions.dart';
-import '/utils/flutter_flow_util.dart';
-import '../../sharing_edit_page/sharing_edit_page.dart';
-import '../../sharing_view_page/sharing_view_page.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/ui/community/sharing_edit_page/sharing_edit_page.dart';
+import 'package:gw_community/ui/community/sharing_view_page/sharing_view_page.dart';
+import 'package:gw_community/ui/core/themes/app_theme.dart';
+import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
+import 'package:gw_community/ui/core/widgets/user_avatar.dart';
+import 'package:gw_community/utils/context_extensions.dart';
+import 'package:gw_community/utils/flutter_flow_util.dart';
 
 class SharingCardWidget extends StatelessWidget {
   const SharingCardWidget({

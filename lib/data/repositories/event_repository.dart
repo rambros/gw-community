@@ -1,5 +1,5 @@
-import '/data/services/supabase/supabase.dart';
-import '/utils/flutter_flow_util.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/utils/flutter_flow_util.dart';
 
 /// Repository responsável por todas as operações de dados relacionadas a eventos.
 class EventRepository {

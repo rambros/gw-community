@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import '/data/services/supabase/supabase.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
 
 /// Repository for managing in-app user notifications
 ///

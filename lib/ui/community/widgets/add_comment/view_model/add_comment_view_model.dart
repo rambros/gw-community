@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '/data/repositories/sharing_repository.dart';
+import 'package:gw_community/data/repositories/sharing_repository.dart';
 
 /// ViewModel responsável por gerenciar o formulário de criação de comentários
 /// Mantém o estado do formulário, validações e interação com o repositório

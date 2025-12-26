@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/ui/core/themes/app_theme.dart';
+import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
+import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
+import 'package:gw_community/ui/journey/journey_page/journey_page.dart';
+import 'package:gw_community/ui/profile/user_journeys_view/view_model/user_journeys_view_model.dart';
+import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
-
-import '/ui/core/themes/app_theme.dart';
-import '/ui/core/ui/flutter_flow_icon_button.dart';
-import '/ui/core/ui/flutter_flow_widgets.dart';
-import '/ui/journey/journey_page/journey_page.dart';
-import '/utils/flutter_flow_util.dart';
-import 'view_model/user_journeys_view_model.dart';
 
 class UserJourneysViewPage extends StatefulWidget {
   const UserJourneysViewPage({super.key});

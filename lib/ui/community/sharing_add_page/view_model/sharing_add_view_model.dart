@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '/data/models/enums/enums.dart';
-import '/data/repositories/sharing_repository.dart';
-import '/data/services/supabase/supabase.dart';
-import '/index.dart';
-import '/utils/flutter_flow_util.dart';
+import 'package:gw_community/data/models/enums/enums.dart';
+import 'package:gw_community/data/repositories/sharing_repository.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/index.dart';
+import 'package:gw_community/utils/flutter_flow_util.dart';
 
 /// ViewModel para a página de adicionar sharing
 /// Gerencia estado do formulário, validações e lógica de negócio

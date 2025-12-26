@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '/data/repositories/journal_repository.dart';
+import 'package:gw_community/data/repositories/journal_repository.dart';
 
 class StepJournalViewModel extends ChangeNotifier {
   final JournalRepository _repository;

@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:gw_community/data/repositories/journeys_repository.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/ui/core/themes/app_theme.dart';
+import 'package:gw_community/ui/journey/journey_page/view_model/journey_view_model.dart';
+import 'package:gw_community/ui/journey/journey_page/widgets/journey_intro_widget.dart';
+import 'package:gw_community/ui/journey/journey_page/widgets/journey_step_item_widget.dart';
+import 'package:gw_community/ui/journey/step_details_page/step_details_page.dart';
+import 'package:gw_community/ui/journey/themes/journey_theme_extension.dart';
+import 'package:gw_community/utils/context_extensions.dart';
+import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
-
-import '/data/repositories/journeys_repository.dart';
-import '/data/services/supabase/supabase.dart';
-import '/ui/core/themes/app_theme.dart';
-import '/ui/journey/step_details_page/step_details_page.dart';
-import '/ui/journey/themes/journey_theme_extension.dart';
-import '/utils/context_extensions.dart';
-import '/utils/flutter_flow_util.dart';
-import 'view_model/journey_view_model.dart';
-import 'widgets/journey_intro_widget.dart';
-import 'widgets/journey_step_item_widget.dart';
 
 class JourneyPage extends StatefulWidget {
   const JourneyPage({

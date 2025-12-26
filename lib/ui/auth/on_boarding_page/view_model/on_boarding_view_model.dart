@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gw_community/app_state.dart';
 import 'package:rive/rive.dart';
-import '/app_state.dart';
 
 class OnBoardingViewModel extends ChangeNotifier {
   final FFAppState _appState;

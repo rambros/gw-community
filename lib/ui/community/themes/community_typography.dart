@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '/ui/core/themes/app_theme.dart';
+import 'package:gw_community/ui/core/themes/app_theme.dart';
 
 /// Community module typography system
 /// Uses Cormorant Garamond for titles/headings and Nunito for body text

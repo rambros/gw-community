@@ -1,6 +1,6 @@
-import '/data/models/enums/enums.dart';
-import '/data/services/supabase/supabase.dart';
-import '/utils/flutter_flow_util.dart';
+import 'package:gw_community/data/models/enums/enums.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/utils/flutter_flow_util.dart';
 
 class NotificationRepository {
   Future<CcMembersRow?> getUserById(String authUserId) async {

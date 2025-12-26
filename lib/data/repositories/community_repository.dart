@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import '/data/services/supabase/supabase.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
 
 class CommunityRepository {
   /// Stream de sharings visíveis para todos

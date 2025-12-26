@@ -1,5 +1,5 @@
-import '/domain/models/app_auth_user.dart';
-import '/domain/models/user_entity.dart';
+import 'package:gw_community/domain/models/app_auth_user.dart';
+import 'package:gw_community/domain/models/user_entity.dart';
 
 /// Repository interface for authentication operations.
 ///

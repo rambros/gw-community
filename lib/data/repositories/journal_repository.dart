@@ -1,4 +1,4 @@
-import '/data/services/supabase/supabase.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
 
 class JournalRepository {
   Future<void> saveJournalEntry(int activityId, String journalContent) async {

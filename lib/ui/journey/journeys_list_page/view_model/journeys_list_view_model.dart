@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '/data/repositories/journeys_repository.dart';
-import '/data/services/supabase/supabase.dart';
+import 'package:gw_community/data/repositories/journeys_repository.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
 
 class JourneysListViewModel extends ChangeNotifier {
   final JourneysRepository _repository;

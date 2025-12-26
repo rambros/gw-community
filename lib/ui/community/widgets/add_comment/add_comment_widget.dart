@@ -1,16 +1,15 @@
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/data/repositories/sharing_repository.dart';
+import 'package:gw_community/index.dart';
+import 'package:gw_community/ui/community/widgets/add_comment/view_model/add_comment_view_model.dart';
+import 'package:gw_community/ui/core/themes/app_theme.dart';
+import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
+import 'package:gw_community/ui/core/widgets/user_avatar.dart';
+import 'package:gw_community/utils/context_extensions.dart';
+import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
-
-import '/data/repositories/sharing_repository.dart';
-import '/index.dart';
-import '/ui/community/widgets/add_comment/view_model/add_comment_view_model.dart';
-import '/ui/core/themes/app_theme.dart';
-import '/ui/core/ui/flutter_flow_widgets.dart';
-import '/ui/core/widgets/user_avatar.dart';
-import '/utils/context_extensions.dart';
-import '/utils/flutter_flow_util.dart';
 
 class AddCommentWidget extends StatelessWidget {
   const AddCommentWidget({

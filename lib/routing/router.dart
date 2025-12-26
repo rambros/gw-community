@@ -1,14 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:gw_community/data/models/structs/index.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/domain/models/app_auth_user.dart';
+import 'package:gw_community/index.dart';
+import 'package:gw_community/ui/core/nav_bar/nav_bar_page.dart';
+import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
-
-import '/data/models/structs/index.dart';
-import '/data/services/supabase/supabase.dart';
-import '/domain/models/app_auth_user.dart';
-import '/index.dart';
-import '/ui/core/nav_bar/nav_bar_page.dart';
-import '/utils/flutter_flow_util.dart';
 
 export 'package:go_router/go_router.dart';
 

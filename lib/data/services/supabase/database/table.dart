@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'database.dart';
+import 'package:gw_community/data/services/supabase/database/database.dart';
 
 abstract class SupabaseTable<T extends SupabaseDataRow> {
   String get tableName;

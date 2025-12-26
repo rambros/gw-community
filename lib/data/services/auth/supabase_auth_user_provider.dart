@@ -1,7 +1,8 @@
 import 'dart:async';
+
+import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/domain/models/app_auth_user.dart';
 import 'package:rxdart/rxdart.dart';
-import '/data/services/supabase/supabase.dart';
-import '/domain/models/app_auth_user.dart';
 
 /// Supabase-specific implementation of [AppAuthUser].
 class GWCommunitySupabaseUser extends AppAuthUser {

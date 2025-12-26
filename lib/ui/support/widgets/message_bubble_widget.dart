@@ -1,11 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/ui/core/themes/app_theme.dart';
+import 'package:gw_community/ui/core/widgets/user_avatar.dart';
 import 'package:intl/intl.dart';
-
-import '/data/services/supabase/supabase.dart';
-import '/ui/core/themes/app_theme.dart';
-import '/ui/core/widgets/user_avatar.dart';
 
 class MessageBubbleWidget extends StatelessWidget {
   const MessageBubbleWidget({

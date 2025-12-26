@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/ui/core/themes/app_theme.dart';
+import 'package:gw_community/ui/support/widgets/status_badge_widget.dart';
 import 'package:intl/intl.dart';
-
-import '/data/services/supabase/supabase.dart';
-import '/ui/core/themes/app_theme.dart';
-import 'status_badge_widget.dart';
 
 class RequestCardWidget extends StatelessWidget {
   const RequestCardWidget({

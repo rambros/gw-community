@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '/app_state.dart';
-import '/data/repositories/sharing_repository.dart';
-import '/data/services/supabase/supabase.dart';
+import 'package:gw_community/app_state.dart';
+import 'package:gw_community/data/repositories/sharing_repository.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
 
 /// ViewModel para a página de visualização de Sharing
 /// Gerencia estado, lógica de negócio e ações do usuário

@@ -3,18 +3,17 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/ui/auth/on_boarding_page/view_model/on_boarding_view_model.dart';
+import 'package:gw_community/ui/core/themes/app_theme.dart';
+import 'package:gw_community/ui/core/ui/flutter_flow_animations.dart';
+import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
+import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
+import 'package:gw_community/ui/home/home_page/home_page.dart';
+import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart' hide LinearGradient;
 import 'package:smooth_page_indicator/smooth_page_indicator.dart' as smooth_page_indicator;
-
-import '/ui/auth/on_boarding_page/view_model/on_boarding_view_model.dart';
-import '/ui/core/themes/app_theme.dart';
-import '/ui/core/ui/flutter_flow_animations.dart';
-import '/ui/core/ui/flutter_flow_icon_button.dart';
-import '/ui/core/ui/flutter_flow_widgets.dart';
-import '/ui/home/home_page/home_page.dart';
-import '/utils/flutter_flow_util.dart';
 
 class OnBoardingPage extends StatefulWidget {
   const OnBoardingPage({super.key});

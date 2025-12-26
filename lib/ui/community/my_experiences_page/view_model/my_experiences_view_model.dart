@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
-import '/data/repositories/sharing_repository.dart';
-import '/data/services/supabase/supabase.dart';
+import 'package:gw_community/data/repositories/sharing_repository.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
 
 /// ViewModel for the My Experiences page
 /// Lists all experiences created by the current user

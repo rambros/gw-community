@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/ui/community/sharing_edit_page/sharing_edit_page.dart';
+import 'package:gw_community/ui/community/sharing_view_page/view_model/sharing_view_view_model.dart';
+import 'package:gw_community/ui/community/sharing_view_page/widgets/comment_item_widget.dart';
+import 'package:gw_community/ui/community/sharing_view_page/widgets/sharing_actions_widget.dart';
+import 'package:gw_community/ui/community/sharing_view_page/widgets/sharing_content_widget.dart';
+import 'package:gw_community/ui/community/sharing_view_page/widgets/sharing_header_widget.dart';
+import 'package:gw_community/ui/community/widgets/add_comment/add_comment_widget.dart';
+import 'package:gw_community/ui/core/themes/app_theme.dart';
+import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
+import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
 import 'package:sticky_headers/sticky_headers.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
-
-import '/ui/core/themes/app_theme.dart';
-import '/ui/core/ui/flutter_flow_icon_button.dart';
-import '/utils/flutter_flow_util.dart';
-import '../sharing_edit_page/sharing_edit_page.dart';
-import '../widgets/add_comment/add_comment_widget.dart';
-import 'view_model/sharing_view_view_model.dart';
-import 'widgets/comment_item_widget.dart';
-import 'widgets/sharing_actions_widget.dart';
-import 'widgets/sharing_content_widget.dart';
-import 'widgets/sharing_header_widget.dart';
 
 /// Página de visualização de um Sharing individual
 /// Refatorada para seguir arquitetura MVVM estilo Compass

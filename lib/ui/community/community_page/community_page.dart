@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/data/repositories/community_repository.dart';
+import 'package:gw_community/ui/community/community_page/view_model/community_view_model.dart';
+import 'package:gw_community/ui/community/community_page/widgets/events_tab_widget.dart';
+import 'package:gw_community/ui/community/community_page/widgets/groups_tab_widget.dart';
+import 'package:gw_community/ui/community/community_page/widgets/sharings_tab_widget.dart';
+import 'package:gw_community/ui/community/my_experiences_page/my_experiences_page.dart';
+import 'package:gw_community/ui/core/themes/app_theme.dart';
+import 'package:gw_community/ui/support/support_page/support_page.dart';
+import 'package:gw_community/utils/context_extensions.dart';
+import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
-
-import '/data/repositories/community_repository.dart';
-import '/ui/core/themes/app_theme.dart';
-import '/ui/support/support_page/support_page.dart';
-import '/utils/context_extensions.dart';
-import '/utils/flutter_flow_util.dart';
-import '../my_experiences_page/my_experiences_page.dart';
-import 'view_model/community_view_model.dart';
-import 'widgets/events_tab_widget.dart';
-import 'widgets/groups_tab_widget.dart';
-import 'widgets/sharings_tab_widget.dart';
 
 class CommunityPage extends StatefulWidget {
   const CommunityPage({

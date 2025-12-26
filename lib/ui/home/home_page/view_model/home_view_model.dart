@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '/data/models/structs/index.dart';
-import '/data/repositories/home_repository.dart';
-import '/data/services/supabase/supabase.dart';
-import '/utils/flutter_flow_util.dart';
+import 'package:gw_community/data/models/structs/index.dart';
+import 'package:gw_community/data/repositories/home_repository.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/utils/flutter_flow_util.dart';
 
 class HomeViewModel extends ChangeNotifier {
   final HomeRepository _repository;

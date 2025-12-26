@@ -20,7 +20,7 @@ import 'dart:math' as math;
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 
-import '/utils/flutter_flow_util.dart' show routeObserver;
+import 'package:gw_community/utils/flutter_flow_util.dart' show routeObserver;
 
 export 'package:assets_audio_player/assets_audio_player.dart';
 

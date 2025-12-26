@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '/utils/flutter_flow_util.dart';
+import 'package:gw_community/utils/flutter_flow_util.dart';
 
 class SplashViewModel extends ChangeNotifier {
   Future<void> initSplash(BuildContext context) async {

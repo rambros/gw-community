@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '/data/repositories/user_profile_repository.dart';
+import 'package:gw_community/data/repositories/user_profile_repository.dart';
 
 class UserJournalOptionsViewModel extends ChangeNotifier {
   final UserProfileRepository _repository;

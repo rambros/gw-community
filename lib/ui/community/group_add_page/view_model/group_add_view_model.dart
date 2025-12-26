@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '/data/repositories/group_repository.dart';
-import '/data/services/supabase/supabase.dart';
-import '/utils/upload_data.dart';
+import 'package:gw_community/data/repositories/group_repository.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/utils/upload_data.dart';
 
 class GroupAddViewModel extends ChangeNotifier {
   final GroupRepository _groupRepository;

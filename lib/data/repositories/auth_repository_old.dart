@@ -1,4 +1,4 @@
-import '/data/services/supabase/supabase.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
 
 class AuthRepository {
   /// Signs in a user with email and password.

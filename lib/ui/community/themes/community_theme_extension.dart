@@ -1,5 +1,5 @@
-import '/ui/core/themes/app_theme.dart';
-import 'community_typography.dart';
+import 'package:gw_community/ui/community/themes/community_typography.dart';
+import 'package:gw_community/ui/core/themes/app_theme.dart';
 
 /// Extension to access Community-specific typography through AppTheme
 ///

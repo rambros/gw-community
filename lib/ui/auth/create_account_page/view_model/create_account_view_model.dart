@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '/data/repositories/auth_repository.dart';
-import '/data/repositories/auth_repository_impl.dart';
-import '/domain/models/user_entity.dart';
+import 'package:gw_community/data/repositories/auth_repository.dart';
+import 'package:gw_community/data/repositories/auth_repository_impl.dart';
+import 'package:gw_community/domain/models/user_entity.dart';
 
 class CreateAccountViewModel extends ChangeNotifier {
   final AuthRepositoryImpl _repository;

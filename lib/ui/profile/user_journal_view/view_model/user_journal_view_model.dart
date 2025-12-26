@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '/data/repositories/user_profile_repository.dart';
-import '/data/services/supabase/supabase.dart';
+import 'package:gw_community/data/repositories/user_profile_repository.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
 
 class UserJournalViewModel extends ChangeNotifier {
   final UserProfileRepository _repository;

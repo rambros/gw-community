@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:gw_community/ui/core/themes/app_theme.dart';
+import 'package:gw_community/ui/journey/journey_page/journey_page.dart';
+import 'package:gw_community/ui/journey/journeys_list_page/view_model/journeys_list_view_model.dart';
+import 'package:gw_community/ui/journey/journeys_list_page/widgets/journey_card_widget.dart';
+import 'package:gw_community/ui/journey/themes/journey_theme_extension.dart';
+import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
-
-import '/ui/core/themes/app_theme.dart';
-import '/ui/journey/journey_page/journey_page.dart';
-import '/ui/journey/themes/journey_theme_extension.dart';
-import '/utils/flutter_flow_util.dart';
-import 'view_model/journeys_list_view_model.dart';
-import 'widgets/journey_card_widget.dart';
 
 class JourneysListPage extends StatefulWidget {
   const JourneysListPage({super.key});

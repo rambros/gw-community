@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:gw_community/data/repositories/event_repository.dart';
+import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-
-import '/data/repositories/event_repository.dart';
-import '/utils/flutter_flow_util.dart';
 
 class EventAddViewModel extends ChangeNotifier {
   EventAddViewModel({

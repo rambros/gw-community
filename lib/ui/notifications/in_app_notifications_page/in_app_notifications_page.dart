@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/index.dart';
+import 'package:gw_community/ui/core/themes/app_theme.dart';
+import 'package:gw_community/ui/notifications/in_app_notifications_page/view_model/in_app_notifications_view_model.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
-import '/data/services/supabase/supabase.dart';
-import '/index.dart';
-import '/ui/core/themes/app_theme.dart';
-import 'view_model/in_app_notifications_view_model.dart';
 
 /// Page that displays all in-app notifications for the current user
 class InAppNotificationsPage extends StatefulWidget {

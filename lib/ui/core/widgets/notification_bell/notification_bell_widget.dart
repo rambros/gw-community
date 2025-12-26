@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '/data/repositories/in_app_notification_repository.dart';
-import '/data/services/app_badge_service.dart';
-import '/index.dart';
-import '/ui/core/themes/app_theme.dart';
+import 'package:gw_community/data/repositories/in_app_notification_repository.dart';
+import 'package:gw_community/data/services/app_badge_service.dart';
+import 'package:gw_community/index.dart';
+import 'package:gw_community/ui/core/themes/app_theme.dart';
 
 /// Widget that displays a notification bell icon with unread count badge
 ///

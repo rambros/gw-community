@@ -1,5 +1,5 @@
-import '/data/services/supabase/supabase.dart';
-import '/utils/flutter_flow_util.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/utils/flutter_flow_util.dart';
 
 class JourneysRepository {
   Future<List<CcViewUserJourneysRow>> getUserJourneys(String userId) async {

@@ -1,5 +1,5 @@
-import '/utils/upload_data.dart';
-import '../supabase.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/utils/upload_data.dart';
 
 Future<List<String>> uploadSupabaseStorageFiles({
   required String bucketName,

@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
-import '/data/repositories/auth_repository.dart';
-import '/domain/models/app_auth_user.dart';
-import '/routing/router.dart';
-import '/utils/internationalization.dart';
+import 'package:gw_community/data/repositories/auth_repository.dart';
+import 'package:gw_community/domain/models/app_auth_user.dart';
+import 'package:gw_community/routing/router.dart';
+import 'package:gw_community/utils/internationalization.dart';
 
 class AppViewModel extends ChangeNotifier {
   final AuthRepository authRepository;

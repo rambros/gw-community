@@ -1,5 +1,5 @@
-import '/ui/core/themes/app_theme.dart';
-import 'journey_typography.dart';
+import 'package:gw_community/ui/core/themes/app_theme.dart';
+import 'package:gw_community/ui/journey/themes/journey_typography.dart';
 
 /// Extension to access Journey-specific typography through AppTheme
 ///

@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/data/repositories/support_repository.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/ui/core/themes/app_theme.dart';
+import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
+import 'package:gw_community/ui/support/request_chat_page/view_model/request_chat_view_model.dart';
+import 'package:gw_community/ui/support/widgets/message_bubble_widget.dart';
+import 'package:gw_community/ui/support/widgets/status_badge_widget.dart';
+import 'package:gw_community/utils/context_extensions.dart';
+import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
-
-import '/data/repositories/support_repository.dart';
-import '/data/services/supabase/supabase.dart';
-import '/ui/core/themes/app_theme.dart';
-import '/ui/core/ui/flutter_flow_icon_button.dart';
-import '/utils/context_extensions.dart';
-import '/utils/flutter_flow_util.dart';
-import '../widgets/message_bubble_widget.dart';
-import '../widgets/status_badge_widget.dart';
-import 'view_model/request_chat_view_model.dart';
 
 class RequestChatPage extends StatelessWidget {
   const RequestChatPage({

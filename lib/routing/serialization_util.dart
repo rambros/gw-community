@@ -4,11 +4,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
-import '/data/models/enums/enums.dart';
-import '/data/models/structs/index.dart';
-import '/data/services/supabase/supabase.dart';
-import '../../utils/place.dart';
-import '../../utils/uploaded_file.dart';
+import 'package:gw_community/data/models/enums/enums.dart';
+import 'package:gw_community/data/models/structs/index.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/utils/place.dart';
+import 'package:gw_community/utils/uploaded_file.dart';
 
 /// SERIALIZATION HELPERS
 

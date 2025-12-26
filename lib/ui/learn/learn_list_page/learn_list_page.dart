@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:gw_community/ui/core/themes/app_theme.dart';
+import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
+import 'package:gw_community/ui/learn/learn_list_page/view_model/learn_list_view_model.dart';
+import 'package:gw_community/ui/learn/widgets/content_card.dart';
+import 'package:gw_community/ui/learn/widgets/content_filter.dart';
+import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
-
-import '/ui/core/themes/app_theme.dart';
-import '/ui/core/ui/flutter_flow_widgets.dart';
-import '/ui/learn/widgets/content_card.dart';
-import '/ui/learn/widgets/content_filter.dart';
-import '/utils/flutter_flow_util.dart';
-import 'view_model/learn_list_view_model.dart';
 
 class LearnListPage extends StatefulWidget {
   const LearnListPage({super.key});

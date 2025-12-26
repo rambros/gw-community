@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/ui/core/themes/app_theme.dart';
+import 'package:gw_community/ui/core/ui/flutter_flow_animations.dart';
+import 'package:gw_community/ui/onboarding/splash_page/view_model/splash_view_model.dart';
 import 'package:provider/provider.dart';
-
-import '/ui/core/themes/app_theme.dart';
-import '/ui/core/ui/flutter_flow_animations.dart';
-import 'view_model/splash_view_model.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
