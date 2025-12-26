@@ -5,14 +5,13 @@ import 'package:provider/provider.dart';
 
 import '/data/models/structs/index.dart';
 import '/data/services/supabase/supabase.dart';
-
 import '/domain/models/app_auth_user.dart';
-
+import '/index.dart';
 import '/ui/core/nav_bar/nav_bar_page.dart';
 import '/utils/flutter_flow_util.dart';
-import '/index.dart';
 
 export 'package:go_router/go_router.dart';
+
 export 'serialization_util.dart';
 
 const kTransitionInfoKey = '__transition_info__';

@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import '/ui/core/themes/app_theme.dart';
-import '/utils/flutter_flow_util.dart';
+import 'package:flutter/material.dart';
+
 import '/data/services/supabase/supabase.dart';
 import '/ui/community/event_details_page/event_details_page.dart';
+import '/ui/core/themes/app_theme.dart';
+import '/utils/flutter_flow_util.dart';
 
 class HomeEventCard extends StatelessWidget {
   const HomeEventCard({

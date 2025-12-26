@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '/ui/core/themes/app_theme.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '/ui/core/themes/app_theme.dart';
 
 class ProfileMenuItemWidget extends StatelessWidget {
   const ProfileMenuItemWidget({

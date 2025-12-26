@@ -1,9 +1,8 @@
 // ignore_for_file: unnecessary_getters_setters
 
 import '/data/models/schema_util.dart';
-
-import 'index.dart';
 import '/utils/flutter_flow_util.dart';
+import 'index.dart';
 
 class OrderSQLTypeStruct extends BaseStruct {
   OrderSQLTypeStruct({

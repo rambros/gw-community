@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 import '/ui/core/themes/app_theme.dart';
-import '/utils/flutter_flow_util.dart';
-import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/ui/core/ui/flutter_flow_icon_button.dart';
+import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/ui/journey/journey_page/journey_page.dart';
+import '/utils/flutter_flow_util.dart';
 import 'view_model/user_journeys_view_model.dart';
 
 class UserJourneysViewPage extends StatefulWidget {

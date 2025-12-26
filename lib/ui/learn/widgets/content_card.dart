@@ -1,12 +1,12 @@
-import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/material.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
 
 import '/data/services/supabase/supabase.dart';
 import '/ui/core/themes/app_theme.dart';
+import '/ui/learn/content_view/content_view.dart';
 import '/ui/learn/themes/learn_theme_extension.dart';
 import '/utils/flutter_flow_util.dart';
-import '/ui/learn/content_view/content_view.dart';
 
 class ContentCard extends StatelessWidget {
   const ContentCard({

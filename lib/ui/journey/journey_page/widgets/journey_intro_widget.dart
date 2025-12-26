@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '/ui/core/themes/app_theme.dart';
-import '/ui/journey/themes/journey_theme_extension.dart';
-import '/ui/core/ui/flutter_flow_widgets.dart';
+
 import '/data/services/supabase/supabase.dart';
+import '/ui/core/themes/app_theme.dart';
+import '/ui/core/ui/flutter_flow_widgets.dart';
+import '/ui/journey/themes/journey_theme_extension.dart';
 
 class JourneyIntroWidget extends StatelessWidget {
   const JourneyIntroWidget({

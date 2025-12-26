@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:blurhash_dart/blurhash_dart.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:mime_type/mime_type.dart';
 import 'package:video_player/video_player.dart';
-import 'package:image/image.dart' as img;
 
 import '/ui/core/themes/app_theme.dart';
 import 'flutter_flow_util.dart';

@@ -1,17 +1,17 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
-import '/ui/core/themes/app_theme.dart';
-import '/utils/flutter_flow_util.dart';
-import '/ui/core/ui/flutter_flow_widgets.dart';
-import '/ui/core/ui/flutter_flow_icon_button.dart';
-import '/ui/core/ui/flutter_flow_drop_down.dart';
-import '/ui/core/ui/form_field_controller.dart';
 import '/data/repositories/group_repository.dart';
+import '/ui/core/themes/app_theme.dart';
+import '/ui/core/ui/flutter_flow_drop_down.dart';
+import '/ui/core/ui/flutter_flow_icon_button.dart';
+import '/ui/core/ui/flutter_flow_widgets.dart';
+import '/ui/core/ui/form_field_controller.dart';
 import '/utils/context_extensions.dart';
+import '/utils/flutter_flow_util.dart';
 import 'view_model/group_add_view_model.dart';
 
 class GroupAddPage extends StatelessWidget {

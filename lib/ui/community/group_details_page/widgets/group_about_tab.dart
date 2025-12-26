@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 import '/ui/core/themes/app_theme.dart';
-
-import '../view_model/group_details_view_model.dart';
 import '/ui/core/widgets/user_avatar.dart';
+import '../view_model/group_details_view_model.dart';
 
 class GroupAboutTab extends StatelessWidget {
   const GroupAboutTab({super.key});

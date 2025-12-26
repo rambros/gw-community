@@ -1,16 +1,17 @@
-import '/data/services/supabase/supabase.dart';
-import '/ui/core/widgets/user_avatar.dart';
-import '/ui/core/ui/flutter_flow_drop_down.dart';
-import '/ui/core/ui/flutter_flow_icon_button.dart';
-import '/ui/core/themes/app_theme.dart';
-import '/utils/flutter_flow_util.dart';
-import '/ui/core/ui/flutter_flow_widgets.dart';
-import '/ui/core/ui/form_field_controller.dart';
-import 'view_model/sharing_edit_view_model.dart';
-import '/data/repositories/sharing_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+
+import '/data/repositories/sharing_repository.dart';
+import '/data/services/supabase/supabase.dart';
+import '/ui/core/themes/app_theme.dart';
+import '/ui/core/ui/flutter_flow_drop_down.dart';
+import '/ui/core/ui/flutter_flow_icon_button.dart';
+import '/ui/core/ui/flutter_flow_widgets.dart';
+import '/ui/core/ui/form_field_controller.dart';
+import '/ui/core/widgets/user_avatar.dart';
+import '/utils/flutter_flow_util.dart';
+import 'view_model/sharing_edit_view_model.dart';
 
 /// Página de edição de Sharing
 /// Refatorada para seguir arquitetura MVVM estilo Compass

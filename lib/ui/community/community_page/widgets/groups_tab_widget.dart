@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-import '/ui/core/themes/app_theme.dart';
-import '/utils/flutter_flow_util.dart';
-import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/ui/community/group_add_page/group_add_page.dart';
-import '/ui/community/widgets/group_card.dart';
 import '/ui/community/group_details_page/group_details_page.dart';
 import '/ui/community/group_invitation_page/group_invitation_page.dart';
+import '/ui/community/widgets/group_card.dart';
+import '/ui/core/themes/app_theme.dart';
+import '/ui/core/ui/flutter_flow_widgets.dart';
+import '/utils/flutter_flow_util.dart';
 import '../view_model/community_view_model.dart';
 
 class GroupsTabWidget extends StatelessWidget {

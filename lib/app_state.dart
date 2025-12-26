@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'utils/request_manager.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '/data/models/structs/index.dart';
 import 'data/services/supabase/supabase.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'utils/flutter_flow_util.dart';
+import 'utils/request_manager.dart';
 
 class FFAppState extends ChangeNotifier {
   static FFAppState _instance = FFAppState._internal();

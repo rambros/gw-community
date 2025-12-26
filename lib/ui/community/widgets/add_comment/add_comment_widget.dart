@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-import '/ui/core/widgets/user_avatar.dart';
 import '/data/repositories/sharing_repository.dart';
-import '/ui/core/themes/app_theme.dart';
-import '/ui/core/ui/flutter_flow_widgets.dart';
-import '/utils/flutter_flow_util.dart';
 import '/index.dart';
 import '/ui/community/widgets/add_comment/view_model/add_comment_view_model.dart';
+import '/ui/core/themes/app_theme.dart';
+import '/ui/core/ui/flutter_flow_widgets.dart';
+import '/ui/core/widgets/user_avatar.dart';
 import '/utils/context_extensions.dart';
+import '/utils/flutter_flow_util.dart';
 
 class AddCommentWidget extends StatelessWidget {
   const AddCommentWidget({

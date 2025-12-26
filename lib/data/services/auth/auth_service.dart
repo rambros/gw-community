@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '/domain/models/user_entity.dart';
+
 import '/domain/models/app_auth_user.dart';
+import '/domain/models/user_entity.dart';
 
 /// Abstract service interface for authentication operations.
 ///

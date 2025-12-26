@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+
+import '/ui/auth/on_boarding_page/on_boarding_page.dart';
 import '/ui/core/themes/app_theme.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/utils/flutter_flow_util.dart';
 import 'view_model/create_account_view_model.dart';
-import '/ui/auth/on_boarding_page/on_boarding_page.dart';
 
 class CreateAccountPage extends StatefulWidget {
   const CreateAccountPage({super.key});

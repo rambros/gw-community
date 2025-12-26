@@ -1,15 +1,16 @@
-import '/data/services/supabase/supabase.dart';
-import '/data/repositories/group_repository.dart';
-import '/ui/core/ui/flutter_flow_icon_button.dart';
-import '/ui/core/themes/app_theme.dart';
-import '/utils/flutter_flow_util.dart';
-import '/ui/community/group_edit_page/group_edit_page.dart';
-import '/utils/context_extensions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
+
+import '/data/repositories/group_repository.dart';
+import '/data/services/supabase/supabase.dart';
+import '/ui/community/group_edit_page/group_edit_page.dart';
+import '/ui/core/themes/app_theme.dart';
+import '/ui/core/ui/flutter_flow_icon_button.dart';
+import '/utils/context_extensions.dart';
+import '/utils/flutter_flow_util.dart';
 
 class GroupCard extends StatelessWidget {
   const GroupCard({

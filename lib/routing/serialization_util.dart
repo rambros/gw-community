@@ -4,10 +4,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
-import '/data/models/structs/index.dart';
 import '/data/models/enums/enums.dart';
+import '/data/models/structs/index.dart';
 import '/data/services/supabase/supabase.dart';
-
 import '../../utils/place.dart';
 import '../../utils/uploaded_file.dart';
 

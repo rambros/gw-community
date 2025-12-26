@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '/ui/core/widgets/audio_player_widget.dart';
+import 'package:provider/provider.dart';
+
 import '/data/services/supabase/supabase.dart';
 import '/ui/core/themes/app_theme.dart';
 import '/ui/core/ui/flutter_flow_animations.dart';
-import '/utils/flutter_flow_util.dart';
 import '/ui/core/ui/flutter_flow_pdf_viewer.dart';
 import '/ui/core/ui/flutter_flow_youtube_player.dart';
+import '/ui/core/widgets/audio_player_widget.dart';
+import '/utils/flutter_flow_util.dart';
 import 'view_model/content_view_model.dart';
 
 class ContentView extends StatefulWidget {

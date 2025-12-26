@@ -1,6 +1,6 @@
 
-import '/data/models/structs/index.dart';
 import '/data/models/enums/enums.dart';
+import '/data/models/structs/index.dart';
 
 bool hasUploadedMedia(String? mediaPath) {
   return mediaPath != null && mediaPath.isNotEmpty;

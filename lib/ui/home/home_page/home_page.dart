@@ -6,8 +6,8 @@ import 'package:provider/provider.dart';
 import '/ui/core/themes/app_theme.dart';
 import '/ui/core/widgets/notification_bell/notification_bell_widget.dart';
 import 'view_model/home_view_model.dart';
-import 'widgets/home_journey_card.dart';
 import 'widgets/home_event_card.dart';
+import 'widgets/home_journey_card.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

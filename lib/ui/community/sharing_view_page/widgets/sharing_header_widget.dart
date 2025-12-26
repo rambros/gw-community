@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import '/data/services/supabase/supabase.dart';
-import '/ui/core/widgets/user_avatar.dart';
 import '/ui/core/themes/app_theme.dart';
+import '/ui/core/widgets/user_avatar.dart';
 import '/utils/flutter_flow_util.dart';
 
 /// Widget que exibe o cabeçalho do sharing com informações do autor

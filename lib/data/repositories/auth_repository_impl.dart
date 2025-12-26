@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import '/domain/models/user_entity.dart';
-import '/domain/models/app_auth_user.dart';
+
 import '/data/services/auth/auth_service.dart';
+import '/domain/models/app_auth_user.dart';
+import '/domain/models/user_entity.dart';
 import 'auth_repository.dart';
 
 /// Implementation of [AuthRepository] using [AuthService].

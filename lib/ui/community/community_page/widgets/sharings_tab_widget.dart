@@ -4,9 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '/data/services/supabase/supabase.dart';
+import '/index.dart';
 import '/ui/core/themes/app_theme.dart';
 import '/utils/flutter_flow_util.dart';
-import '/index.dart';
 import '../view_model/community_view_model.dart';
 import 'sharing_card_widget.dart';
 

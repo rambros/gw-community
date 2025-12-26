@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '/ui/community/community_page/community_page.dart';
 import '/ui/core/themes/app_theme.dart';
+import '/ui/home/home_page/home_page.dart';
+import '/ui/journey/journey_page/journey_page.dart';
+import '/ui/learn/learn_list_page/learn_list_page.dart';
+import '/ui/profile/user_profile_page/user_profile_page.dart';
 import '/utils/custom_icons.dart';
 import 'view_model/nav_bar_view_model.dart';
-import '/ui/home/home_page/home_page.dart';
-import '/ui/learn/learn_list_page/learn_list_page.dart';
-import '/ui/journey/journey_page/journey_page.dart';
-import '/ui/community/community_page/community_page.dart';
-import '/ui/profile/user_profile_page/user_profile_page.dart';
 
 class NavBarPage extends StatefulWidget {
   const NavBarPage({

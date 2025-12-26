@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '/data/services/supabase/supabase.dart';
+
 import '/data/repositories/sharing_repository.dart';
+import '/data/services/supabase/supabase.dart';
 import '/utils/flutter_flow_util.dart';
 
 /// ViewModel para a página de edição de Sharing

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+import '/app_state.dart';
 import '/data/repositories/user_profile_repository.dart';
 import '/data/services/supabase/supabase.dart';
-import '/app_state.dart';
 import '/index.dart';
-import 'package:go_router/go_router.dart';
 
 class UserCreateProfileViewModel extends ChangeNotifier {
   final UserProfileRepository _repository;

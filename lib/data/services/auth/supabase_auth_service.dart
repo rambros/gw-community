@@ -1,14 +1,16 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
+
 import '/data/services/supabase/supabase.dart';
-import '/domain/models/user_entity.dart';
 import '/domain/models/app_auth_user.dart';
+import '/domain/models/user_entity.dart';
 import '/utils/flutter_flow_util.dart';
-import 'supabase_auth_user_provider.dart';
 import 'auth_service.dart';
 import 'providers/email_auth_provider.dart';
 import 'providers/google_auth_provider.dart';
+import 'supabase_auth_user_provider.dart';
 
 /// Supabase implementation of [AuthService].
 ///

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '/data/services/supabase/supabase.dart';
+import '/index.dart';
 import '/ui/core/themes/app_theme.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/utils/flutter_flow_util.dart';
-import '/data/services/supabase/supabase.dart';
-import '/index.dart';
 
 class HomeJourneyCard extends StatelessWidget {
   const HomeJourneyCard({

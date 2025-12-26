@@ -9,10 +9,10 @@ import '/data/services/supabase/supabase.dart';
 import '/ui/core/themes/app_theme.dart';
 import '/ui/core/ui/flutter_flow_icon_button.dart';
 import '/ui/core/widgets/user_avatar.dart';
-import '/utils/flutter_flow_util.dart';
 import '/utils/context_extensions.dart';
-import '../sharing_view_page/sharing_view_page.dart';
+import '/utils/flutter_flow_util.dart';
 import '../sharing_edit_page/sharing_edit_page.dart';
+import '../sharing_view_page/sharing_view_page.dart';
 import 'view_model/my_experiences_view_model.dart';
 
 /// Page that lists all experiences created by the current user

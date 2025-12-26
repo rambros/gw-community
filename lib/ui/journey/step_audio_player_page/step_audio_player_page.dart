@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+
 import '/ui/core/themes/app_theme.dart';
-import '/ui/journey/themes/journey_theme_extension.dart';
 import '/ui/core/ui/flutter_flow_icon_button.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
 import '/ui/core/widgets/audio_player_widget.dart';
+import '/ui/journey/themes/journey_theme_extension.dart';
 
 class StepAudioPlayerPage extends StatelessWidget {
   const StepAudioPlayerPage({

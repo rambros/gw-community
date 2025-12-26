@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+
+import '/ui/auth/widgets/login_google_button.dart';
 import '/ui/core/themes/app_theme.dart';
 import '/ui/core/ui/flutter_flow_widgets.dart';
+import '/ui/home/home_page/home_page.dart';
 import '/utils/flutter_flow_util.dart';
 import 'view_model/login_view_model.dart';
-import '/ui/home/home_page/home_page.dart';
-import '/ui/auth/widgets/login_google_button.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

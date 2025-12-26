@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+
 import '/config/app_config.dart';
+import '/data/services/supabase/supabase.dart';
 import '/ui/core/themes/app_theme.dart';
 import '/ui/journey/themes/journey_theme_extension.dart';
-import '/data/services/supabase/supabase.dart';
 import '/utils/custom_functions.dart' as functions;
 
 class JourneyStepItemWidget extends StatelessWidget {

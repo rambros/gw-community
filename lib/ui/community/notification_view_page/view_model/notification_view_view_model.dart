@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '/app_state.dart';
-import '/data/services/supabase/supabase.dart';
 import '/data/repositories/notification_repository.dart';
+import '/data/services/supabase/supabase.dart';
 
 class NotificationViewViewModel extends ChangeNotifier {
   NotificationViewViewModel({
