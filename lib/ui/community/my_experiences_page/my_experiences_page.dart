@@ -322,7 +322,7 @@ class _ExperienceCard extends StatelessWidget {
               onTap: onView,
               borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 8, 12),
+                padding: const EdgeInsets.fromLTRB(16, 16, 8, 8),
                 child: Row(
                   children: [
                     UserAvatar(
@@ -347,7 +347,7 @@ class _ExperienceCard extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                           ),
                           const SizedBox(height: 4),
-                          _buildStatusAndVisibility(context),
+                          _buildVisibilityText(context),
                         ],
                       ),
                     ),
@@ -357,6 +357,9 @@ class _ExperienceCard extends StatelessWidget {
                 ),
               ),
             ),
+
+            // Moderation status badge (below header)
+            _buildModerationStatus(context),
 
             // Text content
             if (experience.text != null && experience.text!.trim().isNotEmpty)
@@ -475,89 +478,97 @@ class _ExperienceCard extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusAndVisibility(BuildContext context) {
-    final status = experience.moderationStatus;
+  Widget _buildVisibilityText(BuildContext context) {
     final visibility = experience.visibility;
     final groupName = experience.groupName;
 
-    return Row(
-      children: [
-        // Moderation status badge (including draft)
-        if (status != null && status != 'approved') ...[
-          _buildStatusBadge(context, status),
-          const SizedBox(width: 8),
-        ],
-        // Visibility info
-        Expanded(
-          child: Text(
-            _getVisibilityText(visibility, groupName),
-            style: AppTheme.of(context).bodySmall.override(
-                  font: GoogleFonts.lexendDeca(),
-                  color: AppTheme.of(context).secondary.withValues(alpha: 0.7),
-                  fontSize: 12,
-                ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+    String text;
+    if (visibility == 'everyone') {
+      text = 'Visible for everyone';
+    } else if (groupName != null && groupName.isNotEmpty) {
+      text = 'Visible only for $groupName';
+    } else {
+      text = 'Group only';
+    }
+
+    return Text(
+      text,
+      style: AppTheme.of(context).bodySmall.override(
+            font: GoogleFonts.lexendDeca(),
+            color: AppTheme.of(context).secondary.withValues(alpha: 0.7),
+            fontSize: 12,
           ),
-        ),
-      ],
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
     );
   }
 
-  Widget _buildStatusBadge(BuildContext context, String status) {
+  Widget _buildModerationStatus(BuildContext context) {
+    final status = experience.moderationStatus;
+
+    // Don't show for approved experiences
+    if (status == null || status == 'approved') {
+      return const SizedBox.shrink();
+    }
+
     Color backgroundColor;
     Color textColor;
+    IconData icon;
     String label;
 
     switch (status) {
       case 'draft':
         backgroundColor = const Color(0xFFE3F2FD);
         textColor = const Color(0xFF1976D2);
+        icon = Icons.edit_note;
         label = 'Draft';
         break;
       case 'pending':
         backgroundColor = const Color(0xFFFFF3CD);
         textColor = const Color(0xFFB8860B);
-        label = 'Pending';
+        icon = Icons.hourglass_empty;
+        label = 'Pending Review';
         break;
       case 'rejected':
-        backgroundColor = AppTheme.of(context).error.withValues(alpha: 0.2);
+        backgroundColor = AppTheme.of(context).error.withValues(alpha: 0.15);
         textColor = AppTheme.of(context).error;
+        icon = Icons.cancel_outlined;
         label = 'Rejected';
         break;
       case 'changes_requested':
-        backgroundColor = AppTheme.of(context).copperRed.withValues(alpha: 0.2);
+        backgroundColor = AppTheme.of(context).copperRed.withValues(alpha: 0.15);
         textColor = AppTheme.of(context).copperRed;
-        label = 'Changes';
+        icon = Icons.edit_note;
+        label = 'Changes Requested';
         break;
       default:
         return const SizedBox.shrink();
     }
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Text(
-        label,
-        style: GoogleFonts.lexendDeca(
-          fontSize: 10,
-          fontWeight: FontWeight.w600,
-          color: textColor,
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 16, color: textColor),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: GoogleFonts.lexendDeca(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: textColor,
+              ),
+            ),
+          ],
         ),
       ),
     );
-  }
-
-  String _getVisibilityText(String? visibility, String? groupName) {
-    if (visibility == 'everyone') {
-      return 'Visible for everyone';
-    }
-    if (groupName != null && groupName.isNotEmpty) {
-      return 'Visible only for $groupName';
-    }
-    return 'Group only';
   }
 }

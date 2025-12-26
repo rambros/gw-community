@@ -28,8 +28,20 @@ class CommunityViewModel extends ChangeNotifier {
   List<CcGroupsRow> availableGroups = [];
 
   void _init() {
+    _refreshStreams();
+  }
+
+  /// Recria os streams para forçar atualização dos dados
+  /// Útil quando navegando de volta para a página após edições
+  void _refreshStreams() {
     sharingsListSupabaseStream = _repository.getSharingsStream(currentUserId: currentUserUid);
     myExperiencesStream = _repository.getMyExperiencesStream(currentUserUid);
+  }
+
+  /// Força refresh dos sharings (recria o stream)
+  void refreshSharings() {
+    _refreshStreams();
+    notifyListeners();
   }
 
   Future<void> fetchEvents(String type) async {
@@ -66,7 +78,10 @@ class CommunityViewModel extends ChangeNotifier {
   }
 
   Future<void> onTabChanged(int index) async {
-    if (index == 1) {
+    if (index == 0) {
+      // Refresh sharings when returning to Experiences tab
+      refreshSharings();
+    } else if (index == 1) {
       await refreshGroupsList();
     } else if (index == 2) {
       await fetchEvents('tab');

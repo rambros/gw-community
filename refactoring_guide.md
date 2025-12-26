@@ -686,7 +686,7 @@ Ver `implementation_plan.md` para um exemplo completo e detalhado de refatora√ß√
 // test/data/repositories/<feature>_repository_test.dart
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:g_w_community/data/repositories/<feature>_repository.dart';
+import 'package:gw_community/data/repositories/<feature>_repository.dart';
 
 void main() {
   group('<Feature>Repository', () {
@@ -713,7 +713,7 @@ void main() {
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:g_w_community/ui/<feature>/<feature>_view_model.dart';
+import 'package:gw_community/ui/<feature>/<feature>_view_model.dart';
 
 void main() {
   group('<Feature>ViewModel', () {

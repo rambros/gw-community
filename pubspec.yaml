@@ -1,7 +1,7 @@
-name: g_w_community
+name: gw_community
 description: A new Flutter project.
 
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 version: 0.5.3+53
 
@@ -15,11 +15,11 @@ dependencies:
     sdk: flutter
   flutter_web_plugins:
     sdk: flutter
-  assets_audio_player: 
+  assets_audio_player:
     git:
       url: https://github.com/FlutterFlow/Flutter-AssetsAudioPlayer.git
       ref: 243f9533279b73fa9dae345cc96e5d7d84cac0ac
-  assets_audio_player_web: 
+  assets_audio_player_web:
     git:
       url: https://github.com/FlutterFlow/Flutter-AssetsAudioPlayerWeb.git
       ref: cae7ceb6af99f4da1ec27136d312d0ef045c83d9
@@ -69,7 +69,7 @@ dependencies:
   timeago: 3.7.1
   url_launcher: ^6.3.2
   video_player: ^2.10.1
-  webviewx_plus: 
+  webviewx_plus:
     git:
       url: https://github.com/FlutterFlow/webviewx_plus.git
       ref: 4f84ece5e06d52643c5d844f41880baf8440c584
@@ -91,15 +91,13 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-
 flutter_launcher_icons:
   android: true
   ios: true
   remove_alpha_ios: true
   web:
     generate: true
-  image_path: 'assets/images/app_launcher_icon.png'
-
+  image_path: "assets/images/app_launcher_icon.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -126,7 +124,6 @@ flutter:
     - family: Icomoon
       fonts:
         - asset: assets/fonts/icomoon.ttf
-
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

@@ -31,8 +31,9 @@ class CommunityPage extends StatefulWidget {
   State<CommunityPage> createState() => _CommunityPageState();
 }
 
-class _CommunityPageState extends State<CommunityPage> with TickerProviderStateMixin {
+class _CommunityPageState extends State<CommunityPage> with TickerProviderStateMixin, RouteAware {
   late TabController _tabController;
+  CommunityViewModel? _viewModel;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -59,7 +60,25 @@ class _CommunityPageState extends State<CommunityPage> with TickerProviderStateM
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Subscribe to route changes to refresh data when returning to this page
+    final route = ModalRoute.of(context);
+    if (route is PageRoute) {
+      routeObserver.subscribe(this, route);
+    }
+  }
+
+  @override
+  void didPopNext() {
+    // Called when returning to this page from another page
+    // Refresh the sharings stream to get updated data
+    _viewModel?.refreshSharings();
+  }
+
+  @override
   void dispose() {
+    routeObserver.unsubscribe(this);
     _tabController.dispose();
 
     super.dispose();
@@ -76,6 +95,8 @@ class _CommunityPageState extends State<CommunityPage> with TickerProviderStateM
       ),
       child: Consumer<CommunityViewModel>(
         builder: (context, viewModel, child) {
+          // Store reference for RouteAware callback
+          _viewModel = viewModel;
           return Scaffold(
             key: scaffoldKey,
             backgroundColor: AppTheme.of(context).primaryBackground,
