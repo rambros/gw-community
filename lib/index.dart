@@ -38,3 +38,8 @@ export '/ui/profile/user_journeys_view/user_journeys_view_page.dart' show UserJo
 export '/ui/auth/on_boarding_page/on_boarding_page.dart' show OnBoardingPage;
 export '/ui/notifications/in_app_notifications_page/in_app_notifications_page.dart' show InAppNotificationsPage;
 export 'ui/community/my_experiences_page/my_experiences_page.dart' show MyExperiencesPage;
+
+// Support / Help Center
+export 'ui/support/support_page/support_page.dart' show SupportPage;
+export 'ui/support/new_request_page/new_request_page.dart' show NewRequestPage;
+export 'ui/support/request_chat_page/request_chat_page.dart' show RequestChatPage;

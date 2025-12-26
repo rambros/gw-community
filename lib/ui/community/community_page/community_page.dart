@@ -5,6 +5,7 @@ import 'widgets/sharings_tab_widget.dart';
 import 'widgets/groups_tab_widget.dart';
 import 'widgets/events_tab_widget.dart';
 import '../my_experiences_page/my_experiences_page.dart';
+import '/ui/support/support_page/support_page.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -126,6 +127,13 @@ class _CommunityPageState extends State<CommunityPage> with TickerProviderStateM
                   onSelected: (value) {
                     if (value == 'my_experiences') {
                       context.pushNamed(MyExperiencesPage.routeName);
+                    } else if (value == 'help_center') {
+                      context.pushNamed(
+                        SupportPage.routeName,
+                        queryParameters: {
+                          'contextType': 'community',
+                        }.withoutNulls,
+                      );
                     }
                   },
                   itemBuilder: (context) => [
@@ -140,6 +148,20 @@ class _CommunityPageState extends State<CommunityPage> with TickerProviderStateM
                           ),
                           const SizedBox(width: 12),
                           const Text('My Experiences'),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: 'help_center',
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.support_agent,
+                            size: 20,
+                            color: AppTheme.of(context).secondary,
+                          ),
+                          const SizedBox(width: 12),
+                          const Text('Help Center'),
                         ],
                       ),
                     ),

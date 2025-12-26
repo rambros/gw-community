@@ -445,6 +445,32 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           path: MyExperiencesPage.routePath,
           builder: (context, params) => const MyExperiencesPage(),
         ),
+        // Support / Help Center routes
+        FFRoute(
+          name: SupportPage.routeName,
+          path: SupportPage.routePath,
+          builder: (context, params) => SupportPage(
+            contextType: params.getParam('contextType', ParamType.String),
+            contextId: params.getParam('contextId', ParamType.int),
+            contextTitle: params.getParam('contextTitle', ParamType.String),
+          ),
+        ),
+        FFRoute(
+          name: NewRequestPage.routeName,
+          path: NewRequestPage.routePath,
+          builder: (context, params) => NewRequestPage(
+            contextType: params.getParam('contextType', ParamType.String),
+            contextId: params.getParam('contextId', ParamType.int),
+            contextTitle: params.getParam('contextTitle', ParamType.String),
+          ),
+        ),
+        FFRoute(
+          name: RequestChatPage.routeName,
+          path: RequestChatPage.routePath,
+          builder: (context, params) => RequestChatPage(
+            requestId: params.getParam('id', ParamType.int) ?? 0,
+          ),
+        ),
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
       observers: [routeObserver],
     );

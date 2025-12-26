@@ -201,6 +201,15 @@ class _UserProfilePageState extends State<UserProfilePage> {
                   onTap: () async {},
                 ),
               ),
+              Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
+                child: ProfileMenuItemWidget(
+                  text: 'Help Center',
+                  onTap: () async {
+                    context.pushNamed(SupportPage.routeName);
+                  },
+                ),
+              ),
             ],
           ),
 
