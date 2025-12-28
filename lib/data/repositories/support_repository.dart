@@ -11,16 +11,55 @@ import 'package:gw_community/data/services/supabase/supabase.dart';
 /// - Real-time message streams
 /// - Status updates
 class SupportRepository {
+  // ==================== MEMBER ID CACHE ====================
+
+  /// Cache do member_id para evitar queries repetidas
+  String? _cachedMemberId;
+  String? _cachedAuthUserId;
+
+  /// Busca o member_id baseado no auth_user_id
+  Future<String?> getMemberIdByAuthUserId(String authUserId) async {
+    // Retorna do cache se disponível
+    if (_cachedAuthUserId == authUserId && _cachedMemberId != null) {
+      return _cachedMemberId;
+    }
+
+    try {
+      final result = await CcMembersTable().querySingleRow(
+        queryFn: (q) => q.eqOrNull('auth_user_id', authUserId),
+      );
+
+      if (result.isNotEmpty) {
+        _cachedMemberId = result.first.id;
+        _cachedAuthUserId = authUserId;
+        return _cachedMemberId;
+      }
+      return null;
+    } catch (e) {
+      debugPrint('Error getting member_id: $e');
+      return null;
+    }
+  }
+
+  /// Limpa o cache do member_id
+  void clearMemberIdCache() {
+    _cachedMemberId = null;
+    _cachedAuthUserId = null;
+  }
+
   // ==================== REQUESTS ====================
 
   /// Get all support requests for current user
   Future<List<CcSupportRequestsRow>> getMyRequests() async {
     try {
-      final userId = SupaFlow.client.auth.currentUser?.id;
-      if (userId == null) return [];
+      final authUserId = SupaFlow.client.auth.currentUser?.id;
+      if (authUserId == null) return [];
+
+      final memberId = await getMemberIdByAuthUserId(authUserId);
+      if (memberId == null) return [];
 
       return await CcSupportRequestsTable().queryRows(
-        queryFn: (q) => q.eq('user_id', userId).order('updated_at', ascending: false),
+        queryFn: (q) => q.eq('member_id', memberId).order('updated_at', ascending: false),
       );
     } catch (e) {
       debugPrint('Error fetching support requests: $e');
@@ -31,12 +70,15 @@ class SupportRepository {
   /// Get requests filtered by status
   Future<List<CcSupportRequestsRow>> getMyRequestsByStatus(String status) async {
     try {
-      final userId = SupaFlow.client.auth.currentUser?.id;
-      if (userId == null) return [];
+      final authUserId = SupaFlow.client.auth.currentUser?.id;
+      if (authUserId == null) return [];
+
+      final memberId = await getMemberIdByAuthUserId(authUserId);
+      if (memberId == null) return [];
 
       return await CcSupportRequestsTable().queryRows(
         queryFn: (q) => q
-            .eq('user_id', userId)
+            .eq('member_id', memberId)
             .eq('status', status)
             .order('updated_at', ascending: false),
       );
@@ -49,12 +91,15 @@ class SupportRepository {
   /// Get open requests (not resolved)
   Future<List<CcSupportRequestsRow>> getMyOpenRequests() async {
     try {
-      final userId = SupaFlow.client.auth.currentUser?.id;
-      if (userId == null) return [];
+      final authUserId = SupaFlow.client.auth.currentUser?.id;
+      if (authUserId == null) return [];
+
+      final memberId = await getMemberIdByAuthUserId(authUserId);
+      if (memberId == null) return [];
 
       return await CcSupportRequestsTable().queryRows(
         queryFn: (q) => q
-            .eq('user_id', userId)
+            .eq('member_id', memberId)
             .neq('status', 'resolved')
             .order('updated_at', ascending: false),
       );
@@ -90,11 +135,14 @@ class SupportRepository {
       final user = SupaFlow.client.auth.currentUser;
       if (user == null) return null;
 
+      final memberId = await getMemberIdByAuthUserId(user.id);
+      if (memberId == null) return null;
+
       final data = {
         'title': title,
         'description': description,
         'category': category,
-        'user_id': user.id,
+        'member_id': memberId,
         'user_name': user.userMetadata?['full_name'] ?? user.userMetadata?['display_name'] ?? 'User',
         'user_email': user.email,
         'status': 'open',
@@ -161,14 +209,15 @@ class SupportRepository {
   }
 
   /// Stream of user's requests for real-time updates
+  /// Nota: Este método precisa do member_id já cacheado para funcionar
   Stream<List<CcSupportRequestsRow>> watchMyRequests() {
-    final userId = SupaFlow.client.auth.currentUser?.id;
-    if (userId == null) return Stream.value([]);
+    // Usa o member_id cacheado (deve ser chamado após alguma operação que popule o cache)
+    if (_cachedMemberId == null) return Stream.value([]);
 
     return SupaFlow.client
         .from('cc_support_requests')
         .stream(primaryKey: ['id'])
-        .eq('user_id', userId)
+        .eq('member_id', _cachedMemberId!)
         .order('updated_at', ascending: false)
         .map((list) => list.map((item) => CcSupportRequestsRow(item)).toList());
   }
@@ -176,11 +225,14 @@ class SupportRepository {
   /// Get count of open requests
   Future<int> getOpenRequestCount() async {
     try {
-      final userId = SupaFlow.client.auth.currentUser?.id;
-      if (userId == null) return 0;
+      final authUserId = SupaFlow.client.auth.currentUser?.id;
+      if (authUserId == null) return 0;
+
+      final memberId = await getMemberIdByAuthUserId(authUserId);
+      if (memberId == null) return 0;
 
       final requests = await CcSupportRequestsTable().queryRows(
-        queryFn: (q) => q.eq('user_id', userId).neq('status', 'resolved'),
+        queryFn: (q) => q.eq('member_id', memberId).neq('status', 'resolved'),
       );
       return requests.length;
     } catch (e) {
@@ -214,10 +266,13 @@ class SupportRepository {
       final user = SupaFlow.client.auth.currentUser;
       if (user == null) return null;
 
+      final memberId = await getMemberIdByAuthUserId(user.id);
+      if (memberId == null) return null;
+
       final data = {
         'request_id': requestId,
         'content': content,
-        'author_id': user.id,
+        'author_id': memberId,
         'author_name': user.userMetadata?['full_name'] ?? user.userMetadata?['display_name'] ?? 'User',
         'author_type': 'user',
         'author_photo': user.userMetadata?['photo_url'],
@@ -246,15 +301,18 @@ class SupportRepository {
   /// Mark messages as read
   Future<bool> markMessagesAsRead(int requestId) async {
     try {
-      final userId = SupaFlow.client.auth.currentUser?.id;
-      if (userId == null) return false;
+      final authUserId = SupaFlow.client.auth.currentUser?.id;
+      if (authUserId == null) return false;
+
+      final memberId = await getMemberIdByAuthUserId(authUserId);
+      if (memberId == null) return false;
 
       // Only mark admin messages as read (user already knows their own messages)
       await CcSupportMessagesTable().update(
         data: {'is_read': true},
         matchingRows: (rows) => rows
             .eq('request_id', requestId)
-            .neq('author_id', userId)
+            .neq('author_id', memberId)
             .eq('is_read', false),
       );
       return true;
@@ -267,13 +325,16 @@ class SupportRepository {
   /// Get unread message count for a request
   Future<int> getUnreadMessageCount(int requestId) async {
     try {
-      final userId = SupaFlow.client.auth.currentUser?.id;
-      if (userId == null) return 0;
+      final authUserId = SupaFlow.client.auth.currentUser?.id;
+      if (authUserId == null) return 0;
+
+      final memberId = await getMemberIdByAuthUserId(authUserId);
+      if (memberId == null) return 0;
 
       final messages = await CcSupportMessagesTable().queryRows(
         queryFn: (q) => q
             .eq('request_id', requestId)
-            .neq('author_id', userId)
+            .neq('author_id', memberId)
             .eq('is_read', false),
       );
       return messages.length;
@@ -288,11 +349,14 @@ class SupportRepository {
   /// Upload an image for a message
   Future<String?> uploadMessageImage(String filePath, String fileName) async {
     try {
-      final userId = SupaFlow.client.auth.currentUser?.id;
-      if (userId == null) return null;
+      final authUserId = SupaFlow.client.auth.currentUser?.id;
+      if (authUserId == null) return null;
+
+      final memberId = await getMemberIdByAuthUserId(authUserId);
+      if (memberId == null) return null;
 
       final timestamp = DateTime.now().millisecondsSinceEpoch;
-      final storagePath = 'support/$userId/$timestamp-$fileName';
+      final storagePath = 'support/$memberId/$timestamp-$fileName';
 
       // Read file and upload
       final file = await SupabaseStorageService().uploadFileFromPath(

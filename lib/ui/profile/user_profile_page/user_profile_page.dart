@@ -91,9 +91,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: [
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
           // Header with Name and Email
           Row(
             mainAxisSize: MainAxisSize.max,
@@ -197,7 +198,18 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
                 child: ProfileMenuItemWidget(
                   text: 'Favorites',
-                  onTap: () async {},
+                  onTap: () async {
+                    context.pushNamed(
+                      FavoritesPage.routeName,
+                      extra: <String, dynamic>{
+                        kTransitionInfoKey: const TransitionInfo(
+                          hasTransition: true,
+                          transitionType: PageTransitionType.fade,
+                          duration: Duration(milliseconds: 0),
+                        ),
+                      },
+                    );
+                  },
                 ),
               ),
               Padding(
@@ -317,7 +329,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
               ),
             ),
           ),
-        ],
+          ],
+        ),
       ),
     );
   }

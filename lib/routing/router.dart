@@ -443,6 +443,11 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           path: MyExperiencesPage.routePath,
           builder: (context, params) => const MyExperiencesPage(),
         ),
+        FFRoute(
+          name: FavoritesPage.routeName,
+          path: FavoritesPage.routePath,
+          builder: (context, params) => const FavoritesPage(),
+        ),
         // Support / Help Center routes
         FFRoute(
           name: SupportPage.routeName,

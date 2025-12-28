@@ -10,15 +10,31 @@ import 'package:gw_community/utils/context_extensions.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
 
-class ContentCard extends StatelessWidget {
-  const ContentCard({
+/// Card de recording favorito (baseado no ContentCard)
+class FavoriteRecordingCard extends StatelessWidget {
+  const FavoriteRecordingCard({
     super.key,
-    required this.contentRow,
+    required this.recording,
+    this.onUnfavorite,
   });
 
-  final ViewContentRow contentRow;
+  final CcViewUserFavoriteRecordingsRow recording;
+  final VoidCallback? onUnfavorite;
 
   Future<void> _openContent(BuildContext context) async {
+    // Converte para ViewContentRow para compatibilidade com ContentView
+    final viewContentRow = ViewContentRow({
+      'content_id': recording.contentId,
+      'title': recording.title,
+      'description': recording.description,
+      'authors_names': recording.authorsNames,
+      'midia_type': recording.midiaType,
+      'audio_url': recording.audioUrl,
+      'midia_file_url': recording.midiaFileUrl,
+      'cott_event_id': recording.cottEventId,
+      'event_name': recording.eventName,
+    });
+
     await showModalBottomSheet(
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -30,8 +46,8 @@ class ContentCard extends StatelessWidget {
           child: Padding(
             padding: MediaQuery.viewInsetsOf(context),
             child: ContentView(
-              contentId: contentRow.contentId!,
-              viewContentRow: contentRow,
+              contentId: recording.contentId!,
+              viewContentRow: viewContentRow,
             ),
           ),
         );
@@ -88,16 +104,21 @@ class ContentCard extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 4.0),
+                                    padding: const EdgeInsetsDirectional.fromSTEB(
+                                        0.0, 0.0, 0.0, 4.0),
                                     child: AutoSizeText(
                                       valueOrDefault<String>(
-                                        contentRow.title,
+                                        recording.title,
                                         'Title',
                                       ),
                                       textAlign: TextAlign.start,
                                       minFontSize: 12.0,
-                                      style: AppTheme.of(context).learn.contentTitle.override(
-                                            color: AppTheme.of(context).secondary,
+                                      style: AppTheme.of(context)
+                                          .learn
+                                          .contentTitle
+                                          .override(
+                                            color:
+                                                AppTheme.of(context).secondary,
                                           ),
                                     ),
                                   ),
@@ -107,14 +128,16 @@ class ContentCard extends StatelessWidget {
                             Text(
                               (List<String> listAuthors) {
                                 return listAuthors.join(', ');
-                              }(contentRow.authorsNames.toList()),
-                              style: AppTheme.of(context).learn.metadata.override(
-                                    color: AppTheme.of(context).secondary,
-                                  ),
+                              }(recording.authorsNames.toList()),
+                              style:
+                                  AppTheme.of(context).learn.metadata.override(
+                                        color: AppTheme.of(context).secondary,
+                                      ),
                             ),
                             Flexible(
                               child: Align(
-                                alignment: const AlignmentDirectional(-1.0, -1.0),
+                                alignment:
+                                    const AlignmentDirectional(-1.0, -1.0),
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   mainAxisAlignment: MainAxisAlignment.start,
@@ -122,10 +145,11 @@ class ContentCard extends StatelessWidget {
                                   children: [
                                     Expanded(
                                       child: Padding(
-                                        padding: const EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 0.0),
+                                        padding: const EdgeInsetsDirectional
+                                            .fromSTEB(0.0, 4.0, 0.0, 0.0),
                                         child: Text(
                                           valueOrDefault<String>(
-                                            contentRow.description,
+                                            recording.description,
                                             'description',
                                           ).maybeHandleOverflow(
                                             maxChars: 150,
@@ -133,8 +157,12 @@ class ContentCard extends StatelessWidget {
                                           ),
                                           textAlign: TextAlign.start,
                                           maxLines: 3,
-                                          style: AppTheme.of(context).learn.bodyLight.override(
-                                                color: AppTheme.of(context).secondary,
+                                          style: AppTheme.of(context)
+                                              .learn
+                                              .bodyLight
+                                              .override(
+                                                color: AppTheme.of(context)
+                                                    .secondary,
                                                 fontSize: 12.0,
                                               ),
                                         ),
@@ -148,52 +176,23 @@ class ContentCard extends StatelessWidget {
                         ),
                       ),
                       if (context.currentUserIdOrEmpty.isNotEmpty &&
-                          contentRow.contentId != null)
+                          recording.contentId != null)
                         FavoriteButton(
                           contentType: FavoritesRepository.typeRecording,
-                          contentId: contentRow.contentId!,
+                          contentId: recording.contentId!,
                           authUserId: context.currentUserIdOrEmpty,
                           size: 22.0,
-                        ),
-                      Padding(
-                        padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
-                        child: Builder(
-                          builder: (context) {
-                            if (contentRow.midiaType == 'audio') {
-                              return Icon(
-                                Icons.audiotrack_sharp,
-                                color: AppTheme.of(context).primary,
-                                size: 32.0,
-                              );
-                            } else if (contentRow.midiaType == 'text') {
-                              return Align(
-                                alignment: const AlignmentDirectional(0.0, 0.0),
-                                child: Icon(
-                                  Icons.text_snippet,
-                                  color: AppTheme.of(context).primary,
-                                  size: 32.0,
-                                ),
-                              );
-                            } else if (contentRow.midiaType == 'video') {
-                              return Align(
-                                alignment: const AlignmentDirectional(0.0, 0.0),
-                                child: Icon(
-                                  Icons.ondemand_video,
-                                  color: AppTheme.of(context).primary,
-                                  size: 34.0,
-                                ),
-                              );
-                            } else {
-                              return Container(
-                                width: 4.0,
-                                height: 4.0,
-                                decoration: BoxDecoration(
-                                  color: AppTheme.of(context).secondaryBackground,
-                                ),
-                              );
+                          initialIsFavorite: true,
+                          onToggle: (isFavorite) {
+                            if (!isFavorite) {
+                              onUnfavorite?.call();
                             }
                           },
                         ),
+                      Padding(
+                        padding: const EdgeInsetsDirectional.fromSTEB(
+                            0.0, 0.0, 8.0, 0.0),
+                        child: _buildMediaIcon(context),
                       ),
                     ],
                   ),
@@ -204,5 +203,29 @@ class ContentCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _buildMediaIcon(BuildContext context) {
+    if (recording.midiaType == 'audio') {
+      return Icon(
+        Icons.audiotrack_sharp,
+        color: AppTheme.of(context).primary,
+        size: 32.0,
+      );
+    } else if (recording.midiaType == 'text') {
+      return Icon(
+        Icons.text_snippet,
+        color: AppTheme.of(context).primary,
+        size: 32.0,
+      );
+    } else if (recording.midiaType == 'video') {
+      return Icon(
+        Icons.ondemand_video,
+        color: AppTheme.of(context).primary,
+        size: 34.0,
+      );
+    } else {
+      return const SizedBox(width: 4.0, height: 4.0);
+    }
   }
 }

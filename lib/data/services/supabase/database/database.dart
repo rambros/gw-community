@@ -1,6 +1,6 @@
 export 'package:supabase_flutter/supabase_flutter.dart';
 
-export '/utils/lat_lng.dart';
+export 'package:gw_community/utils/lat_lng.dart';
 export '../supabase.dart';
 export 'row.dart';
 export 'table.dart';
@@ -26,6 +26,7 @@ export 'tables/cc_step_activities.dart';
 export 'tables/cc_support_messages.dart';
 export 'tables/cc_support_requests.dart';
 export 'tables/cc_user_activities.dart';
+export 'tables/cc_user_favorites.dart';
 export 'tables/cc_user_journeys.dart';
 export 'tables/cc_user_steps.dart';
 export 'tables/cc_view_avail_journeys.dart';
@@ -34,6 +35,8 @@ export 'tables/cc_view_notifications_users.dart';
 export 'tables/cc_view_ordered_comments.dart';
 export 'tables/cc_view_sharings_users.dart';
 export 'tables/cc_view_user_activities.dart';
+export 'tables/cc_view_user_favorite_activities.dart';
+export 'tables/cc_view_user_favorite_recordings.dart';
 export 'tables/cc_view_user_journal.dart';
 export 'tables/cc_view_user_journeys.dart';
 export 'tables/cc_view_user_steps.dart';

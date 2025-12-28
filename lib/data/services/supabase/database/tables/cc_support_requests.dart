@@ -36,9 +36,9 @@ class CcSupportRequestsRow extends SupabaseDataRow {
   String? get priority => getField<String>('priority');
   set priority(String? value) => setField<String>('priority', value);
 
-  // User info
-  String get userId => getField<String>('user_id')!;
-  set userId(String value) => setField<String>('user_id', value);
+  // Member info (membro da comunidade que criou o request)
+  String get memberId => getField<String>('member_id')!;
+  set memberId(String value) => setField<String>('member_id', value);
 
   String? get userName => getField<String>('user_name');
   set userName(String? value) => setField<String>('user_name', value);

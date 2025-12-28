@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/data/repositories/favorites_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_animations.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_pdf_viewer.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_youtube_player.dart';
 import 'package:gw_community/ui/core/widgets/audio_player_widget.dart';
+import 'package:gw_community/ui/core/widgets/favorite_button.dart';
 import 'package:gw_community/ui/learn/content_view/view_model/content_view_model.dart';
+import 'package:gw_community/utils/context_extensions.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
 
@@ -99,7 +102,7 @@ class _ContentViewState extends State<ContentView> with TickerProviderStateMixin
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Header Row with Close button
+                            // Header Row with Favorite and Close buttons
                             Align(
                               alignment: const AlignmentDirectional(0.0, 0.0),
                               child: Padding(
@@ -108,6 +111,29 @@ class _ContentViewState extends State<ContentView> with TickerProviderStateMixin
                                   mainAxisSize: MainAxisSize.max,
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
+                                    // Favorite button
+                                    if (context.currentUserIdOrEmpty.isNotEmpty &&
+                                        viewModel.viewContentRow.contentId != null)
+                                      Padding(
+                                        padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
+                                        child: Container(
+                                          width: 40.0,
+                                          height: 40.0,
+                                          decoration: BoxDecoration(
+                                            color: AppTheme.of(context).secondaryBackground,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Center(
+                                            child: FavoriteButton(
+                                              contentType: FavoritesRepository.typeRecording,
+                                              contentId: viewModel.viewContentRow.contentId!,
+                                              authUserId: context.currentUserIdOrEmpty,
+                                              size: 24.0,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    // Close button
                                     InkWell(
                                       splashColor: Colors.transparent,
                                       focusColor: Colors.transparent,

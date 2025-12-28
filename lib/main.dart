@@ -10,6 +10,7 @@ import 'package:gw_community/data/repositories/auth_repository.dart';
 import 'package:gw_community/data/repositories/auth_repository_impl.dart';
 import 'package:gw_community/data/repositories/community_repository.dart';
 import 'package:gw_community/data/repositories/event_repository.dart';
+import 'package:gw_community/data/repositories/favorites_repository.dart';
 import 'package:gw_community/data/repositories/group_repository.dart';
 import 'package:gw_community/data/repositories/home_repository.dart';
 import 'package:gw_community/data/repositories/journal_repository.dart';
@@ -92,6 +93,7 @@ void main() async {
         Provider(create: (_) => JourneysRepository()),
         Provider(create: (_) => StepActivitiesRepository()),
         Provider(create: (_) => JournalRepository()),
+        Provider(create: (_) => FavoritesRepository()),
 
         ChangeNotifierProvider(
           create: (context) => AppViewModel(
