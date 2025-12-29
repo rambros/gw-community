@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/notification_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
@@ -260,14 +260,39 @@ class _NotificationViewPageState extends State<NotificationViewPage> {
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 8.0),
-            child: Html(
+            padding: const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 8.0, 8.0),
+            child: MarkdownBody(
               data: notification.text ?? '',
-              onLinkTap: (url, _, __) {
-                if (url != null) {
-                  launchURL(url);
+              onTapLink: (text, href, title) {
+                if (href != null) {
+                  launchURL(href);
                 }
               },
+              styleSheet: MarkdownStyleSheet(
+                p: GoogleFonts.lexendDeca(
+                  color: AppTheme.of(context).primaryText,
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.normal,
+                  height: 1.5,
+                ),
+                strong: GoogleFonts.lexendDeca(
+                  color: AppTheme.of(context).primaryText,
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.bold,
+                  height: 1.5,
+                ),
+                em: GoogleFonts.lexendDeca(
+                  color: AppTheme.of(context).primaryText,
+                  fontSize: 14.0,
+                  fontStyle: FontStyle.italic,
+                  height: 1.5,
+                ),
+                a: GoogleFonts.lexendDeca(
+                  color: AppTheme.of(context).primary,
+                  fontSize: 14.0,
+                  decoration: TextDecoration.underline,
+                ),
+              ),
             ),
           ),
           Padding(

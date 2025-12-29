@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
 import 'package:gw_community/ui/journey/themes/journey_theme_extension.dart';
+import 'package:gw_community/utils/flutter_flow_util.dart';
 
 class JourneyIntroWidget extends StatelessWidget {
   const JourneyIntroWidget({
@@ -40,32 +41,57 @@ class JourneyIntroWidget extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 8.0, 0.0),
-          child: Html(
-            data: journey.description ?? '<p>Description</p>',
-            style: {
-              "body": Style(
-                margin: Margins.zero,
-                padding: HtmlPaddings.zero,
-                fontSize: FontSize(14.0),
-                fontFamily: GoogleFonts.lexendDeca().fontFamily,
-                fontWeight: FontWeight.w300,
+          child: MarkdownBody(
+            data: journey.description ?? 'Description',
+            onTapLink: (text, href, title) {
+              if (href != null) {
+                launchURL(href);
+              }
+            },
+            styleSheet: MarkdownStyleSheet(
+              p: GoogleFonts.lexendDeca(
                 color: AppTheme.of(context).primaryText,
+                fontSize: 14.0,
+                fontWeight: FontWeight.w300,
+                height: 1.5,
               ),
-              "p": Style(
-                margin: Margins.only(bottom: 8.0),
+              strong: GoogleFonts.lexendDeca(
+                color: AppTheme.of(context).primaryText,
+                fontSize: 14.0,
+                fontWeight: FontWeight.bold,
+                height: 1.5,
               ),
-              "h1, h2, h3, h4, h5, h6": Style(
-                margin: Margins.only(bottom: 8.0, top: 8.0),
+              em: GoogleFonts.lexendDeca(
+                color: AppTheme.of(context).primaryText,
+                fontSize: 14.0,
+                fontStyle: FontStyle.italic,
+                height: 1.5,
+              ),
+              h1: GoogleFonts.lexendDeca(
+                color: AppTheme.of(context).tertiary,
+                fontSize: 24.0,
                 fontWeight: FontWeight.bold,
               ),
-              "ul, ol": Style(
-                margin: Margins.only(left: 16.0, bottom: 8.0),
+              h2: GoogleFonts.lexendDeca(
+                color: AppTheme.of(context).tertiary,
+                fontSize: 20.0,
+                fontWeight: FontWeight.bold,
               ),
-              "a": Style(
+              h3: GoogleFonts.lexendDeca(
+                color: AppTheme.of(context).tertiary,
+                fontSize: 18.0,
+                fontWeight: FontWeight.w600,
+              ),
+              a: GoogleFonts.lexendDeca(
                 color: AppTheme.of(context).primary,
-                textDecoration: TextDecoration.underline,
+                fontSize: 14.0,
+                decoration: TextDecoration.underline,
               ),
-            },
+              listBullet: GoogleFonts.lexendDeca(
+                color: AppTheme.of(context).primaryText,
+                fontSize: 14.0,
+              ),
+            ),
           ),
         ),
         Padding(

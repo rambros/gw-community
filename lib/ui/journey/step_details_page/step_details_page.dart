@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/step_activities_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
@@ -149,12 +151,26 @@ class _StepDetailsPageState extends State<StepDetailsPage> {
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsetsDirectional.fromSTEB(4.0, 16.0, 4.0, 0.0),
-                        child: Text(
-                          widget.userStepRow?.description ?? 'description',
-                          textAlign: TextAlign.center,
-                          style: AppTheme.of(context).journey.stepDescription.override(
-                                color: AppTheme.of(context).primaryText,
-                              ),
+                        child: MarkdownBody(
+                          data: widget.userStepRow?.description ?? 'description',
+                          styleSheet: MarkdownStyleSheet(
+                            p: GoogleFonts.lexendDeca(
+                              color: AppTheme.of(context).primaryText,
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.normal,
+                            ),
+                            strong: GoogleFonts.lexendDeca(
+                              color: AppTheme.of(context).primaryText,
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            em: GoogleFonts.lexendDeca(
+                              color: AppTheme.of(context).primaryText,
+                              fontSize: 14.0,
+                              fontStyle: FontStyle.italic,
+                            ),
+                            textAlign: WrapAlignment.center,
+                          ),
                         ),
                       ),
                     ),

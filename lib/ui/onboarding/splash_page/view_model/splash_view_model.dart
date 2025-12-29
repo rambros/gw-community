@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gw_community/ui/auth/login_page/login_page.dart';
+import 'package:gw_community/ui/home/home_page/home_page.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 
 class SplashViewModel extends ChangeNotifier {
@@ -13,9 +15,9 @@ class SplashViewModel extends ChangeNotifier {
         final loggedIn = AppStateNotifier.instance.loggedIn;
 
         if (loggedIn) {
-          context.goNamed('homePage');
+          context.goNamed(HomePage.routeName);
         } else {
-          context.goNamed('loginPage');
+          context.goNamed(LoginPage.routeName);
         }
       }
     }

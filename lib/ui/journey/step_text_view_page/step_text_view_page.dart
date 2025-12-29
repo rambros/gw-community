@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
@@ -83,11 +85,48 @@ class StepTextViewPage extends StatelessWidget {
                       ),
                     ),
                     SelectionArea(
-                      child: Text(
-                        stepTextContent ?? 'text',
-                        style: AppTheme.of(context).journey.bodyText.override(
-                              color: AppTheme.of(context).primaryText,
-                            ),
+                      child: MarkdownBody(
+                        data: stepTextContent ?? 'text',
+                        selectable: true,
+                        styleSheet: MarkdownStyleSheet(
+                          p: GoogleFonts.lexendDeca(
+                            color: AppTheme.of(context).primaryText,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.normal,
+                            height: 1.5,
+                          ),
+                          strong: GoogleFonts.lexendDeca(
+                            color: AppTheme.of(context).primaryText,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                            height: 1.5,
+                          ),
+                          em: GoogleFonts.lexendDeca(
+                            color: AppTheme.of(context).primaryText,
+                            fontSize: 16.0,
+                            fontStyle: FontStyle.italic,
+                            height: 1.5,
+                          ),
+                          h1: GoogleFonts.lexendDeca(
+                            color: AppTheme.of(context).tertiary,
+                            fontSize: 24.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          h2: GoogleFonts.lexendDeca(
+                            color: AppTheme.of(context).tertiary,
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          h3: GoogleFonts.lexendDeca(
+                            color: AppTheme.of(context).tertiary,
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          listBullet: GoogleFonts.lexendDeca(
+                            color: AppTheme.of(context).primaryText,
+                            fontSize: 16.0,
+                          ),
+                        ),
                       ),
                     ),
                   ],
