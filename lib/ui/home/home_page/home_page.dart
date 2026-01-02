@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:gw_community/ui/community/group_details_page/group_details_page.dart';
+import 'package:gw_community/ui/community/widgets/group_card.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/widgets/notification_bell/notification_bell_widget.dart';
 import 'package:gw_community/ui/home/home_page/view_model/home_view_model.dart';
@@ -88,6 +92,7 @@ class _HomePageState extends State<HomePage> {
                       padding: EdgeInsets.zero,
                       primary: false,
                       shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
                       scrollDirection: Axis.vertical,
                       itemCount: viewModel.upcomingEvents.length,
                       itemBuilder: (context, index) {
@@ -95,6 +100,27 @@ class _HomePageState extends State<HomePage> {
                         return HomeEventCard(eventRow: event);
                       },
                     ),
+
+                    // Groups Section
+                    if (viewModel.userGroups.isNotEmpty) ...[
+                      _buildSectionTitle(context, 'My Groups'),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Column(
+                          children: viewModel.userGroups.map((group) => _buildGroupItem(context, group)).toList(),
+                        ),
+                      ),
+                    ] else ...[
+                      _buildSectionTitle(context, 'Public Groups'),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Column(
+                          children:
+                              viewModel.publicGroups.take(3).map((group) => _buildGroupItem(context, group)).toList(),
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 24.0),
                   ],
                 ),
               ),
@@ -188,6 +214,23 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildGroupItem(BuildContext context, CcGroupsRow group) {
+    return InkWell(
+      onTap: () async {
+        await context.pushNamed(
+          GroupDetailsPage.routeName,
+          queryParameters: {
+            'groupRow': serializeParam(
+              group,
+              ParamType.SupabaseRow,
+            ),
+          }.withoutNulls,
+        );
+      },
+      child: GroupCard(groupRow: group),
     );
   }
 }

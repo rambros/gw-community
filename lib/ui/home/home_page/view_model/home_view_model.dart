@@ -40,6 +40,12 @@ class HomeViewModel extends ChangeNotifier {
   List<CcEventsRow> _upcomingEvents = [];
   List<CcEventsRow> get upcomingEvents => _upcomingEvents;
 
+  List<CcGroupsRow> _userGroups = [];
+  List<CcGroupsRow> get userGroups => _userGroups;
+
+  List<CcGroupsRow> _publicGroups = [];
+  List<CcGroupsRow> get publicGroups => _publicGroups;
+
   // ========== COMMANDS ==========
 
   Future<void> loadData() async {
@@ -51,6 +57,7 @@ class HomeViewModel extends ChangeNotifier {
         _loadUserProfile(),
         _loadUserJourneys(),
         _loadUpcomingEvents(),
+        _loadGroups(),
       ]);
 
       // Always load journey ID 1 details as requested
@@ -103,6 +110,11 @@ class HomeViewModel extends ChangeNotifier {
 
   Future<void> _loadUpcomingEvents() async {
     _upcomingEvents = await _repository.getUpcomingEvents();
+  }
+
+  Future<void> _loadGroups() async {
+    _userGroups = await _repository.getMyGroups(currentUserUid);
+    _publicGroups = await _repository.getAvailableGroups(currentUserUid);
   }
 
   // ========== HELPER METHODS ==========

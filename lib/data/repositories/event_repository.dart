@@ -114,6 +114,7 @@ class EventRepository {
         .stream(primaryKey: ['id'])
         .eq('group_id', groupId)
         .order('event_date')
-        .map((list) => list.map((item) => CcEventsRow(item)).toList());
+        .map((list) => list.map((item) => CcEventsRow(item)).toList())
+        .asBroadcastStream();
   }
 }

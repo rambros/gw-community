@@ -24,27 +24,59 @@ class GroupAboutTab extends StatelessWidget {
             _buildSection(context, 'Description', group.description),
             if (viewModel.shouldShowOnlyAbout) ...[
               const SizedBox(height: 24.0),
-              Center(
-                child: FFButtonWidget(
-                  onPressed: () => viewModel.joinGroup(),
-                  text: 'Se inscrever no grupo',
-                  options: FFButtonOptions(
-                    width: double.infinity,
-                    height: 50.0,
-                    padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                    iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                    color: AppTheme.of(context).primary,
-                    textStyle: AppTheme.of(context).titleSmall.override(
-                          font: GoogleFonts.lexendDeca(),
-                          color: Colors.white,
-                          fontSize: 16.0,
-                        ),
-                    elevation: 2.0,
-                    borderRadius: BorderRadius.circular(12.0),
+              if (viewModel.canJoin)
+                Center(
+                  child: FFButtonWidget(
+                    onPressed: () => viewModel.joinGroup(),
+                    text: 'Join Group',
+                    options: FFButtonOptions(
+                      width: double.infinity,
+                      height: 50.0,
+                      padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                      iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                      color: AppTheme.of(context).primary,
+                      textStyle: AppTheme.of(context).titleSmall.override(
+                            font: GoogleFonts.lexendDeca(),
+                            color: Colors.white,
+                            fontSize: 16.0,
+                          ),
+                      elevation: 2.0,
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    showLoadingIndicator: viewModel.isJoining,
                   ),
-                  showLoadingIndicator: viewModel.isJoining,
+                )
+              else if (group.groupPrivacy?.toLowerCase().trim() == 'private')
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16.0),
+                  decoration: BoxDecoration(
+                    color: AppTheme.of(context).secondaryBackground,
+                    borderRadius: BorderRadius.circular(12.0),
+                    border: Border.all(
+                      color: AppTheme.of(context).secondary,
+                      width: 1.0,
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      Icon(
+                        Icons.lock_outline,
+                        color: AppTheme.of(context).secondary,
+                        size: 32.0,
+                      ),
+                      const SizedBox(height: 12.0),
+                      Text(
+                        'This is a private group. You need an invitation to join and see the content.',
+                        textAlign: TextAlign.center,
+                        style: AppTheme.of(context).bodyMedium.override(
+                              font: GoogleFonts.lexendDeca(),
+                              color: AppTheme.of(context).secondary,
+                            ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
             ],
             const SizedBox(height: 16.0),
             _buildSection(context, 'Welcome Message', group.welcomeMessage),
@@ -78,17 +110,25 @@ class GroupAboutTab extends StatelessWidget {
                 itemCount: viewModel.members.length,
                 itemBuilder: (context, index) {
                   final member = viewModel.members[index];
+                  final displayName = () {
+                    if (member.hideLastName == true) {
+                      return member.firstName ?? member.displayName ?? 'Unknown';
+                    }
+                    final fullName = '${member.firstName ?? ''} ${member.lastName ?? ''}'.trim();
+                    return fullName.isNotEmpty ? fullName : (member.displayName ?? 'Unknown');
+                  }();
+
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: Row(
                       children: [
                         UserAvatar(
                           imageUrl: member.photoUrl,
-                          fullName: member.displayName,
+                          fullName: displayName,
                         ),
                         const SizedBox(width: 12.0),
                         Text(
-                          member.displayName ?? 'Unknown',
+                          displayName,
                           style: AppTheme.of(context).bodyMedium,
                         ),
                       ],

@@ -149,7 +149,7 @@ class GroupRepository {
     if (userIds.isEmpty) return [];
 
     final result = await CcMembersTable().queryRows(
-      queryFn: (q) => q.filter('id', 'in', userIds).order('display_name', ascending: true),
+      queryFn: (q) => q.filter('auth_user_id', 'in', userIds).order('display_name', ascending: true),
     );
     return result;
   }

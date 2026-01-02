@@ -22,7 +22,8 @@ class CommunityRepository {
             final isApproved = status == 'approved' || status == null;
             final isOwner = currentUserId != null && ownerId == currentUserId;
 
-            debugPrint('getSharingsStream: item id=${item['id']}, status=$status, ownerId=$ownerId, isApproved=$isApproved, isOwner=$isOwner');
+            debugPrint(
+                'getSharingsStream: item id=${item['id']}, status=$status, ownerId=$ownerId, isApproved=$isApproved, isOwner=$isOwner');
 
             return isApproved || isOwner;
           }).toList();
@@ -64,7 +65,11 @@ class CommunityRepository {
     );
 
     if (response is List) {
-      return response.map((row) => CcGroupsRow(row as Map<String, dynamic>)).toList();
+      return response.map((row) => CcGroupsRow(row as Map<String, dynamic>)).where((group) {
+        final privacy = group.groupPrivacy?.toLowerCase().trim();
+        // Aceita 'public' ou null (padrão legado como público)
+        return privacy == 'public' || group.groupPrivacy == null;
+      }).toList();
     }
     return [];
   }

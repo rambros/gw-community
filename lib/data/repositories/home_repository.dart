@@ -39,4 +39,37 @@ class HomeRepository {
           q.gtOrNull('event_date', supaSerialize<DateTime>(DateTime.now())).order('event_date', ascending: true),
     );
   }
+
+  /// Fetches available groups for the user
+  Future<List<CcGroupsRow>> getAvailableGroups(String authUserId) async {
+    final response = await SupaFlow.client.rpc(
+      'get_available_groups',
+      params: {
+        'user_input': authUserId,
+      },
+    );
+
+    if (response is List) {
+      return response.map((row) => CcGroupsRow(row as Map<String, dynamic>)).where((group) {
+        final privacy = group.groupPrivacy?.toLowerCase().trim();
+        return privacy == 'public' || group.groupPrivacy == null;
+      }).toList();
+    }
+    return [];
+  }
+
+  /// Fetches groups the user is a member of
+  Future<List<CcGroupsRow>> getMyGroups(String authUserId) async {
+    final response = await SupaFlow.client.rpc(
+      'get_my_groups',
+      params: {
+        'user_input': authUserId,
+      },
+    );
+
+    if (response is List) {
+      return response.map((row) => CcGroupsRow(row as Map<String, dynamic>)).toList();
+    }
+    return [];
+  }
 }

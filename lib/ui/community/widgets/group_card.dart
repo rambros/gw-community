@@ -117,7 +117,7 @@ class GroupCard extends StatelessWidget {
                           '${groupRow.groupPrivacy} - ${formatNumber(
                             groupRow.numberMembers,
                             formatType: FormatType.compact,
-                          )} members',
+                          )} ${groupRow.numberMembers == 1 ? 'member' : 'members'}',
                           style: AppTheme.of(context).bodyMedium.override(
                                 font: GoogleFonts.lexendDeca(
                                   fontWeight: FontWeight.w500,
@@ -281,7 +281,6 @@ class GroupCard extends StatelessWidget {
 
     final currentUserId = context.currentUserIdOrEmpty;
 
-    return (FFAppState().loginUser.roles.contains('Admin') == true) ||
-        (currentUserId == FFAppState().loginUser.userId);
+    return (FFAppState().loginUser.roles.contains('Admin') == true) || (currentUserId == FFAppState().loginUser.userId);
   }
 }

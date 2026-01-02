@@ -92,6 +92,7 @@ class NotificationRepository {
         .stream(primaryKey: ['id'])
         .eq('group_id', groupId)
         .order('updated_at')
-        .map((list) => list.map((item) => CcViewNotificationsUsersRow(item)).toList());
+        .map((list) => list.map((item) => CcViewNotificationsUsersRow(item)).toList())
+        .asBroadcastStream();
   }
 }

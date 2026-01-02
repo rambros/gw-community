@@ -201,7 +201,7 @@ class GroupDetailsPageView extends StatelessWidget {
                           '${group.groupPrivacy} group - ${formatNumber(
                             group.numberMembers,
                             formatType: FormatType.compact,
-                          )} members',
+                          )} ${group.numberMembers == 1 ? 'member' : 'members'}',
                           style: AppTheme.of(context).bodyMedium.override(
                                 font: GoogleFonts.lexendDeca(),
                                 color: AppTheme.of(context).secondary,
@@ -236,26 +236,27 @@ class GroupDetailsPageView extends StatelessWidget {
                               unselectedLabelStyle: const TextStyle(),
                               indicatorColor: AppTheme.of(context).secondary,
                               tabs: viewModel.shouldShowOnlyAbout
-                                  ? const [Tab(text: 'About')]
-                                  : const [
-                                      Tab(text: 'Experiences'),
-                                      Tab(text: 'Events'),
-                                      Tab(text: 'Notifications'),
-                                      Tab(text: 'About'),
+                                  ? [const Tab(key: ValueKey('tab_about_only'), text: 'About')]
+                                  : [
+                                      const Tab(key: ValueKey('tab_experiences'), text: 'Experiences'),
+                                      const Tab(key: ValueKey('tab_events'), text: 'Events'),
+                                      const Tab(key: ValueKey('tab_notifications'), text: 'Notifications'),
+                                      const Tab(key: ValueKey('tab_about'), text: 'About'),
                                     ],
                               controller: viewModel.tabController,
                             ),
                           ),
                           Expanded(
                             child: TabBarView(
+                              key: ValueKey('tab_view_${viewModel.shouldShowOnlyAbout}'),
                               controller: viewModel.tabController,
                               children: viewModel.shouldShowOnlyAbout
-                                  ? const [GroupAboutTab()]
-                                  : const [
-                                      GroupSharingsTab(),
-                                      GroupEventsTab(),
-                                      GroupNotificationsTab(),
-                                      GroupAboutTab(),
+                                  ? [const GroupAboutTab(key: ValueKey('page_about_only'))]
+                                  : [
+                                      const GroupSharingsTab(key: ValueKey('page_experiences')),
+                                      const GroupEventsTab(key: ValueKey('page_events')),
+                                      const GroupNotificationsTab(key: ValueKey('page_notifications')),
+                                      const GroupAboutTab(key: ValueKey('page_about')),
                                     ],
                             ),
                           ),

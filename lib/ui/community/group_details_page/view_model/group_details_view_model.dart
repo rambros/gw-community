@@ -11,7 +11,8 @@ class GroupDetailsViewModel extends ChangeNotifier {
   final SharingRepository _sharingRepository;
   final EventRepository _eventRepository;
   final NotificationRepository _notificationRepository;
-  final CcGroupsRow group;
+  CcGroupsRow _group;
+  CcGroupsRow get group => _group;
   final String? currentUserId;
 
   GroupDetailsViewModel(
@@ -19,9 +20,9 @@ class GroupDetailsViewModel extends ChangeNotifier {
     this._sharingRepository,
     this._eventRepository,
     this._notificationRepository,
-    this.group, {
+    CcGroupsRow group, {
     this.currentUserId,
-  });
+  }) : _group = group;
 
   TabController? tabController;
   TickerProvider? _vsync;
@@ -32,11 +33,6 @@ class GroupDetailsViewModel extends ChangeNotifier {
   bool _isCheckingMembership = true;
   bool get isCheckingMembership => _isCheckingMembership;
 
-  // Streams
-  Stream<List<CcViewSharingsUsersRow>>? _sharingsStream;
-  Stream<List<CcEventsRow>>? _eventsStream;
-  Stream<List<CcViewNotificationsUsersRow>>? _notificationsStream;
-
   // Data for About tab
   List<CcMembersRow> _members = [];
   List<CcMembersRow> get members => _members;
@@ -44,18 +40,15 @@ class GroupDetailsViewModel extends ChangeNotifier {
   bool get isLoadingMembers => _isLoadingMembers;
 
   Stream<List<CcViewSharingsUsersRow>> get sharingsStream {
-    _sharingsStream ??= _sharingRepository.getSharingsStream(group.id, currentUserId: currentUserId);
-    return _sharingsStream!;
+    return _sharingRepository.getSharingsStream(group.id, currentUserId: currentUserId);
   }
 
   Stream<List<CcEventsRow>> get eventsStream {
-    _eventsStream ??= _eventRepository.getEventsStream(group.id);
-    return _eventsStream!;
+    return _eventRepository.getEventsStream(group.id);
   }
 
   Stream<List<CcViewNotificationsUsersRow>> get notificationsStream {
-    _notificationsStream ??= _notificationRepository.getNotificationsStream(group.id);
-    return _notificationsStream!;
+    return _notificationRepository.getNotificationsStream(group.id);
   }
 
   void init(TickerProvider vsync) {
@@ -108,8 +101,15 @@ class GroupDetailsViewModel extends ChangeNotifier {
     tabController?.addListener(_onTabChanged);
   }
 
-  // Define se deve mostrar apenas a aba About
-  bool get shouldShowOnlyAbout => group.groupPrivacy == 'Public' && !_isMember;
+  // Define se deve mostrar apenas a aba About (se não for membro)
+  bool get shouldShowOnlyAbout => !_isMember;
+
+  // Define se o usuário pode se inscrever no grupo (apenas se for público e não for membro)
+  bool get canJoin {
+    if (_isMember) return false;
+    final privacy = group.groupPrivacy?.toLowerCase().trim();
+    return privacy == 'public' || group.groupPrivacy == null;
+  }
 
   Future<void> joinGroup() async {
     if (currentUserId == null) return;
@@ -120,6 +120,13 @@ class GroupDetailsViewModel extends ChangeNotifier {
     try {
       await _groupRepository.joinGroup(group.id, currentUserId!);
       _isMember = true;
+
+      // Refresh group data to update member count
+      final updatedGroup = await _groupRepository.getGroupById(group.id);
+      if (updatedGroup != null) {
+        _group = updatedGroup;
+      }
+
       _updateTabController();
       _fetchMembers(); // Refresh members list
       notifyListeners();

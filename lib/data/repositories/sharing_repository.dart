@@ -130,17 +130,14 @@ class SharingRepository {
     });
 
     // Escuta mudanças na tabela real (cc_sharings)
-    final subscription = SupaFlow.client
-        .from('cc_sharings')
-        .stream(primaryKey: ['id'])
-        .eq('group_id', groupId)
-        .listen((_) async {
-          // Quando há mudança, re-carrega da view
-          final data = await _loadSharingsFromView(groupId, currentUserId);
-          if (!controller.isClosed) {
-            controller.add(data);
-          }
-        });
+    final subscription =
+        SupaFlow.client.from('cc_sharings').stream(primaryKey: ['id']).eq('group_id', groupId).listen((_) async {
+              // Quando há mudança, re-carrega da view
+              final data = await _loadSharingsFromView(groupId, currentUserId);
+              if (!controller.isClosed) {
+                controller.add(data);
+              }
+            });
 
     // Cleanup quando o stream for cancelado
     controller.onCancel = () {
@@ -148,7 +145,7 @@ class SharingRepository {
       controller.close();
     };
 
-    return controller.stream;
+    return controller.stream.asBroadcastStream();
   }
 
   /// Helper para carregar sharings da view com filtro de moderação
