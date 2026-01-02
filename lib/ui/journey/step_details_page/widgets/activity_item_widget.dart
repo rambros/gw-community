@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:gw_community/data/repositories/favorites_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
-import 'package:gw_community/ui/core/widgets/favorite_button.dart';
 import 'package:gw_community/ui/journey/themes/journey_theme_extension.dart';
-import 'package:gw_community/utils/context_extensions.dart';
 
 class ActivityItemWidget extends StatelessWidget {
   const ActivityItemWidget({
@@ -41,6 +38,8 @@ class ActivityItemWidget extends StatelessWidget {
                 children: [
                   Text(
                     activity.activityLabel ?? 'activity',
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: AppTheme.of(context).journey.stepTitle.override(
                           color: activity.activityStatus == 'open'
                               ? AppTheme.of(context).primaryText
@@ -50,6 +49,8 @@ class ActivityItemWidget extends StatelessWidget {
                   const SizedBox(height: 2.0),
                   Text(
                     activity.activityPrompt ?? 'prompt',
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
                     style: AppTheme.of(context).journey.stepDescription.override(
                           color: activity.activityStatus == 'open'
                               ? AppTheme.of(context).primaryText
@@ -59,18 +60,6 @@ class ActivityItemWidget extends StatelessWidget {
                 ],
               ),
             ),
-            // Favorite button
-            if (context.currentUserIdOrEmpty.isNotEmpty &&
-                activity.stepActivityId != null)
-              Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 0.0, 0.0),
-                child: FavoriteButton(
-                  contentType: FavoritesRepository.typeActivity,
-                  contentId: activity.stepActivityId!,
-                  authUserId: context.currentUserIdOrEmpty,
-                  size: 22.0,
-                ),
-              ),
             // Icon
             _buildActivityTypeIcon(context),
           ],

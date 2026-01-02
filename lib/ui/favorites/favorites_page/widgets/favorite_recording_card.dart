@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:gw_community/data/repositories/favorites_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
@@ -8,10 +7,11 @@ import 'package:gw_community/ui/learn/content_view/content_view.dart';
 import 'package:gw_community/ui/learn/themes/learn_theme_extension.dart';
 import 'package:gw_community/utils/context_extensions.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
+import 'package:provider/provider.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
 
-/// Card de recording favorito (baseado no ContentCard)
-class FavoriteRecordingCard extends StatelessWidget {
+/// Card de recording favorito (redesenhado com novo layout)
+class FavoriteRecordingCard extends StatefulWidget {
   const FavoriteRecordingCard({
     super.key,
     required this.recording,
@@ -21,18 +21,29 @@ class FavoriteRecordingCard extends StatelessWidget {
   final CcViewUserFavoriteRecordingsRow recording;
   final VoidCallback? onUnfavorite;
 
+  @override
+  State<FavoriteRecordingCard> createState() => _FavoriteRecordingCardState();
+}
+
+class _FavoriteRecordingCardState extends State<FavoriteRecordingCard> {
+  int _favoriteVersion = 0;
+
   Future<void> _openContent(BuildContext context) async {
+    // Capturar valores antes do async gap
+    final repository = context.read<FavoritesRepository>();
+    final currentUserId = context.currentUserIdOrEmpty;
+
     // Converte para ViewContentRow para compatibilidade com ContentView
     final viewContentRow = ViewContentRow({
-      'content_id': recording.contentId,
-      'title': recording.title,
-      'description': recording.description,
-      'authors_names': recording.authorsNames,
-      'midia_type': recording.midiaType,
-      'audio_url': recording.audioUrl,
-      'midia_file_url': recording.midiaFileUrl,
-      'cott_event_id': recording.cottEventId,
-      'event_name': recording.eventName,
+      'content_id': widget.recording.contentId,
+      'title': widget.recording.title,
+      'description': widget.recording.description,
+      'authors_names': widget.recording.authorsNames,
+      'midia_type': widget.recording.midiaType,
+      'audio_url': widget.recording.audioUrl,
+      'midia_file_url': widget.recording.midiaFileUrl,
+      'cott_event_id': widget.recording.cottEventId,
+      'event_name': widget.recording.eventName,
     });
 
     await showModalBottomSheet(
@@ -46,25 +57,44 @@ class FavoriteRecordingCard extends StatelessWidget {
           child: Padding(
             padding: MediaQuery.viewInsetsOf(context),
             child: ContentView(
-              contentId: recording.contentId!,
+              contentId: widget.recording.contentId!,
               viewContentRow: viewContentRow,
             ),
           ),
         );
       },
     );
+
+    // Após fechar o modal, verificar se ainda está favoritado
+    if (mounted && currentUserId.isNotEmpty) {
+      final isFavorite = await repository.isFavorite(
+        authUserId: currentUserId,
+        contentType: FavoritesRepository.typeRecording,
+        contentId: widget.recording.contentId!,
+      );
+
+      // Se foi desfavoritado no modal, remover da lista
+      if (!isFavorite && mounted) {
+        widget.onUnfavorite?.call();
+      } else if (mounted) {
+        // Apenas atualizar o ícone se ainda estiver favoritado
+        setState(() {
+          _favoriteVersion++;
+        });
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
+      padding: const EdgeInsetsDirectional.fromSTEB(16.0, 6.0, 16.0, 6.0),
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () => _openContent(context),
         child: Container(
           width: double.infinity,
-          height: 110.0,
+          padding: const EdgeInsets.all(12.0),
           decoration: BoxDecoration(
             color: AppTheme.of(context).primaryBackground,
             boxShadow: const [
@@ -81,151 +111,125 @@ class FavoriteRecordingCard extends StatelessWidget {
               width: 1.0,
             ),
           ),
-          child: Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(8.0, 8.0, 8.0, 8.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsetsDirectional.fromSTEB(
-                                        0.0, 0.0, 0.0, 4.0),
-                                    child: AutoSizeText(
-                                      valueOrDefault<String>(
-                                        recording.title,
-                                        'Title',
-                                      ),
-                                      textAlign: TextAlign.start,
-                                      minFontSize: 12.0,
-                                      style: AppTheme.of(context)
-                                          .learn
-                                          .contentTitle
-                                          .override(
-                                            color:
-                                                AppTheme.of(context).secondary,
-                                          ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Text(
-                              (List<String> listAuthors) {
-                                return listAuthors.join(', ');
-                              }(recording.authorsNames.toList()),
-                              style:
-                                  AppTheme.of(context).learn.metadata.override(
-                                        color: AppTheme.of(context).secondary,
-                                      ),
-                            ),
-                            Flexible(
-                              child: Align(
-                                alignment:
-                                    const AlignmentDirectional(-1.0, -1.0),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Expanded(
-                                      child: Padding(
-                                        padding: const EdgeInsetsDirectional
-                                            .fromSTEB(0.0, 4.0, 0.0, 0.0),
-                                        child: Text(
-                                          valueOrDefault<String>(
-                                            recording.description,
-                                            'description',
-                                          ).maybeHandleOverflow(
-                                            maxChars: 150,
-                                            replacement: '…',
-                                          ),
-                                          textAlign: TextAlign.start,
-                                          maxLines: 3,
-                                          style: AppTheme.of(context)
-                                              .learn
-                                              .bodyLight
-                                              .override(
-                                                color: AppTheme.of(context)
-                                                    .secondary,
-                                                fontSize: 12.0,
-                                              ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      if (context.currentUserIdOrEmpty.isNotEmpty &&
-                          recording.contentId != null)
-                        FavoriteButton(
-                          contentType: FavoritesRepository.typeRecording,
-                          contentId: recording.contentId!,
-                          authUserId: context.currentUserIdOrEmpty,
-                          size: 22.0,
-                          initialIsFavorite: true,
-                          onToggle: (isFavorite) {
-                            if (!isFavorite) {
-                              onUnfavorite?.call();
-                            }
-                          },
-                        ),
-                      Padding(
-                        padding: const EdgeInsetsDirectional.fromSTEB(
-                            0.0, 0.0, 8.0, 0.0),
-                        child: _buildMediaIcon(context),
-                      ),
-                    ],
-                  ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Título
+              Text(
+                valueOrDefault<String>(widget.recording.title, 'Title'),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: AppTheme.of(context).learn.contentTitle.override(
+                      color: AppTheme.of(context).secondary,
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w600,
+                    ),
+              ),
+              const SizedBox(height: 4.0),
+              // Autor
+              Text(
+                widget.recording.authorsNames.join(', '),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTheme.of(context).learn.metadata.override(
+                      color: AppTheme.of(context).secondary,
+                      fontSize: 12.0,
+                    ),
+              ),
+              const SizedBox(height: 6.0),
+              // Descrição
+              Text(
+                valueOrDefault<String>(widget.recording.description, '').maybeHandleOverflow(
+                  maxChars: 120,
+                  replacement: '…',
                 ),
-              ],
-            ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: AppTheme.of(context).learn.bodyLight.override(
+                      color: AppTheme.of(context).secondary,
+                      fontSize: 12.0,
+                    ),
+              ),
+              const SizedBox(height: 10.0),
+              // Tags de mídia + Favorito
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Tags de tipo de mídia
+                  Expanded(
+                    child: Wrap(
+                      spacing: 6.0,
+                      runSpacing: 4.0,
+                      children: _buildMediaTags(context),
+                    ),
+                  ),
+                  // Favorito
+                  if (context.currentUserIdOrEmpty.isNotEmpty && widget.recording.contentId != null)
+                    FavoriteButton(
+                      key: ValueKey('favorite_${widget.recording.contentId}_$_favoriteVersion'),
+                      contentType: FavoritesRepository.typeRecording,
+                      contentId: widget.recording.contentId!,
+                      authUserId: context.currentUserIdOrEmpty,
+                      size: 20.0,
+                      initialIsFavorite: true,
+                      onToggle: (isFavorite) {
+                        if (!isFavorite && mounted) {
+                          // Remove da lista quando desfavoritar
+                          widget.onUnfavorite?.call();
+                        }
+                      },
+                    ),
+                ],
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget _buildMediaIcon(BuildContext context) {
-    if (recording.midiaType == 'audio') {
-      return Icon(
-        Icons.audiotrack_sharp,
-        color: AppTheme.of(context).primary,
-        size: 32.0,
-      );
-    } else if (recording.midiaType == 'text') {
-      return Icon(
-        Icons.text_snippet,
-        color: AppTheme.of(context).primary,
-        size: 32.0,
-      );
-    } else if (recording.midiaType == 'video') {
-      return Icon(
-        Icons.ondemand_video,
-        color: AppTheme.of(context).primary,
-        size: 34.0,
-      );
-    } else {
-      return const SizedBox(width: 4.0, height: 4.0);
+  List<Widget> _buildMediaTags(BuildContext context) {
+    final tags = <Widget>[];
+
+    // Tag baseada no midiaType
+    if (widget.recording.midiaType == 'audio') {
+      tags.add(_MediaTypeTag(label: 'Audio', context: context));
+    } else if (widget.recording.midiaType == 'video') {
+      tags.add(_MediaTypeTag(label: 'Video', context: context));
+    } else if (widget.recording.midiaType == 'text') {
+      tags.add(_MediaTypeTag(label: 'Text', context: context));
     }
+
+    return tags;
+  }
+}
+
+class _MediaTypeTag extends StatelessWidget {
+  const _MediaTypeTag({
+    required this.label,
+    required this.context,
+  });
+
+  final String label;
+  final BuildContext context;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
+      decoration: BoxDecoration(
+        color: AppTheme.of(context).primary.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: AppTheme.of(context).primary,
+          fontSize: 11.0,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
   }
 }

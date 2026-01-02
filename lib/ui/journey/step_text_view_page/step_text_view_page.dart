@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:gw_community/data/repositories/favorites_repository.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
+import 'package:gw_community/ui/core/widgets/favorite_button.dart';
 import 'package:gw_community/ui/journey/themes/journey_theme_extension.dart';
+import 'package:gw_community/utils/context_extensions.dart';
 
 class StepTextViewPage extends StatelessWidget {
   const StepTextViewPage({
     super.key,
     this.stepTextTitle,
     this.stepTextContent,
+    this.activityId,
   });
 
   final String? stepTextTitle;
   final String? stepTextContent;
+  final int? activityId;
 
   static String routeName = 'stepTextViewPage';
   static String routePath = '/stepTextViewPage';
@@ -49,7 +53,19 @@ class StepTextViewPage extends StatelessWidget {
             'Daily Practice',
             style: AppTheme.of(context).journey.pageTitle,
           ),
-          actions: const [],
+          actions: [
+            if (context.currentUserIdOrEmpty.isNotEmpty && activityId != null)
+              Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 12.0, 0.0),
+                child: FavoriteButton(
+                  contentType: FavoritesRepository.typeActivity,
+                  contentId: activityId!,
+                  authUserId: context.currentUserIdOrEmpty,
+                  size: 28.0,
+                  iconColor: Colors.white,
+                ),
+              ),
+          ],
           centerTitle: true,
           elevation: 2.0,
         ),

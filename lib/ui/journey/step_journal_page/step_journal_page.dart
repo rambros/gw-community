@@ -38,14 +38,29 @@ class _StepJournalPageState extends State<StepJournalPage> {
       return;
     }
 
+    // Se não há conteúdo salvo, inicializa com a pergunta + quebra de linha
+    final savedContent = widget.activityRow?.journalSaved ?? '';
+    final initialContent = savedContent.isEmpty
+        ? '${widget.activityRow?.activityPrompt ?? ''}\n\n'
+        : savedContent;
+
     _viewModel = StepJournalViewModel(
       repository: context.read<JournalRepository>(),
       activityId: widget.activityRow!.id!,
-      initialContent: widget.activityRow?.journalSaved ?? '',
+      initialContent: initialContent,
     );
 
     _textController = TextEditingController(text: _viewModel!.journalContent);
     _focusNode = FocusNode();
+
+    // Move o cursor para o final (após a quebra de linha)
+    if (savedContent.isEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _textController.selection = TextSelection.fromPosition(
+          TextPosition(offset: _textController.text.length),
+        );
+      });
+    }
   }
 
   @override

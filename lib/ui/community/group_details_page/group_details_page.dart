@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/event_repository.dart';
@@ -214,41 +215,52 @@ class GroupDetailsPageView extends StatelessWidget {
               ),
               // Tabs
               Expanded(
-                child: Column(
-                  children: [
-                    Align(
-                      alignment: const Alignment(0.0, 0),
-                      child: TabBar(
-                        isScrollable: true,
-                        labelColor: AppTheme.of(context).primary,
-                        labelStyle: AppTheme.of(context).bodyMedium.override(
-                              font: GoogleFonts.lexendDeca(),
-                              fontSize: 16.0,
+                child: viewModel.isCheckingMembership || viewModel.tabController == null
+                    ? Center(
+                        child: SpinKitRipple(
+                          color: AppTheme.of(context).primary,
+                          size: 50.0,
+                        ),
+                      )
+                    : Column(
+                        children: [
+                          Align(
+                            alignment: const Alignment(0.0, 0),
+                            child: TabBar(
+                              isScrollable: true,
+                              labelColor: AppTheme.of(context).primary,
+                              labelStyle: AppTheme.of(context).bodyMedium.override(
+                                    font: GoogleFonts.lexendDeca(),
+                                    fontSize: 16.0,
+                                  ),
+                              unselectedLabelStyle: const TextStyle(),
+                              indicatorColor: AppTheme.of(context).secondary,
+                              tabs: viewModel.shouldShowOnlyAbout
+                                  ? const [Tab(text: 'About')]
+                                  : const [
+                                      Tab(text: 'Experiences'),
+                                      Tab(text: 'Events'),
+                                      Tab(text: 'Notifications'),
+                                      Tab(text: 'About'),
+                                    ],
+                              controller: viewModel.tabController,
                             ),
-                        unselectedLabelStyle: const TextStyle(),
-                        indicatorColor: AppTheme.of(context).secondary,
-                        tabs: const [
-                          Tab(text: 'Experiences'),
-                          Tab(text: 'Events'),
-                          Tab(text: 'Notifications'),
-                          Tab(text: 'About'),
-                        ],
-                        controller: viewModel.tabController,
-                      ),
-                    ),
-                    Expanded(
-                      child: TabBarView(
-                        controller: viewModel.tabController,
-                        children: const [
-                          GroupSharingsTab(),
-                          GroupEventsTab(),
-                          GroupNotificationsTab(),
-                          GroupAboutTab(),
+                          ),
+                          Expanded(
+                            child: TabBarView(
+                              controller: viewModel.tabController,
+                              children: viewModel.shouldShowOnlyAbout
+                                  ? const [GroupAboutTab()]
+                                  : const [
+                                      GroupSharingsTab(),
+                                      GroupEventsTab(),
+                                      GroupNotificationsTab(),
+                                      GroupAboutTab(),
+                                    ],
+                            ),
+                          ),
                         ],
                       ),
-                    ),
-                  ],
-                ),
               ),
             ],
           ),

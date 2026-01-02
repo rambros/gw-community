@@ -141,11 +141,13 @@ class StepDetailsViewModel extends ChangeNotifier {
         'audioArt':
             'https://firebasestorage.googleapis.com/v0/b/good-wishes-project.appspot.com/o/images%2Fic_goodwishes.png?alt=media&token=e441f239-c823-468b-bff7-c16be921c7be',
         'typeStep': activity.activityLabel,
+        'activityId': activity.stepActivityId,
       });
     } else if (activity.activityType == 'text') {
       navigateToActivity('stepTextViewPage', {
         'stepTextTitle': activity.activityPrompt,
         'stepTextContent': activity.text,
+        'activityId': activity.stepActivityId,
       });
     } else {
       navigateToActivity('stepJournalPage', {

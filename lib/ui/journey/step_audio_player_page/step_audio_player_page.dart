@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:gw_community/data/repositories/favorites_repository.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
 import 'package:gw_community/ui/core/widgets/audio_player_widget.dart';
+import 'package:gw_community/ui/core/widgets/favorite_button.dart';
 import 'package:gw_community/ui/journey/themes/journey_theme_extension.dart';
+import 'package:gw_community/utils/context_extensions.dart';
 import 'package:lottie/lottie.dart';
 
 class StepAudioPlayerPage extends StatelessWidget {
@@ -14,6 +17,7 @@ class StepAudioPlayerPage extends StatelessWidget {
     required this.typeAnimation,
     required this.audioArt,
     required this.typeStep,
+    this.activityId,
   });
 
   final String? stepAudioUrl;
@@ -21,6 +25,7 @@ class StepAudioPlayerPage extends StatelessWidget {
   final String? typeAnimation;
   final String? audioArt;
   final String? typeStep;
+  final int? activityId;
 
   static String routeName = 'stepAudioPlayerPage';
   static String routePath = '/stepAudioPlayerPage';
@@ -55,7 +60,19 @@ class StepAudioPlayerPage extends StatelessWidget {
             typeStep ?? 'Inspiration',
             style: AppTheme.of(context).journey.pageTitle,
           ),
-          actions: const [],
+          actions: [
+            if (context.currentUserIdOrEmpty.isNotEmpty && activityId != null)
+              Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 12.0, 0.0),
+                child: FavoriteButton(
+                  contentType: FavoritesRepository.typeActivity,
+                  contentId: activityId!,
+                  authUserId: context.currentUserIdOrEmpty,
+                  size: 28.0,
+                  iconColor: Colors.white,
+                ),
+              ),
+          ],
           centerTitle: true,
           elevation: 2.0,
         ),

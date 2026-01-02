@@ -160,9 +160,13 @@ class GroupRepository {
       'user_id': userId,
       'group_id': groupId,
     });
+  }
 
-    // Update member count (optional, but good for consistency if UI relies on it immediately)
-    // We can fetch the group to get current count, or just increment if we trust the caller.
-    // For now, we'll just insert. The UI should refresh the group details.
+  /// Checks if a user is a member of a group
+  Future<bool> isUserMemberOfGroup(int groupId, String userId) async {
+    final result = await CcGroupMembersTable().queryRows(
+      queryFn: (q) => q.eq('group_id', groupId).eq('user_id', userId),
+    );
+    return result.isNotEmpty;
   }
 }

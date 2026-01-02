@@ -14,6 +14,7 @@ class FavoriteButton extends StatefulWidget {
     this.size = 24.0,
     this.initialIsFavorite,
     this.onToggle,
+    this.iconColor,
   });
 
   /// Tipo de conteúdo: 'recording' ou 'activity'
@@ -34,6 +35,9 @@ class FavoriteButton extends StatefulWidget {
 
   /// Callback após toggle (retorna novo estado)
   final void Function(bool isFavorite)? onToggle;
+
+  /// Cor customizada do ícone (opcional, usa primary do tema se não fornecida)
+  final Color? iconColor;
 
   @override
   State<FavoriteButton> createState() => _FavoriteButtonState();
@@ -147,10 +151,8 @@ class _FavoriteButtonState extends State<FavoriteButton>
         ),
         iconSize: widget.size,
         icon: Icon(
-          _isFavorite ? Icons.favorite : Icons.favorite_border,
-          color: _isFavorite
-              ? AppTheme.of(context).primary
-              : AppTheme.of(context).secondaryText,
+          _isFavorite ? Icons.favorite : Icons.favorite_border_outlined,
+          color: widget.iconColor ?? AppTheme.of(context).primary,
           size: widget.size,
         ),
         tooltip: _isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos',

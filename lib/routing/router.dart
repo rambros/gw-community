@@ -288,6 +288,10 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               'stepTextContent',
               ParamType.String,
             ),
+            activityId: params.getParam(
+              'activityId',
+              ParamType.int,
+            ),
           ),
         ),
         FFRoute(
@@ -313,6 +317,10 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
             typeStep: params.getParam(
               'typeStep',
               ParamType.String,
+            ),
+            activityId: params.getParam(
+              'activityId',
+              ParamType.int,
             ),
           ),
         ),

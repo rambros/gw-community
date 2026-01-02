@@ -3,6 +3,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/ui/community/group_details_page/view_model/group_details_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
+import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
 import 'package:gw_community/ui/core/widgets/user_avatar.dart';
 import 'package:provider/provider.dart';
 
@@ -21,6 +22,30 @@ class GroupAboutTab extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildSection(context, 'Description', group.description),
+            if (viewModel.shouldShowOnlyAbout) ...[
+              const SizedBox(height: 24.0),
+              Center(
+                child: FFButtonWidget(
+                  onPressed: () => viewModel.joinGroup(),
+                  text: 'Se inscrever no grupo',
+                  options: FFButtonOptions(
+                    width: double.infinity,
+                    height: 50.0,
+                    padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                    iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                    color: AppTheme.of(context).primary,
+                    textStyle: AppTheme.of(context).titleSmall.override(
+                          font: GoogleFonts.lexendDeca(),
+                          color: Colors.white,
+                          fontSize: 16.0,
+                        ),
+                    elevation: 2.0,
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  showLoadingIndicator: viewModel.isJoining,
+                ),
+              ),
+            ],
             const SizedBox(height: 16.0),
             _buildSection(context, 'Welcome Message', group.welcomeMessage),
             const SizedBox(height: 16.0),

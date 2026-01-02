@@ -1,33 +1,69 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gw_community/data/repositories/favorites_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/widgets/favorite_button.dart';
+import 'package:gw_community/ui/learn/themes/learn_theme_extension.dart';
 import 'package:gw_community/utils/context_extensions.dart';
+import 'package:gw_community/utils/flutter_flow_util.dart';
+import 'package:gw_community/routing/router.dart';
+import 'package:gw_community/ui/journey/step_audio_player_page/step_audio_player_page.dart';
+import 'package:gw_community/ui/journey/step_text_view_page/step_text_view_page.dart';
 
-/// Card de activity favorita
-class FavoriteActivityCard extends StatelessWidget {
+/// Card de activity favorita (redesenhado com novo layout)
+class FavoriteActivityCard extends StatefulWidget {
   const FavoriteActivityCard({
     super.key,
     required this.activity,
     this.onUnfavorite,
-    this.onTap,
   });
 
   final CcViewUserFavoriteActivitiesRow activity;
   final VoidCallback? onUnfavorite;
-  final VoidCallback? onTap;
+
+  @override
+  State<FavoriteActivityCard> createState() => _FavoriteActivityCardState();
+}
+
+class _FavoriteActivityCardState extends State<FavoriteActivityCard> {
+  int _favoriteVersion = 0;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
+      padding: const EdgeInsetsDirectional.fromSTEB(16.0, 6.0, 16.0, 6.0),
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: onTap,
+        onTap: () {
+          if (widget.activity.activityType == 'audio') {
+            context.pushNamed(
+              StepAudioPlayerPage.routeName,
+              queryParameters: {
+                'stepAudioUrl': serializeParam(widget.activity.audioUrl, ParamType.String),
+                'audioTitle': serializeParam(widget.activity.activityPrompt, ParamType.String),
+                'typeAnimation': serializeParam('IN', ParamType.String),
+                'audioArt': serializeParam(
+                  'https://firebasestorage.googleapis.com/v0/b/good-wishes-project.appspot.com/o/images%2Fic_goodwishes.png?alt=media&token=e441f239-c823-468b-bff7-c16be921c7be',
+                  ParamType.String,
+                ),
+                'typeStep': serializeParam(widget.activity.activityLabel, ParamType.String),
+                'activityId': serializeParam(widget.activity.id, ParamType.int),
+              }.withoutNulls,
+            );
+          } else if (widget.activity.activityType == 'text') {
+            context.pushNamed(
+              StepTextViewPage.routeName,
+              queryParameters: {
+                'stepTextTitle': serializeParam(widget.activity.activityPrompt, ParamType.String),
+                'stepTextContent': serializeParam(widget.activity.text, ParamType.String),
+                'activityId': serializeParam(widget.activity.id, ParamType.int),
+              }.withoutNulls,
+            );
+          }
+        },
         child: Container(
           width: double.infinity,
+          padding: const EdgeInsets.all(12.0),
           decoration: BoxDecoration(
             color: AppTheme.of(context).primaryBackground,
             boxShadow: const [
@@ -44,117 +80,94 @@ class FavoriteActivityCard extends StatelessWidget {
               width: 1.0,
             ),
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Activity type icon
-                _buildActivityIcon(context),
-                const SizedBox(width: 12.0),
-                // Content
-                Expanded(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        activity.activityLabel ?? 'Activity',
-                        style: AppTheme.of(context).bodyLarge.override(
-                              color: AppTheme.of(context).primaryText,
-                              fontWeight: FontWeight.w600,
-                            ),
-                      ),
-                      const SizedBox(height: 4.0),
-                      Text(
-                        activity.activityPrompt ?? '',
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: AppTheme.of(context).bodyMedium.override(
-                              color: AppTheme.of(context).secondaryText,
-                              fontSize: 13.0,
-                            ),
-                      ),
-                    ],
-                  ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Título
+              Text(
+                valueOrDefault<String>(widget.activity.activityLabel, 'Activity'),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: AppTheme.of(context).learn.contentTitle.override(
+                      color: AppTheme.of(context).secondary,
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w600,
+                    ),
+              ),
+              const SizedBox(height: 6.0),
+              // Descrição
+              Text(
+                valueOrDefault<String>(widget.activity.activityPrompt, '').maybeHandleOverflow(
+                  maxChars: 120,
+                  replacement: '…',
                 ),
-                // Favorite button
-                if (context.currentUserIdOrEmpty.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 0.0, 0.0),
-                    child: FavoriteButton(
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: AppTheme.of(context).learn.bodyLight.override(
+                      color: AppTheme.of(context).secondary,
+                      fontSize: 12.0,
+                    ),
+              ),
+              const SizedBox(height: 10.0),
+              // Tags de tipo + Favorito
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Tag de tipo de activity
+                  _buildActivityTypeTag(context),
+                  // Favorito
+                  if (context.currentUserIdOrEmpty.isNotEmpty)
+                    FavoriteButton(
+                      key: ValueKey('favorite_${widget.activity.id}_$_favoriteVersion'),
                       contentType: FavoritesRepository.typeActivity,
-                      contentId: activity.id,
+                      contentId: widget.activity.id,
                       authUserId: context.currentUserIdOrEmpty,
-                      size: 22.0,
+                      size: 20.0,
                       initialIsFavorite: true,
                       onToggle: (isFavorite) {
-                        if (!isFavorite) {
-                          onUnfavorite?.call();
+                        if (!isFavorite && mounted) {
+                          // Remove da lista quando desfavoritar
+                          widget.onUnfavorite?.call();
                         }
                       },
                     ),
-                  ),
-              ],
-            ),
+                ],
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget _buildActivityIcon(BuildContext context) {
-    final iconColor = AppTheme.of(context).primary;
+  Widget _buildActivityTypeTag(BuildContext context) {
+    String label;
 
-    if (activity.activityType == 'audio') {
-      return Container(
-        width: 44.0,
-        height: 44.0,
-        decoration: BoxDecoration(
-          color: AppTheme.of(context).secondaryBackground,
-          shape: BoxShape.circle,
-        ),
-        child: Center(
-          child: Icon(
-            Icons.play_circle_outlined,
-            color: iconColor,
-            size: 28.0,
-          ),
-        ),
-      );
-    } else if (activity.activityType == 'text') {
-      return Container(
-        width: 44.0,
-        height: 44.0,
-        decoration: BoxDecoration(
-          color: AppTheme.of(context).secondaryBackground,
-          shape: BoxShape.circle,
-        ),
-        child: Center(
-          child: Icon(
-            Icons.text_snippet_outlined,
-            color: iconColor,
-            size: 28.0,
-          ),
-        ),
-      );
+    if (widget.activity.activityType == 'audio') {
+      label = 'Audio';
+    } else if (widget.activity.activityType == 'text') {
+      label = 'Text';
+    } else if (widget.activity.activityType == 'journal') {
+      label = 'Journal';
     } else {
-      return Container(
-        width: 44.0,
-        height: 44.0,
-        decoration: BoxDecoration(
-          color: AppTheme.of(context).secondaryBackground,
-          shape: BoxShape.circle,
-        ),
-        child: Center(
-          child: FaIcon(
-            FontAwesomeIcons.solidPenToSquare,
-            color: iconColor,
-            size: 24.0,
-          ),
-        ),
-      );
+      label = 'Activity';
     }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
+      decoration: BoxDecoration(
+        color: AppTheme.of(context).primary.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: AppTheme.of(context).primary,
+          fontSize: 11.0,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
   }
 }

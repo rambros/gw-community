@@ -1,6 +1,6 @@
+export 'package:gw_community/utils/lat_lng.dart';
 export 'package:supabase_flutter/supabase_flutter.dart';
 
-export 'package:gw_community/utils/lat_lng.dart';
 export '../supabase.dart';
 export 'row.dart';
 export 'table.dart';

@@ -210,21 +210,45 @@ class AudioPlayerWidget extends StatefulWidget {
 
 class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
   static const String _fallbackArtAsset = 'assets/images/Good_Wishes_Team.png';
+
+  /// Singleton player instance to avoid just_audio_background multiple instance error
+  static AudioPlayer? _sharedPlayer;
+  static String? _currentAudioUrl;
+
   late AudioPlayer _player;
+  bool _isOwner = false;
 
   @override
   void initState() {
     super.initState();
-    _player = AudioPlayer();
+    // Use shared player if available and same URL, otherwise create new one
+    if (_sharedPlayer != null && _currentAudioUrl == widget.audioUrl) {
+      _player = _sharedPlayer!;
+      _isOwner = false;
+    } else {
+      // Dispose previous shared player if exists
+      _sharedPlayer?.dispose();
+      _player = AudioPlayer();
+      _sharedPlayer = _player;
+      _currentAudioUrl = widget.audioUrl;
+      _isOwner = true;
+    }
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.black,
     ));
-    _init();
+    if (_isOwner) {
+      _init();
+    }
   }
 
   Future<void> _init() async {
-    final session = await AudioSession.instance;
-    await session.configure(const AudioSessionConfiguration.speech());
+    try {
+      final session = await AudioSession.instance;
+      await session.configure(const AudioSessionConfiguration.speech());
+    } catch (e) {
+      debugPrint('Error configuring audio session: $e');
+    }
+
     final artUri = await _resolveArtUri();
     final audioSource = AudioSource.uri(
       Uri.parse(widget.audioUrl),
@@ -242,16 +266,27 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
     });
     try {
       await _player.setAudioSource(audioSource);
-    } catch (e, stackTrace) {
-      // Catch load errors: 404, invalid url ...
-      debugPrint("Error loading playlist: $e");
-      debugPrint(stackTrace.toString());
+    } catch (e) {
+      // Catch load errors: 404, invalid url, background service errors...
+      debugPrint("Error loading audio source: $e");
+      // Try without background service tag
+      try {
+        final simpleSource = AudioSource.uri(Uri.parse(widget.audioUrl));
+        await _player.setAudioSource(simpleSource);
+      } catch (e2) {
+        debugPrint("Error loading simple audio source: $e2");
+      }
     }
   }
 
   @override
   void dispose() {
-    _player.dispose();
+    // Only dispose if this widget instance owns the player
+    if (_isOwner) {
+      _player.dispose();
+      _sharedPlayer = null;
+      _currentAudioUrl = null;
+    }
     super.dispose();
   }
 

@@ -23,7 +23,14 @@ class GroupDetailsViewModel extends ChangeNotifier {
     this.currentUserId,
   });
 
-  late TabController tabController;
+  TabController? tabController;
+  TickerProvider? _vsync;
+  bool _isMember = false;
+  bool get isMember => _isMember;
+  bool _isJoining = false;
+  bool get isJoining => _isJoining;
+  bool _isCheckingMembership = true;
+  bool get isCheckingMembership => _isCheckingMembership;
 
   // Streams
   Stream<List<CcViewSharingsUsersRow>>? _sharingsStream;
@@ -52,13 +59,76 @@ class GroupDetailsViewModel extends ChangeNotifier {
   }
 
   void init(TickerProvider vsync) {
-    tabController = TabController(
-      length: 4,
-      vsync: vsync,
-      initialIndex: 0,
-    );
-    tabController.addListener(_onTabChanged);
+    _vsync = vsync;
+    // Inicialização síncrona obrigatória antes do check async
+    _updateTabController();
+    _checkMembership();
     _fetchMembers();
+  }
+
+  Future<void> _checkMembership() async {
+    if (currentUserId == null || currentUserId!.isEmpty) {
+      _isMember = false;
+      _isCheckingMembership = false;
+      _updateTabController();
+      notifyListeners();
+      return;
+    }
+
+    try {
+      _isMember = await _groupRepository.isUserMemberOfGroup(group.id, currentUserId!);
+    } finally {
+      _isCheckingMembership = false;
+      _updateTabController();
+      notifyListeners();
+    }
+  }
+
+  void _updateTabController() {
+    if (_vsync == null) return;
+
+    final int targetLength = shouldShowOnlyAbout ? 1 : 4;
+
+    // Se o controller já existe e o tamanho é o mesmo, não faz nada
+    if (tabController != null && tabController!.length == targetLength) return;
+
+    final oldIndex = tabController != null ? tabController!.index : 0;
+
+    final oldController = tabController;
+
+    tabController = TabController(
+      length: targetLength,
+      vsync: _vsync!,
+      initialIndex: shouldShowOnlyAbout ? 0 : (oldIndex < targetLength ? oldIndex : 0),
+    );
+
+    oldController?.removeListener(_onTabChanged);
+    oldController?.dispose();
+
+    tabController?.addListener(_onTabChanged);
+  }
+
+  // Define se deve mostrar apenas a aba About
+  bool get shouldShowOnlyAbout => group.groupPrivacy == 'Public' && !_isMember;
+
+  Future<void> joinGroup() async {
+    if (currentUserId == null) return;
+
+    _isJoining = true;
+    notifyListeners();
+
+    try {
+      await _groupRepository.joinGroup(group.id, currentUserId!);
+      _isMember = true;
+      _updateTabController();
+      _fetchMembers(); // Refresh members list
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error joining group: $e');
+    } finally {
+      _isJoining = false;
+      notifyListeners();
+    }
   }
 
   void _onTabChanged() {
@@ -80,8 +150,8 @@ class GroupDetailsViewModel extends ChangeNotifier {
 
   @override
   void dispose() {
-    tabController.removeListener(_onTabChanged);
-    tabController.dispose();
+    tabController?.removeListener(_onTabChanged);
+    tabController?.dispose();
     super.dispose();
   }
 

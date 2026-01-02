@@ -18,7 +18,9 @@
       "Bash(dart fix:*)",
       "Bash(flutter build:*)",
       "Bash(dart analyze:*)",
-      "Bash(./gradlew:*)"
+      "Bash(./gradlew:*)",
+      "Bash(flutter devices:*)",
+      "Bash(xcodebuild:*)"
     ]
   }
 }

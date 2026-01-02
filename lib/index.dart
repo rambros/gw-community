@@ -4,27 +4,8 @@ export 'package:gw_community/ui/auth/create_account_page/create_account_page.dar
 export 'package:gw_community/ui/auth/forgot_password_page/forgot_password_page.dart' show ForgotPasswordPage;
 export 'package:gw_community/ui/auth/login_page/login_page.dart' show LoginPage;
 export 'package:gw_community/ui/auth/on_boarding_page/on_boarding_page.dart' show OnBoardingPage;
-export 'package:gw_community/ui/home/home_page/home_page.dart' show HomePage;
-export 'package:gw_community/ui/journey/journey_page/journey_page.dart' show JourneyPage;
-export 'package:gw_community/ui/journey/journey_step_details_page/journey_step_details_page.dart' show JourneyStepDetailsPage;
-export 'package:gw_community/ui/journey/journeys_list_page/journeys_list_page.dart' show JourneysListPage;
-export 'package:gw_community/ui/journey/step_audio_player_page/step_audio_player_page.dart' show StepAudioPlayerPage;
-export 'package:gw_community/ui/journey/step_details_page/step_details_page.dart' show StepDetailsPage;
-export 'package:gw_community/ui/journey/step_journal_page/step_journal_page.dart' show StepJournalPage;
-export 'package:gw_community/ui/journey/step_text_view_page/step_text_view_page.dart' show StepTextViewPage;
-export 'package:gw_community/ui/learn/learn_list_page/learn_list_page.dart' show LearnListPage;
-export 'package:gw_community/ui/notifications/in_app_notifications_page/in_app_notifications_page.dart' show InAppNotificationsPage;
-export 'package:gw_community/ui/onboarding/splash_page/splash_page.dart' show SplashPage;
-export 'package:gw_community/ui/profile/user_create_profile/user_create_profile_page.dart' show UserCreateProfilePage;
-export 'package:gw_community/ui/profile/user_edit_profile/user_edit_profile_page.dart' show UserEditProfilePage;
-export 'package:gw_community/ui/profile/user_journal_edit/user_journal_edit_page.dart' show UserJournalEditPage;
-export 'package:gw_community/ui/profile/user_journal_list/user_journal_list_page.dart' show UserJournalListPage;
-export 'package:gw_community/ui/profile/user_journal_view/user_journal_view_page.dart' show UserJournalViewPage;
-export 'package:gw_community/ui/profile/user_journeys_view/user_journeys_view_page.dart' show UserJourneysViewPage;
-export 'package:gw_community/ui/utility/unsplash_page/unsplash_page.dart' show UnsplashPage;
 export 'package:gw_community/ui/community/community_page/community_page.dart' show CommunityPage;
 export 'package:gw_community/ui/community/event_add_page/event_add_page.dart' show EventAddPage;
-export 'package:gw_community/ui/favorites/favorites_page/favorites_page.dart' show FavoritesPage;
 export 'package:gw_community/ui/community/event_details_page/event_details_page.dart' show EventDetailsPage;
 export 'package:gw_community/ui/community/event_edit_page/event_edit_page.dart' show EventEditPage;
 export 'package:gw_community/ui/community/group_add_page/group_add_page.dart' show GroupAddPage;
@@ -38,8 +19,29 @@ export 'package:gw_community/ui/community/notification_view_page/notification_vi
 export 'package:gw_community/ui/community/sharing_add_page/sharing_add_page.dart' show SharingAddPage;
 export 'package:gw_community/ui/community/sharing_edit_page/sharing_edit_page.dart' show SharingEditPage;
 export 'package:gw_community/ui/community/sharing_view_page/sharing_view_page.dart' show SharingViewPage;
+export 'package:gw_community/ui/favorites/favorites_page/favorites_page.dart' show FavoritesPage;
+export 'package:gw_community/ui/home/home_page/home_page.dart' show HomePage;
+export 'package:gw_community/ui/journey/journey_page/journey_page.dart' show JourneyPage;
+export 'package:gw_community/ui/journey/journey_step_details_page/journey_step_details_page.dart'
+    show JourneyStepDetailsPage;
+export 'package:gw_community/ui/journey/journeys_list_page/journeys_list_page.dart' show JourneysListPage;
+export 'package:gw_community/ui/journey/step_audio_player_page/step_audio_player_page.dart' show StepAudioPlayerPage;
+export 'package:gw_community/ui/journey/step_details_page/step_details_page.dart' show StepDetailsPage;
+export 'package:gw_community/ui/journey/step_journal_page/step_journal_page.dart' show StepJournalPage;
+export 'package:gw_community/ui/journey/step_text_view_page/step_text_view_page.dart' show StepTextViewPage;
+export 'package:gw_community/ui/learn/learn_list_page/learn_list_page.dart' show LearnListPage;
+export 'package:gw_community/ui/notifications/in_app_notifications_page/in_app_notifications_page.dart'
+    show InAppNotificationsPage;
+export 'package:gw_community/ui/onboarding/splash_page/splash_page.dart' show SplashPage;
+export 'package:gw_community/ui/profile/user_create_profile/user_create_profile_page.dart' show UserCreateProfilePage;
+export 'package:gw_community/ui/profile/user_edit_profile/user_edit_profile_page.dart' show UserEditProfilePage;
+export 'package:gw_community/ui/profile/user_journal_edit/user_journal_edit_page.dart' show UserJournalEditPage;
+export 'package:gw_community/ui/profile/user_journal_list/user_journal_list_page.dart' show UserJournalListPage;
+export 'package:gw_community/ui/profile/user_journal_view/user_journal_view_page.dart' show UserJournalViewPage;
+export 'package:gw_community/ui/profile/user_journeys_view/user_journeys_view_page.dart' show UserJourneysViewPage;
 export 'package:gw_community/ui/profile/user_profile_page/user_profile_page.dart' show UserProfilePage;
 export 'package:gw_community/ui/support/new_request_page/new_request_page.dart' show NewRequestPage;
 export 'package:gw_community/ui/support/request_chat_page/request_chat_page.dart' show RequestChatPage;
 // Support / Help Center
 export 'package:gw_community/ui/support/support_page/support_page.dart' show SupportPage;
+export 'package:gw_community/ui/utility/unsplash_page/unsplash_page.dart' show UnsplashPage;

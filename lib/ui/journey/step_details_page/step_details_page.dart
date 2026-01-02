@@ -110,72 +110,66 @@ class _StepDetailsPageState extends State<StepDetailsPage> {
   }
 
   Widget _buildBody(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: MediaQuery.sizeOf(context).height * 0.8,
-      decoration: const BoxDecoration(),
+    return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 8.0, 0.0),
+        padding: const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 8.0, 16.0),
         child: Column(
-          mainAxisSize: MainAxisSize.max,
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Flexible(
-              child: Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 8.0, 0.0),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsetsDirectional.fromSTEB(2.0, 16.0, 2.0, 0.0),
-                        child: Text(
-                          widget.userStepRow?.title ?? 'step',
-                          textAlign: TextAlign.center,
-                          style: AppTheme.of(context).journey.stepTitle.override(
-                                color: AppTheme.of(context).tertiary,
-                              ),
-                        ),
+            Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 8.0, 0.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsetsDirectional.fromSTEB(2.0, 16.0, 2.0, 0.0),
+                      child: Text(
+                        widget.userStepRow?.title ?? 'step',
+                        textAlign: TextAlign.center,
+                        style: AppTheme.of(context).journey.stepTitle.override(
+                              color: AppTheme.of(context).tertiary,
+                            ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-            Flexible(
-              child: Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 8.0, 0.0),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsetsDirectional.fromSTEB(4.0, 16.0, 4.0, 0.0),
-                        child: MarkdownBody(
-                          data: widget.userStepRow?.description ?? 'description',
-                          styleSheet: MarkdownStyleSheet(
-                            p: GoogleFonts.lexendDeca(
-                              color: AppTheme.of(context).primaryText,
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.normal,
-                            ),
-                            strong: GoogleFonts.lexendDeca(
-                              color: AppTheme.of(context).primaryText,
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            em: GoogleFonts.lexendDeca(
-                              color: AppTheme.of(context).primaryText,
-                              fontSize: 14.0,
-                              fontStyle: FontStyle.italic,
-                            ),
-                            textAlign: WrapAlignment.center,
+            Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 8.0, 0.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsetsDirectional.fromSTEB(4.0, 16.0, 4.0, 0.0),
+                      child: MarkdownBody(
+                        data: widget.userStepRow?.description ?? 'description',
+                        shrinkWrap: true,
+                        styleSheet: MarkdownStyleSheet(
+                          p: GoogleFonts.lexendDeca(
+                            color: AppTheme.of(context).primaryText,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.normal,
                           ),
+                          strong: GoogleFonts.lexendDeca(
+                            color: AppTheme.of(context).primaryText,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          em: GoogleFonts.lexendDeca(
+                            color: AppTheme.of(context).primaryText,
+                            fontSize: 14.0,
+                            fontStyle: FontStyle.italic,
+                          ),
+                          textAlign: WrapAlignment.center,
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
             Align(
@@ -259,6 +253,7 @@ class _StepDetailsPageState extends State<StepDetailsPage> {
               'typeAnimation': serializeParam(params['typeAnimation'], ParamType.String),
               'audioArt': serializeParam(params['audioArt'], ParamType.String),
               'typeStep': serializeParam(params['typeStep'], ParamType.String),
+              'activityId': serializeParam(params['activityId'], ParamType.int),
             }.withoutNulls,
             extra: <String, dynamic>{
               kTransitionInfoKey: const TransitionInfo(
@@ -274,6 +269,7 @@ class _StepDetailsPageState extends State<StepDetailsPage> {
             queryParameters: {
               'stepTextTitle': serializeParam(params['stepTextTitle'], ParamType.String),
               'stepTextContent': serializeParam(params['stepTextContent'], ParamType.String),
+              'activityId': serializeParam(params['activityId'], ParamType.int),
             }.withoutNulls,
             extra: <String, dynamic>{
               kTransitionInfoKey: const TransitionInfo(
