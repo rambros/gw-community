@@ -74,7 +74,7 @@ class _HomePageState extends State<HomePage> {
                             child: HomeJourneyCard(
                               journeyDetails: viewModel.journeyDetails,
                               userJourneyProgress: viewModel.userJourneyProgress,
-                              hasStartedJourney: viewModel.userJourneys.isNotEmpty,
+                              hasStartedJourney: viewModel.isJourney1Started,
                             ),
                           ),
                         ],

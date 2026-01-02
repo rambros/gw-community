@@ -32,6 +32,8 @@ class HomeViewModel extends ChangeNotifier {
   CcJourneysRow? _journeyDetails;
   CcJourneysRow? get journeyDetails => _journeyDetails;
 
+  bool get isJourney1Started => _userJourneys.any((j) => j.journeyId == 1);
+
   CcViewUserJourneysRow? _userJourneyProgress;
   CcViewUserJourneysRow? get userJourneyProgress => _userJourneyProgress;
 
@@ -51,15 +53,11 @@ class HomeViewModel extends ChangeNotifier {
         _loadUpcomingEvents(),
       ]);
 
-      // Load journey details if user has started journeys
-      if (_userJourneys.isNotEmpty) {
-        // Assuming we want the first one or logic from original code
-        // Original code: CcJourneysTable().querySingleRow(queryFn: (q) => q.eqOrNull('id', 1))
-        // This seems hardcoded to ID 1 in the original code?
-        // "FutureBuilder<List<CcJourneysRow>> future: CcJourneysTable().querySingleRow(queryFn: (q) => q.eqOrNull('id', 1))"
-        // Yes, it looks hardcoded to 1. I will keep it as is for now but this looks suspicious.
-        await _loadJourneyDetails(1);
+      // Always load journey ID 1 details as requested
+      // This ensures the user sees the first journey with a "Start" button even if not yet started
+      await _loadJourneyDetails(1);
 
+      if (_userJourneys.isNotEmpty) {
         await _loadUserJourneyProgress();
       }
     } catch (e) {
@@ -100,7 +98,7 @@ class HomeViewModel extends ChangeNotifier {
   }
 
   Future<void> _loadUserJourneyProgress() async {
-    _userJourneyProgress = await _repository.getUserJourneyProgress(currentUserUid);
+    _userJourneyProgress = await _repository.getUserJourneyProgress(currentUserUid, 1);
   }
 
   Future<void> _loadUpcomingEvents() async {

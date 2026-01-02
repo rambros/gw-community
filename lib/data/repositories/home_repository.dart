@@ -24,10 +24,10 @@ class HomeRepository {
     return rows.isNotEmpty ? rows.first : null;
   }
 
-  /// Fetches view user journeys (for progress)
-  Future<CcViewUserJourneysRow?> getUserJourneyProgress(String userId) async {
+  /// Fetches view user journeys (for progress) for a specific journey
+  Future<CcViewUserJourneysRow?> getUserJourneyProgress(String userId, int journeyId) async {
     final rows = await CcViewUserJourneysTable().queryRows(
-      queryFn: (q) => q.eqOrNull('user_id', userId),
+      queryFn: (q) => q.eqOrNull('user_id', userId).eqOrNull('journey_id', journeyId),
     );
     return rows.isNotEmpty ? rows.first : null;
   }

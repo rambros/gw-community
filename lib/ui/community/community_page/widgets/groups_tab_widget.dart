@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/ui/community/community_page/view_model/community_view_model.dart';
-import 'package:gw_community/ui/community/group_add_page/group_add_page.dart';
 import 'package:gw_community/ui/community/group_details_page/group_details_page.dart';
-import 'package:gw_community/ui/community/group_invitation_page/group_invitation_page.dart';
 import 'package:gw_community/ui/community/widgets/group_card.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
-import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
 
@@ -38,46 +35,6 @@ class GroupsTabWidget extends StatelessWidget {
                         fontWeight: AppTheme.of(context).headlineSmall.fontWeight,
                         fontStyle: AppTheme.of(context).headlineSmall.fontStyle,
                       ),
-                ),
-                Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
-                  child: FFButtonWidget(
-                    onPressed: () async {
-                      context.pushNamed(
-                        GroupAddPage.routeName,
-                        extra: <String, dynamic>{
-                          kTransitionInfoKey: const TransitionInfo(
-                            hasTransition: true,
-                            transitionType: PageTransitionType.fade,
-                            duration: Duration(milliseconds: 0),
-                          ),
-                        },
-                      );
-                    },
-                    text: 'New Group',
-                    options: FFButtonOptions(
-                      height: 40.0,
-                      padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-                      iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      color: AppTheme.of(context).primary,
-                      textStyle: AppTheme.of(context).labelLarge.override(
-                            font: GoogleFonts.poppins(
-                              fontWeight: AppTheme.of(context).labelLarge.fontWeight,
-                              fontStyle: AppTheme.of(context).labelLarge.fontStyle,
-                            ),
-                            color: AppTheme.of(context).primaryBackground,
-                            letterSpacing: 0.0,
-                            fontWeight: AppTheme.of(context).labelLarge.fontWeight,
-                            fontStyle: AppTheme.of(context).labelLarge.fontStyle,
-                          ),
-                      elevation: 1.0,
-                      borderSide: BorderSide(
-                        color: AppTheme.of(context).secondaryBackground,
-                        width: 0.5,
-                      ),
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                  ),
                 ),
               ],
             ),
@@ -149,46 +106,6 @@ class GroupsTabWidget extends StatelessWidget {
                         fontWeight: AppTheme.of(context).headlineSmall.fontWeight,
                         fontStyle: AppTheme.of(context).headlineSmall.fontStyle,
                       ),
-                ),
-                Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
-                  child: FFButtonWidget(
-                    onPressed: () async {
-                      context.pushNamed(
-                        GroupInvitationPage.routeName,
-                        extra: <String, dynamic>{
-                          kTransitionInfoKey: const TransitionInfo(
-                            hasTransition: true,
-                            transitionType: PageTransitionType.fade,
-                            duration: Duration(milliseconds: 0),
-                          ),
-                        },
-                      );
-                    },
-                    text: 'Find Group',
-                    options: FFButtonOptions(
-                      height: 40.0,
-                      padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-                      iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      color: AppTheme.of(context).primary,
-                      textStyle: AppTheme.of(context).labelLarge.override(
-                            font: GoogleFonts.poppins(
-                              fontWeight: AppTheme.of(context).labelLarge.fontWeight,
-                              fontStyle: AppTheme.of(context).labelLarge.fontStyle,
-                            ),
-                            color: AppTheme.of(context).primaryBackground,
-                            letterSpacing: 0.0,
-                            fontWeight: AppTheme.of(context).labelLarge.fontWeight,
-                            fontStyle: AppTheme.of(context).labelLarge.fontStyle,
-                          ),
-                      elevation: 1.0,
-                      borderSide: BorderSide(
-                        color: AppTheme.of(context).secondaryBackground,
-                        width: 0.5,
-                      ),
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                  ),
                 ),
               ],
             ),

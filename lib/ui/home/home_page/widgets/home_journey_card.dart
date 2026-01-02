@@ -85,9 +85,9 @@ class HomeJourneyCard extends StatelessWidget {
                         child: Text(
                           'Completed 0 of ${journeyDetails?.stepsTotal?.toString()} steps',
                           style: AppTheme.of(context).bodySmall.override(
-                            color: AppTheme.of(context).secondary,
-                            fontSize: 12.0,
-                          ),
+                                color: AppTheme.of(context).secondary,
+                                fontSize: 12.0,
+                              ),
                         ),
                       ),
                     ],
@@ -99,7 +99,15 @@ class HomeJourneyCard extends StatelessWidget {
                       children: [
                         FFButtonWidget(
                           onPressed: () async {
-                            context.pushNamed(JourneysListPage.routeName);
+                            context.pushNamed(
+                              JourneyPage.routeName,
+                              queryParameters: {
+                                'journeyId': serializeParam(
+                                  journeyDetails?.id ?? 1,
+                                  ParamType.int,
+                                ),
+                              }.withoutNulls,
+                            );
                           },
                           text: 'START',
                           options: FFButtonOptions(
@@ -191,9 +199,9 @@ class HomeJourneyCard extends StatelessWidget {
                         child: Text(
                           'Completed ${userJourneyProgress?.stepsCompleted?.toString()} of ${userJourneyProgress?.stepsTotal?.toString()} steps',
                           style: AppTheme.of(context).bodySmall.override(
-                            color: AppTheme.of(context).secondary,
-                            fontSize: 12.0,
-                          ),
+                                color: AppTheme.of(context).secondary,
+                                fontSize: 12.0,
+                              ),
                         ),
                       ),
                     ],
