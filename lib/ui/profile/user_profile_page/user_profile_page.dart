@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:gw_community/index.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
@@ -128,7 +129,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                         Align(
                           alignment: const AlignmentDirectional(-1.0, 0.0),
                           child: Padding(
-                            padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 16.0),
+                            padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 0.0),
                             child: Text(
                               valueOrDefault<String>(
                                 userProfile?.email,
@@ -148,6 +149,72 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                   ),
                             ),
                           ),
+                        ),
+                        // Display role using UserRole enum
+                        Builder(
+                          builder: (context) {
+                            debugPrint('==== Profile Role Debug ====');
+                            debugPrint('userProfile: ${userProfile != null}');
+                            debugPrint('userRole: ${userProfile?.userRole}');
+                            debugPrint('userRole length: ${userProfile?.userRole.length}');
+
+                            final roles = userProfile?.userRole ?? [];
+                            debugPrint('roles variable: $roles');
+
+                            // SEMPRE MOSTRAR PARA DEBUG
+                            debugPrint('ALWAYS SHOWING FOR DEBUG - roles length: ${roles.length}');
+                            if (roles.isEmpty) {
+                              debugPrint('⚠️ WARNING: roles is EMPTY!');
+                            }
+
+                            // Check if has admin or group manager role using enum
+                            final hasAdminRole = roles.hasAdminOrGroupManager;
+                            debugPrint('hasAdminOrGroupManager: $hasAdminRole');
+
+                            // Get the role to display (prioritize admin, then group manager)
+                            UserRole? roleToDisplay;
+                            if (roles.hasAdmin) {
+                              roleToDisplay = UserRole.admin;
+                            } else if (roles.hasGroupManager) {
+                              roleToDisplay = UserRole.groupManager;
+                            }
+
+                            debugPrint('roleToDisplay: "$roleToDisplay"');
+                            debugPrint('==== End Debug ====');
+
+                            // SEMPRE RETORNAR UM WIDGET VISÍVEL PARA DEBUG
+                            return Align(
+                              alignment: const AlignmentDirectional(-1.0, 0.0),
+                              child: Padding(
+                                padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 16.0),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
+                                  decoration: BoxDecoration(
+                                    color: hasAdminRole && roleToDisplay != null
+                                        ? AppTheme.of(context).primary.withOpacity(0.15)
+                                        : Colors.orange.withOpacity(0.3),
+                                    borderRadius: BorderRadius.circular(6.0),
+                                  ),
+                                  child: Text(
+                                    hasAdminRole && roleToDisplay != null
+                                        ? roleToDisplay.displayName
+                                        : 'DEBUG: ${roles.length} roles: $roles',
+                                    textAlign: TextAlign.start,
+                                    style: AppTheme.of(context).bodyMedium.override(
+                                          font: GoogleFonts.lexendDeca(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          color: hasAdminRole && roleToDisplay != null
+                                              ? AppTheme.of(context).primary
+                                              : Colors.orange.shade900,
+                                          fontSize: 11.0,
+                                          letterSpacing: 1.0,
+                                        ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
                         ),
                       ],
                     ),

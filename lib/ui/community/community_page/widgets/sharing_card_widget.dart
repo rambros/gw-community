@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/ui/community/sharing_edit_page/sharing_edit_page.dart';
 import 'package:gw_community/ui/community/sharing_view_page/sharing_view_page.dart';
@@ -290,7 +291,7 @@ class SharingCardWidget extends StatelessWidget {
   }
 
   Widget _buildActions(BuildContext context) {
-    final isAdmin = FFAppState().loginUser.roles.contains('Admin') == true;
+    final isAdmin = FFAppState().loginUser.roles.hasAdmin;
     final isOwner = context.currentUserIdOrEmpty == sharingRow.userId;
 
     return Padding(

@@ -1,3 +1,4 @@
+import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 
 class GroupRepository {
@@ -132,10 +133,11 @@ class GroupRepository {
     return result;
   }
 
-  /// Fetches users with specific role (e.g. Group Manager)
+  /// Fetches users with GROUP_MANAGER role
   Future<List<CcMembersRow>> getGroupManagers() async {
     final result = await CcMembersTable().queryRows(
-      queryFn: (q) => q.containsOrNull('user_role', ['Group Manager']).order('display_name', ascending: true),
+      queryFn: (q) =>
+          q.containsOrNull('user_role', [UserRole.groupManager.value]).order('display_name', ascending: true),
     );
     return result;
   }

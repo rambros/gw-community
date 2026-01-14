@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:gw_community/app_state.dart';
+import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:gw_community/data/repositories/sharing_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 
@@ -169,7 +170,7 @@ class SharingViewViewModel extends ChangeNotifier {
 
   /// Verifica se o usuário atual é administrador
   bool _isAdmin() {
-    return appState.loginUser.roles.contains('Admin');
+    return appState.loginUser.roles.hasAdmin;
   }
 
   // ========== HELPER METHODS ==========

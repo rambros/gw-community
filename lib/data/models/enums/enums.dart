@@ -2,6 +2,8 @@
 
 import 'package:collection/collection.dart';
 
+export 'user_role.dart';
+
 enum ContentType {
   Event,
   Message,

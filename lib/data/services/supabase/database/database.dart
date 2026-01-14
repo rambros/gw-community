@@ -22,6 +22,7 @@ export 'tables/cc_members.dart';
 export 'tables/cc_notifications.dart';
 export 'tables/cc_region.dart';
 export 'tables/cc_sharings.dart';
+export 'tables/cc_sharing_reads.dart';
 export 'tables/cc_step_activities.dart';
 export 'tables/cc_support_messages.dart';
 export 'tables/cc_support_requests.dart';

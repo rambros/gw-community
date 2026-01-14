@@ -95,4 +95,75 @@ class NotificationRepository {
         .map((list) => list.map((item) => CcViewNotificationsUsersRow(item)).toList())
         .asBroadcastStream();
   }
+
+  /// Marca uma notificação como lida para o usuário atual
+  Future<void> markNotificationAsRead(int notificationId, String userId) async {
+    try {
+      // Verifica se já existe um registro
+      final existing = await CcSharingReadsTable().queryRows(
+        queryFn: (q) => q.eq('sharing_id', notificationId).eq('user_id', userId),
+      );
+
+      if (existing.isEmpty) {
+        // Se não existe, cria um novo registro
+        await CcSharingReadsTable().insert({
+          'sharing_id': notificationId,
+          'user_id': userId,
+          'read_at': supaSerialize<DateTime>(getCurrentTimestamp),
+        });
+      }
+    } catch (e) {
+      // Ignora erro silenciosamente - se falhar não deve impedir o fluxo
+      print('Error marking notification as read: $e');
+    }
+  }
+
+  /// Busca os IDs de notificações lidas pelo usuário atual no grupo
+  Future<Set<int>> getReadNotificationIds(int groupId, String userId) async {
+    try {
+      final notifications = await CcViewNotificationsUsersTable().queryRows(
+        queryFn: (q) => q.eq('group_id', groupId),
+      );
+
+      final notificationIds = notifications.map((n) => n.id!).toList();
+
+      if (notificationIds.isEmpty) {
+        return {};
+      }
+
+      final reads = await CcSharingReadsTable().queryRows(
+        queryFn: (q) => q.eq('user_id', userId).inFilter('sharing_id', notificationIds),
+      );
+
+      return reads.map((r) => r.sharingId).toSet();
+    } catch (e) {
+      print('Error fetching read notification IDs: $e');
+      return {};
+    }
+  }
+
+  /// Conta quantas notificações não lidas existem no grupo para o usuário
+  Future<int> getUnreadNotificationCount(int groupId, String userId) async {
+    try {
+      final notifications = await CcViewNotificationsUsersTable().queryRows(
+        queryFn: (q) => q.eq('group_id', groupId),
+      );
+
+      final notificationIds = notifications.map((n) => n.id!).toList();
+
+      if (notificationIds.isEmpty) {
+        return 0;
+      }
+
+      final reads = await CcSharingReadsTable().queryRows(
+        queryFn: (q) => q.eq('user_id', userId).inFilter('sharing_id', notificationIds),
+      );
+
+      final readIds = reads.map((r) => r.sharingId).toSet();
+      return notificationIds.where((id) => !readIds.contains(id)).length;
+    } catch (e) {
+      print('Error fetching unread notification count: $e');
+      return 0;
+    }
+  }
 }

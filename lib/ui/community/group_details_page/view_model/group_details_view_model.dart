@@ -51,12 +51,21 @@ class GroupDetailsViewModel extends ChangeNotifier {
     return _notificationRepository.getNotificationsStream(group.id);
   }
 
+  // Contador de notificações não lidas
+  int _unreadNotificationCount = 0;
+  int get unreadNotificationCount => _unreadNotificationCount;
+
+  // IDs de notificações lidas
+  Set<int> _readNotificationIds = {};
+  Set<int> get readNotificationIds => _readNotificationIds;
+
   void init(TickerProvider vsync) {
     _vsync = vsync;
     // Inicialização síncrona obrigatória antes do check async
     _updateTabController();
     _checkMembership();
     _fetchMembers();
+    _loadReadNotifications();
   }
 
   Future<void> _checkMembership() async {
@@ -153,6 +162,44 @@ class GroupDetailsViewModel extends ChangeNotifier {
       _isLoadingMembers = false;
       notifyListeners();
     }
+  }
+
+  Future<void> _loadReadNotifications() async {
+    if (currentUserId == null || currentUserId!.isEmpty) {
+      return;
+    }
+
+    try {
+      _readNotificationIds = await _notificationRepository.getReadNotificationIds(group.id, currentUserId!);
+      _unreadNotificationCount = await _notificationRepository.getUnreadNotificationCount(group.id, currentUserId!);
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error loading read notifications: $e');
+    }
+  }
+
+  Future<void> markNotificationAsRead(int notificationId) async {
+    if (currentUserId == null || currentUserId!.isEmpty) {
+      return;
+    }
+
+    try {
+      await _notificationRepository.markNotificationAsRead(notificationId, currentUserId!);
+      _readNotificationIds.add(notificationId);
+
+      // Atualiza o contador
+      if (_unreadNotificationCount > 0) {
+        _unreadNotificationCount--;
+      }
+
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error marking notification as read: $e');
+    }
+  }
+
+  bool isNotificationRead(int notificationId) {
+    return _readNotificationIds.contains(notificationId);
   }
 
   @override

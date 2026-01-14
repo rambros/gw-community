@@ -36,6 +36,10 @@ class UserProfileViewModel extends ChangeNotifier {
       if (_userProfile == null && currentUserUid.isNotEmpty) {
         debugPrint('Profile not found for $currentUserUid, logging out.');
         await _signOut();
+      } else {
+        // Debug: Log userRole values
+        debugPrint('User roles: ${_userProfile?.userRole}');
+        debugPrint('User roles length: ${_userProfile?.userRole.length}');
       }
       notifyListeners();
     } catch (e) {

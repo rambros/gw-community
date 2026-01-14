@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:gw_community/app_state.dart';
+import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:gw_community/data/repositories/notification_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 
@@ -67,7 +68,7 @@ class NotificationViewViewModel extends ChangeNotifier {
 
   bool get canToggleLock => canDeleteNotification;
 
-  bool get _isAdmin => appState.loginUser.roles.contains('Admin');
+  bool get _isAdmin => appState.loginUser.roles.hasAdmin;
 
   bool canDeleteComment(String? userId) {
     if (userId == null) return _isAdmin;

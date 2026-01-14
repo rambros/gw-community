@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:gw_community/app_state.dart';
+import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:gw_community/data/repositories/community_repository.dart';
 import 'package:gw_community/data/repositories/event_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
@@ -47,9 +48,7 @@ class EventDetailsViewModel extends ChangeNotifier {
   bool get canEdit {
     final loginUser = appState.loginUser;
     final idToCompare = _memberId ?? currentUserUid;
-    return loginUser.roles.contains('Admin') ||
-        loginUser.roles.contains('Group Manager') ||
-        (_event?.facilitatorId == idToCompare);
+    return loginUser.roles.hasAdminOrGroupManager || (_event?.facilitatorId == idToCompare);
   }
 
   bool get canDelete => canEdit;

@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:gw_community/data/repositories/group_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/ui/community/group_edit_page/group_edit_page.dart';
@@ -281,6 +282,6 @@ class GroupCard extends StatelessWidget {
 
     final currentUserId = context.currentUserIdOrEmpty;
 
-    return (FFAppState().loginUser.roles.contains('Admin') == true) || (currentUserId == FFAppState().loginUser.userId);
+    return FFAppState().loginUser.roles.hasAdmin || (currentUserId == FFAppState().loginUser.userId);
   }
 }
