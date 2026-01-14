@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:gw_community/data/repositories/event_repository.dart';
+import 'package:gw_community/data/repositories/experience_moderation_repository.dart';
 import 'package:gw_community/data/repositories/group_repository.dart';
 import 'package:gw_community/data/repositories/notification_repository.dart';
 import 'package:gw_community/data/repositories/sharing_repository.dart';
@@ -13,6 +15,7 @@ import 'package:gw_community/ui/community/group_details_page/widgets/group_about
 import 'package:gw_community/ui/community/group_details_page/widgets/group_events_tab.dart';
 import 'package:gw_community/ui/community/group_details_page/widgets/group_notifications_tab.dart';
 import 'package:gw_community/ui/community/group_details_page/widgets/group_sharings_tab.dart';
+import 'package:gw_community/ui/community/group_moderation_page/group_moderation_page.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
@@ -103,50 +106,99 @@ class GroupDetailsPageView extends StatelessWidget {
                           fontSize: 20.0,
                         ),
                   ),
-                  FFButtonWidget(
-                    onPressed: () async {
-                      await showModalBottomSheet(
-                        isScrollControlled: true,
-                        backgroundColor: Colors.transparent,
-                        enableDrag: false,
-                        useSafeArea: true,
-                        context: context,
-                        builder: (context) {
-                          return WebViewAware(
-                            child: GestureDetector(
-                              onTap: () {
-                                FocusScope.of(context).unfocus();
-                                FocusManager.instance.primaryFocus?.unfocus();
-                              },
-                              child: Padding(
-                                padding: MediaQuery.viewInsetsOf(context),
-                                child: GroupActionsSheet(
-                                  groupId: group.id,
-                                  currentMemberCount: group.numberMembers ?? 0,
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Moderation button (ADMIN or GROUP_MANAGER only)
+                      if (FFAppState().loginUser.roles.hasAdminOrGroupManager)
+                        FutureBuilder<int>(
+                          future: ExperienceModerationRepository().getPendingCountForGroup(group.id),
+                          builder: (context, snapshot) {
+                            final pendingCount = snapshot.data ?? 0;
+                            return Badge(
+                              label: Text(
+                                '$pendingCount',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                            ),
+                              isLabelVisible: pendingCount > 0,
+                              backgroundColor: Colors.red.shade700,
+                              child: FlutterFlowIconButton(
+                                borderColor: Colors.transparent,
+                                borderRadius: 30.0,
+                                borderWidth: 1.0,
+                                buttonSize: 60.0,
+                                icon: const Icon(
+                                  Icons.admin_panel_settings,
+                                  color: Colors.white,
+                                  size: 24.0,
+                                ),
+                                onPressed: () async {
+                                  await context.pushNamed(
+                                    GroupModerationPage.routeName,
+                                    queryParameters: {
+                                      'groupId': '${group.id}',
+                                      'groupName': group.name ?? 'Group',
+                                    },
+                                  );
+                                  // Refresh group details after moderation
+                                  // Note: We're in a StatelessWidget context, so manual refresh
+                                  // User will see updated data when they navigate back
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                      const SizedBox(width: 8),
+                      FFButtonWidget(
+                        onPressed: () async {
+                          await showModalBottomSheet(
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            enableDrag: false,
+                            useSafeArea: true,
+                            context: context,
+                            builder: (context) {
+                              return WebViewAware(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    FocusScope.of(context).unfocus();
+                                    FocusManager.instance.primaryFocus?.unfocus();
+                                  },
+                                  child: Padding(
+                                    padding: MediaQuery.viewInsetsOf(context),
+                                    child: GroupActionsSheet(
+                                      groupId: group.id,
+                                      currentMemberCount: group.numberMembers ?? 0,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
                           );
                         },
-                      );
-                    },
-                    text: '',
-                    icon: const FaIcon(
-                      FontAwesomeIcons.ellipsis,
-                      size: 15.0,
-                    ),
-                    options: FFButtonOptions(
-                      height: 40.0,
-                      padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
-                      iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      color: AppTheme.of(context).primary,
-                      textStyle: AppTheme.of(context).titleSmall.override(
-                            font: GoogleFonts.lexendDeca(),
-                            color: Colors.white,
-                          ),
-                      elevation: 0.0,
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
+                        text: '',
+                        icon: const FaIcon(
+                          FontAwesomeIcons.ellipsis,
+                          size: 15.0,
+                        ),
+                        options: FFButtonOptions(
+                          height: 40.0,
+                          padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+                          iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                          color: AppTheme.of(context).primary,
+                          textStyle: AppTheme.of(context).titleSmall.override(
+                                font: GoogleFonts.lexendDeca(),
+                                color: Colors.white,
+                              ),
+                          elevation: 0.0,
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

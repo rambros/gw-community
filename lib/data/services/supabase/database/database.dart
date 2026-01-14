@@ -34,6 +34,7 @@ export 'tables/cc_view_avail_journeys.dart';
 export 'tables/cc_view_group_facilitators.dart';
 export 'tables/cc_view_notifications_users.dart';
 export 'tables/cc_view_ordered_comments.dart';
+export 'tables/cc_view_pending_experiences.dart';
 export 'tables/cc_view_sharings_users.dart';
 export 'tables/cc_view_user_activities.dart';
 export 'tables/cc_view_user_favorite_activities.dart';

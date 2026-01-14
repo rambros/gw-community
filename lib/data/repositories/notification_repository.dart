@@ -166,4 +166,67 @@ class NotificationRepository {
       return 0;
     }
   }
+
+  // ==========================================================================
+  // MODERATION NOTIFICATIONS
+  // ==========================================================================
+
+  /// Creates a group notification for experience approval
+  Future<void> createApprovalNotification({
+    required String userId,
+    required int experienceId,
+    required String experienceTitle,
+    required int? groupId,
+  }) async {
+    if (groupId == null) return;
+
+    await createNotification(
+      title: 'Experience Approved',
+      text: 'Your experience "$experienceTitle" has been approved and is now visible.',
+      privacy: 'public',
+      userId: userId,
+      groupId: groupId,
+      visibility: 'group_only',
+    );
+  }
+
+  /// Creates a group notification for experience rejection
+  Future<void> createRejectionNotification({
+    required String userId,
+    required int experienceId,
+    required String experienceTitle,
+    required String reason,
+    required int? groupId,
+  }) async {
+    if (groupId == null) return;
+
+    await createNotification(
+      title: 'Experience Rejected',
+      text: 'Your experience "$experienceTitle" was not approved. Reason: $reason',
+      privacy: 'public',
+      userId: userId,
+      groupId: groupId,
+      visibility: 'group_only',
+    );
+  }
+
+  /// Creates a group notification for changes requested
+  Future<void> createChangesRequestedNotification({
+    required String userId,
+    required int experienceId,
+    required String experienceTitle,
+    required String reason,
+    required int? groupId,
+  }) async {
+    if (groupId == null) return;
+
+    await createNotification(
+      title: 'Changes Requested',
+      text: 'Please update your experience "$experienceTitle". Feedback: $reason',
+      privacy: 'public',
+      userId: userId,
+      groupId: groupId,
+      visibility: 'group_only',
+    );
+  }
 }

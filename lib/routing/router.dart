@@ -5,6 +5,7 @@ import 'package:gw_community/data/models/structs/index.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/domain/models/app_auth_user.dart';
 import 'package:gw_community/index.dart';
+import 'package:gw_community/ui/community/group_moderation_page/group_moderation_page.dart';
 import 'package:gw_community/ui/core/nav_bar/nav_bar_page.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
@@ -511,6 +512,20 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           path: RequestChatPage.routePath,
           builder: (context, params) => RequestChatPage(
             requestId: params.getParam('id', ParamType.int) ?? 0,
+          ),
+        ),
+        FFRoute(
+          name: GroupModerationPage.routeName,
+          path: GroupModerationPage.routePath,
+          builder: (context, params) => GroupModerationPage(
+            groupId: params.getParam(
+              'groupId',
+              ParamType.int,
+            ),
+            groupName: params.getParam(
+              'groupName',
+              ParamType.String,
+            ),
           ),
         ),
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
