@@ -95,240 +95,240 @@ class _UserProfilePageState extends State<UserProfilePage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-          // Header with Name and Email
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Container(
-                width: MediaQuery.sizeOf(context).width * 1.0,
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                ),
-                child: Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        valueOrDefault<String>(
-                          userProfile?.displayName,
-                          'Name',
-                        ),
-                        style: AppTheme.of(context).headlineSmall.override(
-                              font: GoogleFonts.lexendDeca(
+            // Header with Name and Email
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Container(
+                  width: MediaQuery.sizeOf(context).width * 1.0,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          valueOrDefault<String>(
+                            userProfile?.displayName,
+                            'Name',
+                          ),
+                          style: AppTheme.of(context).headlineSmall.override(
+                                font: GoogleFonts.lexendDeca(
+                                  fontWeight: AppTheme.of(context).headlineSmall.fontWeight,
+                                  fontStyle: AppTheme.of(context).headlineSmall.fontStyle,
+                                ),
+                                letterSpacing: 0.0,
                                 fontWeight: AppTheme.of(context).headlineSmall.fontWeight,
                                 fontStyle: AppTheme.of(context).headlineSmall.fontStyle,
                               ),
-                              letterSpacing: 0.0,
-                              fontWeight: AppTheme.of(context).headlineSmall.fontWeight,
-                              fontStyle: AppTheme.of(context).headlineSmall.fontStyle,
-                            ),
-                      ),
-                      Align(
-                        alignment: const AlignmentDirectional(-1.0, 0.0),
-                        child: Padding(
-                          padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 16.0),
-                          child: Text(
-                            valueOrDefault<String>(
-                              userProfile?.email,
-                              'Email',
-                            ),
-                            textAlign: TextAlign.start,
-                            style: AppTheme.of(context).bodyMedium.override(
-                                  font: GoogleFonts.lexendDeca(
+                        ),
+                        Align(
+                          alignment: const AlignmentDirectional(-1.0, 0.0),
+                          child: Padding(
+                            padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 16.0),
+                            child: Text(
+                              valueOrDefault<String>(
+                                userProfile?.email,
+                                'Email',
+                              ),
+                              textAlign: TextAlign.start,
+                              style: AppTheme.of(context).bodyMedium.override(
+                                    font: GoogleFonts.lexendDeca(
+                                      fontWeight: FontWeight.normal,
+                                      fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
+                                    ),
+                                    color: AppTheme.of(context).primary,
+                                    fontSize: 14.0,
+                                    letterSpacing: 0.0,
                                     fontWeight: FontWeight.normal,
                                     fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                                   ),
-                                  color: AppTheme.of(context).primary,
-                                  fontSize: 14.0,
-                                  letterSpacing: 0.0,
-                                  fontWeight: FontWeight.normal,
-                                  fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                                ),
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
 
-          ListView(
-            padding: EdgeInsets.zero,
-            shrinkWrap: true,
-            scrollDirection: Axis.vertical,
-            children: [
-              ProfileMenuItemWidget(
-                text: 'My Journal',
-                onTap: () async {
-                  context.pushNamed(
-                    UserJournalListPage.routeName,
-                    extra: <String, dynamic>{
-                      kTransitionInfoKey: const TransitionInfo(
-                        hasTransition: true,
-                        transitionType: PageTransitionType.fade,
-                        duration: Duration(milliseconds: 0),
-                      ),
+            ListView(
+              padding: EdgeInsets.zero,
+              shrinkWrap: true,
+              scrollDirection: Axis.vertical,
+              children: [
+                ProfileMenuItemWidget(
+                  text: 'My Journal',
+                  onTap: () async {
+                    context.pushNamed(
+                      UserJournalListPage.routeName,
+                      extra: <String, dynamic>{
+                        kTransitionInfoKey: const TransitionInfo(
+                          hasTransition: true,
+                          transitionType: PageTransitionType.fade,
+                          duration: Duration(milliseconds: 0),
+                        ),
+                      },
+                    );
+                  },
+                ),
+                Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
+                  child: ProfileMenuItemWidget(
+                    text: 'My Journey',
+                    onTap: () async {
+                      context.pushNamed(
+                        UserJourneysViewPage.routeName,
+                        extra: <String, dynamic>{
+                          kTransitionInfoKey: const TransitionInfo(
+                            hasTransition: true,
+                            transitionType: PageTransitionType.fade,
+                            duration: Duration(milliseconds: 0),
+                          ),
+                        },
+                      );
                     },
-                  );
-                },
-              ),
-              Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
-                child: ProfileMenuItemWidget(
-                  text: 'My Journey',
-                  onTap: () async {
-                    context.pushNamed(
-                      UserJourneysViewPage.routeName,
-                      extra: <String, dynamic>{
-                        kTransitionInfoKey: const TransitionInfo(
-                          hasTransition: true,
-                          transitionType: PageTransitionType.fade,
-                          duration: Duration(milliseconds: 0),
-                        ),
-                      },
-                    );
-                  },
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
-                child: ProfileMenuItemWidget(
-                  text: 'Favorites',
-                  onTap: () async {
-                    context.pushNamed(
-                      FavoritesPage.routeName,
-                      extra: <String, dynamic>{
-                        kTransitionInfoKey: const TransitionInfo(
-                          hasTransition: true,
-                          transitionType: PageTransitionType.fade,
-                          duration: Duration(milliseconds: 0),
-                        ),
-                      },
-                    );
-                  },
+                Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
+                  child: ProfileMenuItemWidget(
+                    text: 'Favorites',
+                    onTap: () async {
+                      context.pushNamed(
+                        FavoritesPage.routeName,
+                        extra: <String, dynamic>{
+                          kTransitionInfoKey: const TransitionInfo(
+                            hasTransition: true,
+                            transitionType: PageTransitionType.fade,
+                            duration: Duration(milliseconds: 0),
+                          ),
+                        },
+                      );
+                    },
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
-                child: ProfileMenuItemWidget(
-                  text: 'Help Center',
-                  onTap: () async {
-                    context.pushNamed(SupportPage.routeName);
-                  },
+                Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
+                  child: ProfileMenuItemWidget(
+                    text: 'Help',
+                    onTap: () async {
+                      context.pushNamed(SupportPage.routeName);
+                    },
+                  ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
 
-          // Account Settings Header
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(24.0, 12.0, 0.0, 12.0),
-                child: Text(
-                  'Account Settings',
-                  style: AppTheme.of(context).bodyMedium.override(
-                        font: GoogleFonts.lexendDeca(
+            // Account Settings Header
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(24.0, 12.0, 0.0, 12.0),
+                  child: Text(
+                    'Account Settings',
+                    style: AppTheme.of(context).bodyMedium.override(
+                          font: GoogleFonts.lexendDeca(
+                            fontWeight: FontWeight.bold,
+                            fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
+                          ),
+                          color: AppTheme.of(context).secondary,
+                          fontSize: 14.0,
+                          letterSpacing: 0.0,
                           fontWeight: FontWeight.bold,
                           fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                         ),
-                        color: AppTheme.of(context).secondary,
-                        fontSize: 14.0,
-                        letterSpacing: 0.0,
-                        fontWeight: FontWeight.bold,
-                        fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                      ),
+                  ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
 
-          ListView(
-            padding: EdgeInsets.zero,
-            shrinkWrap: true,
-            scrollDirection: Axis.vertical,
-            children: [
-              ProfileMenuItemWidget(
-                text: 'Edit Profile',
-                onTap: () async {
-                  context.pushNamed(UserEditProfilePage.routeName);
+            ListView(
+              padding: EdgeInsets.zero,
+              shrinkWrap: true,
+              scrollDirection: Axis.vertical,
+              children: [
+                ProfileMenuItemWidget(
+                  text: 'Edit Profile',
+                  onTap: () async {
+                    context.pushNamed(UserEditProfilePage.routeName);
+                  },
+                ),
+                Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
+                  child: ProfileMenuItemWidget(
+                    text: 'Change Password',
+                    onTap: () async {
+                      context.pushNamed(ChangePasswordPage.routeName);
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
+                  child: ProfileMenuItemWidget(
+                    text: 'Set Notifications',
+                    onTap: () async {
+                      // No action in original code
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
+                  child: ProfileMenuItemWidget(
+                    text: 'Reset Journey',
+                    onTap: () async {
+                      await _handleResetJourney(context, viewModel);
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
+                  child: ProfileMenuItemWidget(
+                    text: 'Reset Onboarding',
+                    onTap: () async {
+                      await _handleResetOnboarding(context, viewModel);
+                    },
+                  ),
+                ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(24.0, 24.0, 24.0, 24.0),
+              child: FFButtonWidget(
+                onPressed: () async {
+                  await _handleLogout(context, viewModel);
                 },
-              ),
-              Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
-                child: ProfileMenuItemWidget(
-                  text: 'Change Password',
-                  onTap: () async {
-                    context.pushNamed(ChangePasswordPage.routeName);
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
-                child: ProfileMenuItemWidget(
-                  text: 'Set Notifications',
-                  onTap: () async {
-                    // No action in original code
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
-                child: ProfileMenuItemWidget(
-                  text: 'Reset Journey',
-                  onTap: () async {
-                    await _handleResetJourney(context, viewModel);
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
-                child: ProfileMenuItemWidget(
-                  text: 'Reset Onboarding',
-                  onTap: () async {
-                    await _handleResetOnboarding(context, viewModel);
-                  },
-                ),
-              ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(24.0, 24.0, 24.0, 24.0),
-            child: FFButtonWidget(
-              onPressed: () async {
-                await _handleLogout(context, viewModel);
-              },
-              text: 'Log Out',
-              options: FFButtonOptions(
-                width: double.infinity,
-                height: 48.0,
-                padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                color: AppTheme.of(context).primary,
-                textStyle: AppTheme.of(context).titleSmall.override(
-                      font: GoogleFonts.lexendDeca(
+                text: 'Log Out',
+                options: FFButtonOptions(
+                  width: double.infinity,
+                  height: 48.0,
+                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                  iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                  color: AppTheme.of(context).primary,
+                  textStyle: AppTheme.of(context).titleSmall.override(
+                        font: GoogleFonts.lexendDeca(
+                          fontWeight: AppTheme.of(context).titleSmall.fontWeight,
+                          fontStyle: AppTheme.of(context).titleSmall.fontStyle,
+                        ),
+                        color: Colors.white,
+                        letterSpacing: 0.0,
                         fontWeight: AppTheme.of(context).titleSmall.fontWeight,
                         fontStyle: AppTheme.of(context).titleSmall.fontStyle,
                       ),
-                      color: Colors.white,
-                      letterSpacing: 0.0,
-                      fontWeight: AppTheme.of(context).titleSmall.fontWeight,
-                      fontStyle: AppTheme.of(context).titleSmall.fontStyle,
-                    ),
-                elevation: 3.0,
-                borderSide: const BorderSide(
-                  color: Colors.transparent,
-                  width: 1.0,
+                  elevation: 3.0,
+                  borderSide: const BorderSide(
+                    color: Colors.transparent,
+                    width: 1.0,
+                  ),
+                  borderRadius: BorderRadius.circular(30.0),
                 ),
-                borderRadius: BorderRadius.circular(30.0),
               ),
             ),
-          ),
           ],
         ),
       ),

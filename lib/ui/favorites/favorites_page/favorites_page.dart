@@ -4,8 +4,7 @@ import 'package:gw_community/data/repositories/favorites_repository.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/ui/favorites/favorites_page/view_model/favorites_view_model.dart';
-import 'package:gw_community/ui/favorites/favorites_page/widgets/favorite_activity_card.dart';
-import 'package:gw_community/ui/favorites/favorites_page/widgets/favorite_recording_card.dart';
+import 'package:gw_community/ui/favorites/favorites_page/widgets/unified_favorite_card.dart';
 import 'package:gw_community/utils/context_extensions.dart';
 import 'package:provider/provider.dart';
 
@@ -33,140 +32,118 @@ class _FavoritesPageContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        backgroundColor: AppTheme.of(context).primaryBackground,
-        appBar: AppBar(
-          backgroundColor: AppTheme.of(context).primary,
-          automaticallyImplyLeading: false,
-          leading: FlutterFlowIconButton(
-            borderColor: Colors.transparent,
-            borderRadius: 30.0,
-            borderWidth: 1.0,
-            buttonSize: 60.0,
-            icon: const Icon(
-              Icons.arrow_back_rounded,
-              color: Colors.white,
-              size: 30.0,
-            ),
-            onPressed: () => Navigator.of(context).pop(),
+    return Scaffold(
+      backgroundColor: AppTheme.of(context).primaryBackground,
+      appBar: AppBar(
+        backgroundColor: AppTheme.of(context).primary,
+        automaticallyImplyLeading: false,
+        leading: FlutterFlowIconButton(
+          borderColor: Colors.transparent,
+          borderRadius: 30.0,
+          borderWidth: 1.0,
+          buttonSize: 60.0,
+          icon: const Icon(
+            Icons.arrow_back_rounded,
+            color: Colors.white,
+            size: 30.0,
           ),
-          title: Text(
-            'Favorites',
-            style: GoogleFonts.lexendDeca(
-              color: Colors.white,
-              fontSize: 20.0,
-            ),
-          ),
-          centerTitle: true,
-          elevation: 4.0,
-          bottom: TabBar(
-            labelColor: Colors.white,
-            unselectedLabelColor: Colors.white70,
-            indicatorColor: Colors.white,
-            indicatorWeight: 3.0,
-            labelStyle: GoogleFonts.lexendDeca(
-              fontWeight: FontWeight.w600,
-            ),
-            unselectedLabelStyle: GoogleFonts.lexendDeca(
-              fontWeight: FontWeight.normal,
-            ),
-            tabs: const [
-              Tab(text: 'Recordings'),
-              Tab(text: 'Activities'),
-            ],
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text(
+          'Favorites',
+          style: GoogleFonts.lexendDeca(
+            color: Colors.white,
+            fontSize: 20.0,
           ),
         ),
-        body: Consumer<FavoritesViewModel>(
-          builder: (context, viewModel, child) {
-            if (viewModel.isLoading) {
-              return Center(
-                child: CircularProgressIndicator(
-                  color: AppTheme.of(context).primary,
-                ),
-              );
-            }
-
-            if (viewModel.errorMessage != null) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+        centerTitle: true,
+        elevation: 4.0,
+      ),
+      body: Column(
+        children: [
+          // Filter chips
+          Consumer<FavoritesViewModel>(
+            builder: (context, viewModel, child) {
+              return Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                child: Row(
                   children: [
-                    Icon(
-                      Icons.error_outline,
-                      color: AppTheme.of(context).error,
-                      size: 48.0,
+                    _FilterChip(
+                      label: 'All',
+                      isSelected: viewModel.selectedFilter == 'all',
+                      onTap: () => viewModel.setFilter('all'),
                     ),
-                    const SizedBox(height: 16.0),
-                    Text(
-                      viewModel.errorMessage!,
-                      style: AppTheme.of(context).bodyMedium,
-                      textAlign: TextAlign.center,
+                    const SizedBox(width: 8.0),
+                    _FilterChip(
+                      label: 'Journey',
+                      isSelected: viewModel.selectedFilter == 'journey',
+                      onTap: () => viewModel.setFilter('journey'),
                     ),
-                    const SizedBox(height: 16.0),
-                    ElevatedButton(
-                      onPressed: () => viewModel.loadFavorites(),
-                      child: const Text('Retry'),
+                    const SizedBox(width: 8.0),
+                    _FilterChip(
+                      label: 'Library',
+                      isSelected: viewModel.selectedFilter == 'library',
+                      onTap: () => viewModel.setFilter('library'),
                     ),
                   ],
                 ),
               );
-            }
-
-            return TabBarView(
-              children: [
-                // Recordings tab
-                _buildRecordingsList(context, viewModel),
-                // Activities tab
-                _buildActivitiesList(context, viewModel),
-              ],
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget _buildRecordingsList(
-      BuildContext context, FavoritesViewModel viewModel) {
-    if (viewModel.favoriteRecordings.isEmpty) {
-      return _buildEmptyState(
-        context,
-        icon: Icons.audiotrack_outlined,
-        message: 'No favorite recordings yet',
-        subtitle: 'Tap the heart icon on any recording to add it here',
-      );
-    }
-
-    return RefreshIndicator(
-      onRefresh: () => viewModel.loadFavorites(),
-      child: ListView.builder(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        itemCount: viewModel.favoriteRecordings.length,
-        itemBuilder: (context, index) {
-          final recording = viewModel.favoriteRecordings[index];
-          return FavoriteRecordingCard(
-            recording: recording,
-            onUnfavorite: () {
-              if (recording.contentId != null) {
-                viewModel.removeRecordingFromFavorites(recording.contentId!);
-              }
             },
-          );
-        },
+          ),
+          // Content list
+          Expanded(
+            child: Consumer<FavoritesViewModel>(
+              builder: (context, viewModel, child) {
+                if (viewModel.isLoading) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      color: AppTheme.of(context).primary,
+                    ),
+                  );
+                }
+
+                if (viewModel.errorMessage != null) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.error_outline,
+                          color: AppTheme.of(context).error,
+                          size: 48.0,
+                        ),
+                        const SizedBox(height: 16.0),
+                        Text(
+                          viewModel.errorMessage!,
+                          style: AppTheme.of(context).bodyMedium,
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 16.0),
+                        ElevatedButton(
+                          onPressed: () => viewModel.loadFavorites(),
+                          child: const Text('Retry'),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+
+                return _buildUnifiedList(context, viewModel);
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildActivitiesList(
-      BuildContext context, FavoritesViewModel viewModel) {
-    if (viewModel.favoriteActivities.isEmpty) {
+  Widget _buildUnifiedList(BuildContext context, FavoritesViewModel viewModel) {
+    if (viewModel.unifiedFavorites.isEmpty) {
       return _buildEmptyState(
         context,
-        icon: Icons.assignment_outlined,
-        message: 'No favorite activities yet',
-        subtitle: 'Tap the heart icon on any activity to add it here',
+        icon: Icons.favorite_border,
+        message: 'No favorites yet',
+        subtitle: 'Tap the heart icon on any content to add it here',
       );
     }
 
@@ -174,13 +151,17 @@ class _FavoritesPageContent extends StatelessWidget {
       onRefresh: () => viewModel.loadFavorites(),
       child: ListView.builder(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
-        itemCount: viewModel.favoriteActivities.length,
+        itemCount: viewModel.unifiedFavorites.length,
         itemBuilder: (context, index) {
-          final activity = viewModel.favoriteActivities[index];
-          return FavoriteActivityCard(
-            activity: activity,
+          final item = viewModel.unifiedFavorites[index];
+          return UnifiedFavoriteCard(
+            item: item,
             onUnfavorite: () {
-              viewModel.removeActivityFromFavorites(activity.id);
+              if (item.isRecording) {
+                viewModel.removeRecordingFromFavorites(item.contentId);
+              } else {
+                viewModel.removeActivityFromFavorites(item.contentId);
+              }
             },
           );
         },
@@ -222,6 +203,42 @@ class _FavoritesPageContent extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Widget para os chips de filtro
+class _FilterChip extends StatelessWidget {
+  const _FilterChip({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20.0),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        decoration: BoxDecoration(
+          color: isSelected ? AppTheme.of(context).primary : AppTheme.of(context).secondaryText.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        child: Text(
+          label,
+          style: AppTheme.of(context).bodyMedium.override(
+                fontSize: 14.0,
+                fontWeight: FontWeight.w500,
+                color: isSelected ? Colors.white : AppTheme.of(context).secondary,
+              ),
         ),
       ),
     );

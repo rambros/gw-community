@@ -250,6 +250,9 @@ class LearnListViewModel extends ChangeNotifier {
     int? groupId,
   }) async {
     _setLoading(true);
+    _page = 0;
+    _hasMore = true;
+    _contentList = []; // Clear list
 
     if (authorId != null) _filterByAuthorId = authorId;
     if (year != null) _filterByYear = year;
@@ -259,11 +262,28 @@ class LearnListViewModel extends ChangeNotifier {
     if (groupId != null) _filterByGroupId = groupId;
 
     _isSearchActive = false;
-    _updateFilterDescription();
 
-    // Reset pagination
-    _page = 0;
-    _hasMore = true;
+    // Load filter options if not loaded yet
+    if (_journeys.isEmpty && journeyId != null) {
+      await _loadJourneys();
+    }
+    if (_authors.isEmpty && authorId != null) {
+      await _loadAuthors();
+    }
+    if (_events.isEmpty && eventId != null) {
+      await _loadEvents();
+    }
+    if (_years.isEmpty && year != null) {
+      await _loadYears();
+    }
+    if (_groups.isEmpty && groupId != null) {
+      await _loadGroups();
+    }
+    if (_topics.isEmpty && topics != null && topics.isNotEmpty) {
+      await _loadTopics();
+    }
+
+    _updateFilterDescription();
 
     try {
       final newContent = await _repository.filterContent(

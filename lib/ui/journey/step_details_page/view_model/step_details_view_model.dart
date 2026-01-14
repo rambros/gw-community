@@ -23,6 +23,9 @@ class StepDetailsViewModel extends ChangeNotifier {
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
 
+  bool _isNavigating = false;
+  bool get isNavigating => _isNavigating;
+
   List<CcViewUserActivitiesRow> _activities = [];
   List<CcViewUserActivitiesRow> get activities => _activities;
 
@@ -52,7 +55,7 @@ class StepDetailsViewModel extends ChangeNotifier {
         currentUserUid,
         userStepRow.id!,
       );
-      
+
       // Remove duplicates based on activity ID using a Map
       final activitiesMap = <int, CcViewUserActivitiesRow>{};
       for (final activity in activities) {
@@ -61,9 +64,8 @@ class StepDetailsViewModel extends ChangeNotifier {
           activitiesMap[activityId] = activity;
         }
       }
-      _activities = activitiesMap.values.toList()
-        ..sort((a, b) => (a.orderInStep ?? 0).compareTo(b.orderInStep ?? 0));
-      
+      _activities = activitiesMap.values.toList()..sort((a, b) => (a.orderInStep ?? 0).compareTo(b.orderInStep ?? 0));
+
       notifyListeners();
     } catch (e, stackTrace) {
       _setError('Error loading activities: $e\n$stackTrace');
@@ -77,6 +79,10 @@ class StepDetailsViewModel extends ChangeNotifier {
     CcViewUserActivitiesRow activity,
     Function(String, Map<String, dynamic>) navigateToActivity,
   ) async {
+    if (_isNavigating) return;
+    _isNavigating = true;
+    notifyListeners();
+
     if (activity.activityStatus != 'completed') {
       try {
         // Complete the activity
@@ -127,6 +133,12 @@ class StepDetailsViewModel extends ChangeNotifier {
 
     // Navigate based on activity type
     _navigateToActivityPage(activity, navigateToActivity);
+
+    // Reset navigation flag after a short delay to allow transition to start/finish
+    Future.delayed(const Duration(milliseconds: 500), () {
+      _isNavigating = false;
+      notifyListeners();
+    });
   }
 
   void _navigateToActivityPage(

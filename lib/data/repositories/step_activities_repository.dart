@@ -25,10 +25,7 @@ class StepActivitiesRepository {
     );
 
     // Find which step_activity_ids already have user_activities
-    final existingStepActivityIds = existingUserActivities
-        .map((ua) => ua.stepActivityId)
-        .whereType<int>()
-        .toSet();
+    final existingStepActivityIds = existingUserActivities.map((ua) => ua.stepActivityId).whereType<int>().toSet();
 
     // Create user_activities for missing step activities
     final now = getCurrentTimestamp;
@@ -103,7 +100,7 @@ class StepActivitiesRepository {
       queryFn: (q) => q
           .eqOrNull('user_journey_id', userJourneyId)
           .eqOrNull('user_id', userId)
-          .eqOrNull('step_status', 'closed')
+          .eqOrNull('step_status', 'locked')
           .order('step_number', ascending: true),
     );
     return result;

@@ -6,6 +6,7 @@ import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
 import 'package:gw_community/ui/journey/step_journal_page/view_model/step_journal_view_model.dart';
 import 'package:gw_community/ui/journey/themes/journey_theme_extension.dart';
+import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
 
 class StepJournalPage extends StatefulWidget {
@@ -39,10 +40,9 @@ class _StepJournalPageState extends State<StepJournalPage> {
     }
 
     // Se não há conteúdo salvo, inicializa com a pergunta + quebra de linha
-    final savedContent = widget.activityRow?.journalSaved ?? '';
-    final initialContent = savedContent.isEmpty
-        ? '${widget.activityRow?.activityPrompt ?? ''}\n\n'
-        : savedContent;
+    final savedContent = (widget.activityRow?.journalSaved ?? '').trim();
+    final prompt = (widget.activityRow?.activityPrompt ?? '').trim();
+    final initialContent = savedContent.isEmpty ? '$prompt\n\n' : savedContent;
 
     _viewModel = StepJournalViewModel(
       repository: context.read<JournalRepository>(),
@@ -56,9 +56,11 @@ class _StepJournalPageState extends State<StepJournalPage> {
     // Move o cursor para o final (após a quebra de linha)
     if (savedContent.isEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _textController.selection = TextSelection.fromPosition(
-          TextPosition(offset: _textController.text.length),
-        );
+        if (mounted) {
+          _textController.selection = TextSelection.fromPosition(
+            TextPosition(offset: _textController.text.length),
+          );
+        }
       });
     }
   }
@@ -103,12 +105,26 @@ class _StepJournalPageState extends State<StepJournalPage> {
                 size: 30.0,
               ),
               onPressed: () async {
-                Navigator.of(context).pop();
+                context.pop();
               },
             ),
-            title: Text(
-              'My Journal',
-              style: AppTheme.of(context).journey.pageTitle,
+            title: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  'My Journal',
+                  style: AppTheme.of(context).journey.pageTitle,
+                ),
+                Text(
+                  'Your journal entries are private and secure.',
+                  style: AppTheme.of(context).bodySmall.override(
+                        color: Colors.white.withValues(alpha: 0.8),
+                        fontSize: 11.0,
+                        letterSpacing: 0.0,
+                      ),
+                ),
+              ],
             ),
             actions: const [],
             centerTitle: true,

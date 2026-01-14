@@ -11,7 +11,14 @@ import 'package:provider/provider.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
 
 class LearnListPage extends StatefulWidget {
-  const LearnListPage({super.key});
+  const LearnListPage({
+    super.key,
+    this.journeyId,
+    this.customTitle,
+  });
+
+  final int? journeyId;
+  final String? customTitle;
 
   static String routeName = 'learnListPage';
   static String routePath = '/learnListPage';
@@ -34,7 +41,14 @@ class _LearnListPageState extends State<LearnListPage> {
 
     // Load initial data
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      context.read<LearnListViewModel>().loadInitialData();
+      final viewModel = context.read<LearnListViewModel>();
+
+      // Se journeyId fornecido, aplicar filtro imediatamente
+      if (widget.journeyId != null) {
+        viewModel.applyFilters(journeyId: widget.journeyId);
+      } else {
+        viewModel.loadInitialData();
+      }
     });
 
     _scrollController.addListener(() {
@@ -64,9 +78,15 @@ class _LearnListPageState extends State<LearnListPage> {
         backgroundColor: AppTheme.of(context).primaryBackground,
         appBar: AppBar(
           backgroundColor: AppTheme.of(context).primary,
-          automaticallyImplyLeading: false,
+          automaticallyImplyLeading: widget.journeyId != null,
+          leading: widget.journeyId != null
+              ? IconButton(
+                  icon: const Icon(Icons.arrow_back, color: Colors.white),
+                  onPressed: () => Navigator.of(context).pop(),
+                )
+              : null,
           title: Text(
-            'Library',
+            widget.customTitle ?? 'Library',
             style: AppTheme.of(context).headlineMedium.override(
                   color: Colors.white,
                   fontSize: 22.0,
@@ -113,7 +133,9 @@ class _LearnListPageState extends State<LearnListPage> {
                               ),
 
                             // Search Bar
-                            if (!viewModel.isSearchActive && !viewModel.isFilterActive)
+                            if (!viewModel.isSearchActive &&
+                                !viewModel.isFilterActive &&
+                                widget.journeyId == null)
                               Padding(
                                 padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 16.0, 0.0),
                                 child: Container(
@@ -258,7 +280,8 @@ class _LearnListPageState extends State<LearnListPage> {
                                       ),
                                     ),
                                   ),
-                                  if (viewModel.isSearchActive || viewModel.isFilterActive)
+                                  if ((viewModel.isSearchActive || viewModel.isFilterActive) &&
+                                      widget.journeyId == null)
                                     Padding(
                                       padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
                                       child: FFButtonWidget(

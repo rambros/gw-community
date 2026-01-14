@@ -34,7 +34,10 @@ class NewRequestViewModel extends ChangeNotifier {
     this.contextId,
     this.contextTitle,
   }) : _repository = repository {
-    // Pre-select category based on context
+    // Set default category to 'Other'
+    _selectedCategory = SupportCategory.other;
+
+    // Pre-select category based on context if provided
     if (contextType != null) {
       _selectedCategory = SupportCategory.fromValue(contextType);
     }
@@ -59,10 +62,10 @@ class NewRequestViewModel extends ChangeNotifier {
 
   String? validateTitle(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return 'Please enter a title for your question';
+      return 'Please enter a subject for your question';
     }
     if (value.trim().length < 5) {
-      return 'Title must be at least 5 characters';
+      return 'Subject must be at least 5 characters';
     }
     return null;
   }
@@ -77,26 +80,11 @@ class NewRequestViewModel extends ChangeNotifier {
     return null;
   }
 
-  String? validateCategory() {
-    if (_selectedCategory == null) {
-      return 'Please select a topic';
-    }
-    return null;
-  }
-
   Future<CcSupportRequestsRow?> submit() async {
     _errorMessage = null;
 
     // Validate form
     if (!formKey.currentState!.validate()) {
-      return null;
-    }
-
-    // Validate category separately (not in form)
-    final categoryError = validateCategory();
-    if (categoryError != null) {
-      _errorMessage = categoryError;
-      notifyListeners();
       return null;
     }
 

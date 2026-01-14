@@ -84,17 +84,8 @@ class _NewRequestPageContent extends StatelessWidget {
                 // Context info banner (if applicable)
                 if (viewModel.contextTitle != null) _buildContextBanner(context, viewModel),
 
-                // Topic/Category selection
-                _buildSectionTitle(context, 'Topic'),
-                const SizedBox(height: 8),
-                _buildCategorySelection(context, viewModel),
-                if (viewModel.errorMessage != null &&
-                    viewModel.errorMessage!.contains('topic'))
-                  _buildErrorText(context, viewModel.errorMessage!),
-                const SizedBox(height: 24),
-
-                // Title input
-                _buildSectionTitle(context, 'Title'),
+                // Subject input
+                _buildSectionTitle(context, 'Subject'),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: viewModel.titleController,
@@ -135,9 +126,7 @@ class _NewRequestPageContent extends StatelessWidget {
                   width: double.infinity,
                   height: 50,
                   child: ElevatedButton(
-                    onPressed: viewModel.isSubmitting
-                        ? null
-                        : () => _handleSubmit(context, viewModel),
+                    onPressed: viewModel.isSubmitting ? null : () => _handleSubmit(context, viewModel),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppTheme.of(context).primary,
                       foregroundColor: Colors.white,
@@ -162,8 +151,7 @@ class _NewRequestPageContent extends StatelessWidget {
                 ),
 
                 // Error message
-                if (viewModel.errorMessage != null &&
-                    !viewModel.errorMessage!.contains('topic'))
+                if (viewModel.errorMessage != null && !viewModel.errorMessage!.contains('topic'))
                   Padding(
                     padding: const EdgeInsets.only(top: 16),
                     child: _buildErrorText(context, viewModel.errorMessage!),
@@ -237,42 +225,6 @@ class _NewRequestPageContent extends StatelessWidget {
     );
   }
 
-  Widget _buildCategorySelection(BuildContext context, NewRequestViewModel viewModel) {
-    return Wrap(
-      spacing: 8,
-      runSpacing: 8,
-      children: SupportCategory.values.map((category) {
-        final isSelected = viewModel.selectedCategory == category;
-        return InkWell(
-          onTap: () => viewModel.setCategory(category),
-          borderRadius: BorderRadius.circular(20),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            decoration: BoxDecoration(
-              color: isSelected
-                  ? AppTheme.of(context).primary
-                  : AppTheme.of(context).secondary.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(20),
-              border: isSelected
-                  ? null
-                  : Border.all(
-                      color: AppTheme.of(context).secondary.withValues(alpha: 0.2),
-                    ),
-            ),
-            child: Text(
-              category.label,
-              style: GoogleFonts.lexendDeca(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: isSelected ? Colors.white : AppTheme.of(context).secondary,
-              ),
-            ),
-          ),
-        );
-      }).toList(),
-    );
-  }
-
   InputDecoration _buildInputDecoration(BuildContext context, {required String hintText}) {
     return InputDecoration(
       hintText: hintText,
@@ -340,8 +292,8 @@ class _NewRequestPageContent extends StatelessWidget {
         ),
       );
 
-      // Navigate to the chat page
-      context.goNamed(
+      // Navigate to the chat page, replacing the current route
+      context.pushReplacementNamed(
         RequestChatPage.routeName,
         pathParameters: {
           'id': result.id.toString(),

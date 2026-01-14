@@ -183,6 +183,7 @@ class SharingRepository {
     required String type,
     int? groupId,
     bool isDraft = false,
+    bool locked = false,
   }) async {
     await CcSharingsTable().insert({
       'title': title,
@@ -195,7 +196,7 @@ class SharingRepository {
       'visibility': visibility,
       'type': type,
       'moderation_status': isDraft ? 'draft' : 'pending',
-      'locked': false,
+      'locked': locked,
     });
   }
 

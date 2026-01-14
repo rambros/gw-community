@@ -52,6 +52,9 @@ class ViewContentRow extends SupabaseDataRow {
   int? get journeyId => getField<int>('journey_id');
   set journeyId(int? value) => setField<int>('journey_id', value);
 
+  List<int> get journeys => getListField<int>('journeys');
+  set journeys(List<int>? value) => setListField<int>('journeys', value);
+
   int? get localId => getField<int>('local_id');
   set localId(int? value) => setField<int>('local_id', value);
 

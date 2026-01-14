@@ -75,6 +75,33 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
       refreshListenable: appStateNotifier,
       navigatorKey: appNavigatorKey,
       errorBuilder: (context, state) => appStateNotifier.loggedIn ? const NavBarPage() : const LoginPage(),
+      redirect: (context, state) {
+        if (appStateNotifier.loading) {
+          return null;
+        }
+        final loggedIn = appStateNotifier.loggedIn;
+        final publicRoutes = [
+          '/',
+          SplashPage.routePath,
+          LoginPage.routePath,
+          CreateAccountPage.routePath,
+          ForgotPasswordPage.routePath,
+        ];
+        // Check if current path matches any public route path or name
+        final isPublicRoute = publicRoutes.contains(state.uri.path);
+
+        if (!loggedIn && !isPublicRoute) {
+          debugPrint('ROUTER: User not logged in and on protected page ${state.uri.path}. Redirecting to Login.');
+          return LoginPage.routePath;
+        }
+
+        if (loggedIn && (state.uri.path == LoginPage.routePath || state.uri.path == CreateAccountPage.routePath)) {
+          debugPrint('ROUTER: User logged in and on auth page. Redirecting to Home.');
+          return '/';
+        }
+
+        return null;
+      },
       routes: [
         FFRoute(
           name: '_initialize',
@@ -119,8 +146,12 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: LearnListPage.routeName,
           path: LearnListPage.routePath,
-          builder: (context, params) =>
-              params.isEmpty ? const NavBarPage(initialPage: 'learnListPage') : const LearnListPage(),
+          builder: (context, params) => params.isEmpty
+              ? const NavBarPage(initialPage: 'learnListPage')
+              : LearnListPage(
+                  journeyId: params.getParam('journeyId', ParamType.int),
+                  customTitle: params.getParam('customTitle', ParamType.String),
+                ),
         ),
         FFRoute(
           name: JourneysListPage.routeName,

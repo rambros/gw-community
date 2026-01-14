@@ -32,7 +32,7 @@ class FFAppState extends ChangeNotifier {
 
   late SharedPreferences prefs;
 
-  String typeSelectedEvent = 'upcomming';
+  String typeSelectedEvent = 'upcoming';
 
   List<int> listStartedJourneys = [];
 

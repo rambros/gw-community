@@ -44,7 +44,7 @@ class SupportPage extends StatelessWidget {
   }
 }
 
-class _SupportPageContent extends StatelessWidget {
+class _SupportPageContent extends StatefulWidget {
   const _SupportPageContent({
     this.contextType,
     this.contextId,
@@ -54,6 +54,34 @@ class _SupportPageContent extends StatelessWidget {
   final String? contextType;
   final int? contextId;
   final String? contextTitle;
+
+  @override
+  State<_SupportPageContent> createState() => _SupportPageContentState();
+}
+
+class _SupportPageContentState extends State<_SupportPageContent> with RouteAware {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route is PageRoute) {
+      routeObserver.subscribe(this, route);
+    }
+  }
+
+  @override
+  void didPopNext() {
+    // Called when returning to this page from another page
+    // Refresh the requests stream
+    final viewModel = context.read<SupportViewModel>();
+    viewModel.refresh();
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +105,7 @@ class _SupportPageContent extends StatelessWidget {
           onPressed: () => context.pop(),
         ),
         title: Text(
-          'Help Center',
+          'Help',
           style: AppTheme.of(context).bodyMedium.override(
                 font: GoogleFonts.lexendDeca(),
                 color: Colors.white,
@@ -235,28 +263,13 @@ class _SupportPageContent extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              isEmptyAll
-                  ? 'Have a question? We\'re here to help!'
-                  : 'Try changing your filter',
+              isEmptyAll ? 'Have a question? We\'re here to help!' : 'Try changing your filter',
               textAlign: TextAlign.center,
               style: AppTheme.of(context).bodySmall.override(
                     font: GoogleFonts.lexendDeca(),
                     color: AppTheme.of(context).cadetGrey,
                   ),
             ),
-            if (isEmptyAll) ...[
-              const SizedBox(height: 24),
-              ElevatedButton.icon(
-                onPressed: () => _navigateToNewRequest(context),
-                icon: const Icon(Icons.add),
-                label: const Text('Ask a Question'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.of(context).primary,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                ),
-              ),
-            ],
           ],
         ),
       ),
@@ -267,9 +280,9 @@ class _SupportPageContent extends StatelessWidget {
     context.pushNamed(
       NewRequestPage.routeName,
       queryParameters: {
-        if (contextType != null) 'contextType': contextType!,
-        if (contextId != null) 'contextId': contextId.toString(),
-        if (contextTitle != null) 'contextTitle': contextTitle!,
+        if (widget.contextType != null) 'contextType': widget.contextType!,
+        if (widget.contextId != null) 'contextId': widget.contextId.toString(),
+        if (widget.contextTitle != null) 'contextTitle': widget.contextTitle!,
       }.withoutNulls,
     );
   }
@@ -349,9 +362,7 @@ class _FilterChip extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected
-              ? AppTheme.of(context).primary
-              : AppTheme.of(context).secondary.withValues(alpha: 0.1),
+          color: isSelected ? AppTheme.of(context).primary : AppTheme.of(context).secondary.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Text(

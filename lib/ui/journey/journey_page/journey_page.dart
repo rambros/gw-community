@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:provider/provider.dart';
+import 'package:webviewx_plus/webviewx_plus.dart';
+
 import 'package:gw_community/data/repositories/journeys_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/journey/journey_page/view_model/journey_view_model.dart';
+import 'package:gw_community/ui/journey/journey_page/widgets/journey_about_dialog.dart';
 import 'package:gw_community/ui/journey/journey_page/widgets/journey_intro_widget.dart';
 import 'package:gw_community/ui/journey/journey_page/widgets/journey_step_item_widget.dart';
 import 'package:gw_community/ui/journey/step_details_page/step_details_page.dart';
 import 'package:gw_community/ui/journey/themes/journey_theme_extension.dart';
+import 'package:gw_community/ui/learn/learn_list_page/learn_list_page.dart';
+import 'package:gw_community/ui/onboarding/splash_page/splash_page.dart';
+import 'package:gw_community/ui/profile/widgets/confirm_profile_action_dialog.dart';
+import 'package:gw_community/ui/support/support_page/support_page.dart';
 import 'package:gw_community/utils/context_extensions.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
-import 'package:provider/provider.dart';
 
 class JourneyPage extends StatefulWidget {
   const JourneyPage({
@@ -76,7 +83,91 @@ class _JourneyPageState extends State<JourneyPage> {
                   color: Colors.white,
                 ),
           ),
-          actions: const [],
+          actions: [
+            Consumer<JourneyViewModel>(
+              builder: (context, viewModel, _) {
+                return PopupMenuButton<String>(
+                  icon: const Icon(
+                    Icons.more_vert,
+                    color: Colors.white,
+                  ),
+                  onSelected: (value) async {
+                    if (value == 'support_documents') {
+                      await _handleSupportDocuments(context, viewModel);
+                    } else if (value == 'help') {
+                      await _handleHelp(context);
+                    } else if (value == 'restart_journey') {
+                      await _handleRestartJourney(context, viewModel);
+                    } else if (value == 'about') {
+                      await _handleAbout(context, viewModel);
+                    }
+                  },
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      value: 'support_documents',
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.library_books_outlined,
+                            size: 20,
+                            color: AppTheme.of(context).secondary,
+                          ),
+                          const SizedBox(width: 12),
+                          const Text('Support Documents'),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: 'help',
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.help_outline,
+                            size: 20,
+                            color: AppTheme.of(context).secondary,
+                          ),
+                          const SizedBox(width: 12),
+                          const Text('Help'),
+                        ],
+                      ),
+                    ),
+                    if (viewModel.isJourneyStarted) ...[
+                      const PopupMenuDivider(),
+                      PopupMenuItem(
+                        value: 'restart_journey',
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.restart_alt,
+                              size: 20,
+                              color: AppTheme.of(context).secondary,
+                            ),
+                            const SizedBox(width: 12),
+                            const Text('Restart Journey'),
+                          ],
+                        ),
+                      ),
+                    ],
+                    const PopupMenuDivider(),
+                    PopupMenuItem(
+                      value: 'about',
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.info_outline,
+                            size: 20,
+                            color: AppTheme.of(context).secondary,
+                          ),
+                          const SizedBox(width: 12),
+                          const Text('About this journey'),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ],
           centerTitle: true,
           elevation: 4.0,
         ),
@@ -208,6 +299,8 @@ class _JourneyPageState extends State<JourneyPage> {
                           isLastStep: isLastStep,
                           isCurrentStep: isCurrentStep,
                           onTap: () => _handleStepTap(context, viewModel, step),
+                          enableDateControl: viewModel.userJourney?.enableDateControl ?? true,
+                          daysToWait: viewModel.userJourney?.daysToWaitBetweenSteps ?? 1,
                         );
                       },
                     );
@@ -256,5 +349,123 @@ class _JourneyPageState extends State<JourneyPage> {
         await viewModel.loadJourneyData();
       }
     }
+  }
+
+  Future<void> _handleSupportDocuments(BuildContext context, JourneyViewModel viewModel) async {
+    if (!context.mounted) return;
+
+    await context.pushNamed(
+      LearnListPage.routeName,
+      queryParameters: {
+        'journeyId': viewModel.journeyId.toString(),
+        'customTitle': 'Support Documents for Your Journey',
+      }.withoutNulls,
+      extra: <String, dynamic>{
+        kTransitionInfoKey: const TransitionInfo(
+          hasTransition: true,
+          transitionType: PageTransitionType.fade,
+          duration: Duration(milliseconds: 0),
+        ),
+      },
+    );
+  }
+
+  Future<void> _handleHelp(BuildContext context) async {
+    if (!context.mounted) return;
+
+    await context.pushNamed(
+      SupportPage.routeName,
+      extra: <String, dynamic>{
+        kTransitionInfoKey: const TransitionInfo(
+          hasTransition: true,
+          transitionType: PageTransitionType.fade,
+          duration: Duration(milliseconds: 0),
+        ),
+      },
+    );
+  }
+
+  Future<void> _handleRestartJourney(BuildContext context, JourneyViewModel viewModel) async {
+    if (!context.mounted) return;
+
+    final confirmDialogResponse = await showDialog<bool>(
+          context: context,
+          builder: (alertDialogContext) {
+            return const WebViewAware(
+              child: ConfirmProfileActionDialog(
+                title: 'Reset your Good Wishes Journey',
+                description: 'Resetting your journey will delete all progress made so far. '
+                    'This action cannot be undone.',
+                confirmLabel: 'Reset Journey',
+                icon: Icons.restart_alt,
+              ),
+            );
+          },
+        ) ??
+        false;
+
+    if (!confirmDialogResponse) return;
+
+    if (!context.mounted) return;
+
+    try {
+      final appState = context.read<FFAppState>();
+
+      await viewModel.resetJourneyCommand(
+        context,
+        (updatedList) {
+          appState.listStartedJourneys = updatedList;
+        },
+      );
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Journey reset successfully',
+              style: TextStyle(
+                color: AppTheme.of(context).primaryText,
+              ),
+            ),
+            duration: const Duration(milliseconds: 4000),
+            backgroundColor: AppTheme.of(context).secondary,
+          ),
+        );
+
+        context.goNamed(SplashPage.routeName);
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Error resetting journey: $e',
+              style: const TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _handleAbout(BuildContext context, JourneyViewModel viewModel) async {
+    if (!context.mounted) return;
+
+    final title = viewModel.journey?.title ?? viewModel.userJourney?.title ?? 'Journey';
+    final description =
+        viewModel.journey?.description ?? viewModel.userJourney?.description ?? 'No description available';
+
+    await showDialog(
+      context: context,
+      builder: (dialogContext) {
+        return WebViewAware(
+          child: JourneyAboutDialog(
+            title: title,
+            description: description,
+          ),
+        );
+      },
+    );
   }
 }

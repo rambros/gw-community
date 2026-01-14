@@ -44,6 +44,9 @@ class JourneyViewModel extends ChangeNotifier {
     _clearError();
 
     try {
+      // Always load base journey info (static content like title, description)
+      _journey = await _repository.getJourneyById(journeyId);
+
       if (isJourneyStarted) {
         // Load user journey and steps
         final results = await Future.wait([
@@ -53,7 +56,7 @@ class JourneyViewModel extends ChangeNotifier {
 
         _userJourney = results[0] as CcViewUserJourneysRow?;
         final steps = results[1] as List<CcViewUserStepsRow>;
-        
+
         // Remove duplicates based on step ID using a Map
         final stepsMap = <int, CcViewUserStepsRow>{};
         for (final step in steps) {
@@ -62,11 +65,7 @@ class JourneyViewModel extends ChangeNotifier {
             stepsMap[stepId] = step;
           }
         }
-        _userSteps = stepsMap.values.toList()
-          ..sort((a, b) => (a.stepNumber ?? 0).compareTo(b.stepNumber ?? 0));
-      } else {
-        // Load journey info
-        _journey = await _repository.getJourneyById(journeyId);
+        _userSteps = stepsMap.values.toList()..sort((a, b) => (a.stepNumber ?? 0).compareTo(b.stepNumber ?? 0));
       }
 
       notifyListeners();
@@ -110,6 +109,36 @@ class JourneyViewModel extends ChangeNotifier {
     }
   }
 
+  Future<void> resetJourneyCommand(
+    BuildContext context,
+    Function(List<int>) onUpdateStartedJourneys,
+  ) async {
+    _setLoading(true);
+    _clearError();
+
+    try {
+      // Resetar journey no repositório
+      await _repository.resetJourney(currentUserUid, journeyId);
+
+      // Atualizar lista de journeys iniciadas
+      final updatedList = _startedJourneys.where((id) => id != journeyId).toList();
+      _startedJourneys = updatedList;
+
+      // Atualizar no banco de dados
+      await _repository.updateUserStartedJourneys(currentUserUid, updatedList);
+
+      // Notificar caller para atualizar app state
+      onUpdateStartedJourneys(updatedList);
+
+      notifyListeners();
+    } catch (e) {
+      _setError('Error resetting journey: $e');
+      rethrow;
+    } finally {
+      _setLoading(false);
+    }
+  }
+
   bool canNavigateToStep(CcViewUserStepsRow step, int stepIndex) {
     if (step.stepStatus == 'completed') {
       return true;
@@ -133,8 +162,7 @@ class JourneyViewModel extends ChangeNotifier {
       if (!enableDateControl) return true;
 
       // If date control is enabled, check if enough days have passed
-      return step.dateStarted != null &&
-             DateTime.now().difference(step.dateStarted!).inDays >= daysToWait;
+      return step.dateStarted != null && DateTime.now().difference(step.dateStarted!).inDays >= daysToWait;
     }
 
     return false;

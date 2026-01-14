@@ -54,18 +54,33 @@ class _UserJournalListPageState extends State<UserJournalListPage> {
             context.pop();
           },
         ),
-        title: Text(
-          'Your Journal',
-          style: AppTheme.of(context).headlineMedium.override(
-                font: GoogleFonts.lexendDeca(
-                  fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
-                  fontStyle: AppTheme.of(context).headlineMedium.fontStyle,
-                ),
-                color: AppTheme.of(context).primaryBackground,
-                letterSpacing: 0.0,
-                fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
-                fontStyle: AppTheme.of(context).headlineMedium.fontStyle,
-              ),
+        title: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Your Journal',
+              style: AppTheme.of(context).headlineMedium.override(
+                    font: GoogleFonts.lexendDeca(
+                      fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
+                      fontStyle: AppTheme.of(context).headlineMedium.fontStyle,
+                    ),
+                    color: AppTheme.of(context).primaryBackground,
+                    letterSpacing: 0.0,
+                    fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
+                    fontStyle: AppTheme.of(context).headlineMedium.fontStyle,
+                  ),
+            ),
+            Text(
+              'Your journal entries are private and secure.',
+              style: AppTheme.of(context).bodySmall.override(
+                    font: GoogleFonts.lexendDeca(),
+                    color: AppTheme.of(context).primaryBackground.withValues(alpha: 0.8),
+                    fontSize: 12.0,
+                    letterSpacing: 0.0,
+                  ),
+            ),
+          ],
         ),
         actions: const [],
         centerTitle: false,

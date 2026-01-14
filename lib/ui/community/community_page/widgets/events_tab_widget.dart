@@ -19,6 +19,21 @@ class _EventsTabWidgetState extends State<EventsTabWidget> {
   static const _toggleAnimationDuration = Duration(milliseconds: 300);
 
   @override
+  void initState() {
+    super.initState();
+    // Set default filter to 'upcoming' if not set
+    if (FFAppState().typeSelectedEvent.isEmpty ||
+        (FFAppState().typeSelectedEvent != 'upcoming' && FFAppState().typeSelectedEvent != 'recorded')) {
+      FFAppState().typeSelectedEvent = 'upcoming';
+    }
+    // Load events when tab is first opened
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final viewModel = Provider.of<CommunityViewModel>(context, listen: false);
+      viewModel.fetchEvents('upcoming');
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final viewModel = Provider.of<CommunityViewModel>(context);
 
@@ -46,7 +61,7 @@ class _EventsTabWidgetState extends State<EventsTabWidget> {
                   ),
                   child: Stack(
                     children: [
-                      if (FFAppState().typeSelectedEvent == 'upcomming' || FFAppState().typeSelectedEvent == 'recorded')
+                      if (FFAppState().typeSelectedEvent == 'upcoming' || FFAppState().typeSelectedEvent == 'recorded')
                         AnimatedAlign(
                           duration: _toggleAnimationDuration,
                           curve: Curves.easeInOut,
@@ -89,7 +104,7 @@ class _EventsTabWidgetState extends State<EventsTabWidget> {
                                 safeSetState(() {});
                               },
                               child: Text(
-                                'Upcomming',
+                                'Upcoming',
                                 style: AppTheme.of(context).bodyMedium.override(
                                       font: GoogleFonts.lexendDeca(
                                         fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
@@ -197,45 +212,79 @@ class _EventsTabWidgetState extends State<EventsTabWidget> {
         // Stack with two filters to same listEvents that is queried in pageload
         Stack(
           children: [
-            if (FFAppState().typeSelectedEvent == 'upcomming')
+            if (FFAppState().typeSelectedEvent == 'upcoming')
               Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(12.0, 12.0, 12.0, 12.0),
                 child: Builder(
                   builder: (context) {
-                    final listUpcommingEvents = viewModel.listEvents
-                        .where((e) => e.eventDate!.secondsSinceEpoch > getCurrentTimestamp.secondsSinceEpoch)
-                        .toList();
+                    final now = DateTime.now();
+                    final startOfToday = DateTime(now.year, now.month, now.day);
+
+                    debugPrint(
+                        'EventsTabWidget: Building Upcoming list. Total viewModel.listEvents=${viewModel.listEvents.length}');
+
+                    final listUpcomingEvents = viewModel.listEvents.where((e) {
+                      if (e.eventDate == null) {
+                        debugPrint('EventsTabWidget: Skipping event "${e.title}" because date is null');
+                        return false;
+                      }
+                      final eventDate = e.eventDate!;
+                      final eventStartOfDay = DateTime(eventDate.year, eventDate.month, eventDate.day);
+                      final isUpcoming =
+                          eventStartOfDay.isAfter(startOfToday) || eventStartOfDay.isAtSameMomentAs(startOfToday);
+
+                      if (!isUpcoming) {
+                        debugPrint(
+                            'EventsTabWidget: Skipping past event "${e.title}" (Date: $eventDate, Today: $startOfToday)');
+                      }
+                      return isUpcoming;
+                    }).toList();
+
+                    debugPrint('EventsTabWidget: Filtered upcoming count=${listUpcomingEvents.length}');
+
+                    if (listUpcomingEvents.isEmpty) {
+                      return Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(24.0),
+                          child: Text(
+                            'No upcoming events found',
+                            style: AppTheme.of(context).bodyMedium,
+                          ),
+                        ),
+                      );
+                    }
 
                     return RefreshIndicator(
                       onRefresh: () async {
-                        await viewModel.fetchEvents('upcomming');
+                        await viewModel.fetchEvents('upcoming');
                         safeSetState(() {});
                       },
                       child: ListView.separated(
-                        padding: EdgeInsets.zero,
                         shrinkWrap: true,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        padding: EdgeInsets.zero,
                         scrollDirection: Axis.vertical,
-                        itemCount: listUpcommingEvents.length,
-                        separatorBuilder: (_, __) => const SizedBox(height: 12.0),
-                        itemBuilder: (context, listUpcommingEventsIndex) {
-                          final listUpcommingEventsItem = listUpcommingEvents[listUpcommingEventsIndex];
+                        itemCount: listUpcomingEvents.length,
+                        separatorBuilder: (_, __) => const SizedBox(height: 8.0),
+                        itemBuilder: (context, listUpcomingEventsIndex) {
+                          final listUpcomingEventsItem = listUpcomingEvents[listUpcomingEventsIndex];
                           return EventCardWidget(
-                            key: Key('Keyr2h_${listUpcommingEventsIndex}_of_${listUpcommingEvents.length}'),
-                            userRegistered: listUpcommingEventsItem.userRegistered,
-                            eventName: listUpcommingEventsItem.title,
-                            facilitator: listUpcommingEventsItem.facilitatorName,
+                            key: Key('Keyr2h_${listUpcomingEventsIndex}_of_${listUpcomingEvents.length}'),
+                            userRegistered: listUpcomingEventsItem.userRegistered,
+                            eventName: listUpcomingEventsItem.title,
+                            facilitator: listUpcomingEventsItem.facilitatorName,
                             date: dateTimeFormat(
                               "yMMMd",
-                              listUpcommingEventsItem.eventDate!,
+                              listUpcomingEventsItem.eventDate!,
                               locale: FFLocalizations.of(context).languageCode,
                             ),
                             time: dateTimeFormat(
                               "jm",
-                              listUpcommingEventsItem.eventTime!.time,
+                              listUpcomingEventsItem.eventTime!.time,
                               locale: FFLocalizations.of(context).languageCode,
                             ),
-                            event: listUpcommingEventsItem,
-                            groupId: listUpcommingEventsItem.groupId,
+                            event: listUpcomingEventsItem,
+                            groupId: listUpcomingEventsItem.groupId,
                           );
                         },
                       ),
@@ -251,6 +300,15 @@ class _EventsTabWidgetState extends State<EventsTabWidget> {
                     final listRecordedEvents =
                         viewModel.listEvents.where((e) => e.eventAudioUrl != null && e.eventAudioUrl != '').toList();
 
+                    if (listRecordedEvents.isEmpty) {
+                      return const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(24.0),
+                          child: Text('No recorded events found'),
+                        ),
+                      );
+                    }
+
                     return InkWell(
                       splashColor: Colors.transparent,
                       focusColor: Colors.transparent,
@@ -263,9 +321,10 @@ class _EventsTabWidgetState extends State<EventsTabWidget> {
                       child: ListView.separated(
                         padding: const EdgeInsets.symmetric(vertical: 12.0),
                         shrinkWrap: true,
+                        physics: const AlwaysScrollableScrollPhysics(),
                         scrollDirection: Axis.vertical,
                         itemCount: listRecordedEvents.length,
-                        separatorBuilder: (_, __) => const SizedBox(height: 12.0),
+                        separatorBuilder: (_, __) => const SizedBox(height: 8.0),
                         itemBuilder: (context, listRecordedEventsIndex) {
                           final listRecordedEventsItem = listRecordedEvents[listRecordedEventsIndex];
                           return EventCardWidget(

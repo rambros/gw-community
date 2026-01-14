@@ -3,6 +3,33 @@ import 'package:flutter/foundation.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 
 class CommunityRepository {
+  // ==================== MEMBER ID CACHE ====================
+  String? _cachedMemberId;
+  String? _cachedAuthUserId;
+
+  /// Busca o member_id baseado no auth_user_id (da cc_members)
+  Future<String?> getMemberIdByAuthUserId(String authUserId) async {
+    if (_cachedAuthUserId == authUserId && _cachedMemberId != null) {
+      return _cachedMemberId;
+    }
+
+    try {
+      final result = await CcMembersTable().querySingleRow(
+        queryFn: (q) => q.eqOrNull('auth_user_id', authUserId),
+      );
+
+      if (result.isNotEmpty) {
+        _cachedMemberId = result.first.id;
+        _cachedAuthUserId = authUserId;
+        return _cachedMemberId;
+      }
+      return null;
+    } catch (e) {
+      debugPrint('Error getting member_id in CommunityRepository: $e');
+      return null;
+    }
+  }
+
   /// Stream de sharings visíveis para todos
   /// Mostra experiências aprovadas + experiências do próprio usuário (qualquer status)
   Stream<List<CcViewSharingsUsersRow>> getSharingsStream({String? currentUserId}) {
@@ -43,26 +70,36 @@ class CommunityRepository {
   }
 
   Future<List<CcEventsRow>> getEvents(String currentUserUid) async {
-    final response = await SupaFlow.client.rpc(
-      'get_user_events',
-      params: {
-        'user_id_input': currentUserUid,
-      },
-    );
+    debugPrint('CommunityRepository.getEvents: fetching events for ID: $currentUserUid');
+    try {
+      final response = await SupaFlow.client.rpc(
+        'get_user_events',
+        params: {
+          'user_id_input': currentUserUid,
+        },
+      );
+      debugPrint('CommunityRepository.getEvents: response type: ${response.runtimeType}');
 
-    if (response is List) {
-      return response.map((row) => CcEventsRow(row as Map<String, dynamic>)).toList();
+      if (response is List) {
+        debugPrint('CommunityRepository.getEvents: received ${response.length} events');
+        return response.map((row) => CcEventsRow(row as Map<String, dynamic>)).toList();
+      }
+      debugPrint('CommunityRepository.getEvents: response is not a list: $response');
+    } catch (e) {
+      debugPrint('CommunityRepository.getEvents: error: $e');
     }
     return [];
   }
 
   Future<List<CcGroupsRow>> getAvailableGroups(String currentUserUid) async {
+    debugPrint('CommunityRepository.getAvailableGroups: fetching for ID: $currentUserUid');
     final response = await SupaFlow.client.rpc(
       'get_available_groups',
       params: {
         'user_input': currentUserUid,
       },
     );
+    debugPrint('CommunityRepository.getAvailableGroups: received ${response is List ? response.length : 0} items');
 
     if (response is List) {
       return response.map((row) => CcGroupsRow(row as Map<String, dynamic>)).where((group) {
@@ -75,12 +112,14 @@ class CommunityRepository {
   }
 
   Future<List<CcGroupsRow>> getMyGroups(String currentUserUid) async {
+    debugPrint('CommunityRepository.getMyGroups: fetching for ID: $currentUserUid');
     final response = await SupaFlow.client.rpc(
       'get_my_groups',
       params: {
         'user_input': currentUserUid,
       },
     );
+    debugPrint('CommunityRepository.getMyGroups: received ${response is List ? response.length : 0} items');
 
     if (response is List) {
       return response.map((row) => CcGroupsRow(row as Map<String, dynamic>)).toList();

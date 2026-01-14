@@ -25,36 +25,39 @@ class SharingContentWidget extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsetsDirectional.fromSTEB(8.0, 8.0, 12.0, 8.0),
-        child: MarkdownBody(
-          data: sharing.text ?? '',
-          onTapLink: (text, href, title) {
-            if (href != null) {
-              launchURL(href);
-            }
-          },
-          styleSheet: MarkdownStyleSheet(
-            p: GoogleFonts.lexendDeca(
-              color: AppTheme.of(context).primaryText,
-              fontSize: 14.0,
-              fontWeight: FontWeight.normal,
-              height: 1.5,
-            ),
-            strong: GoogleFonts.lexendDeca(
-              color: AppTheme.of(context).primaryText,
-              fontSize: 14.0,
-              fontWeight: FontWeight.bold,
-              height: 1.5,
-            ),
-            em: GoogleFonts.lexendDeca(
-              color: AppTheme.of(context).primaryText,
-              fontSize: 14.0,
-              fontStyle: FontStyle.italic,
-              height: 1.5,
-            ),
-            a: GoogleFonts.lexendDeca(
-              color: AppTheme.of(context).primary,
-              fontSize: 14.0,
-              decoration: TextDecoration.underline,
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: MarkdownBody(
+            data: sharing.text ?? '',
+            onTapLink: (text, href, title) {
+              if (href != null) {
+                launchURL(href);
+              }
+            },
+            styleSheet: MarkdownStyleSheet(
+              p: GoogleFonts.lexendDeca(
+                color: AppTheme.of(context).secondary,
+                fontSize: 14.0,
+                fontWeight: FontWeight.normal,
+                height: 1.5,
+              ),
+              strong: GoogleFonts.lexendDeca(
+                color: AppTheme.of(context).secondary,
+                fontSize: 14.0,
+                fontWeight: FontWeight.bold,
+                height: 1.5,
+              ),
+              em: GoogleFonts.lexendDeca(
+                color: AppTheme.of(context).secondary,
+                fontSize: 14.0,
+                fontStyle: FontStyle.italic,
+                height: 1.5,
+              ),
+              a: GoogleFonts.lexendDeca(
+                color: AppTheme.of(context).primary,
+                fontSize: 14.0,
+                decoration: TextDecoration.underline,
+              ),
             ),
           ),
         ),

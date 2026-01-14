@@ -38,6 +38,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
   @override
   void initState() {
     super.initState();
+    debugPrint('EventDetailsPage: initState. widget.eventRow=${widget.eventRow?.id}, title=${widget.eventRow?.title}');
     logFirebaseEvent('screen_view', parameters: {'screen_name': 'eventDetails'});
     _viewModel = EventDetailsViewModel(
       repository: context.read<EventRepository>(),
@@ -48,6 +49,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final eventId = widget.eventRow?.id;
+      debugPrint('EventDetailsPage: PostFrameCallback. eventId from widget=$eventId');
       if (eventId != null) {
         _viewModel.initialize(eventId);
       } else {
@@ -70,6 +72,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
       value: _viewModel,
       child: Consumer<EventDetailsViewModel>(
         builder: (context, viewModel, _) {
+          debugPrint('EventDetailsPage: Building. viewModel.event=${viewModel.event?.id}');
           return PopScope(
             canPop: false,
             child: Scaffold(
@@ -130,7 +133,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _buildHeroImage(context),
+                            _buildHeroImage(context, viewModel),
                             if (viewModel.errorMessage != null)
                               Padding(
                                 padding: const EdgeInsets.all(16.0),
@@ -156,13 +159,17 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
     );
   }
 
-  Widget _buildHeroImage(BuildContext context) {
+  Widget _buildHeroImage(BuildContext context, EventDetailsViewModel viewModel) {
+    final imageUrl = viewModel.event?.eventAudioUrl ?? 'https://picsum.photos/seed/945/600';
+    // Se o URL não for uma imagem (ex: mp3), podemos usar o placeholder
+    final isImage = imageUrl.contains(RegExp(r'\.(jpg|jpeg|png|webp|gif)', caseSensitive: false));
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Image.network(
-          'https://picsum.photos/seed/945/600',
+          isImage ? imageUrl : 'https://picsum.photos/seed/945/600',
           width: MediaQuery.sizeOf(context).width,
           height: 140.0,
           fit: BoxFit.cover,

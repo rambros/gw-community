@@ -58,6 +58,10 @@ class SharingAddViewModel extends ChangeNotifier {
   String? _successMessage;
   String? get successMessage => _successMessage;
 
+  // Comments control
+  bool _commentsEnabled = true;
+  bool get commentsEnabled => _commentsEnabled;
+
   // ========== COMPUTED PROPERTIES ==========
 
   /// Verifica se tem grupo associado
@@ -117,6 +121,12 @@ class SharingAddViewModel extends ChangeNotifier {
     }
   }
 
+  /// Alterna o estado de comentários habilitados/desabilitados
+  void toggleComments(bool value) {
+    _commentsEnabled = value;
+    notifyListeners();
+  }
+
   /// Salva o sharing e publica (envia para moderação)
   Future<bool> saveCommand(BuildContext context, {bool navigateAway = true}) async {
     return _save(context, isDraft: false, navigateAway: navigateAway);
@@ -152,6 +162,7 @@ class SharingAddViewModel extends ChangeNotifier {
         type: SharingType.sharing.name,
         groupId: groupId,
         isDraft: isDraft,
+        locked: !_commentsEnabled, // locked = true quando comments estão desabilitados
       );
 
       _setSuccess(isDraft ? 'Draft saved' : 'Sharing created with success');

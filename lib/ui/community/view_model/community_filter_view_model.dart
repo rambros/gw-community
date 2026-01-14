@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 ///
 /// Centralizes all filter-related state that was previously in FFAppState.
 class CommunityFilterViewModel extends ChangeNotifier {
-  String _typeSelectedEvent = 'upcomming';
+  String _typeSelectedEvent = 'upcoming';
   bool _filterOn = false;
   int _filterByAuthorId = 0;
   String _filterByYear = '';
@@ -99,7 +99,7 @@ class CommunityFilterViewModel extends ChangeNotifier {
 
   /// Resets all filters to their default values.
   void resetFilters() {
-    _typeSelectedEvent = 'upcomming';
+    _typeSelectedEvent = 'upcoming';
     _filterOn = false;
     _filterByAuthorId = 0;
     _filterByYear = '';

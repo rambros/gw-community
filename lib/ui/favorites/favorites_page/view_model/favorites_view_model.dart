@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:gw_community/data/repositories/favorites_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/domain/models/favorites/unified_favorite_item.dart';
 
 /// ViewModel para a página de favoritos
 class FavoritesViewModel extends ChangeNotifier {
@@ -19,15 +20,46 @@ class FavoritesViewModel extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
 
   List<CcViewUserFavoriteRecordingsRow> _favoriteRecordings = [];
-  List<CcViewUserFavoriteRecordingsRow> get favoriteRecordings =>
-      _favoriteRecordings;
+  List<CcViewUserFavoriteRecordingsRow> get favoriteRecordings => _favoriteRecordings;
 
   List<CcViewUserFavoriteActivitiesRow> _favoriteActivities = [];
-  List<CcViewUserFavoriteActivitiesRow> get favoriteActivities =>
-      _favoriteActivities;
+  List<CcViewUserFavoriteActivitiesRow> get favoriteActivities => _favoriteActivities;
 
-  int get totalFavorites =>
-      _favoriteRecordings.length + _favoriteActivities.length;
+  int get totalFavorites => _favoriteRecordings.length + _favoriteActivities.length;
+
+  // Filtros
+  String _selectedFilter = 'all'; // 'all', 'journey', 'library'
+  String get selectedFilter => _selectedFilter;
+
+  /// Define o filtro selecionado
+  void setFilter(String filter) {
+    _selectedFilter = filter;
+    notifyListeners();
+  }
+
+  /// Lista unificada de favoritos (recordings + activities) ordenada por data
+  List<UnifiedFavoriteItem> get unifiedFavorites {
+    final unified = <UnifiedFavoriteItem>[];
+
+    // Adiciona recordings (se filtro permitir)
+    if (_selectedFilter == 'all' || _selectedFilter == 'library') {
+      for (final recording in _favoriteRecordings) {
+        unified.add(UnifiedFavoriteItem.recording(recording));
+      }
+    }
+
+    // Adiciona activities (se filtro permitir)
+    if (_selectedFilter == 'all' || _selectedFilter == 'journey') {
+      for (final activity in _favoriteActivities) {
+        unified.add(UnifiedFavoriteItem.activity(activity));
+      }
+    }
+
+    // Ordena por data de favoritação (mais recente primeiro)
+    unified.sort((a, b) => b.favoritedAt.compareTo(a.favoritedAt));
+
+    return unified;
+  }
 
   /// Carrega todos os favoritos do usuário
   Future<void> loadFavorites() async {
@@ -44,10 +76,8 @@ class FavoritesViewModel extends ChangeNotifier {
         _repository.getFavoriteActivities(currentUserId),
       ]);
 
-      _favoriteRecordings =
-          results[0] as List<CcViewUserFavoriteRecordingsRow>;
-      _favoriteActivities =
-          results[1] as List<CcViewUserFavoriteActivitiesRow>;
+      _favoriteRecordings = results[0] as List<CcViewUserFavoriteRecordingsRow>;
+      _favoriteActivities = results[1] as List<CcViewUserFavoriteActivitiesRow>;
     } catch (e) {
       _errorMessage = 'Erro ao carregar favoritos: $e';
       debugPrint(_errorMessage);

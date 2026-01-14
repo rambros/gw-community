@@ -79,14 +79,13 @@ class JourneysRepository {
         'user_id': userId,
         'journey_step_id': step.id,
         'date_started': nowIsoString,
-        'step_status': i == 0 ? 'open' : 'closed',
+        'step_status': i == 0 ? 'open' : 'locked',
       });
     }
 
     final userStepByJourneyStepId = <int, int>{};
     if (userStepsPayload.isNotEmpty) {
-      final insertedUserStepsResponse =
-          await SupaFlow.client.from('cc_user_steps').insert(userStepsPayload).select();
+      final insertedUserStepsResponse = await SupaFlow.client.from('cc_user_steps').insert(userStepsPayload).select();
       final insertedUserSteps = List<Map<String, dynamic>>.from(insertedUserStepsResponse as List<dynamic>);
 
       for (final row in insertedUserSteps) {
@@ -134,5 +133,40 @@ class JourneysRepository {
     }
 
     return userJourneyRow;
+  }
+
+  Future<void> resetJourney(String userId, int journeyId) async {
+    // Buscar user_journey record
+    final userJourneys = await CcUserJourneysTable().queryRows(
+      queryFn: (q) => q.eq('user_id', userId).eq('journey_id', journeyId),
+    );
+
+    if (userJourneys.isEmpty) {
+      return; // Nada para resetar
+    }
+
+    final userJourneyId = userJourneys.first.id;
+
+    // Buscar todos os user_steps da journey
+    final userSteps = await CcUserStepsTable().queryRows(
+      queryFn: (q) => q.eq('user_journey_id', userJourneyId),
+    );
+
+    // Deletar user_activities de cada user_step
+    for (final step in userSteps) {
+      await CcUserActivitiesTable().delete(
+        matchingRows: (rows) => rows.eq('user_step_id', step.id),
+      );
+    }
+
+    // Deletar user_steps
+    await CcUserStepsTable().delete(
+      matchingRows: (rows) => rows.eq('user_journey_id', userJourneyId),
+    );
+
+    // Deletar user_journey
+    await CcUserJourneysTable().delete(
+      matchingRows: (rows) => rows.eq('id', userJourneyId),
+    );
   }
 }

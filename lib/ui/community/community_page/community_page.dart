@@ -158,7 +158,7 @@ class _CommunityPageState extends State<CommunityPage> with TickerProviderStateM
                             color: AppTheme.of(context).secondary,
                           ),
                           const SizedBox(width: 12),
-                          const Text('Help Center'),
+                          const Text('Help'),
                         ],
                       ),
                     ),

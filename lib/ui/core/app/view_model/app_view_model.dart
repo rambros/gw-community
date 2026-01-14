@@ -6,7 +6,7 @@ import 'package:gw_community/domain/models/app_auth_user.dart';
 import 'package:gw_community/routing/router.dart';
 import 'package:gw_community/utils/internationalization.dart';
 
-class AppViewModel extends ChangeNotifier {
+class AppViewModel extends ChangeNotifier with WidgetsBindingObserver {
   final AuthRepository authRepository;
   late AppStateNotifier appStateNotifier;
   late GoRouter router;
@@ -20,6 +20,7 @@ class AppViewModel extends ChangeNotifier {
   StreamSubscription<AppAuthUser>? _userSubscription;
 
   AppViewModel({required this.authRepository}) {
+    WidgetsBinding.instance.addObserver(this);
     _initialize();
   }
 
@@ -29,6 +30,7 @@ class AppViewModel extends ChangeNotifier {
 
     // Initialize with current user from auth immediately
     _userSubscription = authRepository.authUserChanges.listen((user) {
+      debugPrint('APP_VIEW_MODEL: Auth State Changed. LoggedIn: ${user.loggedIn}, UID: ${user.uid}');
       appStateNotifier.update(user);
     });
 
@@ -36,7 +38,16 @@ class AppViewModel extends ChangeNotifier {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // When the app comes back to the foreground, refresh the user to trigger validation
+      authRepository.refreshUser();
+    }
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _userSubscription?.cancel();
     super.dispose();
   }

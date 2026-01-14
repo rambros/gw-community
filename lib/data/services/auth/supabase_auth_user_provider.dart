@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/domain/models/app_auth_user.dart';
 import 'package:rxdart/rxdart.dart';
@@ -38,8 +39,7 @@ Stream<AppAuthUser> gWCommunitySupabaseUserStream() {
   final currentUser = SupaFlow.client.auth.currentUser;
 
   // Create stream that emits current user first, then listens for changes
-  return Stream<AppAuthUser>.value(GWCommunitySupabaseUser(currentUser))
-      .concatWith([
+  final baseAuthStream = Stream<AppAuthUser>.value(GWCommunitySupabaseUser(currentUser)).concatWith([
     SupaFlow.client.auth.onAuthStateChange
         .debounce(
           (authState) => authState.event == AuthChangeEvent.tokenRefreshed
@@ -50,4 +50,31 @@ Stream<AppAuthUser> gWCommunitySupabaseUserStream() {
           (authState) => GWCommunitySupabaseUser(authState.session?.user),
         ),
   ]);
+
+  // Combined with a periodic heartbeat to force a database check every 10 seconds
+  final authStream = Rx.combineLatest2<AppAuthUser, dynamic, AppAuthUser>(
+    baseAuthStream,
+    Stream.periodic(const Duration(seconds: 10)).startWith(null),
+    (user, _) => user,
+  );
+
+  // Add a verification step: if the user is logged in, verify they exist in cc_members
+  return authStream.switchMap((authUser) {
+    if (!authUser.loggedIn || authUser.uid == null) {
+      return Stream.value(authUser);
+    }
+
+    // Check if the member still exists in the database
+    return Stream.fromFuture(
+      SupaFlow.client.from('cc_members').select('id').eq('auth_user_id', authUser.uid!).maybeSingle(),
+    ).map((response) {
+      if (response == null) {
+        // User exists in Auth but not in cc_members - forced logout
+        debugPrint('FORCED LOGOUT: Member record missing in database for uid ${authUser.uid}. Signing out...');
+        SupaFlow.client.auth.signOut();
+        return GWCommunitySupabaseUser(null);
+      }
+      return authUser;
+    }).onErrorReturn(authUser); // On error, assume they are still logged in to avoid flickering
+  });
 }

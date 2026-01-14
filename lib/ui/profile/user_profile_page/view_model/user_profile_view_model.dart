@@ -33,6 +33,10 @@ class UserProfileViewModel extends ChangeNotifier {
 
     try {
       _userProfile = await _repository.getUserProfile(currentUserUid);
+      if (_userProfile == null && currentUserUid.isNotEmpty) {
+        debugPrint('Profile not found for $currentUserUid, logging out.');
+        await _signOut();
+      }
       notifyListeners();
     } catch (e) {
       _setError('Error loading profile: $e');

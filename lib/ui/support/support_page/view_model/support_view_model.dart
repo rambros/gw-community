@@ -22,8 +22,14 @@ class SupportViewModel extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
 
-  void _init() {
+  void _init() async {
+    // Ensure memberId is cached before creating stream
+    final authUserId = SupaFlow.client.auth.currentUser?.id;
+    if (authUserId != null) {
+      await _repository.getMemberIdByAuthUserId(authUserId);
+    }
     requestsStream = _repository.watchMyRequests();
+    notifyListeners();
   }
 
   void setFilter(SupportFilter filter) {
@@ -60,7 +66,12 @@ class SupportViewModel extends ChangeNotifier {
     }
   }
 
-  void refresh() {
+  void refresh() async {
+    // Ensure memberId is cached before creating stream
+    final authUserId = SupaFlow.client.auth.currentUser?.id;
+    if (authUserId != null) {
+      await _repository.getMemberIdByAuthUserId(authUserId);
+    }
     requestsStream = _repository.watchMyRequests();
     notifyListeners();
   }

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:gw_community/config/app_config.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/journey/themes/journey_theme_extension.dart';
-import 'package:gw_community/utils/custom_functions.dart' as functions;
 
 class JourneyStepItemWidget extends StatelessWidget {
   const JourneyStepItemWidget({
@@ -13,12 +11,16 @@ class JourneyStepItemWidget extends StatelessWidget {
     required this.isLastStep,
     required this.isCurrentStep,
     required this.onTap,
+    this.enableDateControl = true,
+    this.daysToWait = 1,
   });
 
   final CcViewUserStepsRow stepRow;
   final bool isLastStep;
   final bool isCurrentStep;
   final VoidCallback onTap;
+  final bool enableDateControl;
+  final int daysToWait;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +45,7 @@ class JourneyStepItemWidget extends StatelessWidget {
                   Text(
                     stepRow.title ?? 'Step Title',
                     style: AppTheme.of(context).journey.stepTitle.override(
-                          color: (stepRow.stepStatus != 'open' && stepRow.stepStatus != 'closed')
+                          color: (stepRow.stepStatus != 'open' && stepRow.stepStatus != 'completed')
                               ? AppTheme.of(context).alternate
                               : AppTheme.of(context).primaryText,
                         ),
@@ -51,7 +53,7 @@ class JourneyStepItemWidget extends StatelessWidget {
                   Text(
                     stepRow.description ?? 'Description',
                     style: AppTheme.of(context).journey.stepDescription.override(
-                          color: (stepRow.stepStatus != 'open' && stepRow.stepStatus != 'closed')
+                          color: (stepRow.stepStatus != 'open' && stepRow.stepStatus != 'completed')
                               ? AppTheme.of(context).alternate
                               : AppTheme.of(context).primaryText,
                         ),
@@ -110,12 +112,21 @@ class JourneyStepItemWidget extends StatelessWidget {
         ),
       );
     } else if (stepRow.stepStatus == 'open') {
-      // Apenas o step atual (primeiro open) pode ser acessado
-      // Se o controle de data está habilitado, também verifica se passou o tempo necessário
-      final canStart = isCurrentStep &&
-          (stepRow.stepNumber == 1 ||
-              !AppConfig.enableDateControl ||
-              (stepRow.dateStarted != null && functions.checkStepIniciouMais1Dia(stepRow.dateStarted!)));
+      // Check if enough time has passed
+      bool timeConditionMet = true;
+      if (enableDateControl && stepRow.stepNumber != 1 && stepRow.dateStarted != null) {
+        final now = DateTime.now();
+        // Remove time component for date comparison
+        final today = DateTime(now.year, now.month, now.day);
+        final dateStarted = stepRow.dateStarted!;
+        final startDate = DateTime(dateStarted.year, dateStarted.month, dateStarted.day);
+
+        final daysPassed = today.difference(startDate).inDays;
+        timeConditionMet = daysPassed >= daysToWait;
+      }
+
+      // Apenas o step atual pode ser acessado, respeitando o controle de data
+      final canStart = isCurrentStep && timeConditionMet;
 
       if (canStart) {
         // Step aberto e disponível - mostra número

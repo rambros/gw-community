@@ -32,6 +32,13 @@ class _NotificationBellWidgetState extends State<NotificationBellWidget> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Reload count when returning to this page
+    _loadUnreadCount();
+  }
+
+  @override
   void dispose() {
     _subscription?.cancel();
     super.dispose();
@@ -65,8 +72,12 @@ class _NotificationBellWidgetState extends State<NotificationBellWidget> {
             color: AppTheme.of(context).secondary,
             size: 28,
           ),
-          onPressed: () {
-            context.pushNamed(InAppNotificationsPage.routeName);
+          onPressed: () async {
+            await context.pushNamed(InAppNotificationsPage.routeName);
+            // Reload count after returning from notifications page
+            if (mounted) {
+              _loadUnreadCount();
+            }
           },
         ),
         if (_unreadCount > 0)

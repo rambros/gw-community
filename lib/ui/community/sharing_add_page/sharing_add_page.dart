@@ -138,6 +138,9 @@ class _SharingAddPageContent extends StatelessWidget {
               if (viewModel.errorMessage != null) _buildErrorMessage(context, viewModel),
               if (viewModel.successMessage != null) _buildSuccessMessage(context, viewModel),
 
+              // Toggle de comentários
+              _buildCommentsToggle(context, viewModel),
+
               // Botões de ação
               _buildActions(context, viewModel),
             ],
@@ -332,6 +335,42 @@ class _SharingAddPageContent extends StatelessWidget {
               color: AppTheme.of(context).success,
               letterSpacing: 0.0,
             ),
+      ),
+    );
+  }
+
+  Widget _buildCommentsToggle(BuildContext context, SharingAddViewModel viewModel) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            'Enable comments',
+            style: AppTheme.of(context).bodyMedium.override(
+                  font: GoogleFonts.lexendDeca(),
+                  color: AppTheme.of(context).secondary,
+                  fontSize: 16.0,
+                  letterSpacing: 0.0,
+                ),
+          ),
+          Switch(
+            value: viewModel.commentsEnabled,
+            onChanged: viewModel.toggleComments,
+            thumbColor: WidgetStateProperty.resolveWith<Color>((states) {
+              if (states.contains(WidgetState.selected)) {
+                return AppTheme.of(context).primary;
+              }
+              return Colors.grey;
+            }),
+            trackColor: WidgetStateProperty.resolveWith<Color>((states) {
+              if (states.contains(WidgetState.selected)) {
+                return AppTheme.of(context).primary.withValues(alpha: 0.5);
+              }
+              return Colors.grey.withValues(alpha: 0.3);
+            }),
+          ),
+        ],
       ),
     );
   }
