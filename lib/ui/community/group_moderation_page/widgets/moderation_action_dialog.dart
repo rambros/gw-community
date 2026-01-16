@@ -22,22 +22,22 @@ class ModerationActionDialog extends StatefulWidget {
     return showDialog<String>(
       context: context,
       builder: (_) => const ModerationActionDialog(
-        title: 'Reject Experience',
-        hint: 'Explain why this experience is being rejected...',
-        actionLabel: 'Reject',
+        title: 'Set as Not Published',
+        hint: 'Explain why this experience is not being published...',
+        actionLabel: 'Confirm',
         actionColor: Colors.red,
       ),
     );
   }
 
-  /// Shows a dialog for requesting changes on an experience
-  static Future<String?> showRequestChanges(BuildContext context) {
+  /// Shows a dialog for suggesting refinement on an experience
+  static Future<String?> showSuggestRefinement(BuildContext context) {
     return showDialog<String>(
       context: context,
       builder: (_) => const ModerationActionDialog(
-        title: 'Request Changes',
-        hint: 'Provide feedback on what needs to be changed...',
-        actionLabel: 'Request Changes',
+        title: 'Suggest Refinement',
+        hint: 'Provide feedback on what refinement is suggested...',
+        actionLabel: 'Suggest Refinement',
         actionColor: Colors.orange,
       ),
     );
@@ -63,10 +63,7 @@ class _ModerationActionDialogState extends State<ModerationActionDialog> {
       backgroundColor: AppTheme.of(context).primaryBackground,
       title: Text(
         widget.title,
-        style: AppTheme.of(context).headlineSmall.override(
-              font: GoogleFonts.lexendDeca(),
-              fontSize: 20.0,
-            ),
+        style: AppTheme.of(context).headlineSmall.override(font: GoogleFonts.lexendDeca(), fontSize: 20.0),
       ),
       content: Form(
         key: _formKey,
@@ -75,22 +72,14 @@ class _ModerationActionDialogState extends State<ModerationActionDialog> {
           decoration: InputDecoration(
             hintText: widget.hint,
             hintStyle: AppTheme.of(context).bodySmall,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8.0),
-            ),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8.0),
-              borderSide: BorderSide(
-                color: AppTheme.of(context).secondaryBackground,
-                width: 1.0,
-              ),
+              borderSide: BorderSide(color: AppTheme.of(context).secondaryBackground, width: 1.0),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8.0),
-              borderSide: BorderSide(
-                color: AppTheme.of(context).primary,
-                width: 2.0,
-              ),
+              borderSide: BorderSide(color: AppTheme.of(context).primary, width: 2.0),
             ),
           ),
           maxLines: 4,
@@ -108,10 +97,9 @@ class _ModerationActionDialogState extends State<ModerationActionDialog> {
           onPressed: () => Navigator.pop(context),
           child: Text(
             'Cancel',
-            style: AppTheme.of(context).bodyMedium.override(
-                  font: GoogleFonts.lexendDeca(),
-                  color: AppTheme.of(context).secondaryText,
-                ),
+            style: AppTheme.of(
+              context,
+            ).bodyMedium.override(font: GoogleFonts.lexendDeca(), color: AppTheme.of(context).secondaryText),
           ),
         ),
         ElevatedButton(
@@ -124,16 +112,9 @@ class _ModerationActionDialogState extends State<ModerationActionDialog> {
             backgroundColor: widget.actionColor ?? AppTheme.of(context).primary,
             foregroundColor: Colors.white,
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
           ),
-          child: Text(
-            widget.actionLabel,
-            style: GoogleFonts.lexendDeca(
-              fontWeight: FontWeight.w500,
-            ),
-          ),
+          child: Text(widget.actionLabel, style: GoogleFonts.lexendDeca(fontWeight: FontWeight.w500)),
         ),
       ],
     );

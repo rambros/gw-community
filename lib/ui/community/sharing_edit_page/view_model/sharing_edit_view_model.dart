@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gw_community/data/repositories/sharing_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
+import 'package:gw_community/routing/router.dart';
 
 /// ViewModel para a página de edição de Sharing
 /// Gerencia estado do formulário e lógica de negócio
@@ -80,22 +81,13 @@ class SharingEditViewModel extends ChangeNotifier {
         keepAsDraft: keepAsDraft,
       );
 
-      _setSuccess(keepAsDraft ? 'Draft saved' : 'Experience updated successfully');
+      _setSuccess(keepAsDraft ? 'Reflection saved' : 'Experience updated successfully');
 
       // Aguardar um pouco para mostrar mensagem
       await Future.delayed(const Duration(milliseconds: 500));
 
       if (navigateAway && context.mounted) {
-        context.goNamed(
-          'communityPage',
-          extra: <String, dynamic>{
-            kTransitionInfoKey: const TransitionInfo(
-              hasTransition: true,
-              transitionType: PageTransitionType.fade,
-              duration: Duration(milliseconds: 0),
-            ),
-          },
-        );
+        context.safePop();
       }
 
       return true;
@@ -111,7 +103,7 @@ class SharingEditViewModel extends ChangeNotifier {
   void cancelCommand(BuildContext context) {
     resetForm();
     if (context.mounted) {
-      context.pushNamed('communityPage');
+      context.safePop();
     }
   }
 

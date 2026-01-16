@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:gw_community/data/repositories/sharing_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
-import 'package:gw_community/index.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
+import 'package:gw_community/routing/router.dart';
 
 /// ViewModel para a página de adicionar sharing
 /// Gerencia estado do formulário, validações e lógica de negócio
@@ -165,11 +165,11 @@ class SharingAddViewModel extends ChangeNotifier {
         locked: !_commentsEnabled, // locked = true quando comments estão desabilitados
       );
 
-      _setSuccess(isDraft ? 'Draft saved' : 'Sharing created with success');
+      _setSuccess(isDraft ? 'Reflection saved' : 'Sharing created with success');
 
       // Navigate back to community page only if not a draft
       if (navigateAway && context.mounted) {
-        context.pushNamed(CommunityPage.routeName);
+        context.safePop();
       }
 
       return true;
@@ -188,7 +188,7 @@ class SharingAddViewModel extends ChangeNotifier {
 
     // Navigate back
     if (context.mounted) {
-      context.pushNamed(CommunityPage.routeName);
+      context.safePop();
     }
   }
 

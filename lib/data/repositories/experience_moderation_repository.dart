@@ -30,10 +30,7 @@ class ExperienceModerationRepository {
 
   /// Returns experiences for multiple groups (for group managers)
   /// Only returns sharings (type = 'sharing'), not notifications
-  Future<List<CcViewPendingExperiencesRow>> getExperiencesForGroups(
-    List<int> groupIds, {
-    String? status,
-  }) async {
+  Future<List<CcViewPendingExperiencesRow>> getExperiencesForGroups(List<int> groupIds, {String? status}) async {
     if (groupIds.isEmpty) {
       debugPrint('ExperienceModerationRepository: No group IDs provided');
       return [];
@@ -57,9 +54,9 @@ class ExperienceModerationRepository {
     }
   }
 
-  /// Returns pending experiences for a single group
+  /// Returns awaiting review experiences for a single group
   Future<List<CcViewPendingExperiencesRow>> getPendingForGroup(int groupId) async {
-    return await getExperiencesForGroups([groupId], status: 'pending');
+    return await getExperiencesForGroups([groupId], status: 'awaiting_approval');
   }
 
   /// Returns count of pending experiences for a group
@@ -69,9 +66,7 @@ class ExperienceModerationRepository {
   }
 
   /// Returns experiences filtered by status
-  Future<List<CcViewPendingExperiencesRow>> getExperiencesByStatus(
-    String status,
-  ) async {
+  Future<List<CcViewPendingExperiencesRow>> getExperiencesByStatus(String status) async {
     return await CcViewPendingExperiencesTable().queryRows(
       queryFn: (q) => q.eq('type', 'sharing').eq('moderation_status', status).order('created_at', ascending: false),
     );
@@ -82,10 +77,7 @@ class ExperienceModerationRepository {
   // ==========================================================================
 
   /// Approves an experience
-  Future<void> approveExperience({
-    required int experienceId,
-    required String moderatorId,
-  }) async {
+  Future<void> approveExperience({required int experienceId, required String moderatorId}) async {
     debugPrint('approveExperience: updating experienceId=$experienceId');
     await CcSharingsTable().update(
       data: {
@@ -119,11 +111,7 @@ class ExperienceModerationRepository {
   }
 
   /// Requests changes on an experience
-  Future<void> requestChanges({
-    required int experienceId,
-    required String moderatorId,
-    required String reason,
-  }) async {
+  Future<void> requestChanges({required int experienceId, required String moderatorId, required String reason}) async {
     debugPrint('requestChanges: updating experienceId=$experienceId');
     await CcSharingsTable().update(
       data: {
@@ -144,9 +132,7 @@ class ExperienceModerationRepository {
   /// Gets group IDs where the user is a manager
   /// Checks the group_managers array field
   Future<List<int>> getGroupsForManager(String userId) async {
-    final groups = await CcGroupsTable().queryRows(
-      queryFn: (q) => q.contains('group_managers', [userId]),
-    );
+    final groups = await CcGroupsTable().queryRows(queryFn: (q) => q.contains('group_managers', [userId]));
     return groups.map((g) => g.id).toList();
   }
 
@@ -157,9 +143,7 @@ class ExperienceModerationRepository {
   /// Deletes an experience (admin only)
   Future<void> deleteExperience(int experienceId) async {
     debugPrint('deleteExperience: deleting experienceId=$experienceId');
-    await CcSharingsTable().delete(
-      matchingRows: (rows) => rows.eq('id', experienceId),
-    );
+    await CcSharingsTable().delete(matchingRows: (rows) => rows.eq('id', experienceId));
     debugPrint('deleteExperience: delete completed');
   }
 }

@@ -9,9 +9,7 @@ class SharingRepository {
   ///
   /// Retorna null se o sharing não for encontrado
   Future<CcViewSharingsUsersRow?> getSharingById(int id) async {
-    final result = await CcViewSharingsUsersTable().querySingleRow(
-      queryFn: (q) => q.eqOrNull('id', id),
-    );
+    final result = await CcViewSharingsUsersTable().querySingleRow(queryFn: (q) => q.eqOrNull('id', id));
     return result.isNotEmpty ? result.first : null;
   }
 
@@ -22,14 +20,10 @@ class SharingRepository {
   /// - Todos os comentários relacionados da tabela cc_comments
   Future<void> deleteSharing(int id) async {
     // Deletar comentários primeiro (foreign key)
-    await CcCommentsTable().delete(
-      matchingRows: (rows) => rows.eqOrNull('sharing_id', id),
-    );
+    await CcCommentsTable().delete(matchingRows: (rows) => rows.eqOrNull('sharing_id', id));
 
     // Deletar o sharing
-    await CcSharingsTable().delete(
-      matchingRows: (rows) => rows.eqOrNull('id', id),
-    );
+    await CcSharingsTable().delete(matchingRows: (rows) => rows.eqOrNull('id', id));
   }
 
   /// Alterna o estado de lock de um sharing
@@ -37,9 +31,7 @@ class SharingRepository {
   /// Quando locked = true, usuários não podem adicionar comentários
   Future<void> toggleSharingLock(int id, bool currentLockState) async {
     await CcSharingsTable().update(
-      data: {
-        'locked': !currentLockState,
-      },
+      data: {'locked': !currentLockState},
       matchingRows: (rows) => rows.eqOrNull('id', id),
     );
   }
@@ -60,9 +52,7 @@ class SharingRepository {
   /// Nota: Comentários filhos podem ser afetados dependendo da configuração
   /// do banco de dados (cascade delete)
   Future<void> deleteComment(int commentId) async {
-    await CcCommentsTable().delete(
-      matchingRows: (rows) => rows.eqOrNull('id', commentId),
-    );
+    await CcCommentsTable().delete(matchingRows: (rows) => rows.eqOrNull('id', commentId));
   }
 
   /// Cria um novo comentário para um sharing específico
@@ -105,7 +95,7 @@ class SharingRepository {
         'privacy': privacy,
         'visibility': visibility,
         // Keep as draft or reset for re-review
-        'moderation_status': keepAsDraft ? 'draft' : 'pending',
+        'moderation_status': keepAsDraft ? 'draft' : 'awaiting_approval',
         'moderation_reason': null,
         'moderated_by': null,
         'moderated_at': null,
@@ -130,14 +120,15 @@ class SharingRepository {
     });
 
     // Escuta mudanças na tabela real (cc_sharings)
-    final subscription =
-        SupaFlow.client.from('cc_sharings').stream(primaryKey: ['id']).eq('group_id', groupId).listen((_) async {
-              // Quando há mudança, re-carrega da view
-              final data = await _loadSharingsFromView(groupId, currentUserId);
-              if (!controller.isClosed) {
-                controller.add(data);
-              }
-            });
+    final subscription = SupaFlow.client.from('cc_sharings').stream(primaryKey: ['id']).eq('group_id', groupId).listen((
+      _,
+    ) async {
+      // Quando há mudança, re-carrega da view
+      final data = await _loadSharingsFromView(groupId, currentUserId);
+      if (!controller.isClosed) {
+        controller.add(data);
+      }
+    });
 
     // Cleanup quando o stream for cancelado
     controller.onCancel = () {
@@ -195,7 +186,7 @@ class SharingRepository {
       'updated_at': supaSerialize<DateTime>(DateTime.now()),
       'visibility': visibility,
       'type': type,
-      'moderation_status': isDraft ? 'draft' : 'pending',
+      'moderation_status': isDraft ? 'draft' : 'awaiting_approval',
       'locked': locked,
     });
   }
@@ -204,9 +195,7 @@ class SharingRepository {
   ///
   /// Retorna null se o usuário não for encontrado
   Future<CcMembersRow?> getUserById(String authUserId) async {
-    final result = await CcMembersTable().querySingleRow(
-      queryFn: (q) => q.eqOrNull('auth_user_id', authUserId),
-    );
+    final result = await CcMembersTable().querySingleRow(queryFn: (q) => q.eqOrNull('auth_user_id', authUserId));
     return result.isNotEmpty ? result.first : null;
   }
 
@@ -219,7 +208,7 @@ class SharingRepository {
     try {
       await CcSharingsTable().update(
         data: {
-          'moderation_status': 'pending',
+          'moderation_status': 'awaiting_approval',
           'moderated_by': null,
           'moderated_at': null,
           'moderation_reason': null,
@@ -251,7 +240,7 @@ class SharingRepository {
         'group_id': groupId,
         'visibility': visibility,
         'type': 'sharing',
-        'moderation_status': 'pending',
+        'moderation_status': 'awaiting_review',
         'locked': false,
         'created_at': supaSerialize<DateTime>(DateTime.now()),
         'updated_at': supaSerialize<DateTime>(DateTime.now()),
@@ -266,9 +255,7 @@ class SharingRepository {
   /// Get moderation status for an experience
   Future<Map<String, dynamic>?> getModerationStatus(int experienceId) async {
     try {
-      final result = await CcSharingsTable().querySingleRow(
-        queryFn: (q) => q.eqOrNull('id', experienceId),
-      );
+      final result = await CcSharingsTable().querySingleRow(queryFn: (q) => q.eqOrNull('id', experienceId));
       if (result.isEmpty) return null;
 
       final sharing = result.first;
@@ -287,10 +274,7 @@ class SharingRepository {
   Future<bool> publishDraft(int experienceId) async {
     try {
       await CcSharingsTable().update(
-        data: {
-          'moderation_status': 'pending',
-          'updated_at': supaSerialize<DateTime>(DateTime.now()),
-        },
+        data: {'moderation_status': 'awaiting_review', 'updated_at': supaSerialize<DateTime>(DateTime.now())},
         matchingRows: (rows) => rows.eqOrNull('id', experienceId),
       );
       return true;
@@ -301,14 +285,10 @@ class SharingRepository {
   }
 
   /// Update and resubmit experience after changes requested
-  Future<bool> resubmitExperience(
-    int experienceId, {
-    String? title,
-    String? text,
-  }) async {
+  Future<bool> resubmitExperience(int experienceId, {String? title, String? text}) async {
     try {
       final updates = <String, dynamic>{
-        'moderation_status': 'pending',
+        'moderation_status': 'awaiting_review',
         'moderation_reason': null,
         'moderated_by': null,
         'moderated_at': null,
@@ -318,10 +298,7 @@ class SharingRepository {
       if (title != null) updates['title'] = title;
       if (text != null) updates['text'] = text;
 
-      await CcSharingsTable().update(
-        data: updates,
-        matchingRows: (rows) => rows.eqOrNull('id', experienceId),
-      );
+      await CcSharingsTable().update(data: updates, matchingRows: (rows) => rows.eqOrNull('id', experienceId));
       return true;
     } catch (e) {
       debugPrint('Error resubmitting experience: $e');

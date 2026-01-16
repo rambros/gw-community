@@ -17,8 +17,8 @@ class GroupModerationViewModel extends ChangeNotifier {
     required NotificationRepository notificationRepository,
     required this.groupId,
     required this.currentUserUid,
-  })  : _repository = repository,
-        _notificationRepository = notificationRepository;
+  }) : _repository = repository,
+       _notificationRepository = notificationRepository;
 
   // ========== STATE ==========
 
@@ -61,10 +61,7 @@ class GroupModerationViewModel extends ChangeNotifier {
     try {
       debugPrint('GroupModerationViewModel: approving experience ${experience.id}');
 
-      await _repository.approveExperience(
-        experienceId: experience.id!,
-        moderatorId: currentUserUid,
-      );
+      await _repository.approveExperience(experienceId: experience.id!, moderatorId: currentUserUid);
 
       // Notify author (non-blocking)
       if (experience.userId != null) {
@@ -90,24 +87,17 @@ class GroupModerationViewModel extends ChangeNotifier {
     }
   }
 
-  /// Rejects an experience with a reason and notifies the author
-  Future<bool> rejectExperienceCommand(
-    CcViewPendingExperiencesRow experience,
-    String reason,
-  ) async {
+  /// Sets an experience to "Not Published" with a reason and notifies the author
+  Future<bool> notPublishExperienceCommand(CcViewPendingExperiencesRow experience, String reason) async {
     if (reason.trim().isEmpty) {
       _setError('Reason is required');
       return false;
     }
 
     try {
-      debugPrint('GroupModerationViewModel: rejecting experience ${experience.id}');
+      debugPrint('GroupModerationViewModel: setting "Not Published" on experience ${experience.id}');
 
-      await _repository.rejectExperience(
-        experienceId: experience.id!,
-        moderatorId: currentUserUid,
-        reason: reason,
-      );
+      await _repository.rejectExperience(experienceId: experience.id!, moderatorId: currentUserUid, reason: reason);
 
       // Notify author (non-blocking)
       if (experience.userId != null) {
@@ -119,7 +109,7 @@ class GroupModerationViewModel extends ChangeNotifier {
             reason: reason,
             groupId: groupId,
           );
-          debugPrint('GroupModerationViewModel: rejection notification sent');
+          debugPrint('GroupModerationViewModel: "Not Published" notification sent');
         } catch (notifError) {
           debugPrint('GroupModerationViewModel: notification failed (non-critical): $notifError');
         }
@@ -128,30 +118,23 @@ class GroupModerationViewModel extends ChangeNotifier {
       await loadPendingExperiences();
       return true;
     } catch (e) {
-      debugPrint('GroupModerationViewModel: error rejecting: $e');
-      _setError('Error rejecting experience: $e');
+      debugPrint('GroupModerationViewModel: error setting "Not Published": $e');
+      _setError('Error setting "Not Published": $e');
       return false;
     }
   }
 
-  /// Requests changes on an experience with feedback and notifies the author
-  Future<bool> requestChangesCommand(
-    CcViewPendingExperiencesRow experience,
-    String reason,
-  ) async {
+  /// Suggests refinement on an experience with feedback and notifies the author
+  Future<bool> suggestRefinementCommand(CcViewPendingExperiencesRow experience, String reason) async {
     if (reason.trim().isEmpty) {
       _setError('Feedback is required');
       return false;
     }
 
     try {
-      debugPrint('GroupModerationViewModel: requesting changes on experience ${experience.id}');
+      debugPrint('GroupModerationViewModel: suggesting refinement on experience ${experience.id}');
 
-      await _repository.requestChanges(
-        experienceId: experience.id!,
-        moderatorId: currentUserUid,
-        reason: reason,
-      );
+      await _repository.requestChanges(experienceId: experience.id!, moderatorId: currentUserUid, reason: reason);
 
       // Notify author (non-blocking)
       if (experience.userId != null) {
@@ -163,7 +146,7 @@ class GroupModerationViewModel extends ChangeNotifier {
             reason: reason,
             groupId: groupId,
           );
-          debugPrint('GroupModerationViewModel: changes requested notification sent');
+          debugPrint('GroupModerationViewModel: refinement suggested notification sent');
         } catch (notifError) {
           debugPrint('GroupModerationViewModel: notification failed (non-critical): $notifError');
         }
@@ -172,8 +155,8 @@ class GroupModerationViewModel extends ChangeNotifier {
       await loadPendingExperiences();
       return true;
     } catch (e) {
-      debugPrint('GroupModerationViewModel: error requesting changes: $e');
-      _setError('Error requesting changes: $e');
+      debugPrint('GroupModerationViewModel: error suggesting refinement: $e');
+      _setError('Error suggesting refinement: $e');
       return false;
     }
   }

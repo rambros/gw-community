@@ -359,13 +359,13 @@ class _SharingAddPageContent extends StatelessWidget {
                       if (success && context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: const Text('Draft saved'),
+                            content: const Text('Reflection saved'),
                             backgroundColor: AppTheme.of(context).success,
                           ),
                         );
                       }
                     },
-              text: 'Save as Draft',
+              text: 'Keep in Reflection',
               options: FFButtonOptions(
                 height: 40.0,
                 padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),

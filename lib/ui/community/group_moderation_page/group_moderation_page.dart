@@ -18,11 +18,7 @@ class GroupModerationPage extends StatelessWidget {
   final int groupId;
   final String groupName;
 
-  const GroupModerationPage({
-    super.key,
-    required this.groupId,
-    required this.groupName,
-  });
+  const GroupModerationPage({super.key, required this.groupId, required this.groupName});
 
   @override
   Widget build(BuildContext context) {
@@ -53,11 +49,7 @@ class GroupModerationPage extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: GoogleFonts.lexendDeca(
-                  color: Colors.white,
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.w500,
-                ),
+                style: GoogleFonts.lexendDeca(color: Colors.white, fontSize: 20.0, fontWeight: FontWeight.w500),
               ),
               Text(
                 groupName,
@@ -79,11 +71,7 @@ class GroupModerationPage extends StatelessWidget {
       builder: (context, viewModel, _) {
         // Loading state
         if (viewModel.isLoading) {
-          return Center(
-            child: CircularProgressIndicator(
-              color: AppTheme.of(context).primary,
-            ),
-          );
+          return Center(child: CircularProgressIndicator(color: AppTheme.of(context).primary));
         }
 
         // Error state
@@ -108,7 +96,7 @@ class GroupModerationPage extends StatelessWidget {
                 experience: experience,
                 onApprove: () => _handleApprove(context, viewModel, experience),
                 onReject: () => _handleReject(context, viewModel, experience),
-                onRequestChanges: () => _handleRequestChanges(context, viewModel, experience),
+                onSuggestRefinement: () => _handleSuggestRefinement(context, viewModel, experience),
               );
             },
           ),
@@ -122,27 +110,20 @@ class GroupModerationPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.check_circle_outline,
-            size: 80,
-            color: AppTheme.of(context).secondaryText,
-          ),
+          Icon(Icons.check_circle_outline, size: 80, color: AppTheme.of(context).secondaryText),
           const SizedBox(height: 16),
           Text(
             'No Pending Experiences',
-            style: AppTheme.of(context).titleMedium.override(
-                  font: GoogleFonts.lexendDeca(),
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.w500,
-                ),
+            style: AppTheme.of(
+              context,
+            ).titleMedium.override(font: GoogleFonts.lexendDeca(), fontSize: 20.0, fontWeight: FontWeight.w500),
           ),
           const SizedBox(height: 8),
           Text(
             'All caught up!',
-            style: AppTheme.of(context).bodySmall.override(
-                  font: GoogleFonts.lexendDeca(),
-                  color: AppTheme.of(context).secondaryText,
-                ),
+            style: AppTheme.of(
+              context,
+            ).bodySmall.override(font: GoogleFonts.lexendDeca(), color: AppTheme.of(context).secondaryText),
           ),
         ],
       ),
@@ -156,24 +137,11 @@ class GroupModerationPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.error_outline,
-              size: 64,
-              color: AppTheme.of(context).error,
-            ),
+            Icon(Icons.error_outline, size: 64, color: AppTheme.of(context).error),
             const SizedBox(height: 16),
-            Text(
-              'Error',
-              style: AppTheme.of(context).headlineSmall.override(
-                    font: GoogleFonts.lexendDeca(),
-                  ),
-            ),
+            Text('Error', style: AppTheme.of(context).headlineSmall.override(font: GoogleFonts.lexendDeca())),
             const SizedBox(height: 8),
-            Text(
-              errorMessage,
-              style: AppTheme.of(context).bodyMedium,
-              textAlign: TextAlign.center,
-            ),
+            Text(errorMessage, style: AppTheme.of(context).bodyMedium, textAlign: TextAlign.center),
           ],
         ),
       ),
@@ -182,41 +150,25 @@ class GroupModerationPage extends StatelessWidget {
 
   // ========== ACTION HANDLERS ==========
 
-  Future<void> _handleApprove(
-    BuildContext context,
-    GroupModerationViewModel viewModel,
-    dynamic experience,
-  ) async {
+  Future<void> _handleApprove(BuildContext context, GroupModerationViewModel viewModel, dynamic experience) async {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: AppTheme.of(context).primaryBackground,
         title: Text(
           'Approve Experience',
-          style: AppTheme.of(context).headlineSmall.override(
-                font: GoogleFonts.lexendDeca(),
-              ),
+          style: AppTheme.of(context).headlineSmall.override(font: GoogleFonts.lexendDeca()),
         ),
-        content: const Text(
-          'Are you sure you want to approve this experience?',
-        ),
+        content: const Text('Are you sure you want to approve this experience?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: Text(
-              'Cancel',
-              style: GoogleFonts.lexendDeca(),
-            ),
+            child: Text('Cancel', style: GoogleFonts.lexendDeca()),
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppTheme.of(context).primary,
-            ),
-            child: Text(
-              'Approve',
-              style: GoogleFonts.lexendDeca(color: Colors.white),
-            ),
+            style: ElevatedButton.styleFrom(backgroundColor: AppTheme.of(context).primary),
+            child: Text('Approve', style: GoogleFonts.lexendDeca(color: Colors.white)),
           ),
         ],
       ),
@@ -228,10 +180,7 @@ class GroupModerationPage extends StatelessWidget {
       if (success && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              'Experience approved successfully',
-              style: GoogleFonts.lexendDeca(),
-            ),
+            content: Text('Experience approved successfully', style: GoogleFonts.lexendDeca()),
             backgroundColor: Colors.green.shade700,
           ),
         );
@@ -239,23 +188,16 @@ class GroupModerationPage extends StatelessWidget {
     }
   }
 
-  Future<void> _handleReject(
-    BuildContext context,
-    GroupModerationViewModel viewModel,
-    dynamic experience,
-  ) async {
+  Future<void> _handleReject(BuildContext context, GroupModerationViewModel viewModel, dynamic experience) async {
     final reason = await ModerationActionDialog.showReject(context);
 
     if (reason != null && context.mounted) {
-      final success = await viewModel.rejectExperienceCommand(experience, reason);
+      final success = await viewModel.notPublishExperienceCommand(experience, reason);
 
       if (success && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              'Experience rejected',
-              style: GoogleFonts.lexendDeca(),
-            ),
+            content: Text('Experience status updated to Not Published', style: GoogleFonts.lexendDeca()),
             backgroundColor: Colors.red.shade700,
           ),
         );
@@ -263,23 +205,20 @@ class GroupModerationPage extends StatelessWidget {
     }
   }
 
-  Future<void> _handleRequestChanges(
+  Future<void> _handleSuggestRefinement(
     BuildContext context,
     GroupModerationViewModel viewModel,
     dynamic experience,
   ) async {
-    final reason = await ModerationActionDialog.showRequestChanges(context);
+    final reason = await ModerationActionDialog.showSuggestRefinement(context);
 
     if (reason != null && context.mounted) {
-      final success = await viewModel.requestChangesCommand(experience, reason);
+      final success = await viewModel.suggestRefinementCommand(experience, reason);
 
       if (success && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              'Changes requested',
-              style: GoogleFonts.lexendDeca(),
-            ),
+            content: Text('Refinement suggested', style: GoogleFonts.lexendDeca()),
             backgroundColor: Colors.orange.shade700,
           ),
         );

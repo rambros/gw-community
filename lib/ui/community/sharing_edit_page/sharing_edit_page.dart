@@ -156,7 +156,7 @@ class _SharingEditPageContent extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      'Draft - Not published yet',
+                      'In Reflection - Not published yet',
                       style: GoogleFonts.lexendDeca(
                         fontSize: 13.0,
                         fontWeight: FontWeight.w500,
@@ -299,100 +299,92 @@ class _SharingEditPageContent extends StatelessWidget {
   }
 
   Widget _buildActions(BuildContext context, SharingEditViewModel viewModel) {
-    // Texto do botão principal depende do status atual
-    final publishButtonText = viewModel.isDraft ? 'Publish' : 'Save';
+    // Texto do botão principal
+    final publishButtonText = viewModel.isDraft ? 'Submit' : 'Update';
 
     return Padding(
       padding: const EdgeInsets.all(4.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.end,
+      child: Wrap(
+        alignment: WrapAlignment.end,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 8.0,
+        runSpacing: 8.0,
         children: [
-          // Botão Cancel
-          Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
-            child: FFButtonWidget(
-              onPressed: viewModel.isSaving ? null : () => viewModel.cancelCommand(context),
-              text: 'Cancel',
-              options: FFButtonOptions(
-                height: 40.0,
-                padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
-                iconPadding: const EdgeInsets.all(0.0),
-                color: AppTheme.of(context).primaryBackground,
-                textStyle: AppTheme.of(context).labelLarge.override(
-                      font: GoogleFonts.poppins(),
-                      color: AppTheme.of(context).secondary,
-                      letterSpacing: 0.0,
-                    ),
-                elevation: 0.0,
-                borderSide: BorderSide(
-                  color: AppTheme.of(context).secondaryBackground,
-                  width: 0.5,
-                ),
-                borderRadius: BorderRadius.circular(20.0),
+          FFButtonWidget(
+            onPressed: viewModel.isSaving ? null : () => viewModel.cancelCommand(context),
+            text: 'Cancel',
+            options: FFButtonOptions(
+              height: 40.0,
+              padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+              iconPadding: const EdgeInsets.all(0.0),
+              color: AppTheme.of(context).primaryBackground,
+              textStyle: AppTheme.of(context).labelLarge.override(
+                    font: GoogleFonts.poppins(),
+                    color: AppTheme.of(context).secondary,
+                    letterSpacing: 0.0,
+                  ),
+              elevation: 0.0,
+              borderSide: BorderSide(
+                color: AppTheme.of(context).secondaryBackground,
+                width: 0.5,
               ),
+              borderRadius: BorderRadius.circular(20.0),
             ),
           ),
           // Botão Save Draft
-          Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
-            child: FFButtonWidget(
-              onPressed: viewModel.isSaving || !viewModel.canSave()
-                  ? null
-                  : () async {
-                      final success = await viewModel.saveDraftCommand(context);
-                      if (success && context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: const Text('Draft saved'),
-                            backgroundColor: AppTheme.of(context).success,
-                          ),
-                        );
-                      }
-                    },
-              text: 'Save Draft',
-              options: FFButtonOptions(
-                height: 40.0,
-                padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
-                iconPadding: const EdgeInsets.all(0.0),
-                color: AppTheme.of(context).primaryBackground,
-                textStyle: AppTheme.of(context).labelLarge.override(
-                      font: GoogleFonts.poppins(),
-                      color: AppTheme.of(context).primary,
-                      letterSpacing: 0.0,
-                    ),
-                elevation: 0.0,
-                borderSide: BorderSide(
-                  color: AppTheme.of(context).primary,
-                  width: 1.0,
-                ),
-                borderRadius: BorderRadius.circular(20.0),
+          FFButtonWidget(
+            onPressed: viewModel.isSaving || !viewModel.canSave()
+                ? null
+                : () async {
+                    final success = await viewModel.saveDraftCommand(context);
+                    if (success && context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: const Text('Reflection saved'),
+                          backgroundColor: AppTheme.of(context).success,
+                        ),
+                      );
+                    }
+                  },
+            text: 'Keep in Reflection',
+            options: FFButtonOptions(
+              height: 40.0,
+              padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+              iconPadding: const EdgeInsets.all(0.0),
+              color: AppTheme.of(context).primaryBackground,
+              textStyle: AppTheme.of(context).labelLarge.override(
+                    font: GoogleFonts.poppins(),
+                    color: AppTheme.of(context).primary,
+                    letterSpacing: 0.0,
+                  ),
+              elevation: 0.0,
+              borderSide: BorderSide(
+                color: AppTheme.of(context).primary,
+                width: 1.0,
               ),
+              borderRadius: BorderRadius.circular(20.0),
             ),
           ),
           // Botão Save/Publish
-          Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
-            child: FFButtonWidget(
-              onPressed: viewModel.isSaving || !viewModel.canSave() ? null : () => viewModel.saveCommand(context),
-              text: viewModel.isSaving ? 'Saving...' : publishButtonText,
-              options: FFButtonOptions(
-                height: 40.0,
-                padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-                iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                color: AppTheme.of(context).primary,
-                textStyle: AppTheme.of(context).labelLarge.override(
-                      font: GoogleFonts.poppins(),
-                      color: AppTheme.of(context).primaryBackground,
-                      letterSpacing: 0.0,
-                    ),
-                elevation: 1.0,
-                borderSide: BorderSide(
-                  color: AppTheme.of(context).secondaryBackground,
-                  width: 0.5,
-                ),
-                borderRadius: BorderRadius.circular(20.0),
+          FFButtonWidget(
+            onPressed: viewModel.isSaving || !viewModel.canSave() ? null : () => viewModel.saveCommand(context),
+            text: viewModel.isSaving ? 'Saving...' : publishButtonText,
+            options: FFButtonOptions(
+              height: 40.0,
+              padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
+              iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+              color: AppTheme.of(context).primary,
+              textStyle: AppTheme.of(context).labelLarge.override(
+                    font: GoogleFonts.poppins(),
+                    color: AppTheme.of(context).primaryBackground,
+                    letterSpacing: 0.0,
+                  ),
+              elevation: 1.0,
+              borderSide: BorderSide(
+                color: AppTheme.of(context).secondaryBackground,
+                width: 0.5,
               ),
+              borderRadius: BorderRadius.circular(20.0),
             ),
           ),
         ],

@@ -4,9 +4,7 @@ import 'package:gw_community/utils/flutter_flow_util.dart';
 
 class NotificationRepository {
   Future<CcMembersRow?> getUserById(String authUserId) async {
-    final result = await CcMembersTable().querySingleRow(
-      queryFn: (q) => q.eqOrNull('auth_user_id', authUserId),
-    );
+    final result = await CcMembersTable().querySingleRow(queryFn: (q) => q.eqOrNull('auth_user_id', authUserId));
     return result.isNotEmpty ? result.first : null;
   }
 
@@ -31,9 +29,7 @@ class NotificationRepository {
   }
 
   Future<CcViewNotificationsUsersRow?> getNotificationById(int id) async {
-    final result = await CcViewNotificationsUsersTable().querySingleRow(
-      queryFn: (q) => q.eqOrNull('id', id),
-    );
+    final result = await CcViewNotificationsUsersTable().querySingleRow(queryFn: (q) => q.eqOrNull('id', id));
     return result.isNotEmpty ? result.first : null;
   }
 
@@ -44,12 +40,8 @@ class NotificationRepository {
   }
 
   Future<void> deleteNotification(int id) async {
-    await CcCommentsTable().delete(
-      matchingRows: (rows) => rows.eqOrNull('sharing_id', id),
-    );
-    await CcSharingsTable().delete(
-      matchingRows: (rows) => rows.eqOrNull('id', id),
-    );
+    await CcCommentsTable().delete(matchingRows: (rows) => rows.eqOrNull('sharing_id', id));
+    await CcSharingsTable().delete(matchingRows: (rows) => rows.eqOrNull('id', id));
   }
 
   Future<void> updateNotification({
@@ -72,18 +64,11 @@ class NotificationRepository {
   }
 
   Future<void> toggleLock(int id, bool locked) async {
-    await CcSharingsTable().update(
-      data: {
-        'locked': locked,
-      },
-      matchingRows: (rows) => rows.eqOrNull('id', id),
-    );
+    await CcSharingsTable().update(data: {'locked': locked}, matchingRows: (rows) => rows.eqOrNull('id', id));
   }
 
   Future<void> deleteComment(int commentId) async {
-    await CcCommentsTable().delete(
-      matchingRows: (rows) => rows.eqOrNull('id', commentId),
-    );
+    await CcCommentsTable().delete(matchingRows: (rows) => rows.eqOrNull('id', commentId));
   }
 
   Stream<List<CcViewNotificationsUsersRow>> getNotificationsStream(int groupId) {
@@ -121,9 +106,7 @@ class NotificationRepository {
   /// Busca os IDs de notificações lidas pelo usuário atual no grupo
   Future<Set<int>> getReadNotificationIds(int groupId, String userId) async {
     try {
-      final notifications = await CcViewNotificationsUsersTable().queryRows(
-        queryFn: (q) => q.eq('group_id', groupId),
-      );
+      final notifications = await CcViewNotificationsUsersTable().queryRows(queryFn: (q) => q.eq('group_id', groupId));
 
       final notificationIds = notifications.map((n) => n.id!).toList();
 
@@ -145,9 +128,7 @@ class NotificationRepository {
   /// Conta quantas notificações não lidas existem no grupo para o usuário
   Future<int> getUnreadNotificationCount(int groupId, String userId) async {
     try {
-      final notifications = await CcViewNotificationsUsersTable().queryRows(
-        queryFn: (q) => q.eq('group_id', groupId),
-      );
+      final notifications = await CcViewNotificationsUsersTable().queryRows(queryFn: (q) => q.eq('group_id', groupId));
 
       final notificationIds = notifications.map((n) => n.id!).toList();
 
@@ -201,8 +182,8 @@ class NotificationRepository {
     if (groupId == null) return;
 
     await createNotification(
-      title: 'Experience Rejected',
-      text: 'Your experience "$experienceTitle" was not approved. Reason: $reason',
+      title: 'Experience Not Published',
+      text: 'Your experience "$experienceTitle" was not published. Reason: $reason',
       privacy: 'public',
       userId: userId,
       groupId: groupId,
@@ -221,7 +202,7 @@ class NotificationRepository {
     if (groupId == null) return;
 
     await createNotification(
-      title: 'Changes Requested',
+      title: 'Refinement Suggested',
       text: 'Please update your experience "$experienceTitle". Feedback: $reason',
       privacy: 'public',
       userId: userId,

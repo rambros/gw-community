@@ -8,6 +8,7 @@ import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
 import 'package:gw_community/ui/core/widgets/user_avatar.dart';
 import 'package:gw_community/utils/context_extensions.dart';
+import 'package:gw_community/ui/core/widgets/confirmation_dialog.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 
 class SharingCardWidget extends StatelessWidget {
@@ -38,12 +39,7 @@ class SharingCardWidget extends StatelessWidget {
           onTap: () async {
             context.pushNamed(
               SharingViewPage.routeName,
-              queryParameters: {
-                'sharingId': serializeParam(
-                  sharingRow.id,
-                  ParamType.int,
-                ),
-              }.withoutNulls,
+              queryParameters: {'sharingId': serializeParam(sharingRow.id, ParamType.int)}.withoutNulls,
               extra: <String, dynamic>{
                 kTransitionInfoKey: const TransitionInfo(
                   hasTransition: true,
@@ -55,24 +51,14 @@ class SharingCardWidget extends StatelessWidget {
           },
           child: Container(
             width: double.infinity,
-            constraints: const BoxConstraints(
-              maxWidth: 530.0,
-            ),
+            constraints: const BoxConstraints(maxWidth: 530.0),
             decoration: BoxDecoration(
               color: AppTheme.of(context).primaryBackground,
               boxShadow: const [
-                BoxShadow(
-                  blurRadius: 15.0,
-                  color: Color(0x1A000000),
-                  offset: Offset(0.0, 7.0),
-                  spreadRadius: 3.0,
-                )
+                BoxShadow(blurRadius: 15.0, color: Color(0x1A000000), offset: Offset(0.0, 7.0), spreadRadius: 3.0),
               ],
               borderRadius: BorderRadius.circular(12.0),
-              border: Border.all(
-                color: AppTheme.of(context).primaryBackground,
-                width: 1.0,
-              ),
+              border: Border.all(color: AppTheme.of(context).primaryBackground, width: 1.0),
             ),
             child: Padding(
               padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 12.0),
@@ -115,10 +101,7 @@ class SharingCardWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    valueOrDefault<String>(
-                      sharingRow.displayName,
-                      'User name',
-                    ),
+                    valueOrDefault<String>(sharingRow.displayName, 'User name'),
                     style: AppTheme.of(context).bodyMedium.override(
                           font: GoogleFonts.lexendDeca(
                             fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
@@ -159,25 +142,26 @@ class SharingCardWidget extends StatelessWidget {
         backgroundColor = const Color(0xFFE3F2FD);
         textColor = const Color(0xFF1976D2);
         icon = Icons.edit_note;
-        label = 'Draft';
+        label = 'In Reflection';
         break;
+      case 'awaiting_approval':
       case 'pending':
         backgroundColor = AppTheme.of(context).warning.withValues(alpha: 0.15);
         textColor = const Color(0xFFB8860B);
         icon = Icons.hourglass_empty;
-        label = 'Pending Review';
+        label = 'Awaiting Approval';
         break;
       case 'rejected':
         backgroundColor = AppTheme.of(context).error.withValues(alpha: 0.15);
         textColor = AppTheme.of(context).error;
         icon = Icons.cancel_outlined;
-        label = 'Rejected';
+        label = 'Not Published';
         break;
       case 'changes_requested':
         backgroundColor = AppTheme.of(context).copperRed.withValues(alpha: 0.15);
         textColor = AppTheme.of(context).copperRed;
         icon = Icons.edit_note;
-        label = 'Changes Requested';
+        label = 'Refinement Suggested';
         break;
       default:
         return const SizedBox.shrink();
@@ -187,10 +171,7 @@ class SharingCardWidget extends StatelessWidget {
       padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 12.0),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-        decoration: BoxDecoration(
-          color: backgroundColor,
-          borderRadius: BorderRadius.circular(8.0),
-        ),
+        decoration: BoxDecoration(color: backgroundColor, borderRadius: BorderRadius.circular(8.0)),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -198,11 +179,7 @@ class SharingCardWidget extends StatelessWidget {
             const SizedBox(width: 6),
             Text(
               label,
-              style: GoogleFonts.lexendDeca(
-                fontSize: 12.0,
-                fontWeight: FontWeight.w500,
-                color: textColor,
-              ),
+              style: GoogleFonts.lexendDeca(fontSize: 12.0, fontWeight: FontWeight.w500, color: textColor),
             ),
           ],
         ),
@@ -218,19 +195,60 @@ class SharingCardWidget extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 16.0),
-      child: Text(
-        text,
-        maxLines: 3,
-        overflow: TextOverflow.ellipsis,
-        style: AppTheme.of(context).bodyMedium.override(
-              font: GoogleFonts.inter(),
-              color: AppTheme.of(context).secondary,
-              fontSize: 14.0,
-              letterSpacing: 0.0,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 16.0),
+          child: Text(
+            text,
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+            style: AppTheme.of(context).bodyMedium.override(
+                  font: GoogleFonts.inter(),
+                  color: AppTheme.of(context).secondary,
+                  fontSize: 14.0,
+                  letterSpacing: 0.0,
+                ),
+          ),
+        ),
+        if (sharingRow.moderationStatus == 'rejected' || sharingRow.moderationStatus == 'changes_requested')
+          Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (sharingRow.moderationReason != null && sharingRow.moderationReason!.trim().isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Text(
+                      sharingRow.moderationReason!,
+                      style: AppTheme.of(context).bodySmall.override(
+                            font: GoogleFonts.lexendDeca(),
+                            color: AppTheme.of(context).secondary,
+                            fontSize: 12.0,
+                            fontWeight: FontWeight.normal,
+                            fontStyle: FontStyle.italic,
+                          ),
+                    ),
+                  ),
+                Text(
+                  sharingRow.moderationStatus == 'rejected'
+                      ? 'You’re welcome to revise and share again whenever you feel ready.'
+                      : 'A few suggestions were shared to help refine your experience.\nWhen ready, review them and tap “Update & Resubmit”.',
+                  style: AppTheme.of(context).bodySmall.override(
+                        font: GoogleFonts.lexendDeca(),
+                        color: AppTheme.of(context).secondary,
+                        fontSize: 12.0,
+                        fontWeight: FontWeight.w500,
+                        fontStyle: FontStyle.italic,
+                      ),
+                ),
+              ],
             ),
-      ),
+          ),
+      ],
     );
   }
 
@@ -249,7 +267,17 @@ class SharingCardWidget extends StatelessWidget {
               padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
               child: FFButtonWidget(
                 onPressed: () async {
-                  await onDelete!(context);
+                  final confirmed = await ConfirmationDialog.show(
+                    context: context,
+                    title: 'Withdraw this experience?',
+                    message: 'It will be permanently removed from the group and cannot be restored.',
+                    confirmLabel: 'Delete',
+                    confirmColor: AppTheme.of(context).secondary,
+                  );
+
+                  if (confirmed && onDelete != null) {
+                    await onDelete!(context);
+                  }
                 },
                 text: 'Delete',
                 options: FFButtonOptions(
@@ -268,10 +296,7 @@ class SharingCardWidget extends StatelessWidget {
                         fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                       ),
                   elevation: 0.0,
-                  borderSide: BorderSide(
-                    color: AppTheme.of(context).secondaryBackground,
-                    width: 0.5,
-                  ),
+                  borderSide: BorderSide(color: AppTheme.of(context).secondaryBackground, width: 0.5),
                   borderRadius: BorderRadius.circular(20.0),
                 ),
               ),
@@ -293,7 +318,11 @@ class SharingCardWidget extends StatelessWidget {
                     },
                   );
                 },
-                text: 'Revise',
+                text: sharingRow.moderationStatus == 'draft'
+                    ? 'Submit'
+                    : (sharingRow.moderationStatus == 'rejected' || sharingRow.moderationStatus == 'changes_requested')
+                        ? 'Update & Resubmit'
+                        : (sharingRow.moderationStatus == 'approved' ? 'Revise' : 'Update'),
                 options: FFButtonOptions(
                   height: 40.0,
                   padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
@@ -310,10 +339,7 @@ class SharingCardWidget extends StatelessWidget {
                         fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                       ),
                   elevation: 1.0,
-                  borderSide: BorderSide(
-                    color: AppTheme.of(context).secondaryBackground,
-                    width: 0.5,
-                  ),
+                  borderSide: BorderSide(color: AppTheme.of(context).secondaryBackground, width: 0.5),
                   borderRadius: BorderRadius.circular(20.0),
                 ),
               ),

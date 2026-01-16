@@ -10,14 +10,14 @@ class ModerationExperienceCard extends StatelessWidget {
   final CcViewPendingExperiencesRow experience;
   final VoidCallback onApprove;
   final VoidCallback onReject;
-  final VoidCallback onRequestChanges;
+  final VoidCallback onSuggestRefinement;
 
   const ModerationExperienceCard({
     super.key,
     required this.experience,
     required this.onApprove,
     required this.onReject,
-    required this.onRequestChanges,
+    required this.onSuggestRefinement,
   });
 
   @override
@@ -28,10 +28,7 @@ class ModerationExperienceCard extends StatelessWidget {
       elevation: 2.0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.0),
-        side: BorderSide(
-          color: AppTheme.of(context).secondaryBackground,
-          width: 1.0,
-        ),
+        side: BorderSide(color: AppTheme.of(context).secondaryBackground, width: 1.0),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -64,11 +61,9 @@ class ModerationExperienceCard extends StatelessWidget {
             children: [
               Text(
                 experience.authorDisplayName ?? experience.authorName ?? 'Unknown User',
-                style: AppTheme.of(context).bodyMedium.override(
-                      font: GoogleFonts.lexendDeca(),
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16.0,
-                    ),
+                style: AppTheme.of(
+                  context,
+                ).bodyMedium.override(font: GoogleFonts.lexendDeca(), fontWeight: FontWeight.w600, fontSize: 16.0),
               ),
               Text(
                 timeago.format(experience.createdAt ?? DateTime.now()),
@@ -98,10 +93,7 @@ class ModerationExperienceCard extends StatelessWidget {
         text.isEmpty ? '(No text)' : text,
         maxLines: 6,
         overflow: TextOverflow.ellipsis,
-        style: AppTheme.of(context).bodyMedium.override(
-              font: GoogleFonts.inter(),
-              fontSize: 14.0,
-            ),
+        style: AppTheme.of(context).bodyMedium.override(font: GoogleFonts.inter(), fontSize: 14.0),
       ),
     );
   }
@@ -112,16 +104,14 @@ class ModerationExperienceCard extends StatelessWidget {
       children: [
         // Request Changes button
         OutlinedButton.icon(
-          onPressed: onRequestChanges,
+          onPressed: onSuggestRefinement,
           icon: const Icon(Icons.edit_outlined, size: 16),
-          label: const Text('Changes'),
+          label: const Text('Refinement'),
           style: OutlinedButton.styleFrom(
             foregroundColor: Colors.orange.shade700,
             side: BorderSide(color: Colors.orange.shade700, width: 1.5),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
           ),
         ),
         const SizedBox(width: 8),
@@ -130,14 +120,12 @@ class ModerationExperienceCard extends StatelessWidget {
         OutlinedButton.icon(
           onPressed: onReject,
           icon: const Icon(Icons.close, size: 16),
-          label: const Text('Reject'),
+          label: const Text('Not Published'),
           style: OutlinedButton.styleFrom(
             foregroundColor: Colors.red.shade700,
             side: BorderSide(color: Colors.red.shade700, width: 1.5),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
           ),
         ),
         const SizedBox(width: 8),
@@ -152,9 +140,7 @@ class ModerationExperienceCard extends StatelessWidget {
             foregroundColor: Colors.white,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             elevation: 0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
           ),
         ),
       ],

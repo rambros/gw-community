@@ -51,20 +51,14 @@ class _MyExperiencesPageContent extends StatelessWidget {
           borderRadius: 30.0,
           borderWidth: 1.0,
           buttonSize: 60.0,
-          icon: const Icon(
-            Icons.arrow_back_rounded,
-            color: Colors.white,
-            size: 30.0,
-          ),
+          icon: const Icon(Icons.arrow_back_rounded, color: Colors.white, size: 30.0),
           onPressed: () => context.pop(),
         ),
         title: Text(
           'My Experiences',
-          style: AppTheme.of(context).bodyMedium.override(
-                font: GoogleFonts.lexendDeca(),
-                color: Colors.white,
-                fontSize: 20.0,
-              ),
+          style: AppTheme.of(
+            context,
+          ).bodyMedium.override(font: GoogleFonts.lexendDeca(), color: Colors.white, fontSize: 20.0),
         ),
         centerTitle: true,
         elevation: 4.0,
@@ -75,12 +69,7 @@ class _MyExperiencesPageContent extends StatelessWidget {
 
   Widget _buildBody(BuildContext context, MyExperiencesViewModel viewModel) {
     if (viewModel.isLoading) {
-      return Center(
-        child: SpinKitRipple(
-          color: AppTheme.of(context).primary,
-          size: 50.0,
-        ),
-      );
+      return Center(child: SpinKitRipple(color: AppTheme.of(context).primary, size: 50.0));
     }
 
     if (viewModel.errorMessage != null) {
@@ -90,25 +79,17 @@ class _MyExperiencesPageContent extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                Icons.error_outline,
-                size: 48,
-                color: AppTheme.of(context).error,
-              ),
+              Icon(Icons.error_outline, size: 48, color: AppTheme.of(context).error),
               const SizedBox(height: 16),
               Text(
                 viewModel.errorMessage!,
                 textAlign: TextAlign.center,
-                style: AppTheme.of(context).bodyMedium.override(
-                      font: GoogleFonts.lexendDeca(),
-                      color: AppTheme.of(context).error,
-                    ),
+                style: AppTheme.of(
+                  context,
+                ).bodyMedium.override(font: GoogleFonts.lexendDeca(), color: AppTheme.of(context).error),
               ),
               const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () => viewModel.loadExperiences(),
-                child: const Text('Try Again'),
-              ),
+              ElevatedButton(onPressed: () => viewModel.loadExperiences(), child: const Text('Try Again')),
             ],
           ),
         ),
@@ -120,11 +101,7 @@ class _MyExperiencesPageContent extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.article_outlined,
-              size: 64,
-              color: AppTheme.of(context).cadetGrey,
-            ),
+            Icon(Icons.article_outlined, size: 64, color: AppTheme.of(context).cadetGrey),
             const SizedBox(height: 16),
             Text(
               'No experiences yet',
@@ -138,10 +115,9 @@ class _MyExperiencesPageContent extends StatelessWidget {
             Text(
               'Start sharing your experiences with the community!',
               textAlign: TextAlign.center,
-              style: AppTheme.of(context).bodySmall.override(
-                    font: GoogleFonts.lexendDeca(),
-                    color: AppTheme.of(context).cadetGrey,
-                  ),
+              style: AppTheme.of(
+                context,
+              ).bodySmall.override(font: GoogleFonts.lexendDeca(), color: AppTheme.of(context).cadetGrey),
             ),
           ],
         ),
@@ -161,9 +137,8 @@ class _MyExperiencesPageContent extends StatelessWidget {
             onView: () => _navigateToView(context, experience),
             onEdit: () => _navigateToEdit(context, experience),
             onDelete: () => _confirmDelete(context, viewModel, experience),
-            onPublish: experience.moderationStatus == 'draft'
-                ? () => _confirmPublish(context, viewModel, experience)
-                : null,
+            onPublish:
+                experience.moderationStatus == 'draft' ? () => _confirmPublish(context, viewModel, experience) : null,
           );
         },
       ),
@@ -173,17 +148,12 @@ class _MyExperiencesPageContent extends StatelessWidget {
   void _navigateToView(BuildContext context, CcViewSharingsUsersRow experience) {
     context.pushNamed(
       SharingViewPage.routeName,
-      queryParameters: {
-        'sharingId': serializeParam(experience.id, ParamType.int),
-      }.withoutNulls,
+      queryParameters: {'sharingId': serializeParam(experience.id, ParamType.int)}.withoutNulls,
     );
   }
 
   void _navigateToEdit(BuildContext context, CcViewSharingsUsersRow experience) {
-    context.pushNamed(
-      SharingEditPage.routeName,
-      extra: {'sharingRow': experience},
-    );
+    context.pushNamed(SharingEditPage.routeName, extra: {'sharingRow': experience});
   }
 
   Future<void> _confirmDelete(
@@ -196,23 +166,15 @@ class _MyExperiencesPageContent extends StatelessWidget {
       builder: (context) => WebViewAware(
         child: AlertDialog(
           title: const Text('Delete Experience'),
-          content: const Text(
-            'Are you sure you want to delete this experience? This action cannot be undone.',
-          ),
+          content: const Text('Are you sure you want to delete this experience? This action cannot be undone.'),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: Text(
-                'Cancel',
-                style: TextStyle(color: AppTheme.of(context).secondary),
-              ),
+              child: Text('Cancel', style: TextStyle(color: AppTheme.of(context).secondary)),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
-              child: const Text(
-                'Delete',
-                style: TextStyle(color: Colors.red),
-              ),
+              child: const Text('Delete', style: TextStyle(color: Colors.red)),
             ),
           ],
         ),
@@ -248,17 +210,11 @@ class _MyExperiencesPageContent extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: Text(
-                'Cancel',
-                style: TextStyle(color: AppTheme.of(context).secondary),
-              ),
+              child: Text('Cancel', style: TextStyle(color: AppTheme.of(context).secondary)),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
-              child: Text(
-                'Publish',
-                style: TextStyle(color: AppTheme.of(context).primary),
-              ),
+              child: Text('Publish', style: TextStyle(color: AppTheme.of(context).primary)),
             ),
           ],
         ),
@@ -305,12 +261,7 @@ class _ExperienceCard extends StatelessWidget {
           color: AppTheme.of(context).primaryBackground,
           borderRadius: BorderRadius.circular(12),
           boxShadow: const [
-            BoxShadow(
-              blurRadius: 15.0,
-              color: Color(0x1A000000),
-              offset: Offset(0.0, 7.0),
-              spreadRadius: 3.0,
-            )
+            BoxShadow(blurRadius: 15.0, color: Color(0x1A000000), offset: Offset(0.0, 7.0), spreadRadius: 3.0),
           ],
         ),
         child: Column(
@@ -324,11 +275,7 @@ class _ExperienceCard extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(16, 16, 8, 8),
                 child: Row(
                   children: [
-                    UserAvatar(
-                      imageUrl: experience.photoUrl,
-                      fullName: experience.fullName,
-                      size: 40,
-                    ),
+                    UserAvatar(imageUrl: experience.photoUrl, fullName: experience.fullName, size: 40),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(
@@ -366,15 +313,56 @@ class _ExperienceCard extends StatelessWidget {
                 onTap: onView,
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                  child: Text(
-                    experience.text!,
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                    style: AppTheme.of(context).bodyMedium.override(
-                          font: GoogleFonts.inter(),
-                          color: AppTheme.of(context).secondary,
-                          fontSize: 14,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        experience.text!,
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTheme.of(context).bodyMedium.override(
+                              font: GoogleFonts.inter(),
+                              color: AppTheme.of(context).secondary,
+                              fontSize: 14,
+                            ),
+                      ),
+                      if (experience.moderationStatus == 'rejected' ||
+                          experience.moderationStatus == 'changes_requested')
+                        Padding(
+                          padding: const EdgeInsets.only(top: 12.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (experience.moderationReason != null && experience.moderationReason!.trim().isNotEmpty)
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 8.0),
+                                  child: Text(
+                                    experience.moderationReason!,
+                                    style: AppTheme.of(context).bodySmall.override(
+                                          font: GoogleFonts.lexendDeca(),
+                                          color: AppTheme.of(context).secondary,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.normal,
+                                          fontStyle: FontStyle.italic,
+                                        ),
+                                  ),
+                                ),
+                              Text(
+                                experience.moderationStatus == 'rejected'
+                                    ? 'You’re welcome to revise and share again whenever you feel ready.'
+                                    : 'A few suggestions were shared to help refine your experience.\nWhen ready, review them and tap “Update & Resubmit”.',
+                                style: AppTheme.of(context).bodySmall.override(
+                                      font: GoogleFonts.lexendDeca(),
+                                      color: AppTheme.of(context).secondary,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                      fontStyle: FontStyle.italic,
+                                    ),
+                              ),
+                            ],
+                          ),
                         ),
+                    ],
                   ),
                 ),
               ),
@@ -386,10 +374,7 @@ class _ExperienceCard extends StatelessWidget {
 
   Widget _buildActionsMenu(BuildContext context) {
     return PopupMenuButton<String>(
-      icon: Icon(
-        Icons.more_vert,
-        color: AppTheme.of(context).secondary,
-      ),
+      icon: Icon(Icons.more_vert, color: AppTheme.of(context).secondary),
       onSelected: (value) {
         switch (value) {
           case 'view':
@@ -413,13 +398,7 @@ class _ExperienceCard extends StatelessWidget {
             children: [
               Icon(Icons.visibility_outlined, size: 20, color: AppTheme.of(context).secondary),
               const SizedBox(width: 12),
-              Text(
-                'View',
-                style: GoogleFonts.lexendDeca(
-                  fontSize: 14,
-                  color: AppTheme.of(context).secondary,
-                ),
-              ),
+              Text('View', style: GoogleFonts.lexendDeca(fontSize: 14, color: AppTheme.of(context).secondary)),
             ],
           ),
         ),
@@ -430,10 +409,15 @@ class _ExperienceCard extends StatelessWidget {
               Icon(Icons.edit_outlined, size: 20, color: AppTheme.of(context).primary),
               const SizedBox(width: 12),
               Text(
-                'Edit',
+                experience.moderationStatus == 'draft' ? 'Submit' : 'Update',
                 style: GoogleFonts.lexendDeca(
                   fontSize: 14,
-                  color: AppTheme.of(context).primary,
+                  color: experience.moderationStatus == 'draft'
+                      ? AppTheme.of(context).primary
+                      : (experience.moderationStatus == 'rejected' ||
+                              experience.moderationStatus == 'changes_requested')
+                          ? AppTheme.of(context).primary
+                          : AppTheme.of(context).primary,
                 ),
               ),
             ],
@@ -446,13 +430,7 @@ class _ExperienceCard extends StatelessWidget {
               children: [
                 Icon(Icons.publish, size: 20, color: AppTheme.of(context).success),
                 const SizedBox(width: 12),
-                Text(
-                  'Publish',
-                  style: GoogleFonts.lexendDeca(
-                    fontSize: 14,
-                    color: AppTheme.of(context).success,
-                  ),
-                ),
+                Text('Publish', style: GoogleFonts.lexendDeca(fontSize: 14, color: AppTheme.of(context).success)),
               ],
             ),
           ),
@@ -463,13 +441,7 @@ class _ExperienceCard extends StatelessWidget {
             children: [
               Icon(Icons.delete_outline, size: 20, color: AppTheme.of(context).error),
               const SizedBox(width: 12),
-              Text(
-                'Delete',
-                style: GoogleFonts.lexendDeca(
-                  fontSize: 14,
-                  color: AppTheme.of(context).error,
-                ),
-              ),
+              Text('Delete', style: GoogleFonts.lexendDeca(fontSize: 14, color: AppTheme.of(context).error)),
             ],
           ),
         ),
@@ -520,25 +492,26 @@ class _ExperienceCard extends StatelessWidget {
         backgroundColor = const Color(0xFFE3F2FD);
         textColor = const Color(0xFF1976D2);
         icon = Icons.edit_note;
-        label = 'Draft';
+        label = 'In Reflection';
         break;
+      case 'awaiting_approval':
       case 'pending':
         backgroundColor = const Color(0xFFFFF3CD);
         textColor = const Color(0xFFB8860B);
         icon = Icons.hourglass_empty;
-        label = 'Pending Review';
+        label = 'Awaiting Approval';
         break;
       case 'rejected':
         backgroundColor = AppTheme.of(context).error.withValues(alpha: 0.15);
         textColor = AppTheme.of(context).error;
         icon = Icons.cancel_outlined;
-        label = 'Rejected';
+        label = 'Not Published';
         break;
       case 'changes_requested':
         backgroundColor = AppTheme.of(context).copperRed.withValues(alpha: 0.15);
         textColor = AppTheme.of(context).copperRed;
         icon = Icons.edit_note;
-        label = 'Changes Requested';
+        label = 'Refinement Suggested';
         break;
       default:
         return const SizedBox.shrink();
@@ -548,10 +521,7 @@ class _ExperienceCard extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: BoxDecoration(
-          color: backgroundColor,
-          borderRadius: BorderRadius.circular(8),
-        ),
+        decoration: BoxDecoration(color: backgroundColor, borderRadius: BorderRadius.circular(8)),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -559,11 +529,7 @@ class _ExperienceCard extends StatelessWidget {
             const SizedBox(width: 6),
             Text(
               label,
-              style: GoogleFonts.lexendDeca(
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-                color: textColor,
-              ),
+              style: GoogleFonts.lexendDeca(fontSize: 12, fontWeight: FontWeight.w500, color: textColor),
             ),
           ],
         ),
