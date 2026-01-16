@@ -15,13 +15,50 @@ class MyExperiencesViewModel extends ChangeNotifier {
   }) : _repository = repository;
 
   List<CcViewSharingsUsersRow> _experiences = [];
-  List<CcViewSharingsUsersRow> get experiences => _experiences;
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
+
+  // Filtering
+  String? _statusFilter;
+  String? get statusFilter => _statusFilter;
+
+  String? _groupFilter;
+  String? get groupFilter => _groupFilter;
+
+  void setStatusFilter(String? value) {
+    _statusFilter = value;
+    notifyListeners();
+  }
+
+  void setGroupFilter(String? value) {
+    _groupFilter = value;
+    notifyListeners();
+  }
+
+  void clearFilters() {
+    _statusFilter = null;
+    _groupFilter = null;
+    notifyListeners();
+  }
+
+  List<String> get availableGroups {
+    return _experiences.map((e) => e.groupName).whereType<String>().where((name) => name.isNotEmpty).toSet().toList()
+      ..sort();
+  }
+
+  List<CcViewSharingsUsersRow> get filteredExperiences {
+    return _experiences.where((e) {
+      final statusMatch = _statusFilter == null || e.moderationStatus == _statusFilter;
+      final groupMatch = _groupFilter == null || e.groupName == _groupFilter;
+      return statusMatch && groupMatch;
+    }).toList();
+  }
+
+  List<CcViewSharingsUsersRow> get experiences => filteredExperiences;
 
   /// Load all experiences for the current user
   Future<void> loadExperiences() async {
@@ -31,9 +68,7 @@ class MyExperiencesViewModel extends ChangeNotifier {
 
     try {
       final result = await CcViewSharingsUsersTable().queryRows(
-        queryFn: (q) => q
-            .eqOrNull('user_id', currentUserId)
-            .order('updated_at', ascending: false),
+        queryFn: (q) => q.eqOrNull('user_id', currentUserId).order('updated_at', ascending: false),
       );
       _experiences = result;
     } catch (e) {

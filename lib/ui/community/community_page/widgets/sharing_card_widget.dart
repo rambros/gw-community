@@ -236,7 +236,7 @@ class SharingCardWidget extends StatelessWidget {
                 Text(
                   sharingRow.moderationStatus == 'rejected'
                       ? 'You’re welcome to revise and share again whenever you feel ready.'
-                      : 'A few suggestions were shared to help refine your experience.\nWhen ready, review them and tap “Update & Resubmit”.',
+                      : 'Suggestions were shared to help refine this experience.',
                   style: AppTheme.of(context).bodySmall.override(
                         font: GoogleFonts.lexendDeca(),
                         color: AppTheme.of(context).secondary,
@@ -318,11 +318,7 @@ class SharingCardWidget extends StatelessWidget {
                     },
                   );
                 },
-                text: sharingRow.moderationStatus == 'draft'
-                    ? 'Submit'
-                    : (sharingRow.moderationStatus == 'rejected' || sharingRow.moderationStatus == 'changes_requested')
-                        ? 'Update & Resubmit'
-                        : (sharingRow.moderationStatus == 'approved' ? 'Revise' : 'Update'),
+                text: 'Revise',
                 options: FFButtonOptions(
                   height: 40.0,
                   padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),

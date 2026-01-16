@@ -124,23 +124,135 @@ class _MyExperiencesPageContent extends StatelessWidget {
       );
     }
 
-    return RefreshIndicator(
-      onRefresh: () => viewModel.loadExperiences(),
-      color: AppTheme.of(context).primary,
-      child: ListView.builder(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        itemCount: viewModel.experiences.length,
-        itemBuilder: (context, index) {
-          final experience = viewModel.experiences[index];
-          return _ExperienceCard(
-            experience: experience,
-            onView: () => _navigateToView(context, experience),
-            onEdit: () => _navigateToEdit(context, experience),
-            onDelete: () => _confirmDelete(context, viewModel, experience),
-            onPublish:
-                experience.moderationStatus == 'draft' ? () => _confirmPublish(context, viewModel, experience) : null,
-          );
-        },
+    return Column(
+      children: [
+        _buildFilters(context, viewModel),
+        Expanded(
+          child: RefreshIndicator(
+            onRefresh: () => viewModel.loadExperiences(),
+            color: AppTheme.of(context).primary,
+            child: ListView.builder(
+              padding: const EdgeInsets.only(bottom: 16),
+              itemCount: viewModel.experiences.length,
+              itemBuilder: (context, index) {
+                final experience = viewModel.experiences[index];
+                return _ExperienceCard(
+                  experience: experience,
+                  onView: () => _navigateToView(context, experience),
+                  onEdit: () => _navigateToEdit(context, experience),
+                  onDelete: () => _confirmDelete(context, viewModel, experience),
+                  onPublish: experience.moderationStatus == 'draft'
+                      ? () => _confirmPublish(context, viewModel, experience)
+                      : null,
+                );
+              },
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFilters(BuildContext context, MyExperiencesViewModel viewModel) {
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: AppTheme.of(context).secondaryBackground,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            offset: const Offset(0, 2),
+            blurRadius: 4,
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              // Group Filter
+              Expanded(
+                child: _buildFilterDropdown<String>(
+                  context: context,
+                  label: 'Group',
+                  value: viewModel.groupFilter,
+                  items: [
+                    const DropdownMenuItem(value: null, child: Text('All Groups')),
+                    ...viewModel.availableGroups.map((g) => DropdownMenuItem(value: g, child: Text(g))),
+                  ],
+                  onChanged: (val) => viewModel.setGroupFilter(val),
+                ),
+              ),
+              const SizedBox(width: 12),
+              // Status Filter
+              Expanded(
+                child: _buildFilterDropdown<String>(
+                  context: context,
+                  label: 'Status',
+                  value: viewModel.statusFilter,
+                  items: const [
+                    DropdownMenuItem(value: null, child: Text('All Status')),
+                    DropdownMenuItem(value: 'approved', child: Text('Published')),
+                    DropdownMenuItem(value: 'draft', child: Text('In Reflection')),
+                    DropdownMenuItem(value: 'pending', child: Text('Awaiting Approval')),
+                    DropdownMenuItem(value: 'rejected', child: Text('Not Published')),
+                    DropdownMenuItem(value: 'changes_requested', child: Text('Refinement Suggested')),
+                  ],
+                  onChanged: (val) => viewModel.setStatusFilter(val),
+                ),
+              ),
+            ],
+          ),
+          if (viewModel.groupFilter != null || viewModel.statusFilter != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: InkWell(
+                onTap: () => viewModel.clearFilters(),
+                child: Text(
+                  'Clear Filters',
+                  style: AppTheme.of(context).bodySmall.override(
+                        font: GoogleFonts.lexendDeca(),
+                        color: AppTheme.of(context).primary,
+                        decoration: TextDecoration.underline,
+                      ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFilterDropdown<T>({
+    required BuildContext context,
+    required String label,
+    required T? value,
+    required List<DropdownMenuItem<T>> items,
+    required ValueChanged<T?> onChanged,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+      decoration: BoxDecoration(
+        color: AppTheme.of(context).primaryBackground,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: AppTheme.of(context).alternate, width: 1),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<T>(
+          value: value,
+          isExpanded: true,
+          dropdownColor: AppTheme.of(context).primaryBackground,
+          icon: Icon(Icons.keyboard_arrow_down, size: 20, color: AppTheme.of(context).secondary),
+          style: AppTheme.of(context).bodySmall.override(
+                font: GoogleFonts.lexendDeca(),
+                color: AppTheme.of(context).secondary,
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+              ),
+          items: items,
+          onChanged: onChanged,
+        ),
       ),
     );
   }
@@ -350,7 +462,7 @@ class _ExperienceCard extends StatelessWidget {
                               Text(
                                 experience.moderationStatus == 'rejected'
                                     ? 'You’re welcome to revise and share again whenever you feel ready.'
-                                    : 'A few suggestions were shared to help refine your experience.\nWhen ready, review them and tap “Update & Resubmit”.',
+                                    : 'Suggestions were shared to help refine this experience.',
                                 style: AppTheme.of(context).bodySmall.override(
                                       font: GoogleFonts.lexendDeca(),
                                       color: AppTheme.of(context).secondary,
@@ -409,7 +521,7 @@ class _ExperienceCard extends StatelessWidget {
               Icon(Icons.edit_outlined, size: 20, color: AppTheme.of(context).primary),
               const SizedBox(width: 12),
               Text(
-                experience.moderationStatus == 'draft' ? 'Submit' : 'Update',
+                experience.moderationStatus == 'draft' ? 'Submit' : 'Revise',
                 style: GoogleFonts.lexendDeca(
                   fontSize: 14,
                   color: experience.moderationStatus == 'draft'
