@@ -14,10 +14,12 @@ import 'package:provider/provider.dart';
 
 class GroupActionsSheet extends StatelessWidget {
   final CcGroupsRow group;
+  final VoidCallback? onShowAbout;
 
   const GroupActionsSheet({
     super.key,
     required this.group,
+    this.onShowAbout,
   });
 
   @override
@@ -104,6 +106,41 @@ class GroupActionsSheetView extends StatelessWidget {
                     ),
                   ),
                 ),
+              Align(
+                alignment: const AlignmentDirectional(-1.0, 0.0),
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
+                  child: FFButtonWidget(
+                    onPressed: () async {
+                      Navigator.pop(context); // Close sheet
+                      (context.findAncestorWidgetOfExactType<GroupActionsSheet>() as GroupActionsSheet)
+                          .onShowAbout
+                          ?.call();
+                    },
+                    text: 'About this group',
+                    icon: const Icon(
+                      Icons.info_outline,
+                      size: 24.0,
+                    ),
+                    options: FFButtonOptions(
+                      width: double.infinity,
+                      height: 60.0,
+                      padding: EdgeInsets.zero,
+                      iconAlignment: IconAlignment.start,
+                      color: AppTheme.of(context).primaryBackground,
+                      textStyle: AppTheme.of(context).bodyLarge.override(
+                            font: GoogleFonts.poppins(),
+                            color: AppTheme.of(context).secondary,
+                          ),
+                      elevation: 2.0,
+                      borderSide: const BorderSide(
+                        color: Colors.transparent,
+                        width: 1.0,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
               Align(
                 alignment: const AlignmentDirectional(-1.0, 0.0),
                 child: FFButtonWidget(

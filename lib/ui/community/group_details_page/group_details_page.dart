@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:gw_community/data/repositories/event_repository.dart';
@@ -9,16 +8,22 @@ import 'package:gw_community/data/repositories/group_repository.dart';
 import 'package:gw_community/data/repositories/notification_repository.dart';
 import 'package:gw_community/data/repositories/sharing_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
-import 'package:gw_community/ui/community/group_actions_page/group_actions_sheet.dart';
+
 import 'package:gw_community/ui/community/group_details_page/view_model/group_details_view_model.dart';
+import 'package:gw_community/data/repositories/journeys_repository.dart';
+import 'package:gw_community/data/repositories/learn_repository.dart';
 import 'package:gw_community/ui/community/group_details_page/widgets/group_about_tab.dart';
 import 'package:gw_community/ui/community/group_details_page/widgets/group_events_tab.dart';
+import 'package:gw_community/ui/community/group_details_page/widgets/group_journeys_tab.dart';
+import 'package:gw_community/ui/community/group_details_page/widgets/group_library_tab.dart';
 import 'package:gw_community/ui/community/group_details_page/widgets/group_notifications_tab.dart';
 import 'package:gw_community/ui/community/group_details_page/widgets/group_sharings_tab.dart';
+import 'package:gw_community/ui/community/group_details_page/member_management_page/member_management_page.dart';
+import 'package:gw_community/ui/community/group_edit_page/group_edit_page.dart';
 import 'package:gw_community/ui/community/group_moderation_page/group_moderation_page.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
-import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
+
 import 'package:gw_community/utils/context_extensions.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
@@ -48,6 +53,8 @@ class _GroupDetailsPageState extends State<GroupDetailsPage> with TickerProvider
         context.read<SharingRepository>(),
         context.read<EventRepository>(),
         context.read<NotificationRepository>(),
+        context.read<JourneysRepository>(),
+        context.read<LearnRepository>(),
         widget.groupRow,
         currentUserId: context.currentUserIdOrEmpty,
       )..init(this),
@@ -109,6 +116,29 @@ class GroupDetailsPageView extends StatelessWidget {
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      // Member management button (ADMIN or GROUP_MANAGER only)
+                      if (FFAppState().loginUser.roles.hasAdminOrGroupManager)
+                        FlutterFlowIconButton(
+                          borderColor: Colors.transparent,
+                          borderRadius: 30.0,
+                          borderWidth: 1.0,
+                          buttonSize: 48.0,
+                          icon: const Icon(
+                            Icons.people,
+                            color: Colors.white,
+                            size: 24.0,
+                          ),
+                          onPressed: () async {
+                            await context.pushNamed(
+                              MemberManagementPage.routeName,
+                              queryParameters: {
+                                'groupId': '${group.id}',
+                                'groupName': group.name ?? 'Group',
+                              },
+                            );
+                            viewModel.refreshGroup();
+                          },
+                        ),
                       // Moderation button (ADMIN or GROUP_MANAGER only)
                       if (FFAppState().loginUser.roles.hasAdminOrGroupManager)
                         FutureBuilder<int>(
@@ -130,7 +160,7 @@ class GroupDetailsPageView extends StatelessWidget {
                                 borderColor: Colors.transparent,
                                 borderRadius: 30.0,
                                 borderWidth: 1.0,
-                                buttonSize: 60.0,
+                                buttonSize: 48.0,
                                 icon: const Icon(
                                   Icons.admin_panel_settings,
                                   color: Colors.white,
@@ -145,58 +175,171 @@ class GroupDetailsPageView extends StatelessWidget {
                                     },
                                   );
                                   // Refresh group details after moderation
-                                  // Note: We're in a StatelessWidget context, so manual refresh
-                                  // User will see updated data when they navigate back
+                                  viewModel.refreshGroup();
                                 },
                               ),
                             );
                           },
                         ),
-                      const SizedBox(width: 8),
-                      FFButtonWidget(
-                        onPressed: () async {
-                          await showModalBottomSheet(
-                            isScrollControlled: true,
-                            backgroundColor: Colors.transparent,
-                            enableDrag: false,
-                            useSafeArea: true,
-                            context: context,
-                            builder: (context) {
-                              return WebViewAware(
-                                child: GestureDetector(
-                                  onTap: () {
-                                    FocusScope.of(context).unfocus();
-                                    FocusManager.instance.primaryFocus?.unfocus();
-                                  },
-                                  child: Padding(
-                                    padding: MediaQuery.viewInsetsOf(context),
-                                    child: GroupActionsSheet(
-                                      groupId: group.id,
-                                      currentMemberCount: group.numberMembers ?? 0,
+                      const SizedBox(width: 4),
+                      PopupMenuButton<String>(
+                        icon: const Icon(
+                          Icons.more_vert,
+                          color: Colors.white,
+                        ),
+                        onSelected: (value) async {
+                          if (value == 'about') {
+                            await showModalBottomSheet(
+                              isScrollControlled: true,
+                              backgroundColor: Colors.transparent,
+                              enableDrag: false,
+                              useSafeArea: true,
+                              context: context,
+                              builder: (context) {
+                                return WebViewAware(
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      FocusScope.of(context).unfocus();
+                                      FocusManager.instance.primaryFocus?.unfocus();
+                                    },
+                                    child: Padding(
+                                      padding: MediaQuery.viewInsetsOf(context),
+                                      child: Container(
+                                        height: MediaQuery.sizeOf(context).height * 0.85,
+                                        decoration: BoxDecoration(
+                                          color: AppTheme.of(context).secondaryBackground,
+                                          borderRadius: const BorderRadius.only(
+                                            topLeft: Radius.circular(16.0),
+                                            topRight: Radius.circular(16.0),
+                                          ),
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.all(16.0),
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    'About this group',
+                                                    style: AppTheme.of(context).titleMedium,
+                                                  ),
+                                                  IconButton(
+                                                    icon: const Icon(Icons.close),
+                                                    onPressed: () => Navigator.pop(context),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: ChangeNotifierProvider.value(
+                                                value: viewModel,
+                                                child: const GroupAboutTab(),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              );
-                            },
-                          );
+                                );
+                              },
+                            );
+                          } else if (value == 'edit') {
+                            context.pushNamed(
+                              GroupEditPage.routeName,
+                              extra: <String, dynamic>{
+                                'groupRow': group,
+                              },
+                            );
+                          } else if (value == 'leave') {
+                            final confirm = await showDialog<bool>(
+                              context: context,
+                              builder: (alertDialogContext) {
+                                return AlertDialog(
+                                  title: const Text('Leave Group'),
+                                  content: const Text('Are you sure you want to leave this group?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(alertDialogContext, false),
+                                      child: const Text('Cancel'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(alertDialogContext, true),
+                                      child: const Text('Leave'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+
+                            if (confirm == true) {
+                              if (context.mounted) {
+                                final success = await viewModel.leaveGroup(context);
+                                if (success && context.mounted) {
+                                  context.safePop();
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'Left the group successfully',
+                                        style: TextStyle(
+                                          color: AppTheme.of(context).primaryText,
+                                        ),
+                                      ),
+                                      backgroundColor: AppTheme.of(context).secondary,
+                                    ),
+                                  );
+                                }
+                              }
+                            }
+                          }
                         },
-                        text: '',
-                        icon: const FaIcon(
-                          FontAwesomeIcons.ellipsis,
-                          size: 15.0,
-                        ),
-                        options: FFButtonOptions(
-                          height: 40.0,
-                          padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
-                          iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                          color: AppTheme.of(context).primary,
-                          textStyle: AppTheme.of(context).titleSmall.override(
-                                font: GoogleFonts.lexendDeca(),
-                                color: Colors.white,
+                        itemBuilder: (context) => [
+                          PopupMenuItem(
+                            value: 'about',
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.info_outline,
+                                  size: 20,
+                                  color: AppTheme.of(context).secondary,
+                                ),
+                                const SizedBox(width: 12),
+                                const Text('About this group'),
+                              ],
+                            ),
+                          ),
+                          if (FFAppState().loginUser.roles.hasAdminOrGroupManager)
+                            PopupMenuItem(
+                              value: 'edit',
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.edit_rounded,
+                                    size: 20,
+                                    color: AppTheme.of(context).secondary,
+                                  ),
+                                  const SizedBox(width: 12),
+                                  const Text('Edit Group'),
+                                ],
                               ),
-                          elevation: 0.0,
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
+                            ),
+                          if (viewModel.isMember)
+                            PopupMenuItem(
+                              value: 'leave',
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.exit_to_app_rounded,
+                                    size: 20,
+                                    color: AppTheme.of(context).secondary,
+                                  ),
+                                  const SizedBox(width: 12),
+                                  const Text('Leave Group'),
+                                ],
+                              ),
+                            ),
+                        ],
                       ),
                     ],
                   ),
@@ -267,53 +410,54 @@ class GroupDetailsPageView extends StatelessWidget {
               ),
               // Tabs
               Expanded(
-                child: viewModel.isCheckingMembership || viewModel.tabController == null
+                child: viewModel.isCheckingMembership
                     ? Center(
                         child: SpinKitRipple(
                           color: AppTheme.of(context).primary,
                           size: 50.0,
                         ),
                       )
-                    : Column(
-                        children: [
-                          Align(
-                            alignment: const Alignment(0.0, 0),
-                            child: TabBar(
-                              isScrollable: true,
-                              labelColor: AppTheme.of(context).primary,
-                              labelStyle: AppTheme.of(context).bodyMedium.override(
-                                    font: GoogleFonts.lexendDeca(),
-                                    fontSize: 16.0,
-                                  ),
-                              unselectedLabelStyle: const TextStyle(),
-                              indicatorColor: AppTheme.of(context).secondary,
-                              tabs: viewModel.shouldShowOnlyAbout
-                                  ? [const Tab(key: ValueKey('tab_about_only'), text: 'About')]
-                                  : [
-                                      const Tab(key: ValueKey('tab_experiences'), text: 'Experiences'),
-                                      const Tab(key: ValueKey('tab_events'), text: 'Events'),
-                                      const Tab(key: ValueKey('tab_notifications'), text: 'Notifications'),
-                                      const Tab(key: ValueKey('tab_about'), text: 'About'),
-                                    ],
-                              controller: viewModel.tabController,
-                            ),
+                    : viewModel.shouldShowOnlyAbout
+                        ? const GroupAboutTab(key: ValueKey('page_about_only'))
+                        : Column(
+                            children: [
+                              Align(
+                                alignment: const Alignment(0.0, 0),
+                                child: TabBar(
+                                  isScrollable: true,
+                                  labelColor: AppTheme.of(context).primary,
+                                  labelStyle: AppTheme.of(context).bodyMedium.override(
+                                        font: GoogleFonts.lexendDeca(),
+                                        fontSize: 16.0,
+                                      ),
+                                  unselectedLabelStyle: const TextStyle(),
+                                  indicatorColor: AppTheme.of(context).secondary,
+                                  labelPadding: const EdgeInsets.symmetric(horizontal: 10.0),
+                                  tabs: const [
+                                    Tab(key: ValueKey('tab_experiences'), text: 'Experiences'),
+                                    Tab(key: ValueKey('tab_events'), text: 'Events'),
+                                    Tab(key: ValueKey('tab_notifications'), text: 'Notifications'),
+                                    Tab(key: ValueKey('tab_journeys'), text: 'Journeys'),
+                                    Tab(key: ValueKey('tab_resources'), text: 'Resources'),
+                                  ],
+                                  controller: viewModel.tabController,
+                                ),
+                              ),
+                              Expanded(
+                                child: TabBarView(
+                                  key: const ValueKey('tab_view_content'),
+                                  controller: viewModel.tabController,
+                                  children: const [
+                                    GroupSharingsTab(key: ValueKey('page_experiences')),
+                                    GroupEventsTab(key: ValueKey('page_events')),
+                                    GroupNotificationsTab(key: ValueKey('page_notifications')),
+                                    GroupJourneysTab(key: ValueKey('page_journeys')),
+                                    GroupLibraryTab(key: ValueKey('page_library')),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
-                          Expanded(
-                            child: TabBarView(
-                              key: ValueKey('tab_view_${viewModel.shouldShowOnlyAbout}'),
-                              controller: viewModel.tabController,
-                              children: viewModel.shouldShowOnlyAbout
-                                  ? [const GroupAboutTab(key: ValueKey('page_about_only'))]
-                                  : [
-                                      const GroupSharingsTab(key: ValueKey('page_experiences')),
-                                      const GroupEventsTab(key: ValueKey('page_events')),
-                                      const GroupNotificationsTab(key: ValueKey('page_notifications')),
-                                      const GroupAboutTab(key: ValueKey('page_about')),
-                                    ],
-                            ),
-                          ),
-                        ],
-                      ),
               ),
             ],
           ),

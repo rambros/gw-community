@@ -131,7 +131,6 @@ class SharingCardWidget extends StatelessWidget {
                           fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                         ),
                   ),
-                  _buildVisibilityLabel(context),
                 ],
               ),
             ),
@@ -139,61 +138,6 @@ class SharingCardWidget extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  Widget _buildVisibilityLabel(BuildContext context) {
-    final visibility = sharingRow.visibility;
-    final groupName = sharingRow.groupName;
-
-    // visibility == 'everyone' means visible to everyone - don't show label
-    // Any other value (including 'group', null, 'visible', etc.) means visible only for the group
-    final isEveryone = visibility == 'everyone';
-
-    // Only show label if it's group-only visibility
-    if (!isEveryone && groupName != null && groupName.isNotEmpty) {
-      return RichText(
-        textScaler: MediaQuery.of(context).textScaler,
-        text: TextSpan(
-          children: [
-            TextSpan(
-              text: 'Visible only for ',
-              style: TextStyle(
-                color: AppTheme.of(context).primary,
-                fontSize: 12.0,
-              ),
-            ),
-            TextSpan(
-              text: groupName,
-              style: AppTheme.of(context).bodyMedium.override(
-                    font: GoogleFonts.lexendDeca(
-                      fontWeight: FontWeight.bold,
-                      fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                    ),
-                    color: AppTheme.of(context).primary,
-                    fontSize: 12.0,
-                    letterSpacing: 0.0,
-                    fontWeight: FontWeight.bold,
-                    fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                  ),
-            ),
-          ],
-          style: AppTheme.of(context).bodyMedium.override(
-                font: GoogleFonts.lexendDeca(
-                  fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                  fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                ),
-                color: AppTheme.of(context).primary,
-                fontSize: 12.0,
-                letterSpacing: 0.0,
-                fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-              ),
-        ),
-      );
-    }
-
-    // Don't show anything for "everyone" visibility
-    return const SizedBox.shrink();
   }
 
   Widget _buildModerationStatus(BuildContext context) {
@@ -349,7 +293,7 @@ class SharingCardWidget extends StatelessWidget {
                     },
                   );
                 },
-                text: 'Edit',
+                text: 'Revise',
                 options: FFButtonOptions(
                   height: 40.0,
                   padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),

@@ -25,17 +25,27 @@ class GroupSharingsTab extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 8.0),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Sharing experiences that inspire',
-                    style: AppTheme.of(context).titleSmall.override(
-                          font: GoogleFonts.lexendDeca(
-                            fontWeight: FontWeight.w500,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Share a genuine experience from your practice.',
+                      style: AppTheme.of(context).titleSmall.override(
+                            font: GoogleFonts.lexendDeca(
+                              fontWeight: FontWeight.normal,
+                            ),
+                            fontSize: 16.0,
                           ),
-                          fontSize: 18.0,
-                        ),
-                  ),
+                    ),
+                    Text(
+                      'Your words may inspire others.',
+                      style: AppTheme.of(context).bodySmall.override(
+                            font: GoogleFonts.lexendDeca(),
+                            color: AppTheme.of(context).primary,
+                            fontSize: 14.0,
+                          ),
+                    ),
+                  ],
                 ),
               ),
               Padding(

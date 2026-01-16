@@ -4,10 +4,8 @@ import 'package:gw_community/data/repositories/sharing_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/ui/community/sharing_edit_page/view_model/sharing_edit_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
-import 'package:gw_community/ui/core/ui/flutter_flow_drop_down.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
-import 'package:gw_community/ui/core/ui/form_field_controller.dart';
 import 'package:gw_community/ui/core/widgets/user_avatar.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
@@ -117,9 +115,6 @@ class _SharingEditPageContent extends StatelessWidget {
               // Campo de texto/experiência
               _buildTextField(context, viewModel),
 
-              // Dropdown de visibilidade (apenas se tiver grupo)
-              if (viewModel.hasGroup) _buildVisibilityDropdown(context, viewModel),
-
               // Mensagens de erro/sucesso
               if (viewModel.errorMessage != null) _buildErrorMessage(context, viewModel),
               if (viewModel.successMessage != null) _buildSuccessMessage(context, viewModel),
@@ -206,7 +201,6 @@ class _SharingEditPageContent extends StatelessWidget {
                                 letterSpacing: 0.0,
                               ),
                         ),
-                      _buildVisibilityText(context, viewModel),
                     ],
                   ),
                 ),
@@ -215,25 +209,6 @@ class _SharingEditPageContent extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildVisibilityText(BuildContext context, SharingEditViewModel viewModel) {
-    final isEveryone = viewModel.visibility == 'everyone';
-    final hasGroup = viewModel.hasGroup;
-
-    if (!hasGroup && !isEveryone) {
-      return const SizedBox.shrink();
-    }
-
-    return Text(
-      isEveryone ? 'Visible to everyone' : 'Visible only for this group',
-      style: AppTheme.of(context).bodyMedium.override(
-            font: GoogleFonts.lexendDeca(),
-            color: AppTheme.of(context).primary,
-            fontSize: 12.0,
-            letterSpacing: 0.0,
-          ),
     );
   }
 
@@ -295,51 +270,6 @@ class _SharingEditPageContent extends StatelessWidget {
     );
   }
 
-  Widget _buildVisibilityDropdown(BuildContext context, SharingEditViewModel viewModel) {
-    return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(8.0, 4.0, 0.0, 4.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(4.0, 0.0, 16.0, 0.0),
-            child: Text(
-              'Visibility',
-              style: AppTheme.of(context).bodyMedium.override(
-                    font: GoogleFonts.lexendDeca(),
-                    color: AppTheme.of(context).primary,
-                    fontSize: 16.0,
-                    letterSpacing: 0.0,
-                  ),
-            ),
-          ),
-          FlutterFlowDropDown<String>(
-            controller: FormFieldController<String>(viewModel.visibility),
-            options: List<String>.from(['everyone', 'group_only']),
-            optionLabels: const ['Everyone', 'Only this group'],
-            onChanged: viewModel.setVisibility,
-            width: 180.0,
-            height: 50.0,
-            textStyle: AppTheme.of(context).bodyMedium.override(
-                  font: GoogleFonts.lexendDeca(),
-                  fontSize: 16.0,
-                  letterSpacing: 0.0,
-                ),
-            fillColor: AppTheme.of(context).primaryBackground,
-            elevation: 2.0,
-            borderColor: Colors.transparent,
-            borderWidth: 0.0,
-            borderRadius: 0.0,
-            margin: const EdgeInsetsDirectional.fromSTEB(12.0, 4.0, 12.0, 4.0),
-            hidesUnderline: true,
-            isSearchable: false,
-            isMultiSelect: false,
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildErrorMessage(BuildContext context, SharingEditViewModel viewModel) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -371,7 +301,6 @@ class _SharingEditPageContent extends StatelessWidget {
   Widget _buildActions(BuildContext context, SharingEditViewModel viewModel) {
     // Texto do botão principal depende do status atual
     final publishButtonText = viewModel.isDraft ? 'Publish' : 'Save';
-
 
     return Padding(
       padding: const EdgeInsets.all(4.0),

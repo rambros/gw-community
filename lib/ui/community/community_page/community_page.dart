@@ -3,9 +3,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/community_repository.dart';
 import 'package:gw_community/ui/community/community_page/view_model/community_view_model.dart';
-import 'package:gw_community/ui/community/community_page/widgets/events_tab_widget.dart';
 import 'package:gw_community/ui/community/community_page/widgets/groups_tab_widget.dart';
-import 'package:gw_community/ui/community/community_page/widgets/sharings_tab_widget.dart';
 import 'package:gw_community/ui/community/my_experiences_page/my_experiences_page.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/support/support_page/support_page.dart';
@@ -16,11 +14,7 @@ import 'package:provider/provider.dart';
 class CommunityPage extends StatefulWidget {
   const CommunityPage({
     super.key,
-    int? tabIndex,
-  }) : tabIndex = tabIndex ?? 0;
-
-  /// parametro para controlar qual tab do tabbat mostrar
-  final int tabIndex;
+  });
 
   static String routeName = 'communityPage';
   static String routePath = '/communityPage';
@@ -29,8 +23,7 @@ class CommunityPage extends StatefulWidget {
   State<CommunityPage> createState() => _CommunityPageState();
 }
 
-class _CommunityPageState extends State<CommunityPage> with TickerProviderStateMixin, RouteAware {
-  late TabController _tabController;
+class _CommunityPageState extends State<CommunityPage> with RouteAware {
   CommunityViewModel? _viewModel;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -40,21 +33,10 @@ class _CommunityPageState extends State<CommunityPage> with TickerProviderStateM
     super.initState();
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
+      // Load groups when page initializes
+      _viewModel?.refreshGroupsList();
       safeSetState(() {});
     });
-
-    _tabController = TabController(
-      vsync: this,
-      length: 3,
-      initialIndex: min(
-          valueOrDefault<int>(
-            widget.tabIndex,
-            0,
-          ),
-          2),
-    )..addListener(() => safeSetState(() {}));
-
-    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -70,15 +52,13 @@ class _CommunityPageState extends State<CommunityPage> with TickerProviderStateM
   @override
   void didPopNext() {
     // Called when returning to this page from another page
-    // Refresh the sharings stream to get updated data
-    _viewModel?.refreshSharings();
+    // Refresh the groups list to get updated data
+    _viewModel?.refreshGroupsList();
   }
 
   @override
   void dispose() {
     routeObserver.unsubscribe(this);
-    _tabController.dispose();
-
     super.dispose();
   }
 
@@ -158,7 +138,7 @@ class _CommunityPageState extends State<CommunityPage> with TickerProviderStateM
                             color: AppTheme.of(context).secondary,
                           ),
                           const SizedBox(width: 12),
-                          const Text('Help'),
+                          const Text('Ask a Question'),
                         ],
                       ),
                     ),
@@ -168,75 +148,9 @@ class _CommunityPageState extends State<CommunityPage> with TickerProviderStateM
               centerTitle: true,
               elevation: 4.0,
             ),
-            body: SafeArea(
+            body: const SafeArea(
               top: true,
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      children: [
-                        Align(
-                          alignment: const Alignment(0, 0),
-                          child: TabBar(
-                            labelColor: AppTheme.of(context).primary,
-                            labelStyle: AppTheme.of(context).bodyMedium.override(
-                                  font: GoogleFonts.lexendDeca(
-                                    fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                                    fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                                  ),
-                                  fontSize: 18.0,
-                                  letterSpacing: 0.0,
-                                  fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                                  fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                                ),
-                            unselectedLabelStyle: const TextStyle(),
-                            indicatorColor: AppTheme.of(context).secondary,
-                            isScrollable: true,
-                            labelPadding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
-                            tabs: const [
-                              Tab(
-                                text: 'Experiences',
-                              ),
-
-                              // Manage groups that are obtained by an action when user click on groups tab
-                              Tab(
-                                text: 'Groups',
-                              ),
-
-                              Tab(
-                                text: 'Events',
-                              ),
-                            ],
-                            controller: _tabController,
-                            onTap: (i) async {
-                              await viewModel.onTabChanged(i);
-                              safeSetState(() {});
-                            },
-                          ),
-                        ),
-                        Expanded(
-                          child: TabBarView(
-                            controller: _tabController,
-                            children: [
-                              KeepAliveWidgetWrapper(
-                                builder: (context) => const SharingsTabWidget(),
-                              ),
-                              KeepAliveWidgetWrapper(
-                                builder: (context) => const GroupsTabWidget(),
-                              ),
-                              KeepAliveWidgetWrapper(
-                                builder: (context) => const EventsTabWidget(),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+              child: GroupsTabWidget(),
             ),
           );
         },

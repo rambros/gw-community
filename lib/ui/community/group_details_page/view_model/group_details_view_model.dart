@@ -6,11 +6,16 @@ import 'package:gw_community/data/repositories/notification_repository.dart';
 import 'package:gw_community/data/repositories/sharing_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 
+import 'package:gw_community/data/repositories/journeys_repository.dart';
+import 'package:gw_community/data/repositories/learn_repository.dart';
+
 class GroupDetailsViewModel extends ChangeNotifier {
   final GroupRepository _groupRepository;
   final SharingRepository _sharingRepository;
   final EventRepository _eventRepository;
   final NotificationRepository _notificationRepository;
+  final JourneysRepository _journeysRepository;
+  final LearnRepository _learnRepository;
   CcGroupsRow _group;
   CcGroupsRow get group => _group;
   final String? currentUserId;
@@ -20,6 +25,8 @@ class GroupDetailsViewModel extends ChangeNotifier {
     this._sharingRepository,
     this._eventRepository,
     this._notificationRepository,
+    this._journeysRepository,
+    this._learnRepository,
     CcGroupsRow group, {
     this.currentUserId,
   }) : _group = group;
@@ -59,6 +66,10 @@ class GroupDetailsViewModel extends ChangeNotifier {
   Set<int> _readNotificationIds = {};
   Set<int> get readNotificationIds => _readNotificationIds;
 
+  Future<List<CcJourneysRow>> get groupJourneys => _journeysRepository.getJourneysForGroup(group.id);
+
+  Future<List<ViewContentRow>> get groupLibrary => _learnRepository.filterContent(filterByGroupId: group.id);
+
   void init(TickerProvider vsync) {
     _vsync = vsync;
     // Inicialização síncrona obrigatória antes do check async
@@ -89,7 +100,7 @@ class GroupDetailsViewModel extends ChangeNotifier {
   void _updateTabController() {
     if (_vsync == null) return;
 
-    final int targetLength = shouldShowOnlyAbout ? 1 : 4;
+    final int targetLength = shouldShowOnlyAbout ? 1 : 5;
 
     // Se o controller já existe e o tamanho é o mesmo, não faz nada
     if (tabController != null && tabController!.length == targetLength) return;
@@ -211,13 +222,111 @@ class GroupDetailsViewModel extends ChangeNotifier {
 
   Future<void> deleteSharing(int id) async {
     await _sharingRepository.deleteSharing(id);
+    notifyListeners();
   }
 
   Future<void> deleteEvent(int id) async {
     await _eventRepository.deleteEvent(id);
+    notifyListeners();
   }
 
   Future<void> deleteNotification(int id) async {
     await _notificationRepository.deleteNotification(id);
+    notifyListeners();
+  }
+
+  Future<bool> leaveGroup(BuildContext context) async {
+    if (currentUserId == null || currentUserId!.isEmpty) return false;
+
+    // Optional: Add loading state if needed for UI feedback
+    // _isJoining = true; // reusing existing flag or create new one
+    // notifyListeners();
+
+    try {
+      await _groupRepository.removeUserFromGroup(group.id, currentUserId!);
+      _isMember = false;
+
+      // Update local check
+      _isCheckingMembership = false; // logic reset
+      _updateTabController();
+      notifyListeners();
+
+      return true;
+    } catch (e) {
+      debugPrint('Error leaving group: $e');
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error leaving group: $e')),
+        );
+      }
+      return false;
+    }
+  }
+
+  // Member management methods for admin/group_manager
+
+  /// Adds a user directly to the group (status: Active)
+  Future<bool> addMember(String userId) async {
+    try {
+      await _groupRepository.addUserToGroup(group.id, userId);
+      await refreshMembers();
+      // Refresh group data to update member count
+      final updatedGroup = await _groupRepository.getGroupById(group.id);
+      if (updatedGroup != null) {
+        _group = updatedGroup;
+      }
+      notifyListeners();
+      return true;
+    } catch (e) {
+      debugPrint('Error adding member: $e');
+      return false;
+    }
+  }
+
+  /// Removes a member from the group
+  Future<bool> removeMember(String userId) async {
+    try {
+      await _groupRepository.removeUserFromGroup(group.id, userId);
+      await refreshMembers();
+      // Refresh group data to update member count
+      final updatedGroup = await _groupRepository.getGroupById(group.id);
+      if (updatedGroup != null) {
+        _group = updatedGroup;
+      }
+      notifyListeners();
+      return true;
+    } catch (e) {
+      debugPrint('Error removing member: $e');
+      return false;
+    }
+  }
+
+  /// Gets users available to invite (not already members)
+  Future<List<CcMembersRow>> getAvailableUsersToInvite() async {
+    try {
+      return await _groupRepository.getUsersNotInGroup(group.id);
+    } catch (e) {
+      debugPrint('Error fetching available users: $e');
+      return [];
+    }
+  }
+
+  /// Refreshes the members list
+  Future<void> refreshMembers() async {
+    await _fetchMembers();
+  }
+
+  /// Refreshes the group data (for member count) and members list
+  Future<void> refreshGroup() async {
+    try {
+      final updatedGroup = await _groupRepository.getGroupById(group.id);
+      if (updatedGroup != null) {
+        _group = updatedGroup;
+      }
+      await refreshMembers();
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error refreshing group: $e');
+    }
   }
 }

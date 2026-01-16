@@ -6,6 +6,7 @@ import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/domain/models/app_auth_user.dart';
 import 'package:gw_community/index.dart';
 import 'package:gw_community/ui/community/group_moderation_page/group_moderation_page.dart';
+import 'package:gw_community/ui/community/group_details_page/member_management_page/member_management_page.dart';
 import 'package:gw_community/ui/core/nav_bar/nav_bar_page.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
@@ -197,14 +198,8 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: CommunityPage.routeName,
           path: CommunityPage.routePath,
-          builder: (context, params) => params.isEmpty
-              ? const NavBarPage(initialPage: 'communityPage')
-              : CommunityPage(
-                  tabIndex: params.getParam(
-                    'tabIndex',
-                    ParamType.int,
-                  ),
-                ),
+          builder: (context, params) =>
+              params.isEmpty ? const NavBarPage(initialPage: 'communityPage') : const CommunityPage(),
         ),
         FFRoute(
           name: SharingViewPage.routeName,
@@ -518,6 +513,20 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: GroupModerationPage.routeName,
           path: GroupModerationPage.routePath,
           builder: (context, params) => GroupModerationPage(
+            groupId: params.getParam(
+              'groupId',
+              ParamType.int,
+            ),
+            groupName: params.getParam(
+              'groupName',
+              ParamType.String,
+            ),
+          ),
+        ),
+        FFRoute(
+          name: MemberManagementPage.routeName,
+          path: MemberManagementPage.routePath,
+          builder: (context, params) => MemberManagementPage(
             groupId: params.getParam(
               'groupId',
               ParamType.int,

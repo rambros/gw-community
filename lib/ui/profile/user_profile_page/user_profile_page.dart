@@ -282,7 +282,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 Padding(
                   padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
                   child: ProfileMenuItemWidget(
-                    text: 'Help',
+                    text: 'Ask a Question',
                     onTap: () async {
                       context.pushNamed(SupportPage.routeName);
                     },

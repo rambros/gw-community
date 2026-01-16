@@ -105,7 +105,7 @@ class _SupportPageContentState extends State<_SupportPageContent> with RouteAwar
           onPressed: () => context.pop(),
         ),
         title: Text(
-          'Help',
+          'Your Questions',
           style: AppTheme.of(context).bodyMedium.override(
                 font: GoogleFonts.lexendDeca(),
                 color: Colors.white,

@@ -22,7 +22,7 @@ class StatusBadgeWidget extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: config.backgroundColor,
-        borderRadius: BorderRadius.circular(compact ? 4 : 8),
+        borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

@@ -5,8 +5,16 @@ class CcGroupMembersTable extends SupabaseTable<CcGroupMembersRow> {
   String get tableName => 'cc_group_members';
 
   @override
-  CcGroupMembersRow createRow(Map<String, dynamic> data) =>
-      CcGroupMembersRow(data);
+  CcGroupMembersRow createRow(Map<String, dynamic> data) => CcGroupMembersRow(data);
+
+  @override
+  Future<CcGroupMembersRow> insert(Map<String, dynamic> data) => SupaFlow.client
+      .from(tableName)
+      .insert(data)
+      .select('id, user_id, group_id, created_at, user_role')
+      .limit(1)
+      .single()
+      .then(createRow);
 }
 
 class CcGroupMembersRow extends SupabaseDataRow {

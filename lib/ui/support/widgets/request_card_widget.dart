@@ -42,40 +42,26 @@ class RequestCardWidget extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Header: Request number, status badge, and menu
+                // Header: Title and menu
                 Row(
                   children: [
-                    Text(
-                      request.requestNumber,
-                      style: GoogleFonts.lexendDeca(
-                        fontSize: 12,
-                        color: AppTheme.of(context).secondary.withValues(alpha: 0.6),
-                        fontWeight: FontWeight.w500,
+                    Expanded(
+                      child: Text(
+                        request.title,
+                        style: GoogleFonts.lexendDeca(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: AppTheme.of(context).secondary,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    const SizedBox(width: 12),
-                    StatusBadgeWidget(
-                      status: request.status,
-                      compact: true,
-                    ),
-                    const Spacer(),
+                    const SizedBox(width: 8),
                     _buildActionsMenu(context),
                   ],
                 ),
                 const SizedBox(height: 12),
-
-                // Title
-                Text(
-                  request.title,
-                  style: GoogleFonts.lexendDeca(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: AppTheme.of(context).secondary,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 8),
 
                 // Description preview
                 if (request.description.isNotEmpty)
@@ -93,7 +79,10 @@ class RequestCardWidget extends StatelessWidget {
                 // Footer: Category, date, message count
                 Row(
                   children: [
-                    _buildCategoryChip(context),
+                    StatusBadgeWidget(
+                      status: request.status,
+                      compact: true,
+                    ),
                     const Spacer(),
                     if (request.messageCount > 0) ...[
                       Icon(
@@ -134,25 +123,6 @@ class RequestCardWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildCategoryChip(BuildContext context) {
-    final categoryLabel = _getCategoryLabel(request.category);
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: AppTheme.of(context).primary.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Text(
-        categoryLabel,
-        style: GoogleFonts.lexendDeca(
-          fontSize: 11,
-          fontWeight: FontWeight.w500,
-          color: AppTheme.of(context).primary,
-        ),
-      ),
-    );
-  }
-
   Widget _buildActionsMenu(BuildContext context) {
     return PopupMenuButton<String>(
       icon: Icon(
@@ -185,22 +155,6 @@ class RequestCardWidget extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  String _getCategoryLabel(String category) {
-    switch (category) {
-      case 'journey':
-        return 'Journey';
-      case 'community':
-        return 'Community';
-      case 'account':
-        return 'Account';
-      case 'technical':
-        return 'Technical';
-      case 'other':
-      default:
-        return 'Other';
-    }
   }
 
   String _formatDate(DateTime date) {

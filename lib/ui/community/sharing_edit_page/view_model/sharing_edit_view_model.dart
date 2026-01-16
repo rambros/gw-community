@@ -42,7 +42,7 @@ class SharingEditViewModel extends ChangeNotifier {
   void _initializeForm() {
     textController = TextEditingController(text: originalSharing.text ?? '');
     textFocusNode = FocusNode();
-    _visibility = originalSharing.visibility ?? 'everyone';
+    _visibility = hasGroup ? 'group_only' : (originalSharing.visibility ?? 'everyone');
   }
 
   // ========== COMMANDS (User Actions) ==========
@@ -67,12 +67,15 @@ class SharingEditViewModel extends ChangeNotifier {
     _setSaving(true);
     _clearMessages();
 
+    // Force group_only if hasGroup to ensure data consistency
+    final saveVisibility = hasGroup ? 'group_only' : _visibility;
+
     try {
       await _repository.updateSharing(
         id: originalSharing.id!,
         title: originalSharing.title ?? '',
         text: textController.text.trim(),
-        visibility: _visibility,
+        visibility: saveVisibility,
         privacy: originalSharing.privacy ?? 'public',
         keepAsDraft: keepAsDraft,
       );

@@ -103,7 +103,6 @@ class GroupRepository {
     await CcGroupMembersTable().insert({
       'group_id': groupId,
       'user_id': userId,
-      'status': 'Invited', // Or 'Active' depending on logic
       'created_at': supaSerialize<DateTime>(DateTime.now()),
     });
   }
@@ -113,7 +112,6 @@ class GroupRepository {
     await CcGroupMembersTable().insert({
       'group_id': groupId,
       'user_id': userId,
-      'status': 'Active',
       'created_at': supaSerialize<DateTime>(DateTime.now()),
     });
   }
@@ -170,5 +168,27 @@ class GroupRepository {
       queryFn: (q) => q.eq('group_id', groupId).eq('user_id', userId),
     );
     return result.isNotEmpty;
+  }
+
+  /// Fetches users who are NOT members of a specific group (for invitations)
+  Future<List<CcMembersRow>> getUsersNotInGroup(int groupId) async {
+    final groupMembers = await getGroupMembers(groupId);
+    final memberUserIds = <String>{};
+
+    for (final member in groupMembers) {
+      if (member.userId != null && member.userId!.isNotEmpty) {
+        memberUserIds.add(member.userId!);
+      }
+    }
+
+    final allUsers = await CcMembersTable().queryRows(
+      queryFn: (q) => q.order('display_name', ascending: true),
+    );
+
+    return allUsers.where((user) {
+      final userAuthId = user.authUserId;
+      if (userAuthId == null || userAuthId.isEmpty) return false;
+      return !memberUserIds.contains(userAuthId);
+    }).toList();
   }
 }

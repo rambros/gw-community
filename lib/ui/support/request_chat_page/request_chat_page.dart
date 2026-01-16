@@ -145,7 +145,7 @@ class _RequestChatPageContent extends StatelessWidget {
           onPressed: () => context.pop(),
         ),
         title: Text(
-          request.requestNumber,
+          request.title,
           style: AppTheme.of(context).bodyMedium.override(
                 font: GoogleFonts.lexendDeca(),
                 color: Colors.white,
@@ -169,10 +169,7 @@ class _RequestChatPageContent extends StatelessWidget {
           ),
 
           // Input area or resolved banner
-          if (viewModel.isResolved)
-            _buildResolvedBanner(context, viewModel)
-          else
-            _buildInputArea(context, viewModel),
+          if (viewModel.isResolved) _buildResolvedBanner(context, viewModel) else _buildInputArea(context, viewModel),
         ],
       ),
     );
@@ -248,13 +245,12 @@ class _RequestChatPageContent extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            blurRadius: 4,
-            color: Colors.black.withValues(alpha: 0.1),
-            offset: const Offset(0, 2),
+        border: Border(
+          bottom: BorderSide(
+            color: AppTheme.of(context).secondary.withValues(alpha: 0.1),
+            width: 1.0,
           ),
-        ],
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -267,23 +263,41 @@ class _RequestChatPageContent extends StatelessWidget {
           Text(
             request.title,
             style: GoogleFonts.lexendDeca(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
               color: AppTheme.of(context).secondary,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 4),
 
-          // Description (collapsed)
+          // Asked date
+          Text(
+            'Asked on ${DateFormat('MMM d').format(request.createdAt)}',
+            style: GoogleFonts.lexendDeca(
+              fontSize: 14,
+              color: AppTheme.of(context).secondary.withValues(alpha: 0.6),
+            ),
+          ),
+          const SizedBox(height: 2),
+
+          // Reference ID (small)
+          Text(
+            'Reference ${request.requestNumber}',
+            style: GoogleFonts.lexendDeca(
+              fontSize: 11,
+              color: AppTheme.of(context).secondary.withValues(alpha: 0.4),
+            ),
+          ),
+          const SizedBox(height: 12),
+
+          // Description (full)
           if (request.description.isNotEmpty)
             Text(
               request.description,
               style: GoogleFonts.inter(
-                fontSize: 14,
-                color: AppTheme.of(context).secondary.withValues(alpha: 0.7),
+                fontSize: 15,
+                color: AppTheme.of(context).secondary.withValues(alpha: 0.8),
               ),
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
             ),
         ],
       ),
@@ -298,8 +312,7 @@ class _RequestChatPageContent extends StatelessWidget {
     return StreamBuilder<List<CcSupportMessagesRow>>(
       stream: viewModel.messagesStream,
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting &&
-            !snapshot.hasData) {
+        if (snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData) {
           return Center(
             child: SpinKitRipple(
               color: AppTheme.of(context).primary,
@@ -385,8 +398,7 @@ class _RequestChatPageContent extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             // Selected image preview
-            if (viewModel.selectedImage != null)
-              _buildImagePreview(context, viewModel),
+            if (viewModel.selectedImage != null) _buildImagePreview(context, viewModel),
 
             // Input row
             Row(
@@ -439,9 +451,7 @@ class _RequestChatPageContent extends StatelessWidget {
                     shape: BoxShape.circle,
                   ),
                   child: IconButton(
-                    onPressed: viewModel.canSendMessage
-                        ? () => _sendMessage(context, viewModel)
-                        : null,
+                    onPressed: viewModel.canSendMessage ? () => _sendMessage(context, viewModel) : null,
                     icon: viewModel.isSending
                         ? const SizedBox(
                             width: 20,

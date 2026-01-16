@@ -113,7 +113,7 @@ class _JourneyPageState extends State<JourneyPage> {
                             color: AppTheme.of(context).secondary,
                           ),
                           const SizedBox(width: 12),
-                          const Text('Support Documents'),
+                          const Text('Journey Resources'),
                         ],
                       ),
                     ),
@@ -127,7 +127,7 @@ class _JourneyPageState extends State<JourneyPage> {
                             color: AppTheme.of(context).secondary,
                           ),
                           const SizedBox(width: 12),
-                          const Text('Help'),
+                          const Text('Ask a Question'),
                         ],
                       ),
                     ),
@@ -358,7 +358,7 @@ class _JourneyPageState extends State<JourneyPage> {
       LearnListPage.routeName,
       queryParameters: {
         'journeyId': viewModel.journeyId.toString(),
-        'customTitle': 'Support Documents for Your Journey',
+        'customTitle': 'Journey Resources',
       }.withoutNulls,
       extra: <String, dynamic>{
         kTransitionInfoKey: const TransitionInfo(

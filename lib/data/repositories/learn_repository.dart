@@ -7,6 +7,12 @@ class LearnRepository {
 
   Future<List<ViewContentRow>> searchContent(
     String searchString, {
+    int filterByAuthorId = 0,
+    String filterByYear = '',
+    int filterByEventId = 0,
+    List<String> filterByTopics = const [],
+    int filterByJourneyId = 0,
+    int filterByGroupId = 0,
     bool ascending = true,
     String sortColumn = 'title',
     int? limit,
@@ -19,8 +25,29 @@ class LearnRepository {
     dynamic query = SupaFlow.client
         .from('view_content')
         .select(_listColumns)
-        .textSearch('content_search_string', finalString)
-        .order(sortColumn, ascending: ascending);
+        .eq('is_published', true)
+        .textSearch('content_search_string', finalString);
+
+    if (filterByAuthorId != 0) {
+      query = query.contains('authors', [filterByAuthorId]);
+    }
+    if (filterByTopics.isNotEmpty) {
+      query = query.contains('topics_names', filterByTopics);
+    }
+    if (filterByEventId != 0) {
+      query = query.eq('cott_event_id', filterByEventId);
+    }
+    if (filterByYear.trim().isNotEmpty) {
+      query = query.eq('year_published', filterByYear);
+    }
+    if (filterByGroupId != 0) {
+      query = query.contains('groups', [filterByGroupId]);
+    }
+    if (filterByJourneyId != 0) {
+      query = query.contains('journeys', [filterByJourneyId]);
+    }
+
+    query = query.order(sortColumn, ascending: ascending);
 
     if (limit != null) {
       query = query.limit(limit);

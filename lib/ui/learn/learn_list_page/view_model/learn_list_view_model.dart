@@ -126,6 +126,12 @@ class LearnListViewModel extends ChangeNotifier {
       if (_isSearchActive) {
         newContent = await _repository.searchContent(
           _searchQuery,
+          filterByAuthorId: _filterByAuthorId,
+          filterByYear: _filterByYear,
+          filterByEventId: _filterByEventId,
+          filterByTopics: _filterByTopics,
+          filterByJourneyId: _filterByJourneyId,
+          filterByGroupId: _filterByGroupId,
           limit: _pageSize,
           offset: offset,
         );
@@ -229,6 +235,12 @@ class LearnListViewModel extends ChangeNotifier {
     try {
       final newContent = await _repository.searchContent(
         query,
+        filterByAuthorId: _filterByAuthorId,
+        filterByYear: _filterByYear,
+        filterByEventId: _filterByEventId,
+        filterByTopics: _filterByTopics,
+        filterByJourneyId: _filterByJourneyId,
+        filterByGroupId: _filterByGroupId,
         limit: _pageSize,
         offset: 0,
       );

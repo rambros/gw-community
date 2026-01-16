@@ -133,9 +133,7 @@ class _LearnListPageState extends State<LearnListPage> {
                               ),
 
                             // Search Bar
-                            if (!viewModel.isSearchActive &&
-                                !viewModel.isFilterActive &&
-                                widget.journeyId == null)
+                            if (!viewModel.isSearchActive && !viewModel.isFilterActive && widget.journeyId == null)
                               Padding(
                                 padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 16.0, 0.0),
                                 child: Container(
@@ -280,33 +278,6 @@ class _LearnListPageState extends State<LearnListPage> {
                                       ),
                                     ),
                                   ),
-                                  if ((viewModel.isSearchActive || viewModel.isFilterActive) &&
-                                      widget.journeyId == null)
-                                    Padding(
-                                      padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
-                                      child: FFButtonWidget(
-                                        onPressed: () {
-                                          _textController.clear();
-                                          viewModel.clearFilters();
-                                          viewModel.clearSearch();
-                                        },
-                                        text: 'Clear Filter',
-                                        options: FFButtonOptions(
-                                          height: 40.0,
-                                          padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-                                          color: AppTheme.of(context).primaryBackground,
-                                          textStyle: AppTheme.of(context).labelLarge.override(
-                                                color: AppTheme.of(context).secondary,
-                                              ),
-                                          elevation: 0.0,
-                                          borderSide: BorderSide(
-                                            color: AppTheme.of(context).secondaryBackground,
-                                            width: 0.5,
-                                          ),
-                                          borderRadius: BorderRadius.circular(20.0),
-                                        ),
-                                      ),
-                                    ),
                                 ],
                               ),
                             ),
@@ -382,7 +353,8 @@ class _LearnListPageState extends State<LearnListPage> {
                                               controller: _scrollController,
                                               padding: const EdgeInsets.fromLTRB(0, 0, 0, 12.0),
                                               scrollDirection: Axis.vertical,
-                                              itemCount: viewModel.contentList.length + (viewModel.isLoadingMore ? 1 : 0),
+                                              itemCount:
+                                                  viewModel.contentList.length + (viewModel.isLoadingMore ? 1 : 0),
                                               separatorBuilder: (_, __) => const SizedBox(height: 8.0),
                                               itemBuilder: (context, index) {
                                                 if (index == viewModel.contentList.length) {

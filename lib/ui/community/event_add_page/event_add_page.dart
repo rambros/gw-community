@@ -129,7 +129,6 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<EventAddViewModel>();
-    final visibilityController = FormFieldController<String>(vm.visibility);
     final statusController = FormFieldController<String>(vm.status);
 
     return Container(
@@ -181,23 +180,6 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
                   controller: vm.urlRegistrationController,
                   focusNode: vm.urlFocus,
                   label: 'Registration URL (optional)',
-                ),
-                Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(4.0, 8.0, 4.0, 8.0),
-                  child: FlutterFlowDropDown<String>(
-                    controller: visibilityController,
-                    options: const ['group_only', 'everyone'],
-                    optionLabels: const ['Only this group', 'Everyone'],
-                    onChanged: vm.setVisibility,
-                    textStyle: AppTheme.of(context).bodyMedium,
-                    hintText: 'Visibility',
-                    fillColor: AppTheme.of(context).primaryBackground,
-                    elevation: 2.0,
-                    borderColor: AppTheme.of(context).alternate,
-                    borderWidth: 1.0,
-                    borderRadius: 16.0,
-                    margin: const EdgeInsetsDirectional.fromSTEB(12.0, 4.0, 12.0, 4.0),
-                  ),
                 ),
                 Padding(
                   padding: const EdgeInsetsDirectional.fromSTEB(4.0, 8.0, 4.0, 8.0),
