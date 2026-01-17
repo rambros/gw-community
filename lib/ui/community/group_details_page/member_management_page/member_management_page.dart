@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -31,40 +32,60 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
   final TextEditingController _searchController = TextEditingController();
 
   List<CcMembersRow> _currentMembers = [];
-  List<CcMembersRow> _availableUsers = [];
   List<CcMembersRow> _filteredAvailableUsers = [];
 
   bool _isLoadingMembers = true;
-  bool _isLoadingAvailable = true;
+  bool _isLoadingAvailable = false;
   final Set<String> _addingUserIds = {};
+  Timer? _debounce;
 
   @override
   void initState() {
     super.initState();
     _loadData();
-    _searchController.addListener(_filterAvailableUsers);
+    _searchController.addListener(_searchUsers);
   }
 
   @override
   void dispose() {
     _searchController.dispose();
+    _debounce?.cancel();
     super.dispose();
   }
 
   Future<void> _loadData() async {
     await Future.wait([
       _loadCurrentMembers(),
-      _loadAvailableUsers(),
     ]);
   }
+
+  List<CcMembersRow> _facilitators = [];
+  List<CcMembersRow> _regularMembers = [];
 
   Future<void> _loadCurrentMembers() async {
     setState(() => _isLoadingMembers = true);
     try {
-      final members = await _groupRepository.getGroupMembersAsUsers(widget.groupId);
+      // 1. Fetch the relationships (roles)
+      final groupMembersLinks = await _groupRepository.getGroupMembers(widget.groupId);
+
+      // 2. Fetch the user profiles
+      final membersUsers = await _groupRepository.getGroupMembersAsUsers(widget.groupId);
+
       if (mounted) {
+        // 3. Identify managers
+        // We look for 'GROUP_MANAGER' (or legacy variants) in the group_members table
+        final managerIds = groupMembersLinks
+            .where((m) => m.userRole == 'GROUP_MANAGER' || m.userRole == 'Manager' || m.userRole == 'group_manager')
+            .map((m) => m.userId)
+            .toSet();
+
         setState(() {
-          _currentMembers = members;
+          _currentMembers = membersUsers; // Keep full list if needed for count
+
+          _facilitators = membersUsers.where((m) => managerIds.contains(m.authUserId)).toList();
+
+          _regularMembers = membersUsers.where((m) => !managerIds.contains(m.authUserId)).toList();
+
           _isLoadingMembers = false;
         });
       }
@@ -76,38 +97,43 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
     }
   }
 
-  Future<void> _loadAvailableUsers() async {
-    setState(() => _isLoadingAvailable = true);
-    try {
-      final users = await _groupRepository.getUsersNotInGroup(widget.groupId);
+  Future<void> _searchUsers() async {
+    final query = _searchController.text.trim();
+    if (query.length < 3) {
       if (mounted) {
         setState(() {
-          _availableUsers = users;
-          _filteredAvailableUsers = users;
+          _filteredAvailableUsers = [];
+          _isLoadingAvailable = false;
+        });
+      }
+      return;
+    }
+
+    setState(() => _isLoadingAvailable = true);
+
+    try {
+      // Server-side search
+      final users = await _groupRepository.searchAvailableUsers(query);
+
+      if (mounted) {
+        setState(() {
+          // Filter out users who are already members
+          final memberIds = _currentMembers.map((m) => m.authUserId).toSet();
+
+          _filteredAvailableUsers = users.where((u) {
+            if (u.authUserId == null) return false;
+            return !memberIds.contains(u.authUserId);
+          }).toList();
+
           _isLoadingAvailable = false;
         });
       }
     } catch (e) {
-      debugPrint('Error loading available users: $e');
+      debugPrint('Error searching users: $e');
       if (mounted) {
         setState(() => _isLoadingAvailable = false);
       }
     }
-  }
-
-  void _filterAvailableUsers() {
-    final query = _searchController.text.toLowerCase().trim();
-    setState(() {
-      if (query.isEmpty) {
-        _filteredAvailableUsers = _availableUsers;
-      } else {
-        _filteredAvailableUsers = _availableUsers.where((user) {
-          final displayName = _getDisplayName(user).toLowerCase();
-          final email = user.email?.toLowerCase() ?? '';
-          return displayName.contains(query) || email.contains(query);
-        }).toList();
-      }
-    });
   }
 
   String _getDisplayName(CcMembersRow member) {
@@ -132,9 +158,10 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
         setState(() {
           _addingUserIds.remove(user.authUserId!);
           // Move user from available to current members
-          _availableUsers.removeWhere((u) => u.authUserId == user.authUserId);
           _currentMembers.add(user);
-          _filterAvailableUsers();
+          _regularMembers.add(user); // New members added here are regular members by default
+          // Remove from search results as they are now members
+          _filteredAvailableUsers.removeWhere((u) => u.authUserId == user.authUserId);
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -189,9 +216,11 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
         if (mounted) {
           setState(() {
             // Move user from current members back to available
-            _currentMembers.removeWhere((m) => m.authUserId == member.authUserId);
-            _availableUsers.add(member);
-            _filterAvailableUsers();
+            _facilitators.removeWhere((m) => m.authUserId == member.authUserId);
+            _regularMembers.removeWhere((m) => m.authUserId == member.authUserId);
+            // We don't necessarily add back to filtered list unless it matches search
+            // But checking search is cheap so let's just trigger a re-search
+            _searchUsers();
           });
 
           ScaffoldMessenger.of(context).showSnackBar(
@@ -207,6 +236,68 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('Failed to remove $displayName'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    }
+  }
+
+  Future<void> _toggleMemberRole(CcMembersRow member, {required bool makeFacilitator}) async {
+    final displayName = _getDisplayName(member);
+    final newRole = makeFacilitator ? 'GROUP_MANAGER' : 'MEMBER';
+    final action = makeFacilitator ? 'promote to Facilitator' : 'demote to Member';
+
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (alertContext) => AlertDialog(
+        title: Text(makeFacilitator ? 'Make Facilitator' : 'Remove as Facilitator'),
+        content: Text('Are you sure you want to $action "$displayName"?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(alertContext, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(alertContext, true),
+            style: TextButton.styleFrom(
+              foregroundColor: AppTheme.of(context).primary,
+            ),
+            child: const Text('Confirm'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true && mounted) {
+      try {
+        await _groupRepository.updateMemberRole(widget.groupId, member.authUserId!, newRole);
+
+        if (mounted) {
+          setState(() {
+            if (makeFacilitator) {
+              _regularMembers.removeWhere((m) => m.authUserId == member.authUserId);
+              _facilitators.add(member);
+            } else {
+              _facilitators.removeWhere((m) => m.authUserId == member.authUserId);
+              _regularMembers.add(member);
+            }
+          });
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('$displayName role updated successfully'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      } catch (e) {
+        debugPrint('Error updating role: $e');
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to update role for $displayName'),
               backgroundColor: Colors.red,
             ),
           );
@@ -322,7 +413,7 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
                     child: Padding(
                       padding: const EdgeInsets.all(24.0),
                       child: Text(
-                        _searchController.text.isEmpty ? 'No users available to add' : 'No users found',
+                        _searchController.text.isEmpty ? 'Search to find users' : 'No users found',
                         style: AppTheme.of(context).bodyMedium.override(
                               font: GoogleFonts.lexendDeca(),
                               color: AppTheme.of(context).secondaryText,
@@ -415,55 +506,85 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
   }
 
   Widget _buildCurrentMembersSection(BuildContext context) {
+    if (_isLoadingMembers) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: SpinKitRipple(
+            color: AppTheme.of(context).primary,
+            size: 40.0,
+          ),
+        ),
+      );
+    }
+
+    if (_currentMembers.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Text(
+            'No members in this group',
+            style: AppTheme.of(context).bodyMedium.override(
+                  font: GoogleFonts.lexendDeca(),
+                  color: AppTheme.of(context).secondaryText,
+                ),
+          ),
+        ),
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'CURRENT MEMBERS (${_currentMembers.length})',
-          style: AppTheme.of(context).labelMedium.override(
-                font: GoogleFonts.lexendDeca(),
-                color: AppTheme.of(context).primary,
-                fontWeight: FontWeight.w600,
-              ),
-        ),
-        const SizedBox(height: 12.0),
-        _isLoadingMembers
-            ? Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: SpinKitRipple(
-                    color: AppTheme.of(context).primary,
-                    size: 40.0,
-                  ),
+        // Facilitators Section
+        if (_facilitators.isNotEmpty) ...[
+          Text(
+            'FACILITATORS (${_facilitators.length})',
+            style: AppTheme.of(context).labelMedium.override(
+                  font: GoogleFonts.lexendDeca(),
+                  color: AppTheme.of(context).primary,
+                  fontWeight: FontWeight.w600,
                 ),
-              )
-            : _currentMembers.isEmpty
-                ? Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(24.0),
-                      child: Text(
-                        'No members in this group',
-                        style: AppTheme.of(context).bodyMedium.override(
-                              font: GoogleFonts.lexendDeca(),
-                              color: AppTheme.of(context).secondaryText,
-                            ),
-                      ),
-                    ),
-                  )
-                : ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: _currentMembers.length,
-                    itemBuilder: (context, index) {
-                      final member = _currentMembers[index];
-                      return _buildMemberCard(context, member);
-                    },
-                  ),
+          ),
+          const SizedBox(height: 12.0),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: _facilitators.length,
+            itemBuilder: (context, index) {
+              final member = _facilitators[index];
+              return _buildMemberCard(context, member, isFacilitator: true);
+            },
+          ),
+          const SizedBox(height: 24.0),
+        ],
+
+        // Regular Members Section
+        if (_regularMembers.isNotEmpty) ...[
+          Text(
+            'MEMBERS (${_regularMembers.length})',
+            style: AppTheme.of(context).labelMedium.override(
+                  font: GoogleFonts.lexendDeca(),
+                  color: AppTheme.of(context).primary,
+                  fontWeight: FontWeight.w600,
+                ),
+          ),
+          const SizedBox(height: 12.0),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: _regularMembers.length,
+            itemBuilder: (context, index) {
+              final member = _regularMembers[index];
+              return _buildMemberCard(context, member);
+            },
+          ),
+        ],
       ],
     );
   }
 
-  Widget _buildMemberCard(BuildContext context, CcMembersRow member) {
+  Widget _buildMemberCard(BuildContext context, CcMembersRow member, {bool isFacilitator = false}) {
     final displayName = _getDisplayName(member);
 
     return Card(
@@ -512,9 +633,25 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
                   _showMemberDetails(member);
                 } else if (value == 'remove') {
                   _removeMember(member);
+                } else if (value == 'role_toggle') {
+                  _toggleMemberRole(member, makeFacilitator: !isFacilitator);
                 }
               },
               itemBuilder: (context) => [
+                PopupMenuItem(
+                  value: 'role_toggle',
+                  child: Row(
+                    children: [
+                      Icon(
+                        isFacilitator ? Icons.arrow_downward : Icons.arrow_upward,
+                        size: 20,
+                        color: AppTheme.of(context).primary,
+                      ),
+                      const SizedBox(width: 12),
+                      Text(isFacilitator ? 'Make Member' : 'Make Facilitator'),
+                    ],
+                  ),
+                ),
                 PopupMenuItem(
                   value: 'view',
                   child: Row(

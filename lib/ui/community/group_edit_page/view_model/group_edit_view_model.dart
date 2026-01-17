@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:gw_community/data/repositories/group_repository.dart';
@@ -23,6 +24,13 @@ class GroupEditViewModel extends ChangeNotifier {
   List<String> _selectedManagerIds = [];
   List<String> get selectedManagerIds => _selectedManagerIds;
 
+  List<String> _initialManagerIds = []; // To track changes
+
+  String _managerSearchQuery = '';
+  String get managerSearchQuery => _managerSearchQuery;
+
+  Timer? _debounce;
+
   String? _uploadedImageUrl;
   String? get uploadedImageUrl => _uploadedImageUrl;
 
@@ -32,8 +40,18 @@ class GroupEditViewModel extends ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
-  List<CcMembersRow> _availableManagers = [];
+  List<CcMembersRow> _availableManagers = []; // Acts as search results
   List<CcMembersRow> get availableManagers => _availableManagers;
+
+  List<CcMembersRow> _selectedManagerObjects = [];
+
+  bool _isPrivate = false;
+  bool get isPrivate => _isPrivate;
+
+  void setIsPrivate(bool value) {
+    _isPrivate = value;
+    notifyListeners();
+  }
 
   // Initialization
   Future<void> init() async {
@@ -45,11 +63,36 @@ class GroupEditViewModel extends ChangeNotifier {
       welcomeMessageController = TextEditingController(text: group.welcomeMessage);
       policyMessageController = TextEditingController(text: group.policyMessage);
 
-      // Initialize selected managers
-      _selectedManagerIds = List<String>.from(group.groupManagers);
+      // Initialize privacy
+      _isPrivate = (group.groupPrivacy?.toLowerCase() ?? 'public') == 'private';
 
-      // Fetch available managers
-      _availableManagers = await _groupRepository.getGroupManagers();
+      // Initialize selected managers from group members
+      // We use getGroupMembersAsUsers to get the full user profiles of existing members
+      final allMembers = await _groupRepository.getGroupMembersAsUsers(group.id);
+
+      // Filter for managers/facilitators
+      _selectedManagerObjects = allMembers.where((m) {
+        // getGroupMembersAsUsers returns CcMembersRow which has 'userRole' if joined properly
+        // wait, CcMembersRow from getGroupMembersAsUsers might NOT have userRole populated directly
+        // if it comes from CcMembersTable join.
+        // Actually, getGroupMembersAsUsers in repository does NOT join with role.
+        // We need to match with the links.
+        return false; // logic below
+      }).toList();
+
+      // Better approach: Get links, then get users.
+      final links = await _groupRepository.getGroupMembers(group.id);
+      final managerUserIds = links
+          .where((m) => m.userId != null && (m.userRole == 'GROUP_MANAGER' || m.userRole == 'Manager'))
+          .map((m) => m.userId!)
+          .toSet();
+
+      _selectedManagerObjects = allMembers.where((u) => managerUserIds.contains(u.authUserId)).toList();
+      _selectedManagerIds = _selectedManagerObjects.map((u) => u.authUserId!).toList();
+      _initialManagerIds = List.from(_selectedManagerIds);
+
+      // We do NOT fetch all available users anymore.
+      _availableManagers = [];
     } catch (e) {
       debugPrint('Error initializing GroupEditViewModel: $e');
     } finally {
@@ -61,6 +104,53 @@ class GroupEditViewModel extends ChangeNotifier {
   void setSelectedManagers(List<String>? ids) {
     _selectedManagerIds = ids ?? [];
     notifyListeners();
+  }
+
+  void toggleManager(String managerId, [CcMembersRow? user]) {
+    if (_selectedManagerIds.contains(managerId)) {
+      _selectedManagerIds.remove(managerId);
+      _selectedManagerObjects.removeWhere((u) => u.authUserId == managerId);
+    } else {
+      _selectedManagerIds.add(managerId);
+      if (user != null) {
+        _selectedManagerObjects.add(user);
+      }
+    }
+    notifyListeners();
+  }
+
+  Future<void> setManagerSearchQuery(String query) async {
+    _managerSearchQuery = query;
+
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+
+    if (query.trim().length < 3) {
+      _availableManagers = [];
+      notifyListeners();
+      return;
+    }
+
+    _debounce = Timer(const Duration(milliseconds: 500), () async {
+      // Server-side search
+      try {
+        _availableManagers = await _groupRepository.searchAvailableUsers(query);
+      } catch (e) {
+        debugPrint('Error searching managers: $e');
+        _availableManagers = [];
+      }
+      notifyListeners();
+    });
+  }
+
+  // Filtered managers based on search query
+  List<CcMembersRow> get filteredManagers {
+    // Return search results
+    return _availableManagers;
+  }
+
+  // Get selected managers as CcMembersRow objects
+  List<CcMembersRow> get selectedManagers {
+    return _selectedManagerObjects;
   }
 
   // Image Upload
@@ -78,16 +168,9 @@ class GroupEditViewModel extends ChangeNotifier {
       if (!context.mounted) return;
       _setLoading(true);
       try {
-        showUploadMessage(
-          context,
-          'Uploading file...',
-          showLoading: true,
-        );
+        showUploadMessage(context, 'Uploading file...', showLoading: true);
 
-        final downloadUrls = await uploadSupabaseStorageFiles(
-          bucketName: 'portal',
-          selectedFiles: selectedMedia,
-        );
+        final downloadUrls = await uploadSupabaseStorageFiles(bucketName: 'portal', selectedFiles: selectedMedia);
 
         if (downloadUrls.isNotEmpty) {
           _uploadedImageUrl = downloadUrls.first;
@@ -95,9 +178,7 @@ class GroupEditViewModel extends ChangeNotifier {
         }
       } catch (e) {
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error uploading image: $e')),
-          );
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error uploading image: $e')));
         }
       } finally {
         if (context.mounted) {
@@ -116,11 +197,6 @@ class GroupEditViewModel extends ChangeNotifier {
 
     _setLoading(true);
     try {
-      // Ensure current user is in the managers list if not already (optional, but good practice)
-      final managers = List<String>.from(_selectedManagerIds);
-      // If we want to enforce that the creator/current user remains a manager, we can add check here.
-      // For now, we trust the selection or existing logic.
-
       await _groupRepository.updateGroup(
         id: group.id,
         name: nameController.text.trim(),
@@ -128,15 +204,31 @@ class GroupEditViewModel extends ChangeNotifier {
         welcomeMessage: welcomeMessageController.text.trim(),
         policyMessage: policyMessageController.text.trim(),
         imageUrl: _uploadedImageUrl, // Only pass if new image uploaded, repository handles null
-        managerIds: managers,
+        privacy: _isPrivate ? 'Private' : 'Public', // Update privacy
       );
+
+      // Sync managers
+      final managersToAdd = _selectedManagerIds.where((id) => !_initialManagerIds.contains(id));
+      final managersToRemove = _initialManagerIds.where((id) => !_selectedManagerIds.contains(id));
+
+      for (final userId in managersToAdd) {
+        // Check if already member
+        final isMember = await _groupRepository.isUserMemberOfGroup(group.id, userId);
+        if (isMember) {
+          await _groupRepository.updateMemberRole(group.id, userId, 'GROUP_MANAGER');
+        } else {
+          await _groupRepository.addMemberWithRole(group.id, userId, 'GROUP_MANAGER');
+        }
+      }
+
+      for (final userId in managersToRemove) {
+        await _groupRepository.updateMemberRole(group.id, userId, 'MEMBER');
+      }
 
       return true;
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error updating group: $e')),
-        );
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error updating group: $e')));
       }
       return false;
     } finally {
@@ -155,6 +247,7 @@ class GroupEditViewModel extends ChangeNotifier {
     descriptionController.dispose();
     welcomeMessageController.dispose();
     policyMessageController.dispose();
+    _debounce?.cancel();
     super.dispose();
   }
 }

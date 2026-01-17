@@ -35,6 +35,7 @@ enum UserRole {
         return UserRole.admin;
       case 'GROUP_MANAGER':
       case 'GROUPMANAGER':
+      case 'MANAGER': // Handle legacy 'Manager' role
         return UserRole.groupManager;
       case 'MEMBER':
         return UserRole.member;
@@ -87,10 +88,12 @@ enum UserRole {
   /// - MEMBER -> "Member"
   String get titleCase {
     final words = value.toLowerCase().split('_');
-    return words.map((word) {
-      if (word.isEmpty) return word;
-      return word[0].toUpperCase() + word.substring(1);
-    }).join(' ');
+    return words
+        .map((word) {
+          if (word.isEmpty) return word;
+          return word[0].toUpperCase() + word.substring(1);
+        })
+        .join(' ');
   }
 
   @override

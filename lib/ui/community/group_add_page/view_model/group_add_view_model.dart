@@ -8,10 +8,7 @@ class GroupAddViewModel extends ChangeNotifier {
   final GroupRepository _groupRepository;
   final String currentUserUid;
 
-  GroupAddViewModel(
-    this._groupRepository, {
-    required this.currentUserUid,
-  });
+  GroupAddViewModel(this._groupRepository, {required this.currentUserUid});
 
   // Form Key
   final formKey = GlobalKey<FormState>();
@@ -76,16 +73,9 @@ class GroupAddViewModel extends ChangeNotifier {
       if (!context.mounted) return;
       _setLoading(true);
       try {
-        showUploadMessage(
-          context,
-          'Uploading file...',
-          showLoading: true,
-        );
+        showUploadMessage(context, 'Uploading file...', showLoading: true);
 
-        final downloadUrls = await uploadSupabaseStorageFiles(
-          bucketName: 'portal',
-          selectedFiles: selectedMedia,
-        );
+        final downloadUrls = await uploadSupabaseStorageFiles(bucketName: 'portal', selectedFiles: selectedMedia);
 
         if (downloadUrls.isNotEmpty) {
           _uploadedImageUrl = downloadUrls.first;
@@ -93,9 +83,7 @@ class GroupAddViewModel extends ChangeNotifier {
         }
       } catch (e) {
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error uploading image: $e')),
-          );
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error uploading image: $e')));
         }
       } finally {
         if (context.mounted) {
@@ -113,9 +101,7 @@ class GroupAddViewModel extends ChangeNotifier {
     }
 
     if (_uploadedImageUrl == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please upload a group image')),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please upload a group image')));
       return false;
     }
 
@@ -127,22 +113,29 @@ class GroupAddViewModel extends ChangeNotifier {
         managers.add(currentUserUid);
       }
 
-      await _groupRepository.createGroup(
+      final group = await _groupRepository.createGroup(
         name: nameController.text.trim(),
         description: descriptionController.text.trim(),
         welcomeMessage: welcomeMessageController.text.trim(),
         policyMessage: policyMessageController.text.trim(),
         imageUrl: _uploadedImageUrl!,
-        managerIds: managers,
         privacy: 'Public', // Defaulting to Public as per original code implicit behavior or UI
       );
+
+      if (group != null) {
+        for (final managerId in managers) {
+          try {
+            await _groupRepository.addMemberWithRole(group.id, managerId, 'GROUP_MANAGER');
+          } catch (e) {
+            debugPrint('Error adding manager $managerId: $e');
+          }
+        }
+      }
 
       return true;
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error creating group: $e')),
-        );
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error creating group: $e')));
       }
       return false;
     } finally {

@@ -167,11 +167,29 @@ class GroupDetailsViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Manager IDs storage
+  Set<String> _groupManagerIds = {};
+  Set<String> get groupManagerIds => _groupManagerIds;
+
   Future<void> _fetchMembers() async {
     _isLoadingMembers = true;
     notifyListeners();
     try {
-      _members = await _groupRepository.getGroupMembersAsUsers(group.id);
+      // 1. Fetch the relationships (roles)
+      final groupMembersLinks = await _groupRepository.getGroupMembers(group.id);
+
+      // 2. Fetch the user profiles
+      final membersUsers = await _groupRepository.getGroupMembersAsUsers(group.id);
+
+      // 3. Identify managers based on group-specific role
+      _groupManagerIds = groupMembersLinks
+          .where((m) => m.userRole == 'GROUP_MANAGER' || m.userRole == 'Manager' || m.userRole == 'group_manager')
+          .map((m) => m.userId)
+          .where((id) => id != null)
+          .cast<String>()
+          .toSet();
+
+      _members = membersUsers;
     } catch (e) {
       debugPrint('Error fetching members: $e');
     } finally {
@@ -238,7 +256,8 @@ class GroupDetailsViewModel extends ChangeNotifier {
 
       // Subscribe to stream to keep count updated
       // Also refresh read status when stream updates (handles edited announcements)
-      _notificationsSubscription = _announcementRepository.getAnnouncementsStream(group.id).listen((notifications) async {
+      _notificationsSubscription =
+          _announcementRepository.getAnnouncementsStream(group.id).listen((notifications) async {
         // Recarrega os IDs lidos do banco para detectar anúncios editados
         // (que tiveram seus registros de leitura deletados)
         final newReadIds = await _announcementRepository.getReadAnnouncementIds(group.id, currentUserId!);

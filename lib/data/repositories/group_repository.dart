@@ -4,17 +4,13 @@ import 'package:gw_community/data/services/supabase/supabase.dart';
 class GroupRepository {
   /// Fetches all groups ordered by name
   Future<List<CcGroupsRow>> getGroups() async {
-    final result = await CcGroupsTable().queryRows(
-      queryFn: (q) => q.order('name', ascending: true),
-    );
+    final result = await CcGroupsTable().queryRows(queryFn: (q) => q.order('name', ascending: true));
     return result;
   }
 
   /// Fetches a single group by ID
   Future<CcGroupsRow?> getGroupById(int id) async {
-    final result = await CcGroupsTable().queryRows(
-      queryFn: (q) => q.eq('id', id),
-    );
+    final result = await CcGroupsTable().queryRows(queryFn: (q) => q.eq('id', id));
     return result.isNotEmpty ? result.first : null;
   }
 
@@ -25,34 +21,19 @@ class GroupRepository {
     required String welcomeMessage,
     required String policyMessage,
     required String imageUrl,
-    required List<String> managerIds,
     String privacy = 'Public',
   }) async {
-    await CcGroupsTable().insert({
+    return await CcGroupsTable().insert({
       'name': name,
       'description': description,
       'welcome_message': welcomeMessage,
       'policy_message': policyMessage,
       'group_image_url': imageUrl,
       'group_privacy': privacy,
-      'administrators': managerIds,
       'number_members': 1, // Start with 1 member (creator)
       'created_at': supaSerialize<DateTime>(DateTime.now()),
       'updated_at': supaSerialize<DateTime>(DateTime.now()),
     });
-
-    // Note: Supabase insert might return the created row depending on configuration,
-    // but here we might need to fetch it if insert doesn't return it directly in the expected format.
-    // Assuming standard Supabase insert behavior or adjusting based on project patterns.
-    // If insert returns void or just status, we might need to fetch the created group.
-    // For now, returning null as the insert method in this project seems to return Future<List<Row>> or similar based on other repos.
-    // Let's check other repositories for insert pattern.
-
-    // Checking SharingRepository pattern:
-    // await CcSharingsTable().insert({...});
-    // It seems it returns void or we don't use the return value often.
-
-    return null;
   }
 
   /// Updates an existing group
@@ -63,38 +44,27 @@ class GroupRepository {
     String? welcomeMessage,
     String? policyMessage,
     String? imageUrl,
-    List<String>? managerIds,
     String? privacy,
   }) async {
-    final data = <String, dynamic>{
-      'updated_at': supaSerialize<DateTime>(DateTime.now()),
-    };
+    final data = <String, dynamic>{'updated_at': supaSerialize<DateTime>(DateTime.now())};
     if (name != null) data['name'] = name;
     if (description != null) data['description'] = description;
     if (welcomeMessage != null) data['welcome_message'] = welcomeMessage;
     if (policyMessage != null) data['policy_message'] = policyMessage;
     if (imageUrl != null) data['group_image_url'] = imageUrl;
-    if (managerIds != null) data['administrators'] = managerIds;
     if (privacy != null) data['group_privacy'] = privacy;
 
-    await CcGroupsTable().update(
-      data: data,
-      matchingRows: (rows) => rows.eq('id', id),
-    );
+    await CcGroupsTable().update(data: data, matchingRows: (rows) => rows.eq('id', id));
   }
 
   /// Deletes a group
   Future<void> deleteGroup(int id) async {
-    await CcGroupsTable().delete(
-      matchingRows: (rows) => rows.eq('id', id),
-    );
+    await CcGroupsTable().delete(matchingRows: (rows) => rows.eq('id', id));
   }
 
   /// Fetches members of a group
   Future<List<CcGroupMembersRow>> getGroupMembers(int groupId) async {
-    final result = await CcGroupMembersTable().queryRows(
-      queryFn: (q) => q.eq('group_id', groupId),
-    );
+    final result = await CcGroupMembersTable().queryRows(queryFn: (q) => q.eq('group_id', groupId));
     return result;
   }
 
@@ -118,24 +88,31 @@ class GroupRepository {
 
   /// Removes a user from a group
   Future<void> removeUserFromGroup(int groupId, String userId) async {
-    await CcGroupMembersTable().delete(
-      matchingRows: (rows) => rows.eq('group_id', groupId).eq('user_id', userId),
-    );
+    await CcGroupMembersTable().delete(matchingRows: (rows) => rows.eq('group_id', groupId).eq('user_id', userId));
   }
 
   /// Fetches available users for selection (e.g. for managers)
   Future<List<CcMembersRow>> getAvailableUsers() async {
-    final result = await CcMembersTable().queryRows(
-      queryFn: (q) => q.order('display_name', ascending: true),
-    );
+    final result = await CcMembersTable().queryRows(queryFn: (q) => q.order('display_name', ascending: true));
     return result;
+  }
+
+  /// Fetches potential facilitators (Admin or Group Manager role)
+  Future<List<CcMembersRow>> getFacilitatorCandidates() async {
+    final result = await CcMembersTable().queryRows(queryFn: (q) => q.order('display_name', ascending: true));
+
+    // Filter in Dart to ensure specific roles are matched correctly
+    return result.where((m) {
+      return UserRole.isAdminOrGroupManager(m.userRole);
+    }).toList();
   }
 
   /// Fetches users with GROUP_MANAGER role
   Future<List<CcMembersRow>> getGroupManagers() async {
     final result = await CcMembersTable().queryRows(
-      queryFn: (q) =>
-          q.containsOrNull('user_role', [UserRole.groupManager.value]).order('display_name', ascending: true),
+      queryFn: (q) => q.containsOrNull('user_role', [UserRole.groupManager.value, 'Manager', 'group_manager']).order(
+          'display_name',
+          ascending: true),
     );
     return result;
   }
@@ -145,21 +122,54 @@ class GroupRepository {
     final members = await getGroupMembers(groupId);
     if (members.isEmpty) return [];
 
-    final userIds = members.map((m) => m.userId).where((id) => id != null).cast<String>().toList();
-    if (userIds.isEmpty) return [];
+    final authUserIds = <String>[];
+    final legacyIds = <int>[];
 
-    final result = await CcMembersTable().queryRows(
-      queryFn: (q) => q.filter('auth_user_id', 'in', userIds).order('display_name', ascending: true),
-    );
-    return result;
+    for (final m in members) {
+      if (m.userId == null) continue;
+      // Basic UUID check (36 chars)
+      if (m.userId!.length == 36) {
+        authUserIds.add(m.userId!);
+      } else {
+        // Try parse as legacy ID
+        final id = int.tryParse(m.userId!);
+        if (id != null) legacyIds.add(id);
+      }
+    }
+
+    final results = <CcMembersRow>[];
+
+    // Fetch by Auth User ID (Standard)
+    if (authUserIds.isNotEmpty) {
+      final byAuth = await CcMembersTable().queryRows(
+        queryFn: (q) => q.filter('auth_user_id', 'in', authUserIds),
+      );
+      results.addAll(byAuth);
+    }
+
+    // Fetch by Legacy ID (Migrated users)
+    if (legacyIds.isNotEmpty) {
+      final byId = await CcMembersTable().queryRows(
+        queryFn: (q) => q.filter('id', 'in', legacyIds),
+      );
+      results.addAll(byId);
+    }
+
+    // Deduplicate (in case user found by both?? unlikely but safe)
+    final seenIds = <String>{}; // Changed from <int>{} to <String>{}
+    final uniqueResults = <CcMembersRow>[];
+    for (final user in results) {
+      if (seenIds.add(user.id)) {
+        uniqueResults.add(user);
+      }
+    }
+
+    return uniqueResults..sort((a, b) => (a.displayName ?? '').compareTo(b.displayName ?? ''));
   }
 
   /// Adds a user to a group
   Future<void> joinGroup(int groupId, String userId) async {
-    await CcGroupMembersTable().insert({
-      'user_id': userId,
-      'group_id': groupId,
-    });
+    await CcGroupMembersTable().insert({'user_id': userId, 'group_id': groupId});
   }
 
   /// Checks if a user is a member of a group
@@ -181,14 +191,41 @@ class GroupRepository {
       }
     }
 
-    final allUsers = await CcMembersTable().queryRows(
-      queryFn: (q) => q.order('display_name', ascending: true),
-    );
+    final allUsers = await CcMembersTable().queryRows(queryFn: (q) => q.order('display_name', ascending: true));
 
     return allUsers.where((user) {
       final userAuthId = user.authUserId;
       if (userAuthId == null || userAuthId.isEmpty) return false;
       return !memberUserIds.contains(userAuthId);
     }).toList();
+  }
+
+  /// Searches for available users by name or email (Server-side)
+  Future<List<CcMembersRow>> searchAvailableUsers(String query, {int limit = 50}) async {
+    if (query.trim().isEmpty) return [];
+
+    final result = await CcMembersTable().queryRows(
+      queryFn: (q) =>
+          q.or('display_name.ilike.%$query%,email.ilike.%$query%').order('display_name', ascending: true).limit(limit),
+    );
+    return result;
+  }
+
+  /// Adds a user to a group with a specific role
+  Future<void> addMemberWithRole(int groupId, String userId, String role) async {
+    await CcGroupMembersTable().insert({
+      'group_id': groupId,
+      'user_id': userId,
+      'user_role': role,
+      'created_at': supaSerialize<DateTime>(DateTime.now()),
+    });
+  }
+
+  /// Updates a member's role
+  Future<void> updateMemberRole(int groupId, String userId, String role) async {
+    await CcGroupMembersTable().update(
+      data: {'user_role': role},
+      matchingRows: (rows) => rows.eq('group_id', groupId).eq('user_id', userId),
+    );
   }
 }

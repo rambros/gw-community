@@ -27,12 +27,10 @@ class CcGroupsRow extends SupabaseDataRow {
   set groupPrivacy(String? value) => setField<String>('group_privacy', value);
 
   String? get groupImageUrl => getField<String>('group_image_url');
-  set groupImageUrl(String? value) =>
-      setField<String>('group_image_url', value);
+  set groupImageUrl(String? value) => setField<String>('group_image_url', value);
 
   String? get welcomeMessage => getField<String>('welcome_message');
-  set welcomeMessage(String? value) =>
-      setField<String>('welcome_message', value);
+  set welcomeMessage(String? value) => setField<String>('welcome_message', value);
 
   String? get policyMessage => getField<String>('policy_message');
   set policyMessage(String? value) => setField<String>('policy_message', value);
@@ -40,17 +38,12 @@ class CcGroupsRow extends SupabaseDataRow {
   int? get numberMembers => getField<int>('number_members');
   set numberMembers(int? value) => setField<int>('number_members', value);
 
-  List<String> get groupManagers => getListField<String>('group_managers');
-  set groupManagers(List<String>? value) =>
-      setListField<String>('group_managers', value);
+  // group_managers removed
 
   DateTime get dateCreated => getField<DateTime>('date_created')!;
   set dateCreated(DateTime value) => setField<DateTime>('date_created', value);
 
-  List<String> get groupFacilitators =>
-      getListField<String>('group_facilitators');
-  set groupFacilitators(List<String>? value) =>
-      setListField<String>('group_facilitators', value);
+  // group_facilitators removed
 
   String? get groupStatus => getField<String>('group_status');
   set groupStatus(String? value) => setField<String>('group_status', value);

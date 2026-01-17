@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/ui/community/group_details_page/view_model/group_details_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
@@ -35,11 +36,9 @@ class GroupAboutTab extends StatelessWidget {
                       padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
                       iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
                       color: AppTheme.of(context).primary,
-                      textStyle: AppTheme.of(context).titleSmall.override(
-                            font: GoogleFonts.lexendDeca(),
-                            color: Colors.white,
-                            fontSize: 16.0,
-                          ),
+                      textStyle: AppTheme.of(
+                        context,
+                      ).titleSmall.override(font: GoogleFonts.lexendDeca(), color: Colors.white, fontSize: 16.0),
                       elevation: 2.0,
                       borderRadius: BorderRadius.circular(12.0),
                     ),
@@ -53,26 +52,18 @@ class GroupAboutTab extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: AppTheme.of(context).secondaryBackground,
                     borderRadius: BorderRadius.circular(12.0),
-                    border: Border.all(
-                      color: AppTheme.of(context).secondary,
-                      width: 1.0,
-                    ),
+                    border: Border.all(color: AppTheme.of(context).secondary, width: 1.0),
                   ),
                   child: Column(
                     children: [
-                      Icon(
-                        Icons.lock_outline,
-                        color: AppTheme.of(context).secondary,
-                        size: 32.0,
-                      ),
+                      Icon(Icons.lock_outline, color: AppTheme.of(context).secondary, size: 32.0),
                       const SizedBox(height: 12.0),
                       Text(
                         'This is a private group. You need an invitation to join and see the content.',
                         textAlign: TextAlign.center,
-                        style: AppTheme.of(context).bodyMedium.override(
-                              font: GoogleFonts.lexendDeca(),
-                              color: AppTheme.of(context).secondary,
-                            ),
+                        style: AppTheme.of(
+                          context,
+                        ).bodyMedium.override(font: GoogleFonts.lexendDeca(), color: AppTheme.of(context).secondary),
                       ),
                     ],
                   ),
@@ -83,59 +74,12 @@ class GroupAboutTab extends StatelessWidget {
             const SizedBox(height: 16.0),
             _buildSection(context, 'Policy Message', group.policyMessage),
             const SizedBox(height: 24.0),
-            Text(
-              'Members',
-              style: AppTheme.of(context).titleMedium.override(
-                    font: GoogleFonts.lexendDeca(),
-                    color: AppTheme.of(context).primary,
-                  ),
-            ),
-            const SizedBox(height: 8.0),
             if (viewModel.isLoadingMembers)
-              Center(
-                child: SpinKitRipple(
-                  color: AppTheme.of(context).primary,
-                  size: 30.0,
-                ),
-              )
+              Center(child: SpinKitRipple(color: AppTheme.of(context).primary, size: 30.0))
             else if (viewModel.members.isEmpty)
-              Text(
-                'No members found.',
-                style: AppTheme.of(context).bodyMedium,
-              )
+              Text('No members found.', style: AppTheme.of(context).bodyMedium)
             else
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: viewModel.members.length,
-                itemBuilder: (context, index) {
-                  final member = viewModel.members[index];
-                  final displayName = () {
-                    if (member.hideLastName == true) {
-                      return member.firstName ?? member.displayName ?? 'Unknown';
-                    }
-                    final fullName = '${member.firstName ?? ''} ${member.lastName ?? ''}'.trim();
-                    return fullName.isNotEmpty ? fullName : (member.displayName ?? 'Unknown');
-                  }();
-
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Row(
-                      children: [
-                        UserAvatar(
-                          imageUrl: member.photoUrl,
-                          fullName: displayName,
-                        ),
-                        const SizedBox(width: 12.0),
-                        Text(
-                          displayName,
-                          style: AppTheme.of(context).bodyMedium,
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
+              _buildMembersSections(context, viewModel),
           ],
         ),
       ),
@@ -149,17 +93,93 @@ class GroupAboutTab extends StatelessWidget {
       children: [
         Text(
           title,
-          style: AppTheme.of(context).titleSmall.override(
-                font: GoogleFonts.lexendDeca(),
-                color: AppTheme.of(context).secondary,
-              ),
+          style: AppTheme.of(
+            context,
+          ).titleSmall.override(font: GoogleFonts.lexendDeca(), color: AppTheme.of(context).secondary),
         ),
         const SizedBox(height: 4.0),
-        Text(
-          content,
-          style: AppTheme.of(context).bodyMedium,
-        ),
+        Text(content, style: AppTheme.of(context).bodyMedium),
       ],
+    );
+  }
+
+  Widget _buildMembersSections(BuildContext context, GroupDetailsViewModel viewModel) {
+    final group = viewModel.group;
+    final members = viewModel.members;
+
+    // Separa facilitators (group_managers) dos membros comuns usando IDs
+    final facilitators = members.where((m) {
+      if (m.authUserId == null) return false;
+      return viewModel.groupManagerIds.contains(m.authUserId);
+    }).toList();
+
+    final regularMembers = members.where((m) {
+      if (m.authUserId == null) return true;
+      return !viewModel.groupManagerIds.contains(m.authUserId);
+    }).toList();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Seção Facilitators
+        if (facilitators.isNotEmpty) ...[
+          Text(
+            'Facilitators',
+            style: AppTheme.of(
+              context,
+            ).titleMedium.override(font: GoogleFonts.lexendDeca(), color: AppTheme.of(context).primary),
+          ),
+          const SizedBox(height: 8.0),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: facilitators.length,
+            itemBuilder: (context, index) {
+              return _buildMemberRow(context, facilitators[index]);
+            },
+          ),
+          const SizedBox(height: 16.0),
+        ],
+        // Seção Members
+        if (regularMembers.isNotEmpty) ...[
+          Text(
+            'Members',
+            style: AppTheme.of(
+              context,
+            ).titleMedium.override(font: GoogleFonts.lexendDeca(), color: AppTheme.of(context).primary),
+          ),
+          const SizedBox(height: 8.0),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: regularMembers.length,
+            itemBuilder: (context, index) {
+              return _buildMemberRow(context, regularMembers[index]);
+            },
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildMemberRow(BuildContext context, CcMembersRow member) {
+    final displayName = () {
+      if (member.hideLastName == true) {
+        return member.firstName ?? member.displayName ?? 'Unknown';
+      }
+      final fullName = '${member.firstName ?? ''} ${member.lastName ?? ''}'.trim();
+      return fullName.isNotEmpty ? fullName : (member.displayName ?? 'Unknown');
+    }();
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        children: [
+          UserAvatar(imageUrl: member.photoUrl, fullName: displayName, size: 36.0),
+          const SizedBox(width: 10.0),
+          Text(displayName, style: AppTheme.of(context).bodyMedium),
+        ],
+      ),
     );
   }
 }

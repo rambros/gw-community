@@ -253,12 +253,13 @@ class GroupDetailsPageView extends StatelessWidget {
                               },
                             );
                           } else if (value == 'edit') {
-                            context.pushNamed(
+                            await context.pushNamed(
                               GroupEditPage.routeName,
                               extra: <String, dynamic>{
                                 'groupRow': group,
                               },
                             );
+                            await viewModel.refreshGroup();
                           } else if (value == 'leave') {
                             final confirm = await showDialog<bool>(
                               context: context,

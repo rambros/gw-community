@@ -1,7 +1,54 @@
-// ignore_for_file: overridden_fields, annotate_overrides
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+// ===========================================================================
+// GW PALETTE - Single Source of Truth for Colors
+// ===========================================================================
+class GWPalette {
+  // Brand Colors
+  static const Color purplePrimary = Color(0xFF7C52A0);
+  static const Color purpleSecondary = Color(0xFF340964);
+  static const Color yellowTertiary = Color(0xFFFCC612);
+  static const Color lilacAlternate = Color(0xFFB9A0CB);
+
+  // Text Colors
+  static const Color textPrimary = Color(0xFFF5F5F6); // Off-white
+  static const Color textSecondary = Color(0xFF57636C); // Slate Gray
+  static const Color textDark = Color(0xFF1E2429); // Dark text for light backgrounds
+
+  // Background Colors
+  static const Color bgPrimary = Color(0xFFF9FAFB);
+  static const Color bgSecondary = Color(0xFFE1E2E1);
+
+  // Status Colors
+  static const Color success = Color(0xFF04A24C);
+  static const Color warning = Color(0xFFFCDC0C);
+  static const Color error = Color(0xFFE21C3D);
+  static const Color info = Color(0xFEFFFFFF); // Almost white
+
+  // Accents / Grays
+  static const Color gray1 = Color(0xFF616161);
+  static const Color gray2 = Color(0xFF757575);
+  static const Color gray3 = Color(0xFFE0E0E0);
+  static const Color gray4 = Color(0xFFEEEEEE);
+
+  // Misc / Legacy
+  static const Color rebeccaPurple = Color(0xFF633693);
+  static const Color copperRed = Color(0xFFD66853);
+  static const Color orangeYellow = Color(0xFFFFD971);
+  static const Color cadetGrey = Color(0xFF97A7B3);
+  static const Color beauBlue = Color(0xFFC1CFDA);
+  static const Color black = Color(0xFF000000); // Was named 'transparent'
+  static const Color grayIcon = Color(0xFF95A1AC);
+  static const Color gray200 = Color(0xFFDBE2E7);
+  static const Color gray600 = Color(0xFF262D34);
+  static const Color black600 = Color(0xFF090F13);
+  static const Color teal = Color(0xFF39D2C0);
+}
+
+// ===========================================================================
+// APP THEME
+// ===========================================================================
 
 abstract class AppTheme {
   static AppTheme of(BuildContext context) {
@@ -88,35 +135,35 @@ abstract class AppTheme {
 }
 
 class LightModeTheme extends AppTheme {
-  late Color primary = const Color(0xFF7C52A0);
-  late Color secondary = const Color(0xFF340964);
-  late Color tertiary = const Color(0xFFFCC612);
-  late Color alternate = const Color(0xFFB9A0CB);
-  late Color primaryText = const Color(0xFFF5F5F6);
-  late Color secondaryText = const Color(0x00000000);
-  late Color primaryBackground = const Color(0xFFF9FAFB);
-  late Color secondaryBackground = const Color(0xFFE1E2E1);
-  late Color accent1 = const Color(0xFF616161);
-  late Color accent2 = const Color(0xFF757575);
-  late Color accent3 = const Color(0xFFE0E0E0);
-  late Color accent4 = const Color(0xFFEEEEEE);
-  late Color success = const Color(0xFF04A24C);
-  late Color warning = const Color(0xFFFCDC0C);
-  late Color error = const Color(0xFFE21C3D);
-  late Color info = const Color(0xFEFFFFFF);
+  late Color primary = GWPalette.purplePrimary;
+  late Color secondary = GWPalette.purpleSecondary;
+  late Color tertiary = GWPalette.yellowTertiary;
+  late Color alternate = GWPalette.lilacAlternate;
+  late Color primaryText = GWPalette.textPrimary;
+  late Color secondaryText = GWPalette.textSecondary;
+  late Color primaryBackground = GWPalette.bgPrimary;
+  late Color secondaryBackground = GWPalette.bgSecondary;
+  late Color accent1 = GWPalette.gray1;
+  late Color accent2 = GWPalette.gray2;
+  late Color accent3 = GWPalette.gray3;
+  late Color accent4 = GWPalette.gray4;
+  late Color success = GWPalette.success;
+  late Color warning = GWPalette.warning;
+  late Color error = GWPalette.error;
+  late Color info = GWPalette.info;
 
-  late Color rebeccaPurple = const Color(0xFF633693);
-  late Color copperRed = const Color(0xFFD66853);
-  late Color orangeYellowCrayola = const Color(0xFFFFD971);
-  late Color cadetGrey = const Color(0xFF97A7B3);
-  late Color beauBlue = const Color(0xFFC1CFDA);
-  late Color transparent = const Color(0xFF000000);
-  late Color grayIcon = const Color(0xFF95A1AC);
-  late Color gray200 = const Color(0xFFDBE2E7);
-  late Color gray600 = const Color(0xFF262D34);
-  late Color black600 = const Color(0xFF090F13);
-  late Color tertiary400 = const Color(0xFF39D2C0);
-  late Color textColor = const Color(0xFF1E2429);
+  late Color rebeccaPurple = GWPalette.rebeccaPurple;
+  late Color copperRed = GWPalette.copperRed;
+  late Color orangeYellowCrayola = GWPalette.orangeYellow;
+  late Color cadetGrey = GWPalette.cadetGrey;
+  late Color beauBlue = GWPalette.beauBlue;
+  late Color transparent = GWPalette.black; // Kept as 'transparent' for compatibility, but mapped to Black
+  late Color grayIcon = GWPalette.grayIcon;
+  late Color gray200 = GWPalette.gray200;
+  late Color gray600 = GWPalette.gray600;
+  late Color black600 = GWPalette.black600;
+  late Color tertiary400 = GWPalette.teal;
+  late Color textColor = GWPalette.textDark;
 }
 
 abstract class Typography {
@@ -189,7 +236,7 @@ class ThemeTypography extends Typography {
   String get displaySmallFamily => 'Lexend Deca';
   bool get displaySmallIsCustom => false;
   TextStyle get displaySmall => GoogleFonts.lexendDeca(
-        color: const Color(0xFF340964),
+        color: theme.secondary, // Dynamic
         fontWeight: FontWeight.w600,
         fontSize: 28.0,
       );
@@ -203,14 +250,14 @@ class ThemeTypography extends Typography {
   String get headlineMediumFamily => 'Lexend Deca';
   bool get headlineMediumIsCustom => false;
   TextStyle get headlineMedium => GoogleFonts.lexendDeca(
-        color: const Color(0xFF340964),
+        color: theme.secondary, // Dynamic
         fontWeight: FontWeight.w500,
         fontSize: 24.0,
       );
   String get headlineSmallFamily => 'Lexend Deca';
   bool get headlineSmallIsCustom => false;
   TextStyle get headlineSmall => GoogleFonts.lexendDeca(
-        color: const Color(0xFF340964),
+        color: theme.secondary, // Dynamic
         fontWeight: FontWeight.w500,
         fontSize: 20.0,
       );
@@ -224,14 +271,14 @@ class ThemeTypography extends Typography {
   String get titleMediumFamily => 'Lexend Deca';
   bool get titleMediumIsCustom => false;
   TextStyle get titleMedium => GoogleFonts.lexendDeca(
-        color: const Color(0xFF95A1AC),
+        color: theme.grayIcon, // Dynamic
         fontWeight: FontWeight.w500,
         fontSize: 18.0,
       );
   String get titleSmallFamily => 'Lexend Deca';
   bool get titleSmallIsCustom => false;
   TextStyle get titleSmall => GoogleFonts.lexendDeca(
-        color: const Color(0xFF340964),
+        color: theme.secondary, // Dynamic
         fontWeight: FontWeight.normal,
         fontSize: 16.0,
       );
@@ -266,14 +313,14 @@ class ThemeTypography extends Typography {
   String get bodyMediumFamily => 'Lexend Deca';
   bool get bodyMediumIsCustom => false;
   TextStyle get bodyMedium => GoogleFonts.lexendDeca(
-        color: const Color(0xFF95A1AC),
+        color: theme.grayIcon, // Dynamic
         fontWeight: FontWeight.normal,
         fontSize: 14.0,
       );
   String get bodySmallFamily => 'Lexend Deca';
   bool get bodySmallIsCustom => false;
   TextStyle get bodySmall => GoogleFonts.lexendDeca(
-        color: const Color(0xFF340964),
+        color: theme.secondary, // Dynamic
         fontWeight: FontWeight.normal,
         fontSize: 14.0,
       );
