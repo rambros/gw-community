@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'package:gw_community/data/repositories/notification_repository.dart';
+import 'package:gw_community/data/repositories/announcement_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 
-class NotificationEditViewModel extends ChangeNotifier {
-  NotificationEditViewModel({
-    required NotificationRepository repository,
+class AnnouncementEditViewModel extends ChangeNotifier {
+  AnnouncementEditViewModel({
+    required AnnouncementRepository repository,
     required CcViewNotificationsUsersRow sharingRow,
   })  : _repository = repository,
         _sharingRow = sharingRow {
@@ -15,7 +15,7 @@ class NotificationEditViewModel extends ChangeNotifier {
     _privacy = sharingRow.privacy ?? 'public';
   }
 
-  final NotificationRepository _repository;
+  final AnnouncementRepository _repository;
   final CcViewNotificationsUsersRow _sharingRow;
 
   final titleController = TextEditingController();
@@ -45,7 +45,7 @@ class NotificationEditViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> saveNotification() async {
+  Future<bool> saveAnnouncement() async {
     if (titleController.text.trim().isEmpty || descriptionController.text.trim().isEmpty) {
       _setError('Please fill in all required fields.');
       return false;
@@ -53,7 +53,7 @@ class NotificationEditViewModel extends ChangeNotifier {
 
     _setSaving(true);
     try {
-      await _repository.updateNotification(
+      await _repository.updateAnnouncement(
         id: sharingRow.id!,
         title: titleController.text.trim(),
         text: descriptionController.text.trim(),
@@ -62,7 +62,7 @@ class NotificationEditViewModel extends ChangeNotifier {
       );
       return true;
     } catch (e) {
-      _setError('Error updating notification: $e');
+      _setError('Error updating announcement: $e');
       return false;
     } finally {
       _setSaving(false);

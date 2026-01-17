@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:gw_community/data/repositories/notification_repository.dart';
+import 'package:gw_community/data/repositories/announcement_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/index.dart';
-import 'package:gw_community/ui/community/notification_view_page/view_model/notification_view_view_model.dart';
+import 'package:gw_community/ui/community/announcement_view_page/view_model/announcement_view_view_model.dart';
 import 'package:gw_community/ui/community/sharing_view_page/widgets/comment_item_widget.dart';
 import 'package:gw_community/ui/community/widgets/add_comment/add_comment_widget.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
@@ -15,39 +15,39 @@ import 'package:provider/provider.dart';
 import 'package:sticky_headers/sticky_headers.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
 
-class NotificationViewPage extends StatefulWidget {
-  const NotificationViewPage({
+class AnnouncementViewPage extends StatefulWidget {
+  const AnnouncementViewPage({
     super.key,
-    required this.notificationId,
+    required this.announcementId,
     this.groupModerators,
   });
 
-  final int? notificationId;
+  final int? announcementId;
   final List<int>? groupModerators;
 
-  static String routeName = 'NotificationViewPage';
-  static String routePath = '/notificationViewPage';
+  static String routeName = 'announcementViewPage';
+  static String routePath = '/announcementViewPage';
 
   @override
-  State<NotificationViewPage> createState() => _NotificationViewPageState();
+  State<AnnouncementViewPage> createState() => _AnnouncementViewPageState();
 }
 
-class _NotificationViewPageState extends State<NotificationViewPage> {
-  late NotificationViewViewModel _viewModel;
+class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
+  late AnnouncementViewViewModel _viewModel;
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    logFirebaseEvent('screen_view', parameters: {'screen_name': 'notificationViewPage'});
-    _viewModel = NotificationViewViewModel(
-      repository: context.read<NotificationRepository>(),
+    logFirebaseEvent('screen_view', parameters: {'screen_name': 'announcementViewPage'});
+    _viewModel = AnnouncementViewViewModel(
+      repository: context.read<AnnouncementRepository>(),
       currentUserUid: context.currentUserIdOrEmpty,
       appState: context.read<FFAppState>(),
       groupModerators: widget.groupModerators,
     );
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final id = widget.notificationId;
+      final id = widget.announcementId;
       if (id != null) {
         _viewModel.initialize(id);
       }
@@ -66,7 +66,7 @@ class _NotificationViewPageState extends State<NotificationViewPage> {
 
     return ChangeNotifierProvider.value(
       value: _viewModel,
-      child: Consumer<NotificationViewViewModel>(
+      child: Consumer<AnnouncementViewViewModel>(
         builder: (context, viewModel, _) {
           return Scaffold(
             key: scaffoldKey,
@@ -87,7 +87,7 @@ class _NotificationViewPageState extends State<NotificationViewPage> {
                 onPressed: () => context.pop(),
               ),
               title: Text(
-                'Notification',
+                'Announcement',
                 style: AppTheme.of(context).titleLarge.override(
                       font: GoogleFonts.poppins(
                         fontWeight: AppTheme.of(context).titleLarge.fontWeight,
@@ -102,7 +102,7 @@ class _NotificationViewPageState extends State<NotificationViewPage> {
             ),
             body: SafeArea(
               top: true,
-              child: viewModel.isLoading && viewModel.notification == null
+              child: viewModel.isLoading && viewModel.announcement == null
                   ? Center(
                       child: CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation<Color>(
@@ -118,12 +118,12 @@ class _NotificationViewPageState extends State<NotificationViewPage> {
     );
   }
 
-  Widget _buildContent(BuildContext context, NotificationViewViewModel viewModel) {
-    final notification = viewModel.notification;
-    if (notification == null) {
+  Widget _buildContent(BuildContext context, AnnouncementViewViewModel viewModel) {
+    final announcement = viewModel.announcement;
+    if (announcement == null) {
       return Center(
         child: Text(
-          viewModel.errorMessage ?? 'Notification not found.',
+          viewModel.errorMessage ?? 'Announcement not found.',
           style: AppTheme.of(context).labelLarge,
         ),
       );
@@ -134,10 +134,10 @@ class _NotificationViewPageState extends State<NotificationViewPage> {
         padding: const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 8.0, 8.0),
         child: StickyHeader(
           overlapHeaders: false,
-          header: _buildHeaderCard(context, notification),
+          header: _buildHeaderCard(context, announcement),
           content: Column(
             children: [
-              _buildNotificationBody(context, viewModel, notification),
+              _buildNotificationBody(context, viewModel, announcement),
               const SizedBox(height: 16.0),
               _buildCommentsList(context, viewModel),
             ],
@@ -147,7 +147,7 @@ class _NotificationViewPageState extends State<NotificationViewPage> {
     );
   }
 
-  Widget _buildHeaderCard(BuildContext context, CcViewNotificationsUsersRow notification) {
+  Widget _buildHeaderCard(BuildContext context, CcViewNotificationsUsersRow announcement) {
     return Card(
       clipBehavior: Clip.antiAliasWithSaveLayer,
       color: AppTheme.of(context).primaryBackground,
@@ -165,7 +165,7 @@ class _NotificationViewPageState extends State<NotificationViewPage> {
                   child: Padding(
                     padding: const EdgeInsetsDirectional.fromSTEB(0.0, 12.0, 0.0, 0.0),
                     child: Text(
-                      valueOrDefault<String>(notification.title, 'title'),
+                      valueOrDefault<String>(announcement.title, 'title'),
                       style: AppTheme.of(context).titleMedium.override(
                             font: GoogleFonts.lexendDeca(
                               fontWeight: AppTheme.of(context).titleMedium.fontWeight,
@@ -187,53 +187,17 @@ class _NotificationViewPageState extends State<NotificationViewPage> {
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 0.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'From ${valueOrDefault<String>(notification.displayName, 'name')} - Group Administrator',
-                          style: AppTheme.of(context).bodyLarge.override(
-                                font: GoogleFonts.inter(
-                                  fontWeight: FontWeight.normal,
-                                  fontStyle: AppTheme.of(context).bodyLarge.fontStyle,
-                                ),
-                                color: AppTheme.of(context).secondary,
-                                fontSize: 14.0,
-                                letterSpacing: 0.0,
-                              ),
-                        ),
-                        if (notification.updatedAt != null)
-                          Text(
-                            dateTimeFormat(
-                              'MMMMEEEEd',
-                              notification.updatedAt,
-                              locale: FFLocalizations.of(context).languageCode,
+                    child: Text(
+                      '${dateTimeFormat('MMM d', announcement.updatedAt)} - From ${valueOrDefault<String>(announcement.displayName, 'name')} - Facilitator',
+                      style: AppTheme.of(context).bodyMedium.override(
+                            font: GoogleFonts.lexendDeca(
+                              fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                              fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                             ),
-                            style: AppTheme.of(context).bodyMedium.override(
-                                  font: GoogleFonts.lexendDeca(
-                                    fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                                    fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                                  ),
-                                  color: AppTheme.of(context).secondary,
-                                  fontSize: 12.0,
-                                  letterSpacing: 0.0,
-                                ),
+                            color: AppTheme.of(context).secondary,
+                            fontSize: 13.0,
+                            letterSpacing: 0.0,
                           ),
-                        Text(
-                          notification.visibility == 'everyone'
-                              ? 'Notification for everyone'
-                              : 'Only for the Group ${notification.groupName}',
-                          style: AppTheme.of(context).bodyMedium.override(
-                                font: GoogleFonts.lexendDeca(
-                                  fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                                  fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                                ),
-                                color: AppTheme.of(context).primary,
-                                fontSize: 12.0,
-                                letterSpacing: 0.0,
-                              ),
-                        ),
-                      ],
                     ),
                   ),
                 ),
@@ -247,8 +211,8 @@ class _NotificationViewPageState extends State<NotificationViewPage> {
 
   Widget _buildNotificationBody(
     BuildContext context,
-    NotificationViewViewModel viewModel,
-    CcViewNotificationsUsersRow notification,
+    AnnouncementViewViewModel viewModel,
+    CcViewNotificationsUsersRow announcement,
   ) {
     return Card(
       clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -262,7 +226,7 @@ class _NotificationViewPageState extends State<NotificationViewPage> {
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 8.0, 8.0),
             child: MarkdownBody(
-              data: notification.text ?? '',
+              data: announcement.text ?? '',
               onTapLink: (text, href, title) {
                 if (href != null) {
                   launchURL(href);
@@ -270,19 +234,19 @@ class _NotificationViewPageState extends State<NotificationViewPage> {
               },
               styleSheet: MarkdownStyleSheet(
                 p: GoogleFonts.lexendDeca(
-                  color: AppTheme.of(context).primaryText,
+                  color: AppTheme.of(context).secondary,
                   fontSize: 14.0,
                   fontWeight: FontWeight.normal,
                   height: 1.5,
                 ),
                 strong: GoogleFonts.lexendDeca(
-                  color: AppTheme.of(context).primaryText,
+                  color: AppTheme.of(context).secondary,
                   fontSize: 14.0,
                   fontWeight: FontWeight.bold,
                   height: 1.5,
                 ),
                 em: GoogleFonts.lexendDeca(
-                  color: AppTheme.of(context).primaryText,
+                  color: AppTheme.of(context).secondary,
                   fontSize: 14.0,
                   fontStyle: FontStyle.italic,
                   height: 1.5,
@@ -300,8 +264,34 @@ class _NotificationViewPageState extends State<NotificationViewPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                _buildCommentButton(context, viewModel, notification),
-                if (viewModel.canDeleteNotification)
+                _buildCommentButton(context, viewModel, announcement),
+                if (viewModel.canEditAnnouncement)
+                  FlutterFlowIconButton(
+                    borderRadius: 8.0,
+                    buttonSize: 40.0,
+                    icon: Icon(
+                      Icons.edit,
+                      color: AppTheme.of(context).secondary,
+                      size: 26.0,
+                    ),
+                    onPressed: viewModel.isActionInProgress
+                        ? null
+                        : () async {
+                            final wasEdited = await context.pushNamed<bool>(
+                              AnnouncementEditPage.routeName,
+                              extra: {
+                                'sharingRow': announcement,
+                              },
+                            );
+                            // Se o anúncio foi editado, volta para a página de anúncios do grupo
+                            if (wasEdited == true && context.mounted) {
+                              context.pop();
+                              return;
+                            }
+                            viewModel.loadAnnouncement();
+                          },
+                  ),
+                if (viewModel.canDeleteAnnouncement)
                   FlutterFlowIconButton(
                     borderRadius: 8.0,
                     buttonSize: 40.0,
@@ -319,7 +309,7 @@ class _NotificationViewPageState extends State<NotificationViewPage> {
                               message: 'Confirm deletion of this notification?',
                             );
                             if (!confirm || !context.mounted) return;
-                            final success = await viewModel.deleteNotification();
+                            final success = await viewModel.deleteAnnouncement();
                             if (!success || !context.mounted) return;
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
@@ -360,8 +350,8 @@ class _NotificationViewPageState extends State<NotificationViewPage> {
 
   Widget _buildCommentButton(
     BuildContext context,
-    NotificationViewViewModel viewModel,
-    CcViewNotificationsUsersRow notification,
+    AnnouncementViewViewModel viewModel,
+    CcViewNotificationsUsersRow announcement,
   ) {
     return Align(
       alignment: AlignmentDirectional.center,
@@ -385,9 +375,8 @@ class _NotificationViewPageState extends State<NotificationViewPage> {
                   buttonSize: 40.0,
                   icon: Icon(
                     Icons.comment_rounded,
-                    color: notification.locked == true
-                        ? AppTheme.of(context).alternate
-                        : AppTheme.of(context).secondary,
+                    color:
+                        announcement.locked == true ? AppTheme.of(context).alternate : AppTheme.of(context).secondary,
                     size: 28.0,
                   ),
                   onPressed: !viewModel.canComment
@@ -400,7 +389,7 @@ class _NotificationViewPageState extends State<NotificationViewPage> {
                 Padding(
                   padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 10.0, 0.0),
                   child: Text(
-                    valueOrDefault<String>(notification.comments?.toString(), '0'),
+                    valueOrDefault<String>(announcement.comments?.toString(), '0'),
                     style: AppTheme.of(context).bodyMedium.override(
                           font: GoogleFonts.lexendDeca(
                             fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
@@ -419,7 +408,7 @@ class _NotificationViewPageState extends State<NotificationViewPage> {
     );
   }
 
-  Widget _buildCommentsList(BuildContext context, NotificationViewViewModel viewModel) {
+  Widget _buildCommentsList(BuildContext context, AnnouncementViewViewModel viewModel) {
     if (viewModel.comments.isEmpty) {
       return Padding(
         padding: const EdgeInsetsDirectional.fromSTEB(0.0, 24.0, 0.0, 0.0),
@@ -503,7 +492,7 @@ class _NotificationViewPageState extends State<NotificationViewPage> {
               child: SizedBox(
                 height: 200.0,
                 child: AddCommentWidget(
-                  sharingId: widget.notificationId!,
+                  sharingId: widget.announcementId!,
                   parentId: parentId,
                   photoUrl: FFAppState().loginUser.photoUrl,
                   fullName: FFAppState().loginUser.fullName,

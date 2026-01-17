@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:gw_community/data/repositories/notification_repository.dart';
+import 'package:gw_community/data/repositories/announcement_repository.dart';
 import 'package:gw_community/index.dart';
-import 'package:gw_community/ui/community/notification_add_page/view_model/add_notification_view_model.dart';
+import 'package:gw_community/ui/community/announcement_add_page/view_model/add_announcement_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
-import 'package:gw_community/ui/core/ui/flutter_flow_drop_down.dart';
+
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
-import 'package:gw_community/ui/core/ui/form_field_controller.dart';
+
 import 'package:gw_community/ui/core/widgets/user_avatar.dart';
 import 'package:gw_community/utils/context_extensions.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
 
-class NotificationAddPage extends StatefulWidget {
-  const NotificationAddPage({
+class AnnouncementAddPage extends StatefulWidget {
+  const AnnouncementAddPage({
     super.key,
     this.groupId,
     this.groupName,
@@ -25,23 +25,23 @@ class NotificationAddPage extends StatefulWidget {
   final String? groupName;
   final String privacy;
 
-  static String routeName = 'notificationAddPage';
-  static String routePath = '/notificationAddPage';
+  static String routeName = 'announcementAddPage';
+  static String routePath = '/announcementAddPage';
 
   @override
-  State<NotificationAddPage> createState() => _NotificationAddPageState();
+  State<AnnouncementAddPage> createState() => _AnnouncementAddPageState();
 }
 
-class _NotificationAddPageState extends State<NotificationAddPage> {
-  late AddNotificationViewModel _viewModel;
+class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
+  late AddAnnouncementViewModel _viewModel;
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    logFirebaseEvent('screen_view', parameters: {'screen_name': 'notificationAddPage'});
-    _viewModel = AddNotificationViewModel(
-      repository: context.read<NotificationRepository>(),
+    logFirebaseEvent('screen_view', parameters: {'screen_name': 'announcementAddPage'});
+    _viewModel = AddAnnouncementViewModel(
+      repository: context.read<AnnouncementRepository>(),
       currentUserUid: context.currentUserIdOrEmpty,
       groupId: widget.groupId,
       groupName: widget.groupName,
@@ -59,7 +59,7 @@ class _NotificationAddPageState extends State<NotificationAddPage> {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider.value(
       value: _viewModel,
-      child: Consumer<AddNotificationViewModel>(
+      child: Consumer<AddAnnouncementViewModel>(
         builder: (context, viewModel, _) {
           return GestureDetector(
             onTap: () {
@@ -85,7 +85,7 @@ class _NotificationAddPageState extends State<NotificationAddPage> {
                   onPressed: () => context.pop(),
                 ),
                 title: Text(
-                  'New Notification',
+                  'New Announcement',
                   style: AppTheme.of(context).titleLarge.override(
                         font: GoogleFonts.poppins(
                           fontWeight: AppTheme.of(context).titleLarge.fontWeight,
@@ -137,7 +137,7 @@ class _NotificationAddPageState extends State<NotificationAddPage> {
     );
   }
 
-  Widget _buildHeader(BuildContext context, AddNotificationViewModel viewModel) {
+  Widget _buildHeader(BuildContext context, AddAnnouncementViewModel viewModel) {
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(16.0, 24.0, 16.0, 24.0),
       child: Row(
@@ -176,20 +176,6 @@ class _NotificationAddPageState extends State<NotificationAddPage> {
                             letterSpacing: 0.0,
                           ),
                     ),
-                  Text(
-                    viewModel.canSelectVisibility && viewModel.visibility != 'everyone'
-                        ? 'Sharing only for this group'
-                        : 'Sharing for everyone',
-                    style: AppTheme.of(context).bodyMedium.override(
-                          font: GoogleFonts.lexendDeca(
-                            fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                            fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                          ),
-                          color: AppTheme.of(context).primary,
-                          fontSize: 12.0,
-                          letterSpacing: 0.0,
-                        ),
-                  ),
                 ],
               ),
             ),
@@ -199,7 +185,7 @@ class _NotificationAddPageState extends State<NotificationAddPage> {
     );
   }
 
-  Widget _buildForm(BuildContext context, AddNotificationViewModel viewModel) {
+  Widget _buildForm(BuildContext context, AddAnnouncementViewModel viewModel) {
     return Column(
       children: [
         Padding(
@@ -235,52 +221,6 @@ class _NotificationAddPageState extends State<NotificationAddPage> {
             maxLines: 14,
           ),
         ),
-        if (viewModel.canSelectVisibility)
-          Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(8.0, 4.0, 8.0, 4.0),
-            child: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(4.0, 0.0, 16.0, 0.0),
-                  child: Text(
-                    'Visibility',
-                    style: AppTheme.of(context).bodyMedium.override(
-                          font: GoogleFonts.lexendDeca(
-                            fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                            fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                          ),
-                          color: AppTheme.of(context).primary,
-                          fontSize: 16.0,
-                          letterSpacing: 0.0,
-                        ),
-                  ),
-                ),
-                FlutterFlowDropDown<String>(
-                  controller: FormFieldController<String>(viewModel.visibility),
-                  options: const ['group_only', 'everyone'],
-                  optionLabels: const ['Group only', 'Everyone'],
-                  onChanged: viewModel.setVisibility,
-                  width: 180.0,
-                  height: 50.0,
-                  textStyle: AppTheme.of(context).bodyMedium.override(
-                        font: GoogleFonts.lexendDeca(
-                          fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                          fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                        ),
-                        color: AppTheme.of(context).secondary,
-                        letterSpacing: 0.0,
-                      ),
-                  fillColor: AppTheme.of(context).primaryBackground,
-                  elevation: 2.0,
-                  borderColor: AppTheme.of(context).alternate,
-                  borderWidth: 1.0,
-                  borderRadius: 16.0,
-                  margin: const EdgeInsetsDirectional.fromSTEB(12.0, 4.0, 12.0, 4.0),
-                  hidesUnderline: true,
-                ),
-              ],
-            ),
-          ),
         if (viewModel.errorMessage != null)
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(8.0, 8.0, 8.0, 0.0),
@@ -334,7 +274,7 @@ class _NotificationAddPageState extends State<NotificationAddPage> {
     );
   }
 
-  Widget _buildActions(BuildContext context, AddNotificationViewModel viewModel) {
+  Widget _buildActions(BuildContext context, AddAnnouncementViewModel viewModel) {
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(16.0, 32.0, 16.0, 16.0),
       child: Row(
@@ -370,12 +310,12 @@ class _NotificationAddPageState extends State<NotificationAddPage> {
             onPressed: viewModel.isSaving
                 ? null
                 : () async {
-                    final success = await viewModel.saveNotification();
+                    final success = await viewModel.saveAnnouncement();
                     if (!success || !context.mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
-                          'Notification created with success',
+                          'Announcement created with success',
                           style: TextStyle(
                             color: AppTheme.of(context).primaryText,
                           ),
@@ -383,9 +323,9 @@ class _NotificationAddPageState extends State<NotificationAddPage> {
                         backgroundColor: AppTheme.of(context).secondary,
                       ),
                     );
-                    context.pushNamed(CommunityPage.routeName);
+                    context.pop();
                   },
-            text: viewModel.isSaving ? 'Saving...' : 'Add Notification',
+            text: viewModel.isSaving ? 'Saving...' : 'Add Announcement',
             options: FFButtonOptions(
               height: 40.0,
               padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),

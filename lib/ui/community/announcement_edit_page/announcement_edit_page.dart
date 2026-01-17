@@ -1,45 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:gw_community/data/repositories/notification_repository.dart';
+import 'package:gw_community/data/repositories/announcement_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
-import 'package:gw_community/index.dart';
-import 'package:gw_community/ui/community/notification_edit_page/view_model/notification_edit_view_model.dart';
+
+import 'package:gw_community/ui/community/announcement_edit_page/view_model/announcement_edit_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
-import 'package:gw_community/ui/core/ui/flutter_flow_drop_down.dart';
+
+import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
-import 'package:gw_community/ui/core/ui/form_field_controller.dart';
-import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
 
-class NotificationEditPage extends StatefulWidget {
-  const NotificationEditPage({
+class AnnouncementEditPage extends StatefulWidget {
+  const AnnouncementEditPage({
     super.key,
     required this.sharingRow,
   });
 
   final CcViewNotificationsUsersRow? sharingRow;
 
-  static String routeName = 'notificationEditPage';
-  static String routePath = '/notificationEditPage';
+  static String routeName = 'announcementEditPage';
+  static String routePath = '/announcementEditPage';
 
   @override
-  State<NotificationEditPage> createState() =>
-      _NotificationEditPageState();
+  State<AnnouncementEditPage> createState() => _AnnouncementEditPageState();
 }
 
-class _NotificationEditPageState
-    extends State<NotificationEditPage> {
-  late NotificationEditViewModel _viewModel;
+class _AnnouncementEditPageState extends State<AnnouncementEditPage> {
+  late AnnouncementEditViewModel _viewModel;
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    logFirebaseEvent('screen_view',
-        parameters: {'screen_name': 'notificationEditPage'});
-    _viewModel = NotificationEditViewModel(
-      repository: context.read<NotificationRepository>(),
+    logFirebaseEvent('screen_view', parameters: {'screen_name': 'announcementEditPage'});
+    _viewModel = AnnouncementEditViewModel(
+      repository: context.read<AnnouncementRepository>(),
       sharingRow: widget.sharingRow!,
     );
   }
@@ -54,7 +50,7 @@ class _NotificationEditPageState
   Widget build(BuildContext context) {
     return ChangeNotifierProvider.value(
       value: _viewModel,
-      child: Consumer<NotificationEditViewModel>(
+      child: Consumer<AnnouncementEditViewModel>(
         builder: (context, viewModel, _) {
           return GestureDetector(
             onTap: () {
@@ -80,14 +76,11 @@ class _NotificationEditPageState
                   onPressed: () => context.pop(),
                 ),
                 title: Text(
-                  'Edit Notification',
+                  'Edit Announcement',
                   style: AppTheme.of(context).titleLarge.override(
                         font: GoogleFonts.poppins(
-                          fontWeight: AppTheme.of(context)
-                              .titleLarge
-                              .fontWeight,
-                          fontStyle:
-                              AppTheme.of(context).titleLarge.fontStyle,
+                          fontWeight: AppTheme.of(context).titleLarge.fontWeight,
+                          fontStyle: AppTheme.of(context).titleLarge.fontStyle,
                         ),
                         fontSize: 20.0,
                         letterSpacing: 0.0,
@@ -99,8 +92,7 @@ class _NotificationEditPageState
               body: SafeArea(
                 top: true,
                 child: Padding(
-                  padding:
-                      const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 8.0, 8.0),
+                  padding: const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 8.0, 8.0),
                   child: SingleChildScrollView(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,13 +101,10 @@ class _NotificationEditPageState
                         _buildForm(context, viewModel),
                         if (viewModel.errorMessage != null)
                           Padding(
-                            padding: const EdgeInsetsDirectional.fromSTEB(
-                                8.0, 8.0, 8.0, 0.0),
+                            padding: const EdgeInsetsDirectional.fromSTEB(8.0, 8.0, 8.0, 0.0),
                             child: Text(
                               viewModel.errorMessage!,
-                              style: AppTheme.of(context)
-                                  .labelMedium
-                                  .copyWith(
+                              style: AppTheme.of(context).labelMedium.copyWith(
                                     color: AppTheme.of(context).error,
                                   ),
                             ),
@@ -133,8 +122,7 @@ class _NotificationEditPageState
     );
   }
 
-  Widget _buildHeader(
-      BuildContext context, NotificationEditViewModel viewModel) {
+  Widget _buildHeader(BuildContext context, AnnouncementEditViewModel viewModel) {
     final sharing = viewModel.sharingRow;
 
     return Padding(
@@ -150,8 +138,7 @@ class _NotificationEditPageState
                   style: AppTheme.of(context).bodyLarge.override(
                         font: GoogleFonts.inter(
                           fontWeight: FontWeight.normal,
-                          fontStyle:
-                              AppTheme.of(context).bodyLarge.fontStyle,
+                          fontStyle: AppTheme.of(context).bodyLarge.fontStyle,
                         ),
                         color: AppTheme.of(context).secondary,
                         fontSize: 16.0,
@@ -163,35 +150,14 @@ class _NotificationEditPageState
                     'From group ${sharing.groupName}',
                     style: AppTheme.of(context).bodyMedium.override(
                           font: GoogleFonts.lexendDeca(
-                            fontWeight: AppTheme.of(context)
-                                .bodyMedium
-                                .fontWeight,
-                            fontStyle: AppTheme.of(context)
-                                .bodyMedium
-                                .fontStyle,
+                            fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                            fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                           ),
                           color: AppTheme.of(context).primary,
                           fontSize: 12.0,
                           letterSpacing: 0.0,
                         ),
                   ),
-                Text(
-                  viewModel.visibility == 'everyone'
-                      ? 'Sharing for everyone'
-                      : 'Sharing only for this group',
-                  style: AppTheme.of(context).bodyMedium.override(
-                        font: GoogleFonts.lexendDeca(
-                          fontWeight: AppTheme.of(context)
-                              .bodyMedium
-                              .fontWeight,
-                          fontStyle:
-                              AppTheme.of(context).bodyMedium.fontStyle,
-                        ),
-                        color: AppTheme.of(context).primary,
-                        fontSize: 12.0,
-                        letterSpacing: 0.0,
-                      ),
-                ),
               ],
             ),
           ),
@@ -200,7 +166,7 @@ class _NotificationEditPageState
     );
   }
 
-  Widget _buildForm(BuildContext context, NotificationEditViewModel viewModel) {
+  Widget _buildForm(BuildContext context, AnnouncementEditViewModel viewModel) {
     return Column(
       children: [
         Padding(
@@ -211,10 +177,8 @@ class _NotificationEditPageState
             decoration: _inputDecoration(context, 'Title'),
             style: AppTheme.of(context).bodyMedium.override(
                   font: GoogleFonts.lexendDeca(
-                    fontWeight:
-                        AppTheme.of(context).bodyMedium.fontWeight,
-                    fontStyle:
-                        AppTheme.of(context).bodyMedium.fontStyle,
+                    fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                    fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                   ),
                   color: AppTheme.of(context).secondary,
                   letterSpacing: 0.0,
@@ -229,10 +193,8 @@ class _NotificationEditPageState
             decoration: _inputDecoration(context, 'Details'),
             style: AppTheme.of(context).bodyMedium.override(
                   font: GoogleFonts.lexendDeca(
-                    fontWeight:
-                        AppTheme.of(context).bodyMedium.fontWeight,
-                    fontStyle:
-                        AppTheme.of(context).bodyMedium.fontStyle,
+                    fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                    fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                   ),
                   color: AppTheme.of(context).secondary,
                   letterSpacing: 0.0,
@@ -240,64 +202,6 @@ class _NotificationEditPageState
             maxLines: 12,
           ),
         ),
-        if (viewModel.canSelectVisibility)
-          Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(8.0, 4.0, 0.0, 4.0),
-            child: Row(
-              children: [
-                Padding(
-                  padding:
-                      const EdgeInsetsDirectional.fromSTEB(4.0, 0.0, 16.0, 0.0),
-                  child: Text(
-                    'Visibility',
-                    style: AppTheme.of(context).bodyMedium.override(
-                          font: GoogleFonts.lexendDeca(
-                            fontWeight: AppTheme.of(context)
-                                .bodyMedium
-                                .fontWeight,
-                            fontStyle: AppTheme.of(context)
-                                .bodyMedium
-                                .fontStyle,
-                          ),
-                          color: AppTheme.of(context).primary,
-                          fontSize: 16.0,
-                          letterSpacing: 0.0,
-                        ),
-                  ),
-                ),
-                FlutterFlowDropDown<String>(
-                  controller: FormFieldController<String>(viewModel.visibility),
-                  options: const ['group_only', 'everyone'],
-                  optionLabels: const [
-                    'Sharing only for this group',
-                    'Sharing for everyone'
-                  ],
-                  onChanged: viewModel.setVisibility,
-                  width: 180.0,
-                  height: 50.0,
-                  textStyle: AppTheme.of(context).bodyMedium.override(
-                        font: GoogleFonts.lexendDeca(
-                          fontWeight: AppTheme.of(context)
-                              .bodyMedium
-                              .fontWeight,
-                          fontStyle:
-                              AppTheme.of(context).bodyMedium.fontStyle,
-                        ),
-                        color: AppTheme.of(context).secondary,
-                        letterSpacing: 0.0,
-                      ),
-                  fillColor: AppTheme.of(context).primaryBackground,
-                  elevation: 2.0,
-                  borderColor: AppTheme.of(context).alternate,
-                  borderWidth: 1.0,
-                  borderRadius: 16.0,
-                  margin: const EdgeInsetsDirectional.fromSTEB(
-                      12.0, 4.0, 12.0, 4.0),
-                  hidesUnderline: true,
-                ),
-              ],
-            ),
-          ),
       ],
     );
   }
@@ -341,8 +245,7 @@ class _NotificationEditPageState
     );
   }
 
-  Widget _buildActions(
-      BuildContext context, NotificationEditViewModel viewModel) {
+  Widget _buildActions(BuildContext context, AnnouncementEditViewModel viewModel) {
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(0.0, 24.0, 0.0, 8.0),
       child: Row(
@@ -351,19 +254,16 @@ class _NotificationEditPageState
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
             child: FFButtonWidget(
-              onPressed: () => context.pushNamed(CommunityPage.routeName),
+              onPressed: () => context.pop(),
               text: 'Cancel',
               options: FFButtonOptions(
                 height: 40.0,
-                padding:
-                    const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
+                padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
                 color: AppTheme.of(context).primaryBackground,
                 textStyle: AppTheme.of(context).labelLarge.override(
                       font: GoogleFonts.poppins(
-                        fontWeight:
-                            AppTheme.of(context).labelLarge.fontWeight,
-                        fontStyle:
-                            AppTheme.of(context).labelLarge.fontStyle,
+                        fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                        fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                       ),
                       color: AppTheme.of(context).secondary,
                       letterSpacing: 0.0,
@@ -381,12 +281,12 @@ class _NotificationEditPageState
             onPressed: viewModel.isSaving
                 ? null
                 : () async {
-                    final success = await viewModel.saveNotification();
+                    final success = await viewModel.saveAnnouncement();
                     if (!success || !context.mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
-                          'Notification updated with success',
+                          'Announcement updated with success',
                           style: TextStyle(
                             color: AppTheme.of(context).primaryText,
                           ),
@@ -394,29 +294,21 @@ class _NotificationEditPageState
                         backgroundColor: AppTheme.of(context).secondary,
                       ),
                     );
-                    context.goNamed(
-                      CommunityPage.routeName,
-                      extra: <String, dynamic>{
-                        kTransitionInfoKey: const TransitionInfo(
-                          hasTransition: true,
-                          transitionType: PageTransitionType.fade,
-                          duration: Duration(milliseconds: 0),
-                        ),
-                      },
-                    );
+                    // Retorna true para indicar que o anúncio foi editado
+                    // A AnnouncementViewPage vai receber esse valor e também fazer pop
+                    if (context.mounted) {
+                      context.pop(true);
+                    }
                   },
-            text: viewModel.isSaving ? 'Saving...' : 'Save Notification',
+            text: viewModel.isSaving ? 'Saving...' : 'Save Announcement',
             options: FFButtonOptions(
               height: 40.0,
-              padding:
-                  const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
+              padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
               color: AppTheme.of(context).primary,
               textStyle: AppTheme.of(context).labelLarge.override(
                     font: GoogleFonts.poppins(
-                      fontWeight:
-                          AppTheme.of(context).labelLarge.fontWeight,
-                      fontStyle:
-                          AppTheme.of(context).labelLarge.fontStyle,
+                      fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                      fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                     ),
                     color: AppTheme.of(context).primaryBackground,
                     letterSpacing: 0.0,

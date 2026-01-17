@@ -16,7 +16,7 @@ import 'package:gw_community/data/repositories/home_repository.dart';
 import 'package:gw_community/data/repositories/journal_repository.dart';
 import 'package:gw_community/data/repositories/journeys_repository.dart';
 import 'package:gw_community/data/repositories/learn_repository.dart';
-import 'package:gw_community/data/repositories/notification_repository.dart';
+import 'package:gw_community/data/repositories/announcement_repository.dart';
 import 'package:gw_community/data/repositories/sharing_repository.dart';
 import 'package:gw_community/data/repositories/step_activities_repository.dart';
 import 'package:gw_community/data/repositories/unsplash_repository.dart';
@@ -84,7 +84,7 @@ void main() async {
         Provider(create: (_) => SharingRepository()),
         Provider(create: (_) => EventRepository()),
         Provider(create: (_) => CommunityRepository()),
-        Provider(create: (_) => NotificationRepository()),
+        Provider(create: (_) => AnnouncementRepository()),
         Provider(create: (_) => GroupRepository()),
         Provider(create: (_) => UserProfileRepository()),
         Provider(create: (_) => HomeRepository()),

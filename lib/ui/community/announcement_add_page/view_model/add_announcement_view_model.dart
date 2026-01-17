@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'package:gw_community/data/repositories/notification_repository.dart';
+import 'package:gw_community/data/repositories/announcement_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 
-class AddNotificationViewModel extends ChangeNotifier {
-  AddNotificationViewModel({
-    required NotificationRepository repository,
+class AddAnnouncementViewModel extends ChangeNotifier {
+  AddAnnouncementViewModel({
+    required AnnouncementRepository repository,
     required this.currentUserUid,
     this.groupId,
     this.groupName,
@@ -14,7 +14,7 @@ class AddNotificationViewModel extends ChangeNotifier {
     _loadCurrentUser();
   }
 
-  final NotificationRepository _repository;
+  final AnnouncementRepository _repository;
   final String currentUserUid;
   final int? groupId;
   final String? groupName;
@@ -60,8 +60,7 @@ class AddNotificationViewModel extends ChangeNotifier {
   }
 
   bool _validateForm() {
-    if (titleController.text.trim().isEmpty ||
-        experienceController.text.trim().isEmpty) {
+    if (titleController.text.trim().isEmpty || experienceController.text.trim().isEmpty) {
       _setError('Please fill in all required fields.');
       return false;
     }
@@ -69,13 +68,13 @@ class AddNotificationViewModel extends ChangeNotifier {
     return true;
   }
 
-  Future<bool> saveNotification() async {
+  Future<bool> saveAnnouncement() async {
     if (!_validateForm()) {
       return false;
     }
     _setSaving(true);
     try {
-      await _repository.createNotification(
+      await _repository.createAnnouncement(
         title: titleController.text.trim(),
         text: experienceController.text.trim(),
         privacy: privacy,
@@ -85,7 +84,7 @@ class AddNotificationViewModel extends ChangeNotifier {
       );
       return true;
     } catch (e) {
-      _setError('Error creating notification: $e');
+      _setError('Error creating announcement: $e');
       return false;
     } finally {
       _setSaving(false);

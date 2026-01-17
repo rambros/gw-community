@@ -5,7 +5,7 @@ import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:gw_community/data/repositories/event_repository.dart';
 import 'package:gw_community/data/repositories/experience_moderation_repository.dart';
 import 'package:gw_community/data/repositories/group_repository.dart';
-import 'package:gw_community/data/repositories/notification_repository.dart';
+import 'package:gw_community/data/repositories/announcement_repository.dart';
 import 'package:gw_community/data/repositories/sharing_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 
@@ -15,8 +15,7 @@ import 'package:gw_community/data/repositories/learn_repository.dart';
 import 'package:gw_community/ui/community/group_details_page/widgets/group_about_tab.dart';
 import 'package:gw_community/ui/community/group_details_page/widgets/group_events_tab.dart';
 import 'package:gw_community/ui/community/group_details_page/widgets/group_journeys_tab.dart';
-import 'package:gw_community/ui/community/group_details_page/widgets/group_library_tab.dart';
-import 'package:gw_community/ui/community/group_details_page/widgets/group_notifications_tab.dart';
+import 'package:gw_community/ui/community/group_details_page/widgets/group_announcements_tab.dart';
 import 'package:gw_community/ui/community/group_details_page/widgets/group_sharings_tab.dart';
 import 'package:gw_community/ui/community/group_details_page/member_management_page/member_management_page.dart';
 import 'package:gw_community/ui/community/group_edit_page/group_edit_page.dart';
@@ -52,7 +51,7 @@ class _GroupDetailsPageState extends State<GroupDetailsPage> with TickerProvider
         context.read<GroupRepository>(),
         context.read<SharingRepository>(),
         context.read<EventRepository>(),
-        context.read<NotificationRepository>(),
+        context.read<AnnouncementRepository>(),
         context.read<JourneysRepository>(),
         context.read<LearnRepository>(),
         widget.groupRow,
@@ -188,7 +187,15 @@ class GroupDetailsPageView extends StatelessWidget {
                           color: Colors.white,
                         ),
                         onSelected: (value) async {
-                          if (value == 'about') {
+                          if (value == 'group_resources') {
+                            await context.pushNamed(
+                              'learnListPage',
+                              queryParameters: {
+                                'groupId': '${group.id}',
+                                'customTitle': 'Group Resources',
+                              },
+                            );
+                          } else if (value == 'about') {
                             await showModalBottomSheet(
                               isScrollControlled: true,
                               backgroundColor: Colors.transparent,
@@ -296,6 +303,20 @@ class GroupDetailsPageView extends StatelessWidget {
                         },
                         itemBuilder: (context) => [
                           PopupMenuItem(
+                            value: 'group_resources',
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.library_books_outlined,
+                                  size: 20,
+                                  color: AppTheme.of(context).secondary,
+                                ),
+                                const SizedBox(width: 12),
+                                const Text('Group Resources'),
+                              ],
+                            ),
+                          ),
+                          PopupMenuItem(
                             value: 'about',
                             child: Row(
                               children: [
@@ -359,51 +380,55 @@ class GroupDetailsPageView extends StatelessWidget {
             children: [
               // Header
               Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 0.0),
+                padding: const EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 8.0),
                 child: Row(
                   mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Column(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(16.0),
-                          child: Image.network(
-                            group.groupImageUrl!,
-                            width: 80.0,
-                            height: 80.0,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) => Container(
-                              width: 80.0,
-                              height: 80.0,
-                              color: Colors.grey[300],
-                              child: const Icon(Icons.image_not_supported),
-                            ),
-                          ),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(16.0),
+                      child: Image.network(
+                        group.groupImageUrl!,
+                        width: 70.0,
+                        height: 70.0,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          width: 70.0,
+                          height: 70.0,
+                          color: Colors.grey[300],
+                          child: const Icon(Icons.image_not_supported),
                         ),
-                        Padding(
-                          padding: const EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 0.0),
-                          child: Text(
+                      ),
+                    ),
+                    const SizedBox(width: 16.0),
+                    Expanded(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
                             group.name!,
                             style: AppTheme.of(context).headlineSmall.override(
                                   font: GoogleFonts.lexendDeca(),
+                                  fontSize: 20.0,
                                 ),
                           ),
-                        ),
-                        Text(
-                          '${group.groupPrivacy} group - ${formatNumber(
-                            group.numberMembers,
-                            formatType: FormatType.compact,
-                          )} ${group.numberMembers == 1 ? 'member' : 'members'}',
-                          style: AppTheme.of(context).bodyMedium.override(
-                                font: GoogleFonts.lexendDeca(),
-                                color: AppTheme.of(context).secondary,
-                                fontSize: 14.0,
-                              ),
-                        ),
-                      ],
+                          Padding(
+                            padding: const EdgeInsetsDirectional.fromSTEB(0.0, 2.0, 0.0, 0.0),
+                            child: Text(
+                              '${group.groupPrivacy} group - ${formatNumber(
+                                group.numberMembers,
+                                formatType: FormatType.compact,
+                              )} ${group.numberMembers == 1 ? 'member' : 'members'}',
+                              style: AppTheme.of(context).bodyMedium.override(
+                                    font: GoogleFonts.lexendDeca(),
+                                    color: AppTheme.of(context).secondary,
+                                    fontSize: 14.0,
+                                  ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -433,12 +458,43 @@ class GroupDetailsPageView extends StatelessWidget {
                                   unselectedLabelStyle: const TextStyle(),
                                   indicatorColor: AppTheme.of(context).secondary,
                                   labelPadding: const EdgeInsets.symmetric(horizontal: 10.0),
-                                  tabs: const [
-                                    Tab(key: ValueKey('tab_experiences'), text: 'Experiences'),
-                                    Tab(key: ValueKey('tab_events'), text: 'Events'),
-                                    Tab(key: ValueKey('tab_notifications'), text: 'Notifications'),
-                                    Tab(key: ValueKey('tab_journeys'), text: 'Journeys'),
-                                    Tab(key: ValueKey('tab_resources'), text: 'Resources'),
+                                  tabs: [
+                                    const Tab(key: ValueKey('tab_experiences'), text: 'Experiences'),
+                                    const Tab(key: ValueKey('tab_events'), text: 'Events'),
+                                    Tab(
+                                      key: const ValueKey('tab_notifications'),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const Text('Announcements'),
+                                          if (viewModel.unreadNotificationCount > 0) ...[
+                                            const SizedBox(width: 6),
+                                            Container(
+                                              padding: const EdgeInsets.all(4),
+                                              decoration: BoxDecoration(
+                                                color: AppTheme.of(context).secondary,
+                                                shape: BoxShape.circle,
+                                              ),
+                                              constraints: const BoxConstraints(
+                                                minWidth: 16,
+                                                minHeight: 16,
+                                              ),
+                                              child: Center(
+                                                child: Text(
+                                                  '${viewModel.unreadNotificationCount}',
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 10,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ],
+                                      ),
+                                    ),
+                                    const Tab(key: ValueKey('tab_journeys'), text: 'Journeys'),
                                   ],
                                   controller: viewModel.tabController,
                                 ),
@@ -450,9 +506,8 @@ class GroupDetailsPageView extends StatelessWidget {
                                   children: const [
                                     GroupSharingsTab(key: ValueKey('page_experiences')),
                                     GroupEventsTab(key: ValueKey('page_events')),
-                                    GroupNotificationsTab(key: ValueKey('page_notifications')),
+                                    GroupAnnouncementsTab(key: ValueKey('page_notifications')),
                                     GroupJourneysTab(key: ValueKey('page_journeys')),
-                                    GroupLibraryTab(key: ValueKey('page_library')),
                                   ],
                                 ),
                               ),

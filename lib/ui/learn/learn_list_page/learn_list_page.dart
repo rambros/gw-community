@@ -14,10 +14,12 @@ class LearnListPage extends StatefulWidget {
   const LearnListPage({
     super.key,
     this.journeyId,
+    this.groupId,
     this.customTitle,
   });
 
   final int? journeyId;
+  final int? groupId;
   final String? customTitle;
 
   static String routeName = 'learnListPage';
@@ -43,9 +45,11 @@ class _LearnListPageState extends State<LearnListPage> {
     SchedulerBinding.instance.addPostFrameCallback((_) {
       final viewModel = context.read<LearnListViewModel>();
 
-      // Se journeyId fornecido, aplicar filtro imediatamente
+      // Se journeyId ou groupId fornecido, aplicar filtro imediatamente
       if (widget.journeyId != null) {
         viewModel.applyFilters(journeyId: widget.journeyId);
+      } else if (widget.groupId != null) {
+        viewModel.applyFilters(groupId: widget.groupId);
       } else {
         viewModel.loadInitialData();
       }
@@ -78,8 +82,8 @@ class _LearnListPageState extends State<LearnListPage> {
         backgroundColor: AppTheme.of(context).primaryBackground,
         appBar: AppBar(
           backgroundColor: AppTheme.of(context).primary,
-          automaticallyImplyLeading: widget.journeyId != null,
-          leading: widget.journeyId != null
+          automaticallyImplyLeading: widget.journeyId != null || widget.groupId != null,
+          leading: widget.journeyId != null || widget.groupId != null
               ? IconButton(
                   icon: const Icon(Icons.arrow_back, color: Colors.white),
                   onPressed: () => Navigator.of(context).pop(),
@@ -133,7 +137,10 @@ class _LearnListPageState extends State<LearnListPage> {
                               ),
 
                             // Search Bar
-                            if (!viewModel.isSearchActive && !viewModel.isFilterActive && widget.journeyId == null)
+                            if (!viewModel.isSearchActive &&
+                                !viewModel.isFilterActive &&
+                                widget.journeyId == null &&
+                                widget.groupId == null)
                               Padding(
                                 padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 16.0, 0.0),
                                 child: Container(

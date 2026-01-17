@@ -13,9 +13,9 @@ export 'package:gw_community/ui/community/group_details_page/group_details_page.
 export 'package:gw_community/ui/community/group_edit_page/group_edit_page.dart' show GroupEditPage;
 export 'package:gw_community/ui/community/group_invitation_page/group_invitation_page.dart' show GroupInvitationPage;
 export 'package:gw_community/ui/community/my_experiences_page/my_experiences_page.dart' show MyExperiencesPage;
-export 'package:gw_community/ui/community/notification_add_page/notification_add_page.dart' show NotificationAddPage;
-export 'package:gw_community/ui/community/notification_edit_page/notification_edit_page.dart' show NotificationEditPage;
-export 'package:gw_community/ui/community/notification_view_page/notification_view_page.dart' show NotificationViewPage;
+export 'package:gw_community/ui/community/announcement_add_page/announcement_add_page.dart' show AnnouncementAddPage;
+export 'package:gw_community/ui/community/announcement_edit_page/announcement_edit_page.dart' show AnnouncementEditPage;
+export 'package:gw_community/ui/community/announcement_view_page/announcement_view_page.dart' show AnnouncementViewPage;
 export 'package:gw_community/ui/community/sharing_add_page/sharing_add_page.dart' show SharingAddPage;
 export 'package:gw_community/ui/community/sharing_edit_page/sharing_edit_page.dart' show SharingEditPage;
 export 'package:gw_community/ui/community/sharing_view_page/sharing_view_page.dart' show SharingViewPage;

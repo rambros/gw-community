@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 
 import 'package:gw_community/data/repositories/event_repository.dart';
 import 'package:gw_community/data/repositories/group_repository.dart';
-import 'package:gw_community/data/repositories/notification_repository.dart';
+import 'package:gw_community/data/repositories/announcement_repository.dart';
 import 'package:gw_community/data/repositories/sharing_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 
@@ -13,7 +14,7 @@ class GroupDetailsViewModel extends ChangeNotifier {
   final GroupRepository _groupRepository;
   final SharingRepository _sharingRepository;
   final EventRepository _eventRepository;
-  final NotificationRepository _notificationRepository;
+  final AnnouncementRepository _announcementRepository;
   final JourneysRepository _journeysRepository;
   final LearnRepository _learnRepository;
   CcGroupsRow _group;
@@ -24,7 +25,7 @@ class GroupDetailsViewModel extends ChangeNotifier {
     this._groupRepository,
     this._sharingRepository,
     this._eventRepository,
-    this._notificationRepository,
+    this._announcementRepository,
     this._journeysRepository,
     this._learnRepository,
     CcGroupsRow group, {
@@ -55,7 +56,7 @@ class GroupDetailsViewModel extends ChangeNotifier {
   }
 
   Stream<List<CcViewNotificationsUsersRow>> get notificationsStream {
-    return _notificationRepository.getNotificationsStream(group.id);
+    return _announcementRepository.getAnnouncementsStream(group.id);
   }
 
   // Contador de notificações não lidas
@@ -70,14 +71,18 @@ class GroupDetailsViewModel extends ChangeNotifier {
 
   Future<List<ViewContentRow>> get groupLibrary => _learnRepository.filterContent(filterByGroupId: group.id);
 
+  StreamSubscription<List<CcViewNotificationsUsersRow>>? _notificationsSubscription;
+
   void init(TickerProvider vsync) {
     _vsync = vsync;
     // Inicialização síncrona obrigatória antes do check async
     _updateTabController();
     _checkMembership();
     _fetchMembers();
-    _loadReadNotifications();
+    _loadReadNotificationsAndSubscribe();
   }
+
+  // ... (existing code)
 
   Future<void> _checkMembership() async {
     if (currentUserId == null || currentUserId!.isEmpty) {
@@ -100,7 +105,7 @@ class GroupDetailsViewModel extends ChangeNotifier {
   void _updateTabController() {
     if (_vsync == null) return;
 
-    final int targetLength = shouldShowOnlyAbout ? 1 : 5;
+    final int targetLength = shouldShowOnlyAbout ? 1 : 4;
 
     // Se o controller já existe e o tamanho é o mesmo, não faz nada
     if (tabController != null && tabController!.length == targetLength) return;
@@ -175,27 +180,13 @@ class GroupDetailsViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> _loadReadNotifications() async {
-    if (currentUserId == null || currentUserId!.isEmpty) {
-      return;
-    }
-
-    try {
-      _readNotificationIds = await _notificationRepository.getReadNotificationIds(group.id, currentUserId!);
-      _unreadNotificationCount = await _notificationRepository.getUnreadNotificationCount(group.id, currentUserId!);
-      notifyListeners();
-    } catch (e) {
-      debugPrint('Error loading read notifications: $e');
-    }
-  }
-
   Future<void> markNotificationAsRead(int notificationId) async {
     if (currentUserId == null || currentUserId!.isEmpty) {
       return;
     }
 
     try {
-      await _notificationRepository.markNotificationAsRead(notificationId, currentUserId!);
+      await _announcementRepository.markAnnouncementAsRead(notificationId, currentUserId!);
       _readNotificationIds.add(notificationId);
 
       // Atualiza o contador
@@ -209,12 +200,75 @@ class GroupDetailsViewModel extends ChangeNotifier {
     }
   }
 
+  /// Recarrega os IDs de notificações lidas do banco de dados.
+  /// Útil após editar um anúncio, que reseta o status de leitura.
+  Future<void> refreshReadNotifications() async {
+    if (currentUserId == null || currentUserId!.isEmpty) {
+      return;
+    }
+
+    try {
+      _readNotificationIds = await _announcementRepository.getReadAnnouncementIds(group.id, currentUserId!);
+      // Força atualização do contador buscando as notificações atuais
+      final notifications = await CcViewNotificationsUsersTable().queryRows(
+        queryFn: (q) => q.eq('group_id', group.id),
+      );
+      _updateUnreadCount(notifications);
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error refreshing read notifications: $e');
+    }
+  }
+
   bool isNotificationRead(int notificationId) {
     return _readNotificationIds.contains(notificationId);
   }
 
+  Future<void> _loadReadNotificationsAndSubscribe() async {
+    if (currentUserId == null || currentUserId!.isEmpty) {
+      return;
+    }
+
+    try {
+      // First load existing read status
+      _readNotificationIds = await _announcementRepository.getReadAnnouncementIds(group.id, currentUserId!);
+
+      // Cancel previous subscription if exists
+      await _notificationsSubscription?.cancel();
+
+      // Subscribe to stream to keep count updated
+      // Also refresh read status when stream updates (handles edited announcements)
+      _notificationsSubscription = _announcementRepository.getAnnouncementsStream(group.id).listen((notifications) async {
+        // Recarrega os IDs lidos do banco para detectar anúncios editados
+        // (que tiveram seus registros de leitura deletados)
+        final newReadIds = await _announcementRepository.getReadAnnouncementIds(group.id, currentUserId!);
+        final readIdsChanged = !_setEquals(_readNotificationIds, newReadIds);
+        _readNotificationIds = newReadIds;
+        _updateUnreadCount(notifications, forceNotify: readIdsChanged);
+      });
+    } catch (e) {
+      debugPrint('Error loading read notifications: $e');
+    }
+  }
+
+  void _updateUnreadCount(List<CcViewNotificationsUsersRow> notifications, {bool forceNotify = false}) {
+    final ids = notifications.map((n) => n.id!).toSet();
+    final unreadCount = ids.where((id) => !_readNotificationIds.contains(id)).length;
+
+    if (_unreadNotificationCount != unreadCount || forceNotify) {
+      _unreadNotificationCount = unreadCount;
+      notifyListeners();
+    }
+  }
+
+  bool _setEquals(Set<int> a, Set<int> b) {
+    if (a.length != b.length) return false;
+    return a.containsAll(b);
+  }
+
   @override
   void dispose() {
+    _notificationsSubscription?.cancel();
     tabController?.removeListener(_onTabChanged);
     tabController?.dispose();
     super.dispose();
@@ -231,7 +285,7 @@ class GroupDetailsViewModel extends ChangeNotifier {
   }
 
   Future<void> deleteNotification(int id) async {
-    await _notificationRepository.deleteNotification(id);
+    await _announcementRepository.deleteAnnouncement(id);
     notifyListeners();
   }
 

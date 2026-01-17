@@ -152,6 +152,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               ? const NavBarPage(initialPage: 'learnListPage')
               : LearnListPage(
                   journeyId: params.getParam('journeyId', ParamType.int),
+                  groupId: params.getParam('groupId', ParamType.int),
                   customTitle: params.getParam('customTitle', ParamType.String),
                 ),
         ),
@@ -391,9 +392,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: NotificationAddPage.routeName,
-          path: NotificationAddPage.routePath,
-          builder: (context, params) => NotificationAddPage(
+          name: AnnouncementAddPage.routeName,
+          path: AnnouncementAddPage.routePath,
+          builder: (context, params) => AnnouncementAddPage(
             groupId: params.getParam(
               'groupId',
               ParamType.int,
@@ -409,9 +410,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: NotificationEditPage.routeName,
-          path: NotificationEditPage.routePath,
-          builder: (context, params) => NotificationEditPage(
+          name: AnnouncementEditPage.routeName,
+          path: AnnouncementEditPage.routePath,
+          builder: (context, params) => AnnouncementEditPage(
             sharingRow: params.getParam<CcViewNotificationsUsersRow>(
               'sharingRow',
               ParamType.SupabaseRow,
@@ -419,11 +420,11 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: NotificationViewPage.routeName,
-          path: NotificationViewPage.routePath,
-          builder: (context, params) => NotificationViewPage(
-            notificationId: params.getParam(
-              'notificationId',
+          name: AnnouncementViewPage.routeName,
+          path: AnnouncementViewPage.routePath,
+          builder: (context, params) => AnnouncementViewPage(
+            announcementId: params.getParam(
+              'announcementId',
               ParamType.int,
             ),
             groupModerators: params.getParam<int>(

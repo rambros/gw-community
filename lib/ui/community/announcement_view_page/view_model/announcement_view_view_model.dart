@@ -2,71 +2,72 @@ import 'package:flutter/material.dart';
 
 import 'package:gw_community/app_state.dart';
 import 'package:gw_community/data/models/enums/enums.dart';
-import 'package:gw_community/data/repositories/notification_repository.dart';
+import 'package:gw_community/data/repositories/announcement_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 
-class NotificationViewViewModel extends ChangeNotifier {
-  NotificationViewViewModel({
-    required NotificationRepository repository,
+class AnnouncementViewViewModel extends ChangeNotifier {
+  AnnouncementViewViewModel({
+    required AnnouncementRepository repository,
     required this.currentUserUid,
     required this.appState,
     this.groupModerators,
   }) : _repository = repository;
 
-  final NotificationRepository _repository;
+  final AnnouncementRepository _repository;
   final String currentUserUid;
   final FFAppState appState;
   final List<int>? groupModerators;
 
-  int? _notificationId;
-  CcViewNotificationsUsersRow? _notification;
+  int? _announcementId;
+  CcViewNotificationsUsersRow? _announcement;
   List<CcViewOrderedCommentsRow> _comments = [];
   bool _isLoading = false;
   bool _isActionInProgress = false;
   String? _errorMessage;
 
-  CcViewNotificationsUsersRow? get notification => _notification;
+  CcViewNotificationsUsersRow? get announcement => _announcement;
   List<CcViewOrderedCommentsRow> get comments => _comments;
   bool get isLoading => _isLoading;
   bool get isActionInProgress => _isActionInProgress;
   String? get errorMessage => _errorMessage;
-  bool get isLocked => _notification?.locked ?? false;
+  bool get isLocked => _announcement?.locked ?? false;
 
-  Future<void> initialize(int notificationId) async {
-    _notificationId = notificationId;
-    await loadNotification();
+  Future<void> initialize(int announcementId) async {
+    _announcementId = announcementId;
+    await loadAnnouncement();
   }
 
-  Future<void> loadNotification() async {
-    if (_notificationId == null) return;
+  Future<void> loadAnnouncement() async {
+    if (_announcementId == null) return;
     _setLoading(true);
     try {
-      _notification = await _repository.getNotificationById(_notificationId!);
-      _comments = await _repository.getComments(_notificationId!);
+      _announcement = await _repository.getAnnouncementById(_announcementId!);
+      _comments = await _repository.getComments(_announcementId!);
       _clearError();
     } catch (e) {
-      _setError('Error loading notification: $e');
+      _setError('Error loading announcement: $e');
     } finally {
       _setLoading(false);
     }
   }
 
   Future<void> refreshComments() async {
-    if (_notificationId == null) return;
+    if (_announcementId == null) return;
     try {
-      _comments = await _repository.getComments(_notificationId!);
+      _comments = await _repository.getComments(_announcementId!);
       notifyListeners();
     } catch (e) {
       _setError('Error loading comments: $e');
     }
   }
 
-  bool get canDeleteNotification {
-    if (_notification == null) return false;
-    return _notification!.userId == currentUserUid || _isAdmin;
+  bool get canDeleteAnnouncement {
+    if (_announcement == null) return false;
+    return _announcement!.userId == currentUserUid || _isAdmin;
   }
 
-  bool get canToggleLock => canDeleteNotification;
+  bool get canToggleLock => canDeleteAnnouncement;
+  bool get canEditAnnouncement => canDeleteAnnouncement;
 
   bool get _isAdmin => appState.loginUser.roles.hasAdmin;
 
@@ -78,13 +79,13 @@ class NotificationViewViewModel extends ChangeNotifier {
   bool get canComment => !isLocked;
 
   Future<bool> toggleLock() async {
-    if (!canToggleLock || _notificationId == null || _notification == null) {
+    if (!canToggleLock || _announcementId == null || _announcement == null) {
       return false;
     }
     _setActionInProgress(true);
     try {
-      await _repository.toggleLock(_notificationId!, !_notification!.locked!);
-      await loadNotification();
+      await _repository.toggleLock(_announcementId!, !_announcement!.locked!);
+      await loadAnnouncement();
       return true;
     } catch (e) {
       _setError('Error updating lock status: $e');
@@ -94,16 +95,16 @@ class NotificationViewViewModel extends ChangeNotifier {
     }
   }
 
-  Future<bool> deleteNotification() async {
-    if (!canDeleteNotification || _notificationId == null) {
+  Future<bool> deleteAnnouncement() async {
+    if (!canDeleteAnnouncement || _announcementId == null) {
       return false;
     }
     _setActionInProgress(true);
     try {
-      await _repository.deleteNotification(_notificationId!);
+      await _repository.deleteAnnouncement(_announcementId!);
       return true;
     } catch (e) {
-      _setError('Error deleting notification: $e');
+      _setError('Error deleting announcement: $e');
       return false;
     } finally {
       _setActionInProgress(false);

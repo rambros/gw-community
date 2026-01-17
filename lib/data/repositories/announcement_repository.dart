@@ -2,13 +2,13 @@ import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 
-class NotificationRepository {
+class AnnouncementRepository {
   Future<CcMembersRow?> getUserById(String authUserId) async {
     final result = await CcMembersTable().querySingleRow(queryFn: (q) => q.eqOrNull('auth_user_id', authUserId));
     return result.isNotEmpty ? result.first : null;
   }
 
-  Future<void> createNotification({
+  Future<void> createAnnouncement({
     required String title,
     required String text,
     required String privacy,
@@ -28,7 +28,7 @@ class NotificationRepository {
     });
   }
 
-  Future<CcViewNotificationsUsersRow?> getNotificationById(int id) async {
+  Future<CcViewNotificationsUsersRow?> getAnnouncementById(int id) async {
     final result = await CcViewNotificationsUsersTable().querySingleRow(queryFn: (q) => q.eqOrNull('id', id));
     return result.isNotEmpty ? result.first : null;
   }
@@ -39,12 +39,12 @@ class NotificationRepository {
     );
   }
 
-  Future<void> deleteNotification(int id) async {
+  Future<void> deleteAnnouncement(int id) async {
     await CcCommentsTable().delete(matchingRows: (rows) => rows.eqOrNull('sharing_id', id));
     await CcSharingsTable().delete(matchingRows: (rows) => rows.eqOrNull('id', id));
   }
 
-  Future<void> updateNotification({
+  Future<void> updateAnnouncement({
     required int id,
     required String title,
     required String text,
@@ -61,6 +61,9 @@ class NotificationRepository {
       },
       matchingRows: (rows) => rows.eqOrNull('id', id),
     );
+
+    // Reset read status for all users so it shows as new
+    await CcSharingReadsTable().delete(matchingRows: (rows) => rows.eq('sharing_id', id));
   }
 
   Future<void> toggleLock(int id, bool locked) async {
@@ -71,7 +74,7 @@ class NotificationRepository {
     await CcCommentsTable().delete(matchingRows: (rows) => rows.eqOrNull('id', commentId));
   }
 
-  Stream<List<CcViewNotificationsUsersRow>> getNotificationsStream(int groupId) {
+  Stream<List<CcViewNotificationsUsersRow>> getAnnouncementsStream(int groupId) {
     return SupaFlow.client
         .from("cc_view_notifications_users")
         .stream(primaryKey: ['id'])
@@ -81,18 +84,18 @@ class NotificationRepository {
         .asBroadcastStream();
   }
 
-  /// Marca uma notificação como lida para o usuário atual
-  Future<void> markNotificationAsRead(int notificationId, String userId) async {
+  /// Marca um anúncio como lido para o usuário atual
+  Future<void> markAnnouncementAsRead(int announcementId, String userId) async {
     try {
       // Verifica se já existe um registro
       final existing = await CcSharingReadsTable().queryRows(
-        queryFn: (q) => q.eq('sharing_id', notificationId).eq('user_id', userId),
+        queryFn: (q) => q.eq('sharing_id', announcementId).eq('user_id', userId),
       );
 
       if (existing.isEmpty) {
         // Se não existe, cria um novo registro
         await CcSharingReadsTable().insert({
-          'sharing_id': notificationId,
+          'sharing_id': announcementId,
           'user_id': userId,
           'read_at': supaSerialize<DateTime>(getCurrentTimestamp),
         });
@@ -103,8 +106,8 @@ class NotificationRepository {
     }
   }
 
-  /// Busca os IDs de notificações lidas pelo usuário atual no grupo
-  Future<Set<int>> getReadNotificationIds(int groupId, String userId) async {
+  /// Busca os IDs de anúncios lidas pelo usuário atual no grupo
+  Future<Set<int>> getReadAnnouncementIds(int groupId, String userId) async {
     try {
       final notifications = await CcViewNotificationsUsersTable().queryRows(queryFn: (q) => q.eq('group_id', groupId));
 
@@ -125,8 +128,8 @@ class NotificationRepository {
     }
   }
 
-  /// Conta quantas notificações não lidas existem no grupo para o usuário
-  Future<int> getUnreadNotificationCount(int groupId, String userId) async {
+  /// Conta quantos anúncios não lidos existem no grupo para o usuário
+  Future<int> getUnreadAnnouncementCount(int groupId, String userId) async {
     try {
       final notifications = await CcViewNotificationsUsersTable().queryRows(queryFn: (q) => q.eq('group_id', groupId));
 
@@ -149,29 +152,50 @@ class NotificationRepository {
   }
 
   // ==========================================================================
-  // MODERATION NOTIFICATIONS
+  // MODERATION NOTIFICATIONS (uses cc_notifications table like admin portal)
   // ==========================================================================
 
-  /// Creates a group notification for experience approval
+  /// Creates a notification in cc_notifications table (same as admin portal)
+  Future<CcNotificationsRow> _createModerationNotification({
+    required String userId,
+    required String type,
+    required String title,
+    String? message,
+    String? referenceType,
+    int? referenceId,
+    int? groupId,
+  }) async {
+    return await CcNotificationsTable().insert({
+      'user_id': userId,
+      'type': type,
+      'title': title,
+      if (message != null) 'message': message,
+      if (referenceType != null) 'reference_type': referenceType,
+      if (referenceId != null) 'reference_id': referenceId,
+      if (groupId != null) 'group_id': groupId,
+      'is_read': false,
+    });
+  }
+
+  /// Creates a notification for experience approval (visible only to author)
   Future<void> createApprovalNotification({
     required String userId,
     required int experienceId,
     required String experienceTitle,
     required int? groupId,
   }) async {
-    if (groupId == null) return;
-
-    await createNotification(
-      title: 'Experience Approved',
-      text: 'Your experience "$experienceTitle" has been approved and is now visible.',
-      privacy: 'public',
+    await _createModerationNotification(
       userId: userId,
+      type: 'experience_approved',
+      title: 'Experience Approved',
+      message: 'Your experience "$experienceTitle" has been approved and is now visible.',
+      referenceType: 'experience',
+      referenceId: experienceId,
       groupId: groupId,
-      visibility: 'group_only',
     );
   }
 
-  /// Creates a group notification for experience rejection
+  /// Creates a notification for experience rejection (visible only to author)
   Future<void> createRejectionNotification({
     required String userId,
     required int experienceId,
@@ -179,19 +203,18 @@ class NotificationRepository {
     required String reason,
     required int? groupId,
   }) async {
-    if (groupId == null) return;
-
-    await createNotification(
-      title: 'Experience Not Published',
-      text: 'Your experience "$experienceTitle" was not published. Reason: $reason',
-      privacy: 'public',
+    await _createModerationNotification(
       userId: userId,
+      type: 'experience_rejected',
+      title: 'Experience Not Published',
+      message: 'Your experience "$experienceTitle" was not published. Reason: $reason',
+      referenceType: 'experience',
+      referenceId: experienceId,
       groupId: groupId,
-      visibility: 'group_only',
     );
   }
 
-  /// Creates a group notification for changes requested
+  /// Creates a notification for changes requested (visible only to author)
   Future<void> createChangesRequestedNotification({
     required String userId,
     required int experienceId,
@@ -199,15 +222,14 @@ class NotificationRepository {
     required String reason,
     required int? groupId,
   }) async {
-    if (groupId == null) return;
-
-    await createNotification(
-      title: 'Refinement Suggested',
-      text: 'Please update your experience "$experienceTitle". Feedback: $reason',
-      privacy: 'public',
+    await _createModerationNotification(
       userId: userId,
+      type: 'experience_changes_requested',
+      title: 'Refinement Suggested',
+      message: 'Please update your experience "$experienceTitle". Feedback: $reason',
+      referenceType: 'experience',
+      referenceId: experienceId,
       groupId: groupId,
-      visibility: 'group_only',
     );
   }
 }
