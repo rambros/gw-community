@@ -77,7 +77,12 @@ class GroupAboutTab extends StatelessWidget {
             if (viewModel.isLoadingMembers)
               Center(child: SpinKitRipple(color: AppTheme.of(context).primary, size: 30.0))
             else if (viewModel.members.isEmpty)
-              Text('No members found.', style: AppTheme.of(context).bodyMedium)
+              Text(
+                'No members found.',
+                style: AppTheme.of(context).bodyMedium.override(
+                      color: AppTheme.of(context).textColor,
+                    ),
+              )
             else
               _buildMembersSections(context, viewModel),
           ],
@@ -98,7 +103,12 @@ class GroupAboutTab extends StatelessWidget {
           ).titleSmall.override(font: GoogleFonts.lexendDeca(), color: AppTheme.of(context).secondary),
         ),
         const SizedBox(height: 4.0),
-        Text(content, style: AppTheme.of(context).bodyMedium),
+        Text(
+          content,
+          style: AppTheme.of(context).bodyMedium.override(
+                color: AppTheme.of(context).textColor,
+              ),
+        ),
       ],
     );
   }
@@ -177,7 +187,12 @@ class GroupAboutTab extends StatelessWidget {
         children: [
           UserAvatar(imageUrl: member.photoUrl, fullName: displayName, size: 36.0),
           const SizedBox(width: 10.0),
-          Text(displayName, style: AppTheme.of(context).bodyMedium),
+          Text(
+            displayName,
+            style: AppTheme.of(context).bodyMedium.override(
+                  color: AppTheme.of(context).textColor,
+                ),
+          ),
         ],
       ),
     );

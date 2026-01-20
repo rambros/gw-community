@@ -112,11 +112,20 @@ class LearnRepository {
     int? limit,
     int? offset,
   }) async {
-    dynamic query = SupaFlow.client
-        .from('view_content')
-        .select(_listColumns)
-        .eq('is_published', true)
-        .order(sortColumn, ascending: ascending);
+    // First, get IDs of exclusive resources
+    final exclusiveResponse =
+        await SupaFlow.client.from('cc_group_resources').select('portal_item_id').eq('visibility', 'exclusive');
+
+    final exclusiveIds = (exclusiveResponse as List).map((row) => row['portal_item_id'] as int).toList();
+
+    dynamic query = SupaFlow.client.from('view_content').select(_listColumns).eq('is_published', true);
+
+    // Exclude exclusive resources from Library
+    if (exclusiveIds.isNotEmpty) {
+      query = query.not('content_id', 'in', exclusiveIds);
+    }
+
+    query = query.order(sortColumn, ascending: ascending);
 
     if (limit != null) {
       query = query.limit(limit);

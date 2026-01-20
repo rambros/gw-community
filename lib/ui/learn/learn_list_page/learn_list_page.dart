@@ -137,9 +137,7 @@ class _LearnListPageState extends State<LearnListPage> {
                               ),
 
                             // Search Bar
-                            if (!viewModel.isSearchActive &&
-                                !viewModel.isFilterActive &&
-                                widget.journeyId == null &&
+                            if (widget.journeyId == null &&
                                 widget.groupId == null)
                               Padding(
                                 padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 16.0, 0.0),
@@ -285,6 +283,35 @@ class _LearnListPageState extends State<LearnListPage> {
                                       ),
                                     ),
                                   ),
+                                  // Clear Filter Button
+                                  if ((viewModel.isSearchActive || viewModel.isFilterActive) &&
+                                      widget.journeyId == null &&
+                                      widget.groupId == null)
+                                    Padding(
+                                      padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
+                                      child: FFButtonWidget(
+                                        onPressed: () {
+                                          _textController.clear();
+                                          viewModel.clearFilters();
+                                          viewModel.clearSearch();
+                                        },
+                                        text: 'Clear Filter',
+                                        options: FFButtonOptions(
+                                          height: 40.0,
+                                          padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
+                                          color: AppTheme.of(context).primaryBackground,
+                                          textStyle: AppTheme.of(context).labelLarge.override(
+                                            color: AppTheme.of(context).secondary,
+                                          ),
+                                          elevation: 0.0,
+                                          borderSide: BorderSide(
+                                            color: AppTheme.of(context).secondaryBackground,
+                                            width: 0.5,
+                                          ),
+                                          borderRadius: BorderRadius.circular(20.0),
+                                        ),
+                                      ),
+                                    ),
                                 ],
                               ),
                             ),

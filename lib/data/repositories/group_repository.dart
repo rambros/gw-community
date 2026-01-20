@@ -228,4 +228,120 @@ class GroupRepository {
       matchingRows: (rows) => rows.eq('group_id', groupId).eq('user_id', userId),
     );
   }
+
+  // ========== GROUP RESOURCES MANAGEMENT ==========
+
+  /// Fetches resources associated with a group (public + exclusive for members)
+  Future<List<Map<String, dynamic>>> getGroupResources(int groupId, String userId) async {
+    final isMember = await isUserMemberOfGroup(groupId, userId);
+    if (!isMember) return [];
+
+    final result = await SupaFlow.client
+        .from('cc_group_resources')
+        .select('id, visibility, featured, portal_item_id, portal_item!inner(*)')
+        .eq('group_id', groupId)
+        .order('featured', ascending: false);
+
+    return List<Map<String, dynamic>>.from(result as List);
+  }
+
+  /// Adds a resource to a group
+  Future<void> addResourceToGroup({
+    required int groupId,
+    required int portalItemId,
+    required String visibility, // 'public' or 'exclusive'
+    required String addedBy,
+    bool featured = false,
+  }) async {
+    await SupaFlow.client.from('cc_group_resources').insert({
+      'group_id': groupId,
+      'portal_item_id': portalItemId,
+      'visibility': visibility,
+      'featured': featured,
+      'added_by': addedBy,
+    });
+  }
+
+  /// Removes a resource from a group
+  Future<void> removeResourceFromGroup(int groupId, int portalItemId) async {
+    await SupaFlow.client
+        .from('cc_group_resources')
+        .delete()
+        .eq('group_id', groupId)
+        .eq('portal_item_id', portalItemId);
+  }
+
+  /// Updates resource visibility or featured status
+  Future<void> updateGroupResource({
+    required int groupId,
+    required int portalItemId,
+    String? visibility,
+    bool? featured,
+  }) async {
+    final data = <String, dynamic>{};
+    if (visibility != null) data['visibility'] = visibility;
+    if (featured != null) data['featured'] = featured;
+
+    if (data.isEmpty) return;
+
+    await SupaFlow.client
+        .from('cc_group_resources')
+        .update(data)
+        .eq('group_id', groupId)
+        .eq('portal_item_id', portalItemId);
+  }
+
+  // ========== GROUP JOURNEYS MANAGEMENT ==========
+
+  /// Fetches journeys associated with a group (public + exclusive for members)
+  Future<List<Map<String, dynamic>>> getGroupJourneys(int groupId, String userId) async {
+    final isMember = await isUserMemberOfGroup(groupId, userId);
+    if (!isMember) return [];
+
+    final result = await SupaFlow.client
+        .from('cc_group_journeys')
+        .select('id, visibility, featured, journey_id, cc_journeys!inner(*)')
+        .eq('group_id', groupId)
+        .order('featured', ascending: false);
+
+    return List<Map<String, dynamic>>.from(result as List);
+  }
+
+  /// Adds a journey to a group
+  Future<void> addJourneyToGroup({
+    required int groupId,
+    required int journeyId,
+    required String visibility, // 'public' or 'exclusive'
+    required String addedBy,
+    bool featured = false,
+  }) async {
+    await SupaFlow.client.from('cc_group_journeys').insert({
+      'group_id': groupId,
+      'journey_id': journeyId,
+      'visibility': visibility,
+      'featured': featured,
+      'added_by': addedBy,
+    });
+  }
+
+  /// Removes a journey from a group
+  Future<void> removeJourneyFromGroup(int groupId, int journeyId) async {
+    await SupaFlow.client.from('cc_group_journeys').delete().eq('group_id', groupId).eq('journey_id', journeyId);
+  }
+
+  /// Updates journey visibility or featured status
+  Future<void> updateGroupJourney({
+    required int groupId,
+    required int journeyId,
+    String? visibility,
+    bool? featured,
+  }) async {
+    final data = <String, dynamic>{};
+    if (visibility != null) data['visibility'] = visibility;
+    if (featured != null) data['featured'] = featured;
+
+    if (data.isEmpty) return;
+
+    await SupaFlow.client.from('cc_group_journeys').update(data).eq('group_id', groupId).eq('journey_id', journeyId);
+  }
 }

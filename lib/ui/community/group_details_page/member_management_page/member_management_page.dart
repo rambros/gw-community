@@ -118,11 +118,12 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
       if (mounted) {
         setState(() {
           // Filter out users who are already members
-          final memberIds = _currentMembers.map((m) => m.authUserId).toSet();
+          // Use either authUserId or id (legacy) for identification
+          final memberIds = _currentMembers.map((m) => m.authUserId ?? m.id).toSet();
 
           _filteredAvailableUsers = users.where((u) {
-            if (u.authUserId == null) return false;
-            return !memberIds.contains(u.authUserId);
+            final userId = u.authUserId ?? u.id;
+            return !memberIds.contains(userId);
           }).toList();
 
           _isLoadingAvailable = false;
@@ -145,23 +146,23 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
   }
 
   Future<void> _addUser(CcMembersRow user) async {
-    if (user.authUserId == null) return;
+    final userId = user.authUserId ?? user.id;
 
     setState(() {
-      _addingUserIds.add(user.authUserId!);
+      _addingUserIds.add(userId);
     });
 
     try {
-      await _groupRepository.addUserToGroup(widget.groupId, user.authUserId!);
+      await _groupRepository.addUserToGroup(widget.groupId, userId);
 
       if (mounted) {
         setState(() {
-          _addingUserIds.remove(user.authUserId!);
+          _addingUserIds.remove(userId);
           // Move user from available to current members
           _currentMembers.add(user);
           _regularMembers.add(user); // New members added here are regular members by default
           // Remove from search results as they are now members
-          _filteredAvailableUsers.removeWhere((u) => u.authUserId == user.authUserId);
+          _filteredAvailableUsers.removeWhere((u) => (u.authUserId ?? u.id) == userId);
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -175,7 +176,7 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
       debugPrint('Error adding user: $e');
       if (mounted) {
         setState(() {
-          _addingUserIds.remove(user.authUserId!);
+          _addingUserIds.remove(userId);
         });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -189,6 +190,7 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
 
   Future<void> _removeMember(CcMembersRow member) async {
     final displayName = _getDisplayName(member);
+    final userId = member.authUserId ?? member.id;
 
     final confirm = await showDialog<bool>(
       context: context,
@@ -211,13 +213,13 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
 
     if (confirm == true && mounted) {
       try {
-        await _groupRepository.removeUserFromGroup(widget.groupId, member.authUserId!);
+        await _groupRepository.removeUserFromGroup(widget.groupId, userId);
 
         if (mounted) {
           setState(() {
             // Move user from current members back to available
-            _facilitators.removeWhere((m) => m.authUserId == member.authUserId);
-            _regularMembers.removeWhere((m) => m.authUserId == member.authUserId);
+            _facilitators.removeWhere((m) => (m.authUserId ?? m.id) == userId);
+            _regularMembers.removeWhere((m) => (m.authUserId ?? m.id) == userId);
             // We don't necessarily add back to filtered list unless it matches search
             // But checking search is cheap so let's just trigger a re-search
             _searchUsers();
@@ -246,6 +248,7 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
 
   Future<void> _toggleMemberRole(CcMembersRow member, {required bool makeFacilitator}) async {
     final displayName = _getDisplayName(member);
+    final userId = member.authUserId ?? member.id;
     final newRole = makeFacilitator ? 'GROUP_MANAGER' : 'MEMBER';
     final action = makeFacilitator ? 'promote to Facilitator' : 'demote to Member';
 
@@ -272,15 +275,15 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
 
     if (confirm == true && mounted) {
       try {
-        await _groupRepository.updateMemberRole(widget.groupId, member.authUserId!, newRole);
+        await _groupRepository.updateMemberRole(widget.groupId, userId, newRole);
 
         if (mounted) {
           setState(() {
             if (makeFacilitator) {
-              _regularMembers.removeWhere((m) => m.authUserId == member.authUserId);
+              _regularMembers.removeWhere((m) => (m.authUserId ?? m.id) == userId);
               _facilitators.add(member);
             } else {
-              _facilitators.removeWhere((m) => m.authUserId == member.authUserId);
+              _facilitators.removeWhere((m) => (m.authUserId ?? m.id) == userId);
               _regularMembers.add(member);
             }
           });

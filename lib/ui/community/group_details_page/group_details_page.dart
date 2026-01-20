@@ -180,8 +180,10 @@ class GroupDetailsPageView extends StatelessWidget {
                             );
                           },
                         ),
-                      const SizedBox(width: 4),
-                      PopupMenuButton<String>(
+                      if (viewModel.isMember || FFAppState().loginUser.roles.hasAdminOrGroupManager)
+                        const SizedBox(width: 4),
+                      if (viewModel.isMember || FFAppState().loginUser.roles.hasAdminOrGroupManager)
+                        PopupMenuButton<String>(
                         icon: const Icon(
                           Icons.more_vert,
                           color: Colors.white,
@@ -303,34 +305,36 @@ class GroupDetailsPageView extends StatelessWidget {
                           }
                         },
                         itemBuilder: (context) => [
-                          PopupMenuItem(
-                            value: 'group_resources',
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.library_books_outlined,
-                                  size: 20,
-                                  color: AppTheme.of(context).secondary,
-                                ),
-                                const SizedBox(width: 12),
-                                const Text('Group Resources'),
-                              ],
+                          if (viewModel.isMember)
+                            PopupMenuItem(
+                              value: 'group_resources',
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.library_books_outlined,
+                                    size: 20,
+                                    color: AppTheme.of(context).secondary,
+                                  ),
+                                  const SizedBox(width: 12),
+                                  const Text('Group Resources'),
+                                ],
+                              ),
                             ),
-                          ),
-                          PopupMenuItem(
-                            value: 'about',
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.info_outline,
-                                  size: 20,
-                                  color: AppTheme.of(context).secondary,
-                                ),
-                                const SizedBox(width: 12),
-                                const Text('About this group'),
-                              ],
+                          if (viewModel.isMember)
+                            PopupMenuItem(
+                              value: 'about',
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.info_outline,
+                                    size: 20,
+                                    color: AppTheme.of(context).secondary,
+                                  ),
+                                  const SizedBox(width: 12),
+                                  const Text('About this group'),
+                                ],
+                              ),
                             ),
-                          ),
                           if (FFAppState().loginUser.roles.hasAdminOrGroupManager)
                             PopupMenuItem(
                               value: 'edit',

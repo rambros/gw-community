@@ -229,7 +229,9 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
                               },
                               width: double.infinity,
                               height: 50.0,
-                              textStyle: AppTheme.of(context).bodyMedium,
+                              textStyle: AppTheme.of(context).bodyMedium.override(
+                                color: AppTheme.of(context).textColor,
+                              ),
                               hintText: 'Select Author',
                               searchHintText: 'Search for an author...',
                               icon: Icon(
@@ -266,7 +268,9 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
                               },
                               width: double.infinity,
                               height: 50.0,
-                              textStyle: AppTheme.of(context).bodyMedium,
+                              textStyle: AppTheme.of(context).bodyMedium.override(
+                                color: AppTheme.of(context).textColor,
+                              ),
                               hintText: 'Select Event',
                               searchHintText: 'Search for an event...',
                               icon: Icon(
@@ -303,7 +307,9 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
                               },
                               width: double.infinity,
                               height: 50.0,
-                              textStyle: AppTheme.of(context).bodyMedium,
+                              textStyle: AppTheme.of(context).bodyMedium.override(
+                                color: AppTheme.of(context).textColor,
+                              ),
                               hintText: 'Select Year',
                               searchHintText: 'Search for a year...',
                               icon: Icon(
@@ -340,7 +346,9 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
                               },
                               width: double.infinity,
                               height: 50.0,
-                              textStyle: AppTheme.of(context).bodyMedium,
+                              textStyle: AppTheme.of(context).bodyMedium.override(
+                                color: AppTheme.of(context).textColor,
+                              ),
                               hintText: 'Select Journey',
                               searchHintText: 'Search for a journey...',
                               icon: Icon(
@@ -377,7 +385,9 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
                               },
                               width: double.infinity,
                               height: 50.0,
-                              textStyle: AppTheme.of(context).bodyMedium,
+                              textStyle: AppTheme.of(context).bodyMedium.override(
+                                color: AppTheme.of(context).textColor,
+                              ),
                               hintText: 'Select Group',
                               searchHintText: 'Search for a group...',
                               icon: Icon(
@@ -414,7 +424,9 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
                               },
                               width: double.infinity,
                               height: 50.0,
-                              textStyle: AppTheme.of(context).bodyMedium,
+                              textStyle: AppTheme.of(context).bodyMedium.override(
+                                color: AppTheme.of(context).textColor,
+                              ),
                               hintText: 'Select Topics',
                               searchHintText: 'Search for topics...',
                               icon: Icon(

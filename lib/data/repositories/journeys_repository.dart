@@ -171,33 +171,25 @@ class JourneysRepository {
   }
 
   Future<List<CcJourneysRow>> getJourneysForGroup(int groupId) async {
-    // 1. Get all content items associated with this group that have journeys
+    // Query the new cc_group_journeys junction table
     final response = await SupaFlow.client
-        .from('portal_item')
-        .select('journeys')
-        .contains('groups', [groupId]).not('journeys', 'is', null);
+        .from('cc_group_journeys')
+        .select('journey_id, cc_journeys!inner(*)')
+        .eq('group_id', groupId)
+        .order('featured', ascending: false);
 
     if ((response as List).isEmpty) {
       return [];
     }
 
-    // 2. Extract unique journey IDs
-    final Set<int> journeyIds = {};
+    // Extract journey data from the response
+    final List<CcJourneysRow> journeys = [];
     for (final row in response as List<dynamic>) {
-      final journeysList = row['journeys'] as List<dynamic>?;
-      if (journeysList != null) {
-        journeyIds.addAll(journeysList.map((e) => e as int));
+      final journeyData = row['cc_journeys'] as Map<String, dynamic>?;
+      if (journeyData != null) {
+        journeys.add(CcJourneysRow(journeyData));
       }
     }
-
-    if (journeyIds.isEmpty) {
-      return [];
-    }
-
-    // 3. Fetch full journey details
-    final journeys = await CcJourneysTable().queryRows(
-      queryFn: (q) => q.inFilter('id', journeyIds.toList()).order('title', ascending: true),
-    );
 
     return journeys;
   }

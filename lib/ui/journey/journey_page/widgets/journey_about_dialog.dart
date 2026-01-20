@@ -111,19 +111,19 @@ class JourneyAboutDialog extends StatelessWidget {
                         },
                         styleSheet: MarkdownStyleSheet(
                           p: GoogleFonts.lexendDeca(
-                            color: theme.primaryText,
+                            color: theme.secondary,
                             fontSize: 14.0,
                             fontWeight: FontWeight.w300,
                             height: 1.5,
                           ),
                           strong: GoogleFonts.lexendDeca(
-                            color: theme.primaryText,
+                            color: theme.secondary,
                             fontSize: 14.0,
                             fontWeight: FontWeight.bold,
                             height: 1.5,
                           ),
                           em: GoogleFonts.lexendDeca(
-                            color: theme.primaryText,
+                            color: theme.secondary,
                             fontSize: 14.0,
                             fontStyle: FontStyle.italic,
                             height: 1.5,
@@ -149,7 +149,7 @@ class JourneyAboutDialog extends StatelessWidget {
                             decoration: TextDecoration.underline,
                           ),
                           listBullet: GoogleFonts.lexendDeca(
-                            color: theme.primaryText,
+                            color: theme.secondary,
                             fontSize: 14.0,
                           ),
                         ),
