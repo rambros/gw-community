@@ -110,9 +110,9 @@ class GroupRepository {
   /// Fetches users with GROUP_MANAGER role
   Future<List<CcMembersRow>> getGroupManagers() async {
     final result = await CcMembersTable().queryRows(
-      queryFn: (q) => q.containsOrNull('user_role', [UserRole.groupManager.value, 'Manager', 'group_manager']).order(
-          'display_name',
-          ascending: true),
+      queryFn: (q) => q
+          .containsOrNull('user_role', [UserRole.groupManager.value, 'Manager', 'group_manager'])
+          .order('display_name', ascending: true),
     );
     return result;
   }
@@ -141,17 +141,13 @@ class GroupRepository {
 
     // Fetch by Auth User ID (Standard)
     if (authUserIds.isNotEmpty) {
-      final byAuth = await CcMembersTable().queryRows(
-        queryFn: (q) => q.filter('auth_user_id', 'in', authUserIds),
-      );
+      final byAuth = await CcMembersTable().queryRows(queryFn: (q) => q.filter('auth_user_id', 'in', authUserIds));
       results.addAll(byAuth);
     }
 
     // Fetch by Legacy ID (Migrated users)
     if (legacyIds.isNotEmpty) {
-      final byId = await CcMembersTable().queryRows(
-        queryFn: (q) => q.filter('id', 'in', legacyIds),
-      );
+      final byId = await CcMembersTable().queryRows(queryFn: (q) => q.filter('id', 'in', legacyIds));
       results.addAll(byId);
     }
 
@@ -238,8 +234,10 @@ class GroupRepository {
 
     final result = await SupaFlow.client
         .from('cc_group_resources')
-        .select('id, visibility, featured, portal_item_id, portal_item!inner(*)')
+        .select('id, visibility, featured, portal_item_id, display_order, category, tags, portal_item!inner(*)')
         .eq('group_id', groupId)
+        .isFilter('deleted_at', null)
+        .order('display_order')
         .order('featured', ascending: false);
 
     return List<Map<String, dynamic>>.from(result as List);
@@ -252,13 +250,20 @@ class GroupRepository {
     required String visibility, // 'public' or 'exclusive'
     required String addedBy,
     bool featured = false,
+    String? category,
+    List<String>? tags,
   }) async {
-    await SupaFlow.client.from('cc_group_resources').insert({
+    await SupaFlow.client.from('cc_group_resources').upsert({
       'group_id': groupId,
       'portal_item_id': portalItemId,
       'visibility': visibility,
       'featured': featured,
       'added_by': addedBy,
+      'created_by': addedBy,
+      'display_order': 0,
+      'category': category,
+      'tags': tags,
+      'deleted_at': null,
     });
   }
 
@@ -266,7 +271,7 @@ class GroupRepository {
   Future<void> removeResourceFromGroup(int groupId, int portalItemId) async {
     await SupaFlow.client
         .from('cc_group_resources')
-        .delete()
+        .update({'deleted_at': DateTime.now().toIso8601String()})
         .eq('group_id', groupId)
         .eq('portal_item_id', portalItemId);
   }
@@ -300,8 +305,10 @@ class GroupRepository {
 
     final result = await SupaFlow.client
         .from('cc_group_journeys')
-        .select('id, visibility, featured, journey_id, cc_journeys!inner(*)')
+        .select('id, visibility, featured, journey_id, display_order, cc_journeys!inner(*)')
         .eq('group_id', groupId)
+        .isFilter('deleted_at', null)
+        .order('display_order')
         .order('featured', ascending: false);
 
     return List<Map<String, dynamic>>.from(result as List);
@@ -315,18 +322,25 @@ class GroupRepository {
     required String addedBy,
     bool featured = false,
   }) async {
-    await SupaFlow.client.from('cc_group_journeys').insert({
+    await SupaFlow.client.from('cc_group_journeys').upsert({
       'group_id': groupId,
       'journey_id': journeyId,
       'visibility': visibility,
       'featured': featured,
       'added_by': addedBy,
+      'created_by': addedBy,
+      'display_order': 0,
+      'deleted_at': null,
     });
   }
 
   /// Removes a journey from a group
   Future<void> removeJourneyFromGroup(int groupId, int journeyId) async {
-    await SupaFlow.client.from('cc_group_journeys').delete().eq('group_id', groupId).eq('journey_id', journeyId);
+    await SupaFlow.client
+        .from('cc_group_journeys')
+        .update({'deleted_at': DateTime.now().toIso8601String()})
+        .eq('group_id', groupId)
+        .eq('journey_id', journeyId);
   }
 
   /// Updates journey visibility or featured status

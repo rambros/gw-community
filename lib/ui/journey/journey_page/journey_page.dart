@@ -86,6 +86,9 @@ class _JourneyPageState extends State<JourneyPage> {
           actions: [
             Consumer<JourneyViewModel>(
               builder: (context, viewModel, _) {
+                if (!viewModel.isJourneyStarted) {
+                  return const SizedBox.shrink();
+                }
                 return PopupMenuButton<String>(
                   icon: const Icon(
                     Icons.more_vert,

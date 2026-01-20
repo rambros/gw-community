@@ -113,17 +113,29 @@ class CommunityRepository {
 
   Future<List<CcGroupsRow>> getMyGroups(String currentUserUid) async {
     debugPrint('CommunityRepository.getMyGroups: fetching for ID: $currentUserUid');
+    debugPrint('CommunityRepository.getMyGroups: ID type: ${currentUserUid.runtimeType}');
+    debugPrint('CommunityRepository.getMyGroups: ID length: ${currentUserUid.length}');
+
     final response = await SupaFlow.client.rpc(
       'get_my_groups',
       params: {
         'user_input': currentUserUid,
       },
     );
+
+    debugPrint('CommunityRepository.getMyGroups: response type: ${response.runtimeType}');
     debugPrint('CommunityRepository.getMyGroups: received ${response is List ? response.length : 0} items');
 
     if (response is List) {
-      return response.map((row) => CcGroupsRow(row as Map<String, dynamic>)).toList();
+      debugPrint('CommunityRepository.getMyGroups: Raw response: $response');
+      final groups = response.map((row) => CcGroupsRow(row as Map<String, dynamic>)).toList();
+      debugPrint('CommunityRepository.getMyGroups: Parsed ${groups.length} groups');
+      for (final group in groups) {
+        debugPrint('  - Group: ${group.name} (ID: ${group.id})');
+      }
+      return groups;
     }
+    debugPrint('CommunityRepository.getMyGroups: Response is not a list, returning empty');
     return [];
   }
 

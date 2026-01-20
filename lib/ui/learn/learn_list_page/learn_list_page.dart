@@ -51,7 +51,8 @@ class _LearnListPageState extends State<LearnListPage> {
       } else if (widget.groupId != null) {
         viewModel.applyFilters(groupId: widget.groupId);
       } else {
-        viewModel.loadInitialData();
+        // Limpar filtros ao acessar Library pela navegação principal
+        viewModel.clearFilters();
       }
     });
 

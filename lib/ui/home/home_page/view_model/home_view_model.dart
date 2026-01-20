@@ -113,6 +113,7 @@ class HomeViewModel extends ChangeNotifier {
   }
 
   Future<void> _loadGroups() async {
+    // Use auth_user_id directly (cc_group_members.user_id stores auth_user_id, not member.id)
     _userGroups = await _repository.getMyGroups(currentUserUid);
     _publicGroups = await _repository.getAvailableGroups(currentUserUid);
   }

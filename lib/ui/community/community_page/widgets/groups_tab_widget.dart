@@ -25,7 +25,7 @@ class GroupsTabWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'My Groups',
+                  'Your Groups',
                   style: AppTheme.of(context).headlineSmall.override(
                         font: GoogleFonts.lexendDeca(
                           fontWeight: AppTheme.of(context).headlineSmall.fontWeight,

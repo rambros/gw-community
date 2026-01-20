@@ -182,7 +182,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
                             debugPrint('roleToDisplay: "$roleToDisplay"');
                             debugPrint('==== End Debug ====');
 
-                            // SEMPRE RETORNAR UM WIDGET VISÍVEL PARA DEBUG
+                            // Show role badge only if user has admin or group manager role
+                            if (!hasAdminRole || roleToDisplay == null) {
+                              return const SizedBox.shrink();
+                            }
+
                             return Align(
                               alignment: const AlignmentDirectional(-1.0, 0.0),
                               child: Padding(
@@ -190,23 +194,17 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
                                   decoration: BoxDecoration(
-                                    color: hasAdminRole && roleToDisplay != null
-                                        ? AppTheme.of(context).primary.withOpacity(0.15)
-                                        : Colors.orange.withOpacity(0.3),
+                                    color: AppTheme.of(context).primary.withOpacity(0.15),
                                     borderRadius: BorderRadius.circular(6.0),
                                   ),
                                   child: Text(
-                                    hasAdminRole && roleToDisplay != null
-                                        ? roleToDisplay.displayName
-                                        : 'DEBUG: ${roles.length} roles: $roles',
+                                    roleToDisplay.displayName,
                                     textAlign: TextAlign.start,
                                     style: AppTheme.of(context).bodyMedium.override(
                                           font: GoogleFonts.lexendDeca(
                                             fontWeight: FontWeight.bold,
                                           ),
-                                          color: hasAdminRole && roleToDisplay != null
-                                              ? AppTheme.of(context).primary
-                                              : Colors.orange.shade900,
+                                          color: AppTheme.of(context).primary,
                                           fontSize: 11.0,
                                           letterSpacing: 1.0,
                                         ),

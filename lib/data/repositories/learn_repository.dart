@@ -41,10 +41,22 @@ class LearnRepository {
       query = query.eq('year_published', filterByYear);
     }
     if (filterByGroupId != 0) {
-      query = query.contains('groups', [filterByGroupId]);
+      final res = await SupaFlow.client
+          .from('cc_group_resources')
+          .select('portal_item_id')
+          .eq('group_id', filterByGroupId)
+          .isFilter('deleted_at', null);
+      final ids = (res as List).map((row) => row['portal_item_id'] as int).toList();
+      query = ids.isNotEmpty ? query.filter('content_id', 'in', ids) : query.eq('content_id', -1);
     }
     if (filterByJourneyId != 0) {
-      query = query.contains('journeys', [filterByJourneyId]);
+      final res = await SupaFlow.client
+          .from('cc_journey_resources')
+          .select('item_id')
+          .eq('journey_id', filterByJourneyId)
+          .isFilter('deleted_at', null);
+      final ids = (res as List).map((row) => row['item_id'] as int).toList();
+      query = ids.isNotEmpty ? query.filter('content_id', 'in', ids) : query.eq('content_id', -1);
     }
 
     query = query.order(sortColumn, ascending: ascending);
@@ -87,10 +99,22 @@ class LearnRepository {
       query = query.eq('year_published', filterByYear);
     }
     if (filterByGroupId != 0) {
-      query = query.contains('groups', [filterByGroupId]);
+      final res = await SupaFlow.client
+          .from('cc_group_resources')
+          .select('portal_item_id')
+          .eq('group_id', filterByGroupId)
+          .isFilter('deleted_at', null);
+      final ids = (res as List).map((row) => row['portal_item_id'] as int).toList();
+      query = ids.isNotEmpty ? query.filter('content_id', 'in', ids) : query.eq('content_id', -1);
     }
     if (filterByJourneyId != 0) {
-      query = query.contains('journeys', [filterByJourneyId]);
+      final res = await SupaFlow.client
+          .from('cc_journey_resources')
+          .select('item_id')
+          .eq('journey_id', filterByJourneyId)
+          .isFilter('deleted_at', null);
+      final ids = (res as List).map((row) => row['item_id'] as int).toList();
+      query = ids.isNotEmpty ? query.filter('content_id', 'in', ids) : query.eq('content_id', -1);
     }
 
     query = query.order(sortColumn, ascending: ascending);
@@ -113,8 +137,10 @@ class LearnRepository {
     int? offset,
   }) async {
     // First, get IDs of exclusive resources
-    final exclusiveResponse =
-        await SupaFlow.client.from('cc_group_resources').select('portal_item_id').eq('visibility', 'exclusive');
+    final exclusiveResponse = await SupaFlow.client
+        .from('cc_group_resources')
+        .select('portal_item_id')
+        .eq('visibility', 'exclusive');
 
     final exclusiveIds = (exclusiveResponse as List).map((row) => row['portal_item_id'] as int).toList();
 
@@ -145,32 +171,22 @@ class LearnRepository {
   }
 
   Future<List<ViewEventsRow>> getEvents() async {
-    return ViewEventsTable().queryRows(
-      queryFn: (q) => q,
-    );
+    return ViewEventsTable().queryRows(queryFn: (q) => q);
   }
 
   Future<List<YearsWithContentRow>> getYears() async {
-    return YearsWithContentTable().queryRows(
-      queryFn: (q) => q,
-    );
+    return YearsWithContentTable().queryRows(queryFn: (q) => q);
   }
 
   Future<List<CcJourneysRow>> getJourneys() async {
-    return CcJourneysTable().queryRows(
-      queryFn: (q) => q.order('title', ascending: true),
-    );
+    return CcJourneysTable().queryRows(queryFn: (q) => q.order('title', ascending: true));
   }
 
   Future<List<CcGroupsRow>> getGroups() async {
-    return CcGroupsTable().queryRows(
-      queryFn: (q) => q.order('name', ascending: true),
-    );
+    return CcGroupsTable().queryRows(queryFn: (q) => q.order('name', ascending: true));
   }
 
   Future<List<TopicsWithContentRow>> getTopics() async {
-    return TopicsWithContentTable().queryRows(
-      queryFn: (q) => q.order('topic_name', ascending: true),
-    );
+    return TopicsWithContentTable().queryRows(queryFn: (q) => q.order('topic_name', ascending: true));
   }
 }

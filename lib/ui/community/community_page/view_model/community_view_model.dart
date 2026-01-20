@@ -46,9 +46,8 @@ class CommunityViewModel extends ChangeNotifier {
 
     _refreshStreams();
 
-    // Se estivermos na aba de grupos ou eventos (index > 0), precisamos carregar os dados
-    // Mas o onTabChanged cuidará disso se for chamado pela UI.
-    // Inicialmente carregamos os streams (index 0)
+    // Load groups on initialization since Community page only shows Groups tab
+    await refreshGroupsList();
 
     _isLoading = false;
     notifyListeners();
@@ -75,21 +74,17 @@ class CommunityViewModel extends ChangeNotifier {
   }
 
   Future<void> fetchEvents(String type) async {
-    if (_memberId == null) {
-      _memberId = await _repository.getMemberIdByAuthUserId(currentUserUid);
-    }
-    final idToUse = _memberId ?? currentUserUid;
-
-    debugPrint('CommunityViewModel.fetchEvents: type=$type, id=$idToUse');
+    // Use auth_user_id directly for events as well
+    debugPrint('CommunityViewModel.fetchEvents: type=$type, id=$currentUserUid');
 
     if (type == 'upcoming') {
-      listRealEventsUpcoming = await _repository.getEvents(idToUse);
+      listRealEventsUpcoming = await _repository.getEvents(currentUserUid);
       listEvents = listRealEventsUpcoming;
     } else if (type == 'recorded') {
-      listRealEventsRecorded = await _repository.getEvents(idToUse);
+      listRealEventsRecorded = await _repository.getEvents(currentUserUid);
       listEvents = listRealEventsRecorded;
     } else {
-      listRealEventsTab = await _repository.getEvents(idToUse);
+      listRealEventsTab = await _repository.getEvents(currentUserUid);
       listEvents = listRealEventsTab;
     }
 
@@ -98,16 +93,13 @@ class CommunityViewModel extends ChangeNotifier {
   }
 
   Future<void> refreshGroupsList() async {
-    if (_memberId == null) {
-      _memberId = await _repository.getMemberIdByAuthUserId(currentUserUid);
-    }
-    final idToUse = _memberId ?? currentUserUid;
+    // Use auth_user_id directly (cc_group_members.user_id stores auth_user_id, not member.id)
     await Future.wait([
       Future(() async {
-        availableGroups = await _repository.getAvailableGroups(idToUse);
+        availableGroups = await _repository.getAvailableGroups(currentUserUid);
       }),
       Future(() async {
-        myGroups = await _repository.getMyGroups(idToUse);
+        myGroups = await _repository.getMyGroups(currentUserUid);
       }),
     ]);
     notifyListeners();

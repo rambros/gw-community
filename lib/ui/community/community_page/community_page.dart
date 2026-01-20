@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/community_repository.dart';
 import 'package:gw_community/ui/community/community_page/view_model/community_view_model.dart';
@@ -31,12 +30,7 @@ class _CommunityPageState extends State<CommunityPage> with RouteAware {
   @override
   void initState() {
     super.initState();
-    // On page load action.
-    SchedulerBinding.instance.addPostFrameCallback((_) async {
-      // Load groups when page initializes
-      _viewModel?.refreshGroupsList();
-      safeSetState(() {});
-    });
+    // Groups are loaded automatically in CommunityViewModel._init()
   }
 
   @override
