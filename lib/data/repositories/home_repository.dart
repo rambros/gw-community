@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 
 class HomeRepository {
@@ -61,10 +60,6 @@ class HomeRepository {
 
   /// Fetches groups the user is a member of
   Future<List<CcGroupsRow>> getMyGroups(String authUserId) async {
-    debugPrint('HomeRepository.getMyGroups: fetching for ID: $authUserId');
-    debugPrint('HomeRepository.getMyGroups: ID type: ${authUserId.runtimeType}');
-    debugPrint('HomeRepository.getMyGroups: ID length: ${authUserId.length}');
-
     final response = await SupaFlow.client.rpc(
       'get_my_groups',
       params: {
@@ -72,19 +67,9 @@ class HomeRepository {
       },
     );
 
-    debugPrint('HomeRepository.getMyGroups: response type: ${response.runtimeType}');
-    debugPrint('HomeRepository.getMyGroups: received ${response is List ? response.length : 0} items');
-
     if (response is List) {
-      debugPrint('HomeRepository.getMyGroups: Raw response: $response');
-      final groups = response.map((row) => CcGroupsRow(row as Map<String, dynamic>)).toList();
-      debugPrint('HomeRepository.getMyGroups: Parsed ${groups.length} groups');
-      for (final group in groups) {
-        debugPrint('  - Group: ${group.name} (ID: ${group.id})');
-      }
-      return groups;
+      return response.map((row) => CcGroupsRow(row as Map<String, dynamic>)).toList();
     }
-    debugPrint('HomeRepository.getMyGroups: Response is not a list, returning empty');
     return [];
   }
 }

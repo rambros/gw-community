@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 
-import 'package:gw_community/data/repositories/sharing_repository.dart';
+import 'package:gw_community/data/repositories/experience_repository.dart';
 
 /// ViewModel responsável por gerenciar o formulário de criação de comentários
 /// Mantém o estado do formulário, validações e interação com o repositório
 class AddCommentViewModel extends ChangeNotifier {
-  final SharingRepository _repository;
+  final ExperienceRepository _repository;
   final String currentUserUid;
-  final int sharingId;
+  final int experienceId;
   final int? parentId;
 
   AddCommentViewModel({
-    required SharingRepository repository,
+    required ExperienceRepository repository,
     required this.currentUserUid,
-    required this.sharingId,
+    required this.experienceId,
     this.parentId,
   }) : _repository = repository;
 
@@ -49,7 +49,7 @@ class AddCommentViewModel extends ChangeNotifier {
     try {
       await _repository.createComment(
         userId: currentUserUid,
-        sharingId: sharingId,
+        experienceId: experienceId,
         content: textController.text.trim(),
         parentId: parentId,
       );

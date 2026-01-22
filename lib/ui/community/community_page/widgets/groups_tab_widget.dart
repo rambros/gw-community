@@ -25,7 +25,7 @@ class GroupsTabWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Your Groups',
+                  'My Groups',
                   style: AppTheme.of(context).headlineSmall.override(
                         font: GoogleFonts.lexendDeca(
                           fontWeight: AppTheme.of(context).headlineSmall.fontWeight,
@@ -96,7 +96,7 @@ class GroupsTabWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Public Groups',
+                  'Other Groups',
                   style: AppTheme.of(context).headlineSmall.override(
                         font: GoogleFonts.lexendDeca(
                           fontWeight: AppTheme.of(context).headlineSmall.fontWeight,

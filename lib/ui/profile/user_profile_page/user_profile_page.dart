@@ -153,23 +153,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
                         // Display role using UserRole enum
                         Builder(
                           builder: (context) {
-                            debugPrint('==== Profile Role Debug ====');
-                            debugPrint('userProfile: ${userProfile != null}');
-                            debugPrint('userRole: ${userProfile?.userRole}');
-                            debugPrint('userRole length: ${userProfile?.userRole.length}');
-
                             final roles = userProfile?.userRole ?? [];
-                            debugPrint('roles variable: $roles');
-
-                            // SEMPRE MOSTRAR PARA DEBUG
-                            debugPrint('ALWAYS SHOWING FOR DEBUG - roles length: ${roles.length}');
-                            if (roles.isEmpty) {
-                              debugPrint('⚠️ WARNING: roles is EMPTY!');
-                            }
 
                             // Check if has admin or group manager role using enum
                             final hasAdminRole = roles.hasAdminOrGroupManager;
-                            debugPrint('hasAdminOrGroupManager: $hasAdminRole');
 
                             // Get the role to display (prioritize admin, then group manager)
                             UserRole? roleToDisplay;
@@ -178,9 +165,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
                             } else if (roles.hasGroupManager) {
                               roleToDisplay = UserRole.groupManager;
                             }
-
-                            debugPrint('roleToDisplay: "$roleToDisplay"');
-                            debugPrint('==== End Debug ====');
 
                             // Show role badge only if user has admin or group manager role
                             if (!hasAdminRole || roleToDisplay == null) {
@@ -227,10 +211,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
               scrollDirection: Axis.vertical,
               children: [
                 ProfileMenuItemWidget(
-                  text: 'My Journal',
+                  text: 'My Favorites',
                   onTap: () async {
                     context.pushNamed(
-                      UserJournalListPage.routeName,
+                      FavoritesPage.routeName,
                       extra: <String, dynamic>{
                         kTransitionInfoKey: const TransitionInfo(
                           hasTransition: true,
@@ -244,7 +228,25 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 Padding(
                   padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
                   child: ProfileMenuItemWidget(
-                    text: 'My Journey',
+                    text: 'My Journal',
+                    onTap: () async {
+                      context.pushNamed(
+                        UserJournalListPage.routeName,
+                        extra: <String, dynamic>{
+                          kTransitionInfoKey: const TransitionInfo(
+                            hasTransition: true,
+                            transitionType: PageTransitionType.fade,
+                            duration: Duration(milliseconds: 0),
+                          ),
+                        },
+                      );
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
+                  child: ProfileMenuItemWidget(
+                    text: 'My Journeys',
                     onTap: () async {
                       context.pushNamed(
                         UserJourneysViewPage.routeName,
@@ -262,18 +264,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 Padding(
                   padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
                   child: ProfileMenuItemWidget(
-                    text: 'Favorites',
+                    text: 'My Experiences',
                     onTap: () async {
-                      context.pushNamed(
-                        FavoritesPage.routeName,
-                        extra: <String, dynamic>{
-                          kTransitionInfoKey: const TransitionInfo(
-                            hasTransition: true,
-                            transitionType: PageTransitionType.fade,
-                            duration: Duration(milliseconds: 0),
-                          ),
-                        },
-                      );
+                      context.pushNamed(MyExperiencesPage.routeName);
                     },
                   ),
                 ),
@@ -345,15 +338,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 Padding(
                   padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
                   child: ProfileMenuItemWidget(
-                    text: 'Reset Journey',
-                    onTap: () async {
-                      await _handleResetJourney(context, viewModel);
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
-                  child: ProfileMenuItemWidget(
                     text: 'Reset Onboarding',
                     onTap: () async {
                       await _handleResetOnboarding(context, viewModel);
@@ -398,63 +382,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
         ),
       ),
     );
-  }
-
-  Future<void> _handleResetJourney(BuildContext context, UserProfileViewModel viewModel) async {
-    var confirmDialogResponse = await showDialog<bool>(
-          context: context,
-          builder: (alertDialogContext) {
-            return const WebViewAware(
-              child: ConfirmProfileActionDialog(
-                title: 'Reset your Good Wishes Journey',
-                description: 'Resetting your journey will delete all progress made so far. '
-                    'This action cannot be undone.',
-                confirmLabel: 'Reset Journey',
-                icon: Icons.restart_alt,
-              ),
-            );
-          },
-        ) ??
-        false;
-
-    if (confirmDialogResponse) {
-      try {
-        await viewModel.resetJourneyCommand();
-
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                'Journey reset with success',
-                style: TextStyle(
-                  color: AppTheme.of(context).primaryText,
-                ),
-              ),
-              duration: const Duration(milliseconds: 4000),
-              backgroundColor: AppTheme.of(context).secondary,
-            ),
-          );
-
-          GoRouter.of(context).prepareAuthEvent();
-          // signOut is handled in ViewModel, but we need to clear redirect here
-          GoRouter.of(context).clearRedirectLocation();
-
-          context.goNamed(SplashPage.routeName);
-        }
-      } catch (e) {
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                'Error resetting journey: $e',
-                style: const TextStyle(color: Colors.white),
-              ),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-      }
-    }
   }
 
   Future<void> _handleResetOnboarding(BuildContext context, UserProfileViewModel viewModel) async {

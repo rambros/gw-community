@@ -200,17 +200,25 @@ class GroupModerationViewModel extends ChangeNotifier {
 
   /// Approves an experience and notifies the author
   Future<bool> approveExperienceCommand(CcViewPendingExperiencesRow experience) async {
-    try {
-      debugPrint('GroupModerationViewModel: approving experience ${experience.id}');
+    final experienceId = experience.id;
+    if (experienceId == null) {
+      debugPrint('GroupModerationViewModel: error approving: experience ID is null');
+      _setError('Error approving experience: ID not found');
+      return false;
+    }
 
-      await _repository.approveExperience(experienceId: experience.id!, moderatorId: currentUserUid);
+    try {
+      debugPrint('GroupModerationViewModel: approving experience $experienceId');
+
+      await _repository.approveExperience(experienceId: experienceId, moderatorId: currentUserUid);
 
       // Notify author (non-blocking)
-      if (experience.userId != null) {
+      final userId = experience.userId;
+      if (userId != null) {
         try {
           await _announcementRepository.createApprovalNotification(
-            userId: experience.userId!,
-            experienceId: experience.id!,
+            userId: userId,
+            experienceId: experienceId,
             experienceTitle: _getPreview(experience),
             groupId: groupId,
           );
@@ -231,22 +239,29 @@ class GroupModerationViewModel extends ChangeNotifier {
 
   /// Sets an experience to "Not Published" with a reason and notifies the author
   Future<bool> notPublishExperienceCommand(CcViewPendingExperiencesRow experience, String reason) async {
+    final experienceId = experience.id;
+    if (experienceId == null) {
+      _setError('Error: Experience ID is unknown');
+      return false;
+    }
+
     if (reason.trim().isEmpty) {
       _setError('Reason is required');
       return false;
     }
 
     try {
-      debugPrint('GroupModerationViewModel: setting "Not Published" on experience ${experience.id}');
+      debugPrint('GroupModerationViewModel: setting "Not Published" on experience $experienceId');
 
-      await _repository.rejectExperience(experienceId: experience.id!, moderatorId: currentUserUid, reason: reason);
+      await _repository.rejectExperience(experienceId: experienceId, moderatorId: currentUserUid, reason: reason);
 
       // Notify author (non-blocking)
-      if (experience.userId != null) {
+      final userId = experience.userId;
+      if (userId != null) {
         try {
           await _announcementRepository.createRejectionNotification(
-            userId: experience.userId!,
-            experienceId: experience.id!,
+            userId: userId,
+            experienceId: experienceId,
             experienceTitle: _getPreview(experience),
             reason: reason,
             groupId: groupId,
@@ -268,22 +283,29 @@ class GroupModerationViewModel extends ChangeNotifier {
 
   /// Suggests refinement on an experience with feedback and notifies the author
   Future<bool> suggestRefinementCommand(CcViewPendingExperiencesRow experience, String reason) async {
+    final experienceId = experience.id;
+    if (experienceId == null) {
+      _setError('Error: Experience ID is unknown');
+      return false;
+    }
+
     if (reason.trim().isEmpty) {
       _setError('Feedback is required');
       return false;
     }
 
     try {
-      debugPrint('GroupModerationViewModel: suggesting refinement on experience ${experience.id}');
+      debugPrint('GroupModerationViewModel: suggesting refinement on experience $experienceId');
 
-      await _repository.requestChanges(experienceId: experience.id!, moderatorId: currentUserUid, reason: reason);
+      await _repository.requestChanges(experienceId: experienceId, moderatorId: currentUserUid, reason: reason);
 
       // Notify author (non-blocking)
-      if (experience.userId != null) {
+      final userId = experience.userId;
+      if (userId != null) {
         try {
           await _announcementRepository.createChangesRequestedNotification(
-            userId: experience.userId!,
-            experienceId: experience.id!,
+            userId: userId,
+            experienceId: experienceId,
             experienceTitle: _getPreview(experience),
             reason: reason,
             groupId: groupId,

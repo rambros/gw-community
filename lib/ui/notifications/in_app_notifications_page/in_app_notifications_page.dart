@@ -279,8 +279,8 @@ class _InAppNotificationsPageState extends State<InAppNotificationsPage> {
     if (notification.referenceType == 'experience' && notification.referenceId != null) {
       if (context.mounted) {
         context.pushNamed(
-          SharingViewPage.routeName,
-          extra: {'sharingId': notification.referenceId},
+          ExperienceViewPage.routeName,
+          extra: {'experienceId': notification.referenceId},
         );
       }
     }

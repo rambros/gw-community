@@ -3,9 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/community_repository.dart';
 import 'package:gw_community/ui/community/community_page/view_model/community_view_model.dart';
 import 'package:gw_community/ui/community/community_page/widgets/groups_tab_widget.dart';
-import 'package:gw_community/ui/community/my_experiences_page/my_experiences_page.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
-import 'package:gw_community/ui/support/support_page/support_page.dart';
 import 'package:gw_community/utils/context_extensions.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
@@ -89,56 +87,7 @@ class _CommunityPageState extends State<CommunityPage> with RouteAware {
                       fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                     ),
               ),
-              actions: [
-                PopupMenuButton<String>(
-                  icon: const Icon(
-                    Icons.more_vert,
-                    color: Colors.white,
-                  ),
-                  onSelected: (value) {
-                    if (value == 'my_experiences') {
-                      context.pushNamed(MyExperiencesPage.routeName);
-                    } else if (value == 'help_center') {
-                      context.pushNamed(
-                        SupportPage.routeName,
-                        queryParameters: {
-                          'contextType': 'community',
-                        }.withoutNulls,
-                      );
-                    }
-                  },
-                  itemBuilder: (context) => [
-                    PopupMenuItem(
-                      value: 'my_experiences',
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.article_outlined,
-                            size: 20,
-                            color: AppTheme.of(context).secondary,
-                          ),
-                          const SizedBox(width: 12),
-                          const Text('My Experiences'),
-                        ],
-                      ),
-                    ),
-                    PopupMenuItem(
-                      value: 'help_center',
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.support_agent,
-                            size: 20,
-                            color: AppTheme.of(context).secondary,
-                          ),
-                          const SizedBox(width: 12),
-                          const Text('Ask a Question'),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+              actions: const [],
               centerTitle: true,
               elevation: 4.0,
             ),

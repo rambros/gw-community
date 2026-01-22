@@ -5,14 +5,14 @@ import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 
-/// Widget que exibe o conteúdo do sharing (título e texto Markdown)
-class SharingContentWidget extends StatelessWidget {
-  const SharingContentWidget({
+/// Widget que exibe o conteúdo do experience (título e texto Markdown)
+class ExperienceContentWidget extends StatelessWidget {
+  const ExperienceContentWidget({
     super.key,
-    required this.sharing,
+    required this.experience,
   });
 
-  final CcViewSharingsUsersRow sharing;
+  final CcViewSharingsUsersRow experience;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,7 @@ class SharingContentWidget extends StatelessWidget {
         child: Align(
           alignment: Alignment.centerLeft,
           child: MarkdownBody(
-            data: sharing.text ?? '',
+            data: experience.text ?? '',
             onTapLink: (text, href, title) {
               if (href != null) {
                 launchURL(href);

@@ -50,7 +50,7 @@ class _FavoritesPageContent extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          'Favorites',
+          'My Favorites',
           style: GoogleFonts.lexendDeca(
             color: Colors.white,
             fontSize: 20.0,
@@ -59,80 +59,44 @@ class _FavoritesPageContent extends StatelessWidget {
         centerTitle: true,
         elevation: 4.0,
       ),
-      body: Column(
-        children: [
-          // Filter chips
-          Consumer<FavoritesViewModel>(
-            builder: (context, viewModel, child) {
-              return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-                child: Row(
-                  children: [
-                    _FilterChip(
-                      label: 'All',
-                      isSelected: viewModel.selectedFilter == 'all',
-                      onTap: () => viewModel.setFilter('all'),
-                    ),
-                    const SizedBox(width: 8.0),
-                    _FilterChip(
-                      label: 'Journey',
-                      isSelected: viewModel.selectedFilter == 'journey',
-                      onTap: () => viewModel.setFilter('journey'),
-                    ),
-                    const SizedBox(width: 8.0),
-                    _FilterChip(
-                      label: 'Library',
-                      isSelected: viewModel.selectedFilter == 'library',
-                      onTap: () => viewModel.setFilter('library'),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-          // Content list
-          Expanded(
-            child: Consumer<FavoritesViewModel>(
-              builder: (context, viewModel, child) {
-                if (viewModel.isLoading) {
-                  return Center(
-                    child: CircularProgressIndicator(
-                      color: AppTheme.of(context).primary,
-                    ),
-                  );
-                }
+      body: Consumer<FavoritesViewModel>(
+        builder: (context, viewModel, child) {
+          if (viewModel.isLoading) {
+            return Center(
+              child: CircularProgressIndicator(
+                color: AppTheme.of(context).primary,
+              ),
+            );
+          }
 
-                if (viewModel.errorMessage != null) {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.error_outline,
-                          color: AppTheme.of(context).error,
-                          size: 48.0,
-                        ),
-                        const SizedBox(height: 16.0),
-                        Text(
-                          viewModel.errorMessage!,
-                          style: AppTheme.of(context).bodyMedium,
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 16.0),
-                        ElevatedButton(
-                          onPressed: () => viewModel.loadFavorites(),
-                          child: const Text('Retry'),
-                        ),
-                      ],
-                    ),
-                  );
-                }
+          if (viewModel.errorMessage != null) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.error_outline,
+                    color: AppTheme.of(context).error,
+                    size: 48.0,
+                  ),
+                  const SizedBox(height: 16.0),
+                  Text(
+                    viewModel.errorMessage!,
+                    style: AppTheme.of(context).bodyMedium,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 16.0),
+                  ElevatedButton(
+                    onPressed: () => viewModel.loadFavorites(),
+                    child: const Text('Retry'),
+                  ),
+                ],
+              ),
+            );
+          }
 
-                return _buildUnifiedList(context, viewModel);
-              },
-            ),
-          ),
-        ],
+          return _buildUnifiedList(context, viewModel);
+        },
       ),
     );
   }
@@ -203,42 +167,6 @@ class _FavoritesPageContent extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-/// Widget para os chips de filtro
-class _FilterChip extends StatelessWidget {
-  const _FilterChip({
-    required this.label,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  final String label;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(20.0),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-        decoration: BoxDecoration(
-          color: isSelected ? AppTheme.of(context).primary : AppTheme.of(context).secondaryText.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(20.0),
-        ),
-        child: Text(
-          label,
-          style: AppTheme.of(context).bodyMedium.override(
-                fontSize: 14.0,
-                fontWeight: FontWeight.w500,
-                color: isSelected ? Colors.white : AppTheme.of(context).secondary,
-              ),
         ),
       ),
     );

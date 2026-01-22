@@ -4,15 +4,16 @@ import 'dart:async';
 import 'package:gw_community/data/repositories/event_repository.dart';
 import 'package:gw_community/data/repositories/group_repository.dart';
 import 'package:gw_community/data/repositories/announcement_repository.dart';
-import 'package:gw_community/data/repositories/sharing_repository.dart';
+import 'package:gw_community/data/repositories/experience_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 
 import 'package:gw_community/data/repositories/journeys_repository.dart';
 import 'package:gw_community/data/repositories/learn_repository.dart';
+import 'package:gw_community/data/repositories/experience_moderation_repository.dart';
 
 class GroupDetailsViewModel extends ChangeNotifier {
   final GroupRepository _groupRepository;
-  final SharingRepository _sharingRepository;
+  final ExperienceRepository _experienceRepository;
   final EventRepository _eventRepository;
   final AnnouncementRepository _announcementRepository;
   final JourneysRepository _journeysRepository;
@@ -23,7 +24,7 @@ class GroupDetailsViewModel extends ChangeNotifier {
 
   GroupDetailsViewModel(
     this._groupRepository,
-    this._sharingRepository,
+    this._experienceRepository,
     this._eventRepository,
     this._announcementRepository,
     this._journeysRepository,
@@ -38,7 +39,7 @@ class GroupDetailsViewModel extends ChangeNotifier {
   bool get isMember => _isMember;
   bool _isJoining = false;
   bool get isJoining => _isJoining;
-  bool _isCheckingMembership = true;
+  bool _isCheckingMembership = true; // Start true to block UI while loading
   bool get isCheckingMembership => _isCheckingMembership;
 
   // Data for About tab
@@ -47,8 +48,8 @@ class GroupDetailsViewModel extends ChangeNotifier {
   bool _isLoadingMembers = false;
   bool get isLoadingMembers => _isLoadingMembers;
 
-  Stream<List<CcViewSharingsUsersRow>> get sharingsStream {
-    return _sharingRepository.getSharingsStream(group.id, currentUserId: currentUserId);
+  Stream<List<CcViewSharingsUsersRow>> get experiencesStream {
+    return _experienceRepository.getExperiencesStream(group.id, currentUserId: currentUserId);
   }
 
   Stream<List<CcEventsRow>> get eventsStream {
@@ -67,19 +68,45 @@ class GroupDetailsViewModel extends ChangeNotifier {
   Set<int> _readNotificationIds = {};
   Set<int> get readNotificationIds => _readNotificationIds;
 
-  Future<List<CcJourneysRow>> get groupJourneys => _journeysRepository.getJourneysForGroup(group.id);
+  // Contador de experiences pendentes de moderação
+  int _pendingModerationCount = 0;
+  int get pendingModerationCount => _pendingModerationCount;
 
-  Future<List<ViewContentRow>> get groupLibrary => _learnRepository.filterContent(filterByGroupId: group.id);
+  Future<List<CcJourneysRow>>? _groupJourneysFuture;
+  Future<List<CcJourneysRow>> get groupJourneys =>
+      _groupJourneysFuture ??= _journeysRepository.getJourneysForGroup(group.id);
+
+  Future<List<ViewContentRow>>? _groupLibraryFuture;
+  Future<List<ViewContentRow>> get groupLibrary =>
+      _groupLibraryFuture ??= _learnRepository.filterContent(filterByGroupId: group.id);
 
   StreamSubscription<List<CcViewNotificationsUsersRow>>? _notificationsSubscription;
 
   void init(TickerProvider vsync) {
     _vsync = vsync;
-    // Inicialização síncrona obrigatória antes do check async
+
+    // Inicialização síncrona obrigatória
     _updateTabController();
-    _checkMembership();
-    _fetchMembers();
-    _loadReadNotificationsAndSubscribe();
+
+    // Executa as cargas de dados
+    _initializeData();
+  }
+
+  Future<void> _initializeData() async {
+    try {
+      // 1. Check membership first as it defines the UI structure
+      await _checkMembership();
+
+      // 2. Load other data in background
+      _fetchMembers();
+      _loadReadNotificationsAndSubscribe();
+      _loadPendingModerationCount();
+    } catch (e) {
+      debugPrint('Error in GroupDetailsViewModel.init: $e');
+      // Ensure we stop loading state even on error
+      _isCheckingMembership = false;
+      notifyListeners();
+    }
   }
 
   // ... (existing code)
@@ -93,8 +120,12 @@ class GroupDetailsViewModel extends ChangeNotifier {
       return;
     }
 
+    // Still perform the check, but it won't block the UI with a spinner
     try {
       _isMember = await _groupRepository.isUserMemberOfGroup(group.id, currentUserId!);
+    } catch (e) {
+      debugPrint('Error checking membership: $e');
+      _isMember = false;
     } finally {
       _isCheckingMembership = false;
       _updateTabController();
@@ -285,6 +316,16 @@ class GroupDetailsViewModel extends ChangeNotifier {
     return a.containsAll(b);
   }
 
+  Future<void> _loadPendingModerationCount() async {
+    try {
+      _pendingModerationCount = await ExperienceModerationRepository().getPendingCountForGroup(group.id);
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error loading pending moderation count: $e');
+      _pendingModerationCount = 0;
+    }
+  }
+
   @override
   void dispose() {
     _notificationsSubscription?.cancel();
@@ -293,8 +334,8 @@ class GroupDetailsViewModel extends ChangeNotifier {
     super.dispose();
   }
 
-  Future<void> deleteSharing(int id) async {
-    await _sharingRepository.deleteSharing(id);
+  Future<void> deleteExperience(int id) async {
+    await _experienceRepository.deleteExperience(id);
     notifyListeners();
   }
 
@@ -397,6 +438,7 @@ class GroupDetailsViewModel extends ChangeNotifier {
         _group = updatedGroup;
       }
       await refreshMembers();
+      await _loadPendingModerationCount();
       notifyListeners();
     } catch (e) {
       debugPrint('Error refreshing group: $e');

@@ -26,8 +26,8 @@ class CcCommentsRow extends SupabaseDataRow {
   int? get parentId => getField<int>('parent_id');
   set parentId(int? value) => setField<int>('parent_id', value);
 
-  int? get sharingId => getField<int>('sharing_id');
-  set sharingId(int? value) => setField<int>('sharing_id', value);
+  int? get experienceId => getField<int>('sharing_id');
+  set experienceId(int? value) => setField<int>('sharing_id', value);
 
   String? get content => getField<String>('content');
   set content(String? value) => setField<String>('content', value);

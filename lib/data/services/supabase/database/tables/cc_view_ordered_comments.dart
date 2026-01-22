@@ -1,13 +1,11 @@
 import 'package:gw_community/data/services/supabase/database/database.dart';
 
-class CcViewOrderedCommentsTable
-    extends SupabaseTable<CcViewOrderedCommentsRow> {
+class CcViewOrderedCommentsTable extends SupabaseTable<CcViewOrderedCommentsRow> {
   @override
   String get tableName => 'cc_view_ordered_comments';
 
   @override
-  CcViewOrderedCommentsRow createRow(Map<String, dynamic> data) =>
-      CcViewOrderedCommentsRow(data);
+  CcViewOrderedCommentsRow createRow(Map<String, dynamic> data) => CcViewOrderedCommentsRow(data);
 }
 
 class CcViewOrderedCommentsRow extends SupabaseDataRow {

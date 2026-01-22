@@ -19,7 +19,7 @@ class CommunityViewModel extends ChangeNotifier {
   String? get memberId => _memberId;
 
   /// Stream de experiências aprovadas visíveis para todos
-  Stream<List<CcViewSharingsUsersRow>>? sharingsListSupabaseStream;
+  Stream<List<CcViewSharingsUsersRow>>? experiencesListSupabaseStream;
 
   /// Stream das experiências do próprio usuário (inclui pending, changes_requested)
   Stream<List<CcViewSharingsUsersRow>>? myExperiencesStream;
@@ -39,10 +39,8 @@ class CommunityViewModel extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
-    debugPrint('CommunityViewModel._init: starting resolution for $currentUserUid');
     // Primeiro resolvemos o memberId baseado no authUid
     _memberId = await _repository.getMemberIdByAuthUserId(currentUserUid);
-    debugPrint('CommunityViewModel._init: memberId resolved to: $_memberId');
 
     _refreshStreams();
 
@@ -58,16 +56,14 @@ class CommunityViewModel extends ChangeNotifier {
   void _refreshStreams() {
     // Usamos o memberId se disponível, senão fallback para authUid (padrão legado)
     final idToUse = _memberId ?? currentUserUid;
-    debugPrint('CommunityViewModel._refreshStreams: using ID: $idToUse');
-    sharingsListSupabaseStream = _repository.getSharingsStream(currentUserId: idToUse);
+    experiencesListSupabaseStream = _repository.getExperiencesStream(currentUserId: idToUse);
     myExperiencesStream = _repository.getMyExperiencesStream(idToUse);
   }
 
-  /// Força refresh dos sharings (recria o stream)
-  Future<void> refreshSharings() async {
+  /// Força refresh dos experiences (recria o stream)
+  Future<void> refreshExperiences() async {
     if (_memberId == null) {
       _memberId = await _repository.getMemberIdByAuthUserId(currentUserUid);
-      debugPrint('CommunityViewModel.refreshSharings: resolved memberId to: $_memberId');
     }
     _refreshStreams();
     notifyListeners();
@@ -75,7 +71,6 @@ class CommunityViewModel extends ChangeNotifier {
 
   Future<void> fetchEvents(String type) async {
     // Use auth_user_id directly for events as well
-    debugPrint('CommunityViewModel.fetchEvents: type=$type, id=$currentUserUid');
 
     if (type == 'upcoming') {
       listRealEventsUpcoming = await _repository.getEvents(currentUserUid);
@@ -88,7 +83,6 @@ class CommunityViewModel extends ChangeNotifier {
       listEvents = listRealEventsTab;
     }
 
-    debugPrint('CommunityViewModel.fetchEvents: listEvents size=${listEvents.length}');
     notifyListeners();
   }
 
@@ -105,17 +99,17 @@ class CommunityViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> deleteSharing(BuildContext context, int? id) async {
+  Future<void> deleteExperience(BuildContext context, int? id) async {
     if (id == null) return;
-    await _repository.deleteSharing(id);
+    await _repository.deleteExperience(id);
     // Notify UI or show snackbar here if needed, but ideally UI logic should be in View
     // For now, we just perform the action.
   }
 
   Future<void> onTabChanged(int index) async {
     if (index == 0) {
-      // Refresh sharings when returning to Experiences tab
-      refreshSharings();
+      // Refresh experiences when returning to Experiences tab
+      refreshExperiences();
     } else if (index == 1) {
       await refreshGroupsList();
     } else if (index == 2) {

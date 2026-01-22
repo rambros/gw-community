@@ -34,7 +34,7 @@ class CommunityTypography {
         fontWeight: FontWeight.w500,
       );
 
-  /// Card title - Used in event cards, group cards, sharing cards
+  /// Card title - Used in event cards, group cards, experience cards
   /// Font: Cormorant Garamond, Size: 18px, Weight: 500
   TextStyle get cardTitle => theme.titleMedium.override(
         font: GoogleFonts.cormorantGaramond(

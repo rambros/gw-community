@@ -7,6 +7,7 @@ import 'package:gw_community/ui/community/group_details_page/view_model/group_de
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 
 import 'package:gw_community/utils/flutter_flow_util.dart';
+import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:provider/provider.dart';
 
 class GroupAnnouncementsTab extends StatelessWidget {
@@ -30,7 +31,7 @@ class GroupAnnouncementsTab extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        'Messages and announcements shared by the facilitator.',
+                        'Messages shared by the facilitator.',
                         style: AppTheme.of(context).bodySmall.override(
                               font: GoogleFonts.lexendDeca(),
                               color: AppTheme.of(context).secondary,
@@ -66,7 +67,7 @@ class GroupAnnouncementsTab extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: Text(
-                            'No announcements yet.',
+                            'No messages yet.',
                             style: AppTheme.of(context).bodyMedium,
                           ),
                         ),
@@ -116,7 +117,7 @@ class GroupAnnouncementsTab extends StatelessWidget {
                                 Padding(
                                   padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 0.0),
                                   child: Text(
-                                    'There are no new announcements at the moment.',
+                                    'There are no new messages at the moment.',
                                     textAlign: TextAlign.center,
                                     style: AppTheme.of(context).bodyMedium.override(
                                           font: GoogleFonts.lexendDeca(),
@@ -128,7 +129,7 @@ class GroupAnnouncementsTab extends StatelessWidget {
                                   Padding(
                                     padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 0.0),
                                     child: Text(
-                                      'Past announcements are available below.',
+                                      'Past messages are available below.',
                                       textAlign: TextAlign.center,
                                       style: AppTheme.of(context).bodyMedium.override(
                                             font: GoogleFonts.lexendDeca(),
@@ -172,7 +173,7 @@ class GroupAnnouncementsTab extends StatelessWidget {
                                   color: const Color(0xFFF1F4F8), // Light grey background
                                   child: ExpansionTile(
                                     title: Text(
-                                      'Past announcements',
+                                      'Past messages',
                                       style: AppTheme.of(context).bodyMedium.override(
                                             font: GoogleFonts.lexendDeca(),
                                             color: AppTheme.of(context).secondary,
@@ -208,47 +209,50 @@ class GroupAnnouncementsTab extends StatelessWidget {
             ],
           ),
         ),
-        Positioned(
-          bottom: 16.0,
-          right: 16.0,
-          child: FloatingActionButton.extended(
-            onPressed: () async {
-              context.pushNamed(
-                AnnouncementAddPage.routeName,
-                queryParameters: {
-                  'groupId': serializeParam(
-                    group.id,
-                    ParamType.int,
-                  ),
-                  'groupName': serializeParam(
-                    group.name,
-                    ParamType.String,
-                  ),
-                }.withoutNulls,
-                extra: <String, dynamic>{
-                  kTransitionInfoKey: const TransitionInfo(
-                    hasTransition: true,
-                    transitionType: PageTransitionType.fade,
-                    duration: Duration(milliseconds: 0),
-                  ),
-                },
-              );
-            },
-            backgroundColor: AppTheme.of(context).primary,
-            elevation: 8.0,
-            icon: Icon(
-              Icons.add,
-              color: AppTheme.of(context).primaryBackground,
-            ),
-            label: Text(
-              'New announcement',
-              style: AppTheme.of(context).labelLarge.override(
-                    font: GoogleFonts.poppins(),
-                    color: AppTheme.of(context).primaryBackground,
-                  ),
+        // Show FAB only for moderators or admins
+        if (viewModel.groupManagerIds.contains(viewModel.currentUserId) ||
+            context.read<FFAppState>().loginUser.roles.hasAdmin)
+          Positioned(
+            bottom: 16.0,
+            right: 16.0,
+            child: FloatingActionButton.extended(
+              onPressed: () async {
+                context.pushNamed(
+                  AnnouncementAddPage.routeName,
+                  queryParameters: {
+                    'groupId': serializeParam(
+                      group.id,
+                      ParamType.int,
+                    ),
+                    'groupName': serializeParam(
+                      group.name,
+                      ParamType.String,
+                    ),
+                  }.withoutNulls,
+                  extra: <String, dynamic>{
+                    kTransitionInfoKey: const TransitionInfo(
+                      hasTransition: true,
+                      transitionType: PageTransitionType.fade,
+                      duration: Duration(milliseconds: 0),
+                    ),
+                  },
+                );
+              },
+              backgroundColor: AppTheme.of(context).primary,
+              elevation: 8.0,
+              icon: Icon(
+                Icons.add,
+                color: AppTheme.of(context).primaryBackground,
+              ),
+              label: Text(
+                'New message',
+                style: AppTheme.of(context).labelLarge.override(
+                      font: GoogleFonts.poppins(),
+                      color: AppTheme.of(context).primaryBackground,
+                    ),
+              ),
             ),
           ),
-        ),
       ],
     );
   }
@@ -279,7 +283,7 @@ class GroupAnnouncementsTab extends StatelessWidget {
                 ),
               }.withoutNulls,
               extra: {
-                'sharingRow': notification,
+                'experienceRow': notification,
               },
             );
 

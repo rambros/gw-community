@@ -21,7 +21,8 @@
       "Bash(./gradlew:*)",
       "Bash(flutter devices:*)",
       "Bash(xcodebuild:*)",
-      "Bash(git log:*)"
+      "Bash(git log:*)",
+      "Bash(git mv:*)"
     ]
   }
 }

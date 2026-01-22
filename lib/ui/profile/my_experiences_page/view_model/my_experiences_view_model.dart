@@ -1,16 +1,16 @@
 import 'package:flutter/foundation.dart';
 
-import 'package:gw_community/data/repositories/sharing_repository.dart';
+import 'package:gw_community/data/repositories/experience_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 
 /// ViewModel for the My Experiences page
 /// Lists all experiences created by the current user
 class MyExperiencesViewModel extends ChangeNotifier {
-  final SharingRepository _repository;
+  final ExperienceRepository _repository;
   final String currentUserId;
 
   MyExperiencesViewModel({
-    required SharingRepository repository,
+    required ExperienceRepository repository,
     required this.currentUserId,
   }) : _repository = repository;
 
@@ -83,7 +83,7 @@ class MyExperiencesViewModel extends ChangeNotifier {
   /// Delete an experience
   Future<bool> deleteExperience(int id) async {
     try {
-      await _repository.deleteSharing(id);
+      await _repository.deleteExperience(id);
       _experiences.removeWhere((e) => e.id == id);
       notifyListeners();
       return true;

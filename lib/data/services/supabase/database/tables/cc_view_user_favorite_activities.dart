@@ -1,13 +1,11 @@
 import 'package:gw_community/data/services/supabase/database/database.dart';
 
-class CcViewUserFavoriteActivitiesTable
-    extends SupabaseTable<CcViewUserFavoriteActivitiesRow> {
+class CcViewUserFavoriteActivitiesTable extends SupabaseTable<CcViewUserFavoriteActivitiesRow> {
   @override
   String get tableName => 'cc_view_user_favorite_activities';
 
   @override
-  CcViewUserFavoriteActivitiesRow createRow(Map<String, dynamic> data) =>
-      CcViewUserFavoriteActivitiesRow(data);
+  CcViewUserFavoriteActivitiesRow createRow(Map<String, dynamic> data) => CcViewUserFavoriteActivitiesRow(data);
 }
 
 class CcViewUserFavoriteActivitiesRow extends SupabaseDataRow {
@@ -34,4 +32,5 @@ class CcViewUserFavoriteActivitiesRow extends SupabaseDataRow {
   String? get audioDuration => getField<String>('audio_duration');
   String? get videoUrl => getField<String>('video_url');
   String? get journal => getField<String>('journal');
+  String? get journeyTitle => getField<String>('journey_title');
 }

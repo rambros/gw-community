@@ -12,13 +12,12 @@ export 'package:gw_community/ui/community/group_add_page/group_add_page.dart' sh
 export 'package:gw_community/ui/community/group_details_page/group_details_page.dart' show GroupDetailsPage;
 export 'package:gw_community/ui/community/group_edit_page/group_edit_page.dart' show GroupEditPage;
 export 'package:gw_community/ui/community/group_invitation_page/group_invitation_page.dart' show GroupInvitationPage;
-export 'package:gw_community/ui/community/my_experiences_page/my_experiences_page.dart' show MyExperiencesPage;
 export 'package:gw_community/ui/community/announcement_add_page/announcement_add_page.dart' show AnnouncementAddPage;
 export 'package:gw_community/ui/community/announcement_edit_page/announcement_edit_page.dart' show AnnouncementEditPage;
 export 'package:gw_community/ui/community/announcement_view_page/announcement_view_page.dart' show AnnouncementViewPage;
-export 'package:gw_community/ui/community/sharing_add_page/sharing_add_page.dart' show SharingAddPage;
-export 'package:gw_community/ui/community/sharing_edit_page/sharing_edit_page.dart' show SharingEditPage;
-export 'package:gw_community/ui/community/sharing_view_page/sharing_view_page.dart' show SharingViewPage;
+export 'package:gw_community/ui/community/experience_add_page/experience_add_page.dart' show ExperienceAddPage;
+export 'package:gw_community/ui/community/experience_edit_page/experience_edit_page.dart' show ExperienceEditPage;
+export 'package:gw_community/ui/community/experience_view_page/experience_view_page.dart' show ExperienceViewPage;
 export 'package:gw_community/ui/favorites/favorites_page/favorites_page.dart' show FavoritesPage;
 export 'package:gw_community/ui/home/home_page/home_page.dart' show HomePage;
 export 'package:gw_community/ui/journey/journey_page/journey_page.dart' show JourneyPage;
@@ -40,6 +39,7 @@ export 'package:gw_community/ui/profile/user_journal_list/user_journal_list_page
 export 'package:gw_community/ui/profile/user_journal_view/user_journal_view_page.dart' show UserJournalViewPage;
 export 'package:gw_community/ui/profile/user_journeys_view/user_journeys_view_page.dart' show UserJourneysViewPage;
 export 'package:gw_community/ui/profile/user_profile_page/user_profile_page.dart' show UserProfilePage;
+export 'package:gw_community/ui/profile/my_experiences_page/my_experiences_page.dart' show MyExperiencesPage;
 export 'package:gw_community/ui/support/new_request_page/new_request_page.dart' show NewRequestPage;
 export 'package:gw_community/ui/support/request_chat_page/request_chat_page.dart' show RequestChatPage;
 // Support / Help Center

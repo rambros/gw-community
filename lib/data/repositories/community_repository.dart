@@ -30,16 +30,15 @@ class CommunityRepository {
     }
   }
 
-  /// Stream de sharings visíveis para todos
+  /// Stream de experiences visíveis para todos
   /// Mostra experiências aprovadas + experiências do próprio usuário (qualquer status)
-  Stream<List<CcViewSharingsUsersRow>> getSharingsStream({String? currentUserId}) {
+  Stream<List<CcViewSharingsUsersRow>> getExperiencesStream({String? currentUserId}) {
     return SupaFlow.client
-        .from("cc_view_sharings_users")
+        .from("cc_view_experiences_users")
         .stream(primaryKey: ['id'])
         .eq('visibility', 'everyone')
         .order('updated_at', ascending: false)
         .map((list) {
-          debugPrint('getSharingsStream: received ${list.length} items from stream');
           // Filtra: approved OU do próprio usuário OU sem status (legado)
           final filtered = list.where((item) {
             final status = item['moderation_status'] as String?;
@@ -49,20 +48,16 @@ class CommunityRepository {
             final isApproved = status == 'approved' || status == null;
             final isOwner = currentUserId != null && ownerId == currentUserId;
 
-            debugPrint(
-                'getSharingsStream: item id=${item['id']}, status=$status, ownerId=$ownerId, isApproved=$isApproved, isOwner=$isOwner');
-
             return isApproved || isOwner;
           }).toList();
-          debugPrint('getSharingsStream: filtered to ${filtered.length} items');
           return filtered.map((item) => CcViewSharingsUsersRow(item)).toList();
         });
   }
 
-  /// Stream de sharings do próprio usuário (inclui pending, changes_requested, etc)
+  /// Stream de experiences do próprio usuário (inclui pending, changes_requested, etc)
   Stream<List<CcViewSharingsUsersRow>> getMyExperiencesStream(String userId) {
     return SupaFlow.client
-        .from("cc_view_sharings_users")
+        .from("cc_view_experiences_users")
         .stream(primaryKey: ['id'])
         .eq('user_id', userId)
         .order('updated_at', ascending: false)
@@ -70,7 +65,6 @@ class CommunityRepository {
   }
 
   Future<List<CcEventsRow>> getEvents(String currentUserUid) async {
-    debugPrint('CommunityRepository.getEvents: fetching events for ID: $currentUserUid');
     try {
       final response = await SupaFlow.client.rpc(
         'get_user_events',
@@ -78,28 +72,22 @@ class CommunityRepository {
           'user_id_input': currentUserUid,
         },
       );
-      debugPrint('CommunityRepository.getEvents: response type: ${response.runtimeType}');
-
       if (response is List) {
-        debugPrint('CommunityRepository.getEvents: received ${response.length} events');
         return response.map((row) => CcEventsRow(row as Map<String, dynamic>)).toList();
       }
-      debugPrint('CommunityRepository.getEvents: response is not a list: $response');
     } catch (e) {
-      debugPrint('CommunityRepository.getEvents: error: $e');
+      // ignore error
     }
     return [];
   }
 
   Future<List<CcGroupsRow>> getAvailableGroups(String currentUserUid) async {
-    debugPrint('CommunityRepository.getAvailableGroups: fetching for ID: $currentUserUid');
     final response = await SupaFlow.client.rpc(
       'get_available_groups',
       params: {
         'user_input': currentUserUid,
       },
     );
-    debugPrint('CommunityRepository.getAvailableGroups: received ${response is List ? response.length : 0} items');
 
     if (response is List) {
       return response.map((row) => CcGroupsRow(row as Map<String, dynamic>)).where((group) {
@@ -112,10 +100,6 @@ class CommunityRepository {
   }
 
   Future<List<CcGroupsRow>> getMyGroups(String currentUserUid) async {
-    debugPrint('CommunityRepository.getMyGroups: fetching for ID: $currentUserUid');
-    debugPrint('CommunityRepository.getMyGroups: ID type: ${currentUserUid.runtimeType}');
-    debugPrint('CommunityRepository.getMyGroups: ID length: ${currentUserUid.length}');
-
     final response = await SupaFlow.client.rpc(
       'get_my_groups',
       params: {
@@ -123,23 +107,14 @@ class CommunityRepository {
       },
     );
 
-    debugPrint('CommunityRepository.getMyGroups: response type: ${response.runtimeType}');
-    debugPrint('CommunityRepository.getMyGroups: received ${response is List ? response.length : 0} items');
-
     if (response is List) {
-      debugPrint('CommunityRepository.getMyGroups: Raw response: $response');
       final groups = response.map((row) => CcGroupsRow(row as Map<String, dynamic>)).toList();
-      debugPrint('CommunityRepository.getMyGroups: Parsed ${groups.length} groups');
-      for (final group in groups) {
-        debugPrint('  - Group: ${group.name} (ID: ${group.id})');
-      }
       return groups;
     }
-    debugPrint('CommunityRepository.getMyGroups: Response is not a list, returning empty');
     return [];
   }
 
-  Future<void> deleteSharing(int id) async {
+  Future<void> deleteExperience(int id) async {
     await CcSharingsTable().delete(
       matchingRows: (rows) => rows.eqOrNull(
         'id',

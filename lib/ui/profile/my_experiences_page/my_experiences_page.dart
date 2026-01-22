@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:gw_community/data/repositories/sharing_repository.dart';
+import 'package:gw_community/data/repositories/experience_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
-import 'package:gw_community/ui/community/my_experiences_page/view_model/my_experiences_view_model.dart';
-import 'package:gw_community/ui/community/sharing_edit_page/sharing_edit_page.dart';
-import 'package:gw_community/ui/community/sharing_view_page/sharing_view_page.dart';
+import 'package:gw_community/ui/profile/my_experiences_page/view_model/my_experiences_view_model.dart';
+import 'package:gw_community/ui/community/experience_edit_page/experience_edit_page.dart';
+import 'package:gw_community/ui/community/experience_view_page/experience_view_page.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/ui/core/widgets/user_avatar.dart';
@@ -26,7 +26,7 @@ class MyExperiencesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => MyExperiencesViewModel(
-        repository: context.read<SharingRepository>(),
+        repository: context.read<ExperienceRepository>(),
         currentUserId: context.currentUserIdOrEmpty,
       )..loadExperiences(),
       child: const _MyExperiencesPageContent(),
@@ -113,7 +113,7 @@ class _MyExperiencesPageContent extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'Start sharing your experiences with the community!',
+              'Start experience your experiences with the community!',
               textAlign: TextAlign.center,
               style: AppTheme.of(
                 context,
@@ -259,13 +259,13 @@ class _MyExperiencesPageContent extends StatelessWidget {
 
   void _navigateToView(BuildContext context, CcViewSharingsUsersRow experience) {
     context.pushNamed(
-      SharingViewPage.routeName,
-      queryParameters: {'sharingId': serializeParam(experience.id, ParamType.int)}.withoutNulls,
+      ExperienceViewPage.routeName,
+      queryParameters: {'experienceId': serializeParam(experience.id, ParamType.int)}.withoutNulls,
     );
   }
 
   void _navigateToEdit(BuildContext context, CcViewSharingsUsersRow experience) {
-    context.pushNamed(SharingEditPage.routeName, extra: {'sharingRow': experience});
+    context.pushNamed(ExperienceEditPage.routeName, extra: {'experienceRow': experience});
   }
 
   Future<void> _confirmDelete(

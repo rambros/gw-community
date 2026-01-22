@@ -44,51 +44,50 @@ class _UserJournalListPageState extends State<UserJournalListPage> {
         leading: FlutterFlowIconButton(
           borderColor: Colors.transparent,
           borderRadius: 30.0,
-          buttonSize: 46.0,
-          icon: Icon(
+          borderWidth: 1.0,
+          buttonSize: 60.0,
+          icon: const Icon(
             Icons.arrow_back_rounded,
-            color: AppTheme.of(context).primaryBackground,
-            size: 25.0,
+            color: Colors.white,
+            size: 30.0,
           ),
-          onPressed: () async {
-            context.pop();
-          },
+          onPressed: () => context.pop(),
         ),
-        title: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Your Journal',
-              style: AppTheme.of(context).headlineMedium.override(
-                    font: GoogleFonts.lexendDeca(
-                      fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
-                      fontStyle: AppTheme.of(context).headlineMedium.fontStyle,
-                    ),
-                    color: AppTheme.of(context).primaryBackground,
-                    letterSpacing: 0.0,
-                    fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
-                    fontStyle: AppTheme.of(context).headlineMedium.fontStyle,
-                  ),
-            ),
-            Text(
-              'Your journal entries are private and secure.',
-              style: AppTheme.of(context).bodySmall.override(
-                    font: GoogleFonts.lexendDeca(),
-                    color: AppTheme.of(context).primaryBackground.withValues(alpha: 0.8),
-                    fontSize: 12.0,
-                    letterSpacing: 0.0,
-                  ),
-            ),
-          ],
+        title: Text(
+          'My Journal',
+          style: AppTheme.of(context).bodyMedium.override(
+                font: GoogleFonts.lexendDeca(),
+                color: Colors.white,
+                fontSize: 20.0,
+              ),
         ),
-        actions: const [],
-        centerTitle: false,
-        elevation: 0.0,
+        centerTitle: true,
+        elevation: 4.0,
       ),
       body: SafeArea(
         top: true,
-        child: _buildBody(context, viewModel),
+        child: Column(
+          children: [
+            // Header with subtitle
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+              child: Text(
+                'Your journal entries are private and secure.',
+                textAlign: TextAlign.center,
+                style: AppTheme.of(context).bodySmall.override(
+                      font: GoogleFonts.lexendDeca(),
+                      color: AppTheme.of(context).secondaryText,
+                      fontSize: 12.0,
+                      letterSpacing: 0.0,
+                    ),
+              ),
+            ),
+            // Body content
+            Expanded(
+              child: _buildBody(context, viewModel),
+            ),
+          ],
+        ),
       ),
     );
   }

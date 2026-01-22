@@ -71,4 +71,7 @@ class UnifiedFavoriteItem {
 
   /// Verifica se é uma activity
   bool get isActivity => type == FavoriteType.activity;
+
+  /// Título da jornada (para atividades)
+  String? get journeyTitle => activity?.journeyTitle;
 }

@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 
 import 'package:gw_community/data/models/enums/enums.dart';
-import 'package:gw_community/data/repositories/sharing_repository.dart';
+import 'package:gw_community/data/repositories/experience_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:gw_community/routing/router.dart';
 
-/// ViewModel para a página de adicionar sharing
+/// ViewModel para a página de adicionar experience
 /// Gerencia estado do formulário, validações e lógica de negócio
-class SharingAddViewModel extends ChangeNotifier {
-  final SharingRepository _repository;
+class ExperienceAddViewModel extends ChangeNotifier {
+  final ExperienceRepository _repository;
   final String currentUserUid;
   final int? groupId;
   final String? groupName;
   final String privacy;
 
-  SharingAddViewModel({
-    required SharingRepository repository,
+  ExperienceAddViewModel({
+    required ExperienceRepository repository,
     required this.currentUserUid,
     this.groupId,
     this.groupName,
@@ -70,9 +70,9 @@ class SharingAddViewModel extends ChangeNotifier {
   /// Texto de visibilidade para exibição
   String get visibilityText {
     if (!hasGroup || _visibility == 'everyone') {
-      return 'Sharing for everyone';
+      return 'Experience for everyone';
     }
-    return 'Sharing only for this group';
+    return 'Experience only for this group';
   }
 
   // ========== INITIALIZATION ==========
@@ -113,7 +113,7 @@ class SharingAddViewModel extends ChangeNotifier {
 
   // ========== COMMANDS ==========
 
-  /// Define a visibilidade do sharing
+  /// Define a visibilidade do experience
   void setVisibility(String? value) {
     if (value != null) {
       _visibility = value;
@@ -127,7 +127,7 @@ class SharingAddViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Salva o sharing e publica (envia para moderação)
+  /// Salva o experience e publica (envia para moderação)
   Future<bool> saveCommand(BuildContext context, {bool navigateAway = true}) async {
     return _save(context, isDraft: false, navigateAway: navigateAway);
   }
@@ -137,7 +137,7 @@ class SharingAddViewModel extends ChangeNotifier {
     return _save(context, isDraft: true, navigateAway: false);
   }
 
-  /// Método interno que salva o sharing
+  /// Método interno que salva o experience
   Future<bool> _save(BuildContext context, {required bool isDraft, required bool navigateAway}) async {
     if (!canSave()) {
       _setError('Please fill in all required fields');
@@ -153,19 +153,19 @@ class SharingAddViewModel extends ChangeNotifier {
       final text = textController.text.trim();
       final autoTitle = text.length > 50 ? '${text.substring(0, 50)}...' : text;
 
-      await _repository.createSharing(
+      await _repository.createExperience(
         title: autoTitle,
         text: text,
         privacy: privacy,
         userId: currentUserUid,
         visibility: _visibility,
-        type: SharingType.sharing.name,
+        type: ExperienceType.experience.name,
         groupId: groupId,
         isDraft: isDraft,
         locked: !_commentsEnabled, // locked = true quando comments estão desabilitados
       );
 
-      _setSuccess(isDraft ? 'Reflection saved' : 'Sharing created with success');
+      _setSuccess(isDraft ? 'Reflection saved' : 'Experience created with success');
 
       // Navigate back to community page only if not a draft
       if (navigateAway && context.mounted) {
@@ -174,14 +174,14 @@ class SharingAddViewModel extends ChangeNotifier {
 
       return true;
     } catch (e) {
-      _setError('Error creating sharing: $e');
+      _setError('Error creating experience: $e');
       return false;
     } finally {
       _setSaving(false);
     }
   }
 
-  /// Cancela a criação do sharing
+  /// Cancela a criação do experience
   void cancelCommand(BuildContext context) {
     // Clear form
     textController.clear();

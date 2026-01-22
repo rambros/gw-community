@@ -4,13 +4,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/index.dart';
 import 'package:gw_community/ui/community/community_page/view_model/community_view_model.dart';
-import 'package:gw_community/ui/community/community_page/widgets/sharing_card_widget.dart';
+import 'package:gw_community/ui/community/community_page/widgets/experience_card_widget.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
 
-class SharingsTabWidget extends StatelessWidget {
-  const SharingsTabWidget({super.key});
+class ExperiencesTabWidget extends StatelessWidget {
+  const ExperiencesTabWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class SharingsTabWidget extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Sharing experiences that inspire',
+                    'Experience experiences that inspire',
                     style: AppTheme.of(context).titleSmall.override(
                           font: GoogleFonts.lexendDeca(
                             fontWeight: FontWeight.w500,
@@ -44,7 +44,7 @@ class SharingsTabWidget extends StatelessWidget {
               Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 0.0),
                 child: StreamBuilder<List<CcViewSharingsUsersRow>>(
-                  stream: viewModel.sharingsListSupabaseStream,
+                  stream: viewModel.experiencesListSupabaseStream,
                   builder: (context, snapshot) {
                     // Show error if any
                     if (snapshot.hasError) {
@@ -93,10 +93,10 @@ class SharingsTabWidget extends StatelessWidget {
                         ),
                       );
                     }
-                    List<CcViewSharingsUsersRow> sharingsListCcViewSharingsUsersRowList = snapshot.data!;
+                    List<CcViewSharingsUsersRow> experiencesListCcViewSharingsUsersRowList = snapshot.data!;
 
                     // Show empty state if no data
-                    if (sharingsListCcViewSharingsUsersRowList.isEmpty) {
+                    if (experiencesListCcViewSharingsUsersRowList.isEmpty) {
                       return Center(
                         child: Padding(
                           padding: const EdgeInsets.all(24.0),
@@ -134,18 +134,18 @@ class SharingsTabWidget extends StatelessWidget {
                       primary: false,
                       shrinkWrap: true,
                       scrollDirection: Axis.vertical,
-                      itemCount: sharingsListCcViewSharingsUsersRowList.length,
-                      itemBuilder: (context, sharingsListIndex) {
-                        final sharingsListCcViewSharingsUsersRow =
-                            sharingsListCcViewSharingsUsersRowList[sharingsListIndex];
-                        return SharingCardWidget(
+                      itemCount: experiencesListCcViewSharingsUsersRowList.length,
+                      itemBuilder: (context, experiencesListIndex) {
+                        final experiencesListCcViewSharingsUsersRow =
+                            experiencesListCcViewSharingsUsersRowList[experiencesListIndex];
+                        return ExperienceCardWidget(
                           key: Key(
-                              'SharingCard_${sharingsListIndex}_of_${sharingsListCcViewSharingsUsersRowList.length}'),
-                          sharingRow: sharingsListCcViewSharingsUsersRow,
-                          index: sharingsListIndex,
-                          totalCount: sharingsListCcViewSharingsUsersRowList.length,
+                              'ExperienceCard_${experiencesListIndex}_of_${experiencesListCcViewSharingsUsersRowList.length}'),
+                          experienceRow: experiencesListCcViewSharingsUsersRow,
+                          index: experiencesListIndex,
+                          totalCount: experiencesListCcViewSharingsUsersRowList.length,
                           onDelete: (context) async {
-                            await viewModel.deleteSharing(context, sharingsListCcViewSharingsUsersRow.id);
+                            await viewModel.deleteExperience(context, experiencesListCcViewSharingsUsersRow.id);
                             if (!context.mounted) return;
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
@@ -185,7 +185,7 @@ class SharingsTabWidget extends StatelessWidget {
           child: FloatingActionButton.extended(
             onPressed: () async {
               context.pushNamed(
-                SharingAddPage.routeName,
+                ExperienceAddPage.routeName,
                 extra: <String, dynamic>{
                   kTransitionInfoKey: const TransitionInfo(
                     hasTransition: true,

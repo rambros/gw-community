@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:gw_community/data/repositories/sharing_repository.dart';
+import 'package:gw_community/data/repositories/experience_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
-import 'package:gw_community/ui/community/sharing_edit_page/view_model/sharing_edit_view_model.dart';
+import 'package:gw_community/ui/community/experience_edit_page/view_model/experience_edit_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
@@ -10,22 +10,22 @@ import 'package:gw_community/ui/core/widgets/user_avatar.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
 
-/// Página de edição de Sharing
+/// Página de edição de Experience
 /// Refatorada para seguir arquitetura MVVM estilo Compass
-class SharingEditPage extends StatelessWidget {
-  const SharingEditPage({
+class ExperienceEditPage extends StatelessWidget {
+  const ExperienceEditPage({
     super.key,
-    required this.sharingRow,
+    required this.experienceRow,
   });
 
-  final CcViewSharingsUsersRow? sharingRow;
+  final CcViewSharingsUsersRow? experienceRow;
 
-  static String routeName = 'sharingEditPage';
-  static String routePath = '/sharingEditPage';
+  static String routeName = 'experienceEditPage';
+  static String routePath = '/experienceEditPage';
 
   @override
   Widget build(BuildContext context) {
-    if (sharingRow == null) {
+    if (experienceRow == null) {
       return const Scaffold(
         body: Center(
           child: Text('Experience not found'),
@@ -35,21 +35,21 @@ class SharingEditPage extends StatelessWidget {
 
     // Provider local para o formulário
     return ChangeNotifierProvider(
-      create: (_) => SharingEditViewModel(
-        repository: context.read<SharingRepository>(),
-        originalSharing: sharingRow!,
+      create: (_) => ExperienceEditViewModel(
+        repository: context.read<ExperienceRepository>(),
+        originalExperience: experienceRow!,
       ),
-      child: const _SharingEditPageContent(),
+      child: const _ExperienceEditPageContent(),
     );
   }
 }
 
-class _SharingEditPageContent extends StatelessWidget {
-  const _SharingEditPageContent();
+class _ExperienceEditPageContent extends StatelessWidget {
+  const _ExperienceEditPageContent();
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<SharingEditViewModel>();
+    final viewModel = context.watch<ExperienceEditViewModel>();
 
     return GestureDetector(
       onTap: () {
@@ -99,7 +99,7 @@ class _SharingEditPageContent extends StatelessWidget {
     );
   }
 
-  Widget _buildBody(BuildContext context, SharingEditViewModel viewModel) {
+  Widget _buildBody(BuildContext context, ExperienceEditViewModel viewModel) {
     return SafeArea(
       top: true,
       child: Padding(
@@ -128,8 +128,8 @@ class _SharingEditPageContent extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context, SharingEditViewModel viewModel) {
-    final sharing = viewModel.originalSharing;
+  Widget _buildHeader(BuildContext context, ExperienceEditViewModel viewModel) {
+    final experience = viewModel.originalExperience;
 
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(16.0, 24.0, 16.0, 32.0),
@@ -156,7 +156,7 @@ class _SharingEditPageContent extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      'In Reflection - Not published yet',
+                      'Draft - Not published yet',
                       style: GoogleFonts.lexendDeca(
                         fontSize: 13.0,
                         fontWeight: FontWeight.w500,
@@ -171,8 +171,8 @@ class _SharingEditPageContent extends StatelessWidget {
             mainAxisSize: MainAxisSize.max,
             children: [
               UserAvatar(
-                imageUrl: sharing.photoUrl,
-                fullName: sharing.fullName,
+                imageUrl: experience.photoUrl,
+                fullName: experience.fullName,
               ),
               Expanded(
                 child: Padding(
@@ -183,7 +183,7 @@ class _SharingEditPageContent extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        valueOrDefault<String>(sharing.displayName, 'name'),
+                        valueOrDefault<String>(experience.displayName, 'name'),
                         style: AppTheme.of(context).bodyLarge.override(
                               font: GoogleFonts.inter(fontWeight: FontWeight.normal),
                               color: AppTheme.of(context).secondary,
@@ -191,9 +191,9 @@ class _SharingEditPageContent extends StatelessWidget {
                               letterSpacing: 0.0,
                             ),
                       ),
-                      if (sharing.groupName != null && sharing.groupName != '')
+                      if (experience.groupName != null && experience.groupName != '')
                         Text(
-                          'From group ${sharing.groupName}',
+                          'From group ${experience.groupName}',
                           style: AppTheme.of(context).bodyMedium.override(
                                 font: GoogleFonts.lexendDeca(),
                                 color: AppTheme.of(context).primary,
@@ -212,7 +212,7 @@ class _SharingEditPageContent extends StatelessWidget {
     );
   }
 
-  Widget _buildTextField(BuildContext context, SharingEditViewModel viewModel) {
+  Widget _buildTextField(BuildContext context, ExperienceEditViewModel viewModel) {
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(4.0, 8.0, 4.0, 8.0),
       child: TextFormField(
@@ -270,7 +270,7 @@ class _SharingEditPageContent extends StatelessWidget {
     );
   }
 
-  Widget _buildErrorMessage(BuildContext context, SharingEditViewModel viewModel) {
+  Widget _buildErrorMessage(BuildContext context, ExperienceEditViewModel viewModel) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Text(
@@ -284,7 +284,7 @@ class _SharingEditPageContent extends StatelessWidget {
     );
   }
 
-  Widget _buildSuccessMessage(BuildContext context, SharingEditViewModel viewModel) {
+  Widget _buildSuccessMessage(BuildContext context, ExperienceEditViewModel viewModel) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Text(
@@ -298,7 +298,7 @@ class _SharingEditPageContent extends StatelessWidget {
     );
   }
 
-  Widget _buildActions(BuildContext context, SharingEditViewModel viewModel) {
+  Widget _buildActions(BuildContext context, ExperienceEditViewModel viewModel) {
     // Texto do botão principal
     final publishButtonText = viewModel.isDraft ? 'Submit' : 'Update';
 
@@ -340,13 +340,13 @@ class _SharingEditPageContent extends StatelessWidget {
                     if (success && context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: const Text('Reflection saved'),
+                          content: const Text('Draft saved'),
                           backgroundColor: AppTheme.of(context).success,
                         ),
                       );
                     }
                   },
-            text: 'Keep in Reflection',
+            text: 'Draft',
             options: FFButtonOptions(
               height: 40.0,
               padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),

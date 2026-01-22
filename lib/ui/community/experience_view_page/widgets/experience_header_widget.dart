@@ -6,15 +6,15 @@ import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/widgets/user_avatar.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 
-/// Widget que exibe o cabeçalho do sharing com informações do autor
+/// Widget que exibe o cabeçalho do experience com informações do autor
 /// Inclui: avatar, nome do usuário, grupo (se aplicável) e visibilidade
-class SharingHeaderWidget extends StatelessWidget {
-  const SharingHeaderWidget({
+class ExperienceHeaderWidget extends StatelessWidget {
+  const ExperienceHeaderWidget({
     super.key,
-    required this.sharing,
+    required this.experience,
   });
 
-  final CcViewSharingsUsersRow sharing;
+  final CcViewSharingsUsersRow experience;
 
   @override
   Widget build(BuildContext context) {
@@ -31,8 +31,8 @@ class SharingHeaderWidget extends StatelessWidget {
           mainAxisSize: MainAxisSize.max,
           children: [
             UserAvatar(
-              imageUrl: sharing.photoUrl,
-              fullName: sharing.fullName,
+              imageUrl: experience.photoUrl,
+              fullName: experience.fullName,
             ),
             Expanded(
               child: Padding(
@@ -44,7 +44,7 @@ class SharingHeaderWidget extends StatelessWidget {
                   children: [
                     Text(
                       valueOrDefault<String>(
-                        sharing.displayName,
+                        experience.displayName,
                         'name',
                       ),
                       style: AppTheme.of(context).bodyLarge.override(
@@ -69,8 +69,8 @@ class SharingHeaderWidget extends StatelessWidget {
   }
 
   Widget _buildVisibilityText(BuildContext context) {
-    final isEveryone = sharing.visibility == 'everyone';
-    final groupName = sharing.groupName;
+    final isEveryone = experience.visibility == 'everyone';
+    final groupName = experience.groupName;
 
     // If not everyone and has a group name, show "Visible only for <group name>"
     if (!isEveryone && groupName != null && groupName.isNotEmpty) {

@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 
-import 'package:gw_community/data/repositories/sharing_repository.dart';
+import 'package:gw_community/data/repositories/experience_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:gw_community/routing/router.dart';
 
-/// ViewModel para a página de edição de Sharing
+/// ViewModel para a página de edição de Experience
 /// Gerencia estado do formulário e lógica de negócio
 /// Segue padrão MVVM estilo Compass
-class SharingEditViewModel extends ChangeNotifier {
-  final SharingRepository _repository;
-  final CcViewSharingsUsersRow originalSharing;
+class ExperienceEditViewModel extends ChangeNotifier {
+  final ExperienceRepository _repository;
+  final CcViewSharingsUsersRow originalExperience;
 
-  SharingEditViewModel({
-    required SharingRepository repository,
-    required this.originalSharing,
+  ExperienceEditViewModel({
+    required ExperienceRepository repository,
+    required this.originalExperience,
   }) : _repository = repository {
     _initializeForm();
   }
@@ -41,14 +41,14 @@ class SharingEditViewModel extends ChangeNotifier {
   // ========== INITIALIZATION ==========
 
   void _initializeForm() {
-    textController = TextEditingController(text: originalSharing.text ?? '');
+    textController = TextEditingController(text: originalExperience.text ?? '');
     textFocusNode = FocusNode();
-    _visibility = hasGroup ? 'group_only' : (originalSharing.visibility ?? 'everyone');
+    _visibility = hasGroup ? 'group_only' : (originalExperience.visibility ?? 'everyone');
   }
 
   // ========== COMMANDS (User Actions) ==========
 
-  /// Salva as alterações do sharing (publica se era draft)
+  /// Salva as alterações do experience (publica se era draft)
   Future<bool> saveCommand(BuildContext context, {bool navigateAway = true}) async {
     return _save(context, keepAsDraft: false, navigateAway: navigateAway);
   }
@@ -72,12 +72,12 @@ class SharingEditViewModel extends ChangeNotifier {
     final saveVisibility = hasGroup ? 'group_only' : _visibility;
 
     try {
-      await _repository.updateSharing(
-        id: originalSharing.id!,
-        title: originalSharing.title ?? '',
+      await _repository.updateExperience(
+        id: originalExperience.id!,
+        title: originalExperience.title ?? '',
         text: textController.text.trim(),
         visibility: saveVisibility,
-        privacy: originalSharing.privacy ?? 'public',
+        privacy: originalExperience.privacy ?? 'public',
         keepAsDraft: keepAsDraft,
       );
 
@@ -109,13 +109,13 @@ class SharingEditViewModel extends ChangeNotifier {
 
   /// Reseta o formulário para os valores originais
   void resetForm() {
-    textController.text = originalSharing.text ?? '';
-    _visibility = originalSharing.visibility ?? 'everyone';
+    textController.text = originalExperience.text ?? '';
+    _visibility = originalExperience.visibility ?? 'everyone';
     _clearMessages();
     notifyListeners();
   }
 
-  /// Atualiza a visibilidade do sharing
+  /// Atualiza a visibilidade do experience
   void setVisibility(String? value) {
     if (value != null) {
       _visibility = value;
@@ -140,18 +140,18 @@ class SharingEditViewModel extends ChangeNotifier {
 
   /// Verifica se houve mudanças no formulário
   bool get hasChanges {
-    return textController.text.trim() != (originalSharing.text ?? '') ||
-        _visibility != (originalSharing.visibility ?? 'everyone');
+    return textController.text.trim() != (originalExperience.text ?? '') ||
+        _visibility != (originalExperience.visibility ?? 'everyone');
   }
 
-  /// Verifica se o sharing pertence a um grupo
+  /// Verifica se o experience pertence a um grupo
   bool get hasGroup {
-    return originalSharing.groupName != null && originalSharing.groupName!.isNotEmpty;
+    return originalExperience.groupName != null && originalExperience.groupName!.isNotEmpty;
   }
 
   /// Verifica se é um rascunho (draft)
   bool get isDraft {
-    return originalSharing.moderationStatus == 'draft';
+    return originalExperience.moderationStatus == 'draft';
   }
 
   // ========== HELPER METHODS ==========

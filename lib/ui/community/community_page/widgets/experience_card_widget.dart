@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
-import 'package:gw_community/ui/community/sharing_edit_page/sharing_edit_page.dart';
-import 'package:gw_community/ui/community/sharing_view_page/sharing_view_page.dart';
+import 'package:gw_community/ui/community/experience_edit_page/experience_edit_page.dart';
+import 'package:gw_community/ui/community/experience_view_page/experience_view_page.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
 import 'package:gw_community/ui/core/widgets/user_avatar.dart';
@@ -11,16 +11,16 @@ import 'package:gw_community/utils/context_extensions.dart';
 import 'package:gw_community/ui/core/widgets/confirmation_dialog.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 
-class SharingCardWidget extends StatelessWidget {
-  const SharingCardWidget({
+class ExperienceCardWidget extends StatelessWidget {
+  const ExperienceCardWidget({
     super.key,
-    required this.sharingRow,
+    required this.experienceRow,
     required this.index,
     required this.totalCount,
     this.onDelete,
   });
 
-  final CcViewSharingsUsersRow sharingRow;
+  final CcViewSharingsUsersRow experienceRow;
   final int index;
   final int totalCount;
   final Future<void> Function(BuildContext context)? onDelete;
@@ -38,8 +38,8 @@ class SharingCardWidget extends StatelessWidget {
           highlightColor: Colors.transparent,
           onTap: () async {
             context.pushNamed(
-              SharingViewPage.routeName,
-              queryParameters: {'sharingId': serializeParam(sharingRow.id, ParamType.int)}.withoutNulls,
+              ExperienceViewPage.routeName,
+              queryParameters: {'experienceId': serializeParam(experienceRow.id, ParamType.int)}.withoutNulls,
               extra: <String, dynamic>{
                 kTransitionInfoKey: const TransitionInfo(
                   hasTransition: true,
@@ -88,8 +88,8 @@ class SharingCardWidget extends StatelessWidget {
         children: [
           UserAvatar(
             key: Key('Keys09_${index}_of_$totalCount'),
-            imageUrl: sharingRow.photoUrl,
-            fullName: sharingRow.fullName,
+            imageUrl: experienceRow.photoUrl,
+            fullName: experienceRow.fullName,
             size: 36.0,
           ),
           Expanded(
@@ -101,7 +101,7 @@ class SharingCardWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    valueOrDefault<String>(sharingRow.displayName, 'User name'),
+                    valueOrDefault<String>(experienceRow.displayName, 'User name'),
                     style: AppTheme.of(context).bodyMedium.override(
                           font: GoogleFonts.lexendDeca(
                             fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
@@ -124,8 +124,8 @@ class SharingCardWidget extends StatelessWidget {
   }
 
   Widget _buildModerationStatus(BuildContext context) {
-    final isOwner = context.currentUserIdOrEmpty == sharingRow.userId;
-    final status = sharingRow.moderationStatus;
+    final isOwner = context.currentUserIdOrEmpty == experienceRow.userId;
+    final status = experienceRow.moderationStatus;
 
     // Only show for owner and when status exists and is not approved
     if (!isOwner || status == null || status == 'approved') {
@@ -188,7 +188,7 @@ class SharingCardWidget extends StatelessWidget {
   }
 
   Widget _buildText(BuildContext context) {
-    final text = sharingRow.text?.trim() ?? '';
+    final text = experienceRow.text?.trim() ?? '';
 
     // If text is empty, don't show anything
     if (text.isEmpty) {
@@ -213,17 +213,17 @@ class SharingCardWidget extends StatelessWidget {
                 ),
           ),
         ),
-        if (sharingRow.moderationStatus == 'rejected' || sharingRow.moderationStatus == 'changes_requested')
+        if (experienceRow.moderationStatus == 'rejected' || experienceRow.moderationStatus == 'changes_requested')
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (sharingRow.moderationReason != null && sharingRow.moderationReason!.trim().isNotEmpty)
+                if (experienceRow.moderationReason != null && experienceRow.moderationReason!.trim().isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.only(bottom: 8.0),
                     child: Text(
-                      sharingRow.moderationReason!,
+                      experienceRow.moderationReason!,
                       style: AppTheme.of(context).bodySmall.override(
                             font: GoogleFonts.lexendDeca(),
                             color: AppTheme.of(context).secondary,
@@ -234,7 +234,7 @@ class SharingCardWidget extends StatelessWidget {
                     ),
                   ),
                 Text(
-                  sharingRow.moderationStatus == 'rejected'
+                  experienceRow.moderationStatus == 'rejected'
                       ? 'You’re welcome to revise and share again whenever you feel ready.'
                       : 'Suggestions were shared to help refine this experience.',
                   style: AppTheme.of(context).bodySmall.override(
@@ -254,7 +254,7 @@ class SharingCardWidget extends StatelessWidget {
 
   Widget _buildActions(BuildContext context) {
     final isAdmin = FFAppState().loginUser.roles.hasAdmin;
-    final isOwner = context.currentUserIdOrEmpty == sharingRow.userId;
+    final isOwner = context.currentUserIdOrEmpty == experienceRow.userId;
 
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 8.0, 0.0),
@@ -301,15 +301,17 @@ class SharingCardWidget extends StatelessWidget {
                 ),
               ),
             ),
-          if (isOwner)
+          if (isOwner &&
+              experienceRow.moderationStatus != 'awaiting_approval' &&
+              experienceRow.moderationStatus != 'pending')
             Padding(
               padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
               child: FFButtonWidget(
                 onPressed: () async {
                   context.pushNamed(
-                    SharingEditPage.routeName,
+                    ExperienceEditPage.routeName,
                     extra: <String, dynamic>{
-                      'sharingRow': sharingRow,
+                      'experienceRow': experienceRow,
                       kTransitionInfoKey: const TransitionInfo(
                         hasTransition: true,
                         transitionType: PageTransitionType.fade,
@@ -318,7 +320,7 @@ class SharingCardWidget extends StatelessWidget {
                     },
                   );
                 },
-                text: 'Revise',
+                text: 'Edit',
                 options: FFButtonOptions(
                   height: 40.0,
                   padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
@@ -337,6 +339,8 @@ class SharingCardWidget extends StatelessWidget {
                   elevation: 1.0,
                   borderSide: BorderSide(color: AppTheme.of(context).secondaryBackground, width: 0.5),
                   borderRadius: BorderRadius.circular(20.0),
+                  disabledColor: AppTheme.of(context).alternate,
+                  disabledTextColor: AppTheme.of(context).secondaryText,
                 ),
               ),
             ),

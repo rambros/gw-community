@@ -22,14 +22,10 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
   int _selectedAuthorId = 0;
   int _selectedEventId = 0;
   String _selectedYear = '';
-  int _selectedJourneyId = 0;
-  int _selectedGroupId = 0;
   List<String> _selectedTopics = [];
   FormFieldController<int>? _authorController;
   FormFieldController<int>? _eventController;
   FormFieldController<String>? _yearController;
-  FormFieldController<int>? _journeyController;
-  FormFieldController<int>? _groupController;
   FormListFieldController<String>? _topicsController;
 
   void _clearAuthor() {
@@ -53,20 +49,6 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
     });
   }
 
-  void _clearJourney() {
-    setState(() {
-      _selectedJourneyId = 0;
-      _journeyController?.value = null;
-    });
-  }
-
-  void _clearGroup() {
-    setState(() {
-      _selectedGroupId = 0;
-      _groupController?.value = null;
-    });
-  }
-
   void _clearTopics() {
     setState(() {
       _selectedTopics = [];
@@ -82,15 +64,11 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
     _selectedAuthorId = viewModel.filterByAuthorId;
     _selectedEventId = viewModel.filterByEventId;
     _selectedYear = viewModel.filterByYear;
-    _selectedJourneyId = viewModel.filterByJourneyId;
-    _selectedGroupId = viewModel.filterByGroupId;
     _selectedTopics = List<String>.from(viewModel.filterByTopics);
 
     _authorController = FormFieldController<int>(_selectedAuthorId == 0 ? null : _selectedAuthorId);
     _eventController = FormFieldController<int>(_selectedEventId == 0 ? null : _selectedEventId);
     _yearController = FormFieldController<String>(_selectedYear.isEmpty ? null : _selectedYear);
-    _journeyController = FormFieldController<int>(_selectedJourneyId == 0 ? null : _selectedJourneyId);
-    _groupController = FormFieldController<int>(_selectedGroupId == 0 ? null : _selectedGroupId);
     _topicsController = FormListFieldController<String>(List<String>.from(_selectedTopics));
 
     _hasSyncedFilters = true;
@@ -102,8 +80,8 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
       year: _selectedYear,
       eventId: _selectedEventId,
       topics: _selectedTopics,
-      journeyId: _selectedJourneyId,
-      groupId: _selectedGroupId,
+      journeyId: 0,
+      groupId: 0,
     );
     if (!context.mounted) {
       return;
@@ -147,8 +125,6 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
     _authorController?.dispose();
     _eventController?.dispose();
     _yearController?.dispose();
-    _journeyController?.dispose();
-    _groupController?.dispose();
     _topicsController?.dispose();
     super.dispose();
   }
@@ -164,8 +140,6 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
           final authors = viewModel.authors.where((author) => author.id != null).toList();
           final events = viewModel.events.where((event) => event.eventId != null).toList();
           final years = viewModel.years.where((year) => year.year != null).toList();
-          final journeys = viewModel.journeys;
-          final groups = viewModel.groups;
           final topics = viewModel.topics.where((topic) => (topic.topicName ?? '').isNotEmpty).toList();
           final topicNames = topics.map((topic) => topic.topicName ?? '').toList();
           return Container(
@@ -312,84 +286,6 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
                               ),
                               hintText: 'Select Year',
                               searchHintText: 'Search for a year...',
-                              icon: Icon(
-                                Icons.keyboard_arrow_down_rounded,
-                                color: AppTheme.of(context).secondaryText,
-                                size: 24.0,
-                              ),
-                              fillColor: AppTheme.of(context).secondaryBackground,
-                              elevation: 2.0,
-                              borderColor: AppTheme.of(context).alternate,
-                              borderWidth: 2.0,
-                              borderRadius: 12.0,
-                              margin: const EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
-                              hidesUnderline: true,
-                              isOverButton: true,
-                              isSearchable: true,
-                            ),
-
-                            // Journeys Dropdown
-                            _buildLabel(
-                              context,
-                              'Journeys',
-                              hasValue: _selectedJourneyId != 0,
-                              onClear: _clearJourney,
-                            ),
-                            FlutterFlowDropDown<int>(
-                              controller: _journeyController,
-                              options: journeys.map((e) => e.id).toList(),
-                              optionLabels: journeys.map((e) => e.title ?? 'Journey').toList(),
-                              onChanged: (val) {
-                                setState(() {
-                                  _selectedJourneyId = val ?? 0;
-                                });
-                              },
-                              width: double.infinity,
-                              height: 50.0,
-                              textStyle: AppTheme.of(context).bodyMedium.override(
-                                color: AppTheme.of(context).textColor,
-                              ),
-                              hintText: 'Select Journey',
-                              searchHintText: 'Search for a journey...',
-                              icon: Icon(
-                                Icons.keyboard_arrow_down_rounded,
-                                color: AppTheme.of(context).secondaryText,
-                                size: 24.0,
-                              ),
-                              fillColor: AppTheme.of(context).secondaryBackground,
-                              elevation: 2.0,
-                              borderColor: AppTheme.of(context).alternate,
-                              borderWidth: 2.0,
-                              borderRadius: 12.0,
-                              margin: const EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
-                              hidesUnderline: true,
-                              isOverButton: true,
-                              isSearchable: true,
-                            ),
-
-                            // Groups Dropdown
-                            _buildLabel(
-                              context,
-                              'Groups',
-                              hasValue: _selectedGroupId != 0,
-                              onClear: _clearGroup,
-                            ),
-                            FlutterFlowDropDown<int>(
-                              controller: _groupController,
-                              options: groups.map((e) => e.id).toList(),
-                              optionLabels: groups.map((e) => e.name ?? 'Group').toList(),
-                              onChanged: (val) {
-                                setState(() {
-                                  _selectedGroupId = val ?? 0;
-                                });
-                              },
-                              width: double.infinity,
-                              height: 50.0,
-                              textStyle: AppTheme.of(context).bodyMedium.override(
-                                color: AppTheme.of(context).textColor,
-                              ),
-                              hintText: 'Select Group',
-                              searchHintText: 'Search for a group...',
                               icon: Icon(
                                 Icons.keyboard_arrow_down_rounded,
                                 color: AppTheme.of(context).secondaryText,

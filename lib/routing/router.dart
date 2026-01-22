@@ -203,19 +203,19 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               params.isEmpty ? const NavBarPage(initialPage: 'communityPage') : const CommunityPage(),
         ),
         FFRoute(
-          name: SharingViewPage.routeName,
-          path: SharingViewPage.routePath,
-          builder: (context, params) => SharingViewPage(
-            sharingId: params.getParam(
-              'sharingId',
+          name: ExperienceViewPage.routeName,
+          path: ExperienceViewPage.routePath,
+          builder: (context, params) => ExperienceViewPage(
+            experienceId: params.getParam(
+              'experienceId',
               ParamType.int,
             ),
           ),
         ),
         FFRoute(
-          name: SharingAddPage.routeName,
-          path: SharingAddPage.routePath,
-          builder: (context, params) => SharingAddPage(
+          name: ExperienceAddPage.routeName,
+          path: ExperienceAddPage.routePath,
+          builder: (context, params) => ExperienceAddPage(
             groupId: params.getParam(
               'groupId',
               ParamType.int,
@@ -231,11 +231,11 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: SharingEditPage.routeName,
-          path: SharingEditPage.routePath,
-          builder: (context, params) => SharingEditPage(
-            sharingRow: params.getParam<CcViewSharingsUsersRow>(
-              'sharingRow',
+          name: ExperienceEditPage.routeName,
+          path: ExperienceEditPage.routePath,
+          builder: (context, params) => ExperienceEditPage(
+            experienceRow: params.getParam<CcViewSharingsUsersRow>(
+              'experienceRow',
               ParamType.SupabaseRow,
             ),
           ),
@@ -413,8 +413,8 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: AnnouncementEditPage.routeName,
           path: AnnouncementEditPage.routePath,
           builder: (context, params) => AnnouncementEditPage(
-            sharingRow: params.getParam<CcViewNotificationsUsersRow>(
-              'sharingRow',
+            experienceRow: params.getParam<CcViewNotificationsUsersRow>(
+              'experienceRow',
               ParamType.SupabaseRow,
             ),
           ),

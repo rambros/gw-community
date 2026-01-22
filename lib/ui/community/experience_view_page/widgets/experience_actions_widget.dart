@@ -6,12 +6,12 @@ import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 
-/// Widget que exibe os botões de ação do sharing
+/// Widget que exibe os botões de ação do experience
 /// Inclui: comentar, editar, deletar e lock/unlock
-class SharingActionsWidget extends StatelessWidget {
-  const SharingActionsWidget({
+class ExperienceActionsWidget extends StatelessWidget {
+  const ExperienceActionsWidget({
     super.key,
-    required this.sharing,
+    required this.experience,
     required this.onComment,
     this.onEdit,
     this.onDelete,
@@ -21,7 +21,7 @@ class SharingActionsWidget extends StatelessWidget {
     required this.canLock,
   });
 
-  final CcViewSharingsUsersRow sharing;
+  final CcViewSharingsUsersRow experience;
   final VoidCallback onComment;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
@@ -54,7 +54,7 @@ class SharingActionsWidget extends StatelessWidget {
   }
 
   Widget _buildCommentButton(BuildContext context) {
-    final isLocked = sharing.locked ?? false;
+    final isLocked = experience.locked ?? false;
 
     return Align(
       alignment: const AlignmentDirectional(0.0, 0.0),
@@ -96,7 +96,7 @@ class SharingActionsWidget extends StatelessWidget {
                   padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 10.0, 0.0),
                   child: Text(
                     valueOrDefault<String>(
-                      sharing.comments?.toString(),
+                      experience.comments?.toString(),
                       '0',
                     ),
                     style: AppTheme.of(context).bodyMedium.override(
@@ -162,7 +162,7 @@ class SharingActionsWidget extends StatelessWidget {
   }
 
   Widget _buildAdminActionsGroup(BuildContext context) {
-    final isLocked = sharing.locked ?? false;
+    final isLocked = experience.locked ?? false;
 
     return Container(
       height: 44.0,

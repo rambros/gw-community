@@ -30,7 +30,6 @@ class AppViewModel extends ChangeNotifier with WidgetsBindingObserver {
 
     // Initialize with current user from auth immediately
     _userSubscription = authRepository.authUserChanges.listen((user) {
-      debugPrint('APP_VIEW_MODEL: Auth State Changed. LoggedIn: ${user.loggedIn}, UID: ${user.uid}');
       appStateNotifier.update(user);
     });
 

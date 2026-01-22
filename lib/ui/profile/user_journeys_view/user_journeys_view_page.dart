@@ -40,32 +40,25 @@ class _UserJourneysViewPageState extends State<UserJourneysViewPage> {
         leading: FlutterFlowIconButton(
           borderColor: Colors.transparent,
           borderRadius: 30.0,
-          buttonSize: 46.0,
-          icon: Icon(
+          borderWidth: 1.0,
+          buttonSize: 60.0,
+          icon: const Icon(
             Icons.arrow_back_rounded,
-            color: AppTheme.of(context).primaryBackground,
-            size: 25.0,
+            color: Colors.white,
+            size: 30.0,
           ),
-          onPressed: () async {
-            context.pop();
-          },
+          onPressed: () => context.pop(),
         ),
         title: Text(
-          'Your Journeys',
-          style: AppTheme.of(context).headlineMedium.override(
-                font: GoogleFonts.lexendDeca(
-                  fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
-                  fontStyle: AppTheme.of(context).headlineMedium.fontStyle,
-                ),
-                color: AppTheme.of(context).primaryBackground,
-                letterSpacing: 0.0,
-                fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
-                fontStyle: AppTheme.of(context).headlineMedium.fontStyle,
+          'My Journeys',
+          style: AppTheme.of(context).bodyMedium.override(
+                font: GoogleFonts.lexendDeca(),
+                color: Colors.white,
+                fontSize: 20.0,
               ),
         ),
-        actions: const [],
-        centerTitle: false,
-        elevation: 0.0,
+        centerTitle: true,
+        elevation: 4.0,
       ),
       body: SafeArea(
         top: true,
@@ -212,17 +205,13 @@ class _UserJourneysViewPageState extends State<UserJourneysViewPage> {
                                                       color: AppTheme.of(context).primary,
                                                       textStyle: AppTheme.of(context).labelLarge.override(
                                                             font: GoogleFonts.poppins(
-                                                              fontWeight:
-                                                                  AppTheme.of(context).labelLarge.fontWeight,
-                                                              fontStyle:
-                                                                  AppTheme.of(context).labelLarge.fontStyle,
+                                                              fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                                                              fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                                                             ),
                                                             color: AppTheme.of(context).primaryBackground,
                                                             letterSpacing: 0.0,
-                                                            fontWeight:
-                                                                AppTheme.of(context).labelLarge.fontWeight,
-                                                            fontStyle:
-                                                                AppTheme.of(context).labelLarge.fontStyle,
+                                                            fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                                                            fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                                                           ),
                                                       elevation: 1.0,
                                                       borderSide: BorderSide(

@@ -5,7 +5,7 @@ import 'package:gw_community/data/repositories/announcement_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/index.dart';
 import 'package:gw_community/ui/community/announcement_view_page/view_model/announcement_view_view_model.dart';
-import 'package:gw_community/ui/community/sharing_view_page/widgets/comment_item_widget.dart';
+import 'package:gw_community/ui/community/experience_view_page/widgets/comment_item_widget.dart';
 import 'package:gw_community/ui/community/widgets/add_comment/add_comment_widget.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
@@ -280,7 +280,7 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
                             final wasEdited = await context.pushNamed<bool>(
                               AnnouncementEditPage.routeName,
                               extra: {
-                                'sharingRow': announcement,
+                                'experienceRow': announcement,
                               },
                             );
                             // Se o anúncio foi editado, volta para a página de anúncios do grupo
@@ -492,7 +492,7 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
               child: SizedBox(
                 height: 200.0,
                 child: AddCommentWidget(
-                  sharingId: widget.announcementId!,
+                  experienceId: widget.announcementId!,
                   parentId: parentId,
                   photoUrl: FFAppState().loginUser.photoUrl,
                   fullName: FFAppState().loginUser.fullName,

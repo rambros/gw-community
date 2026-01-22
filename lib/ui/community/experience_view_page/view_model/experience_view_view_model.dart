@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 
 import 'package:gw_community/app_state.dart';
 import 'package:gw_community/data/models/enums/enums.dart';
-import 'package:gw_community/data/repositories/sharing_repository.dart';
+import 'package:gw_community/data/repositories/experience_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 
-/// ViewModel para a página de visualização de Sharing
+/// ViewModel para a página de visualização de Experience
 /// Gerencia estado, lógica de negócio e ações do usuário
 /// Segue padrão MVVM estilo Compass
-class SharingViewViewModel extends ChangeNotifier {
-  final SharingRepository _repository;
+class ExperienceViewViewModel extends ChangeNotifier {
+  final ExperienceRepository _repository;
   final FFAppState appState;
 
-  SharingViewViewModel({
-    required SharingRepository repository,
+  ExperienceViewViewModel({
+    required ExperienceRepository repository,
     required this.appState,
   }) : _repository = repository;
 
@@ -28,28 +28,28 @@ class SharingViewViewModel extends ChangeNotifier {
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
 
-  CcViewSharingsUsersRow? _sharing;
-  CcViewSharingsUsersRow? get sharing => _sharing;
+  CcViewSharingsUsersRow? _experience;
+  CcViewSharingsUsersRow? get experience => _experience;
 
   List<CcViewOrderedCommentsRow> _comments = [];
   List<CcViewOrderedCommentsRow> get comments => _comments;
 
   // ========== INITIALIZATION ==========
 
-  /// Carrega o sharing e seus comentários
-  Future<void> loadSharing(int sharingId) async {
+  /// Carrega o experience e seus comentários
+  Future<void> loadExperience(int experienceId) async {
     _setLoading(true);
     _clearError();
 
     try {
-      // Carregar sharing e comentários em paralelo
-      final sharingResult = await _repository.getSharingById(sharingId);
-      final commentsResult = await _repository.getComments(sharingId);
+      // Carregar experience e comentários em paralelo
+      final experienceResult = await _repository.getExperienceById(experienceId);
+      final commentsResult = await _repository.getComments(experienceId);
 
-      _sharing = sharingResult;
+      _experience = experienceResult;
       _comments = commentsResult;
 
-      if (_sharing == null) {
+      if (_experience == null) {
         _setError('Experience not found');
       }
 
@@ -63,16 +63,16 @@ class SharingViewViewModel extends ChangeNotifier {
 
   // ========== COMMANDS (User Actions) ==========
 
-  /// Deleta o sharing atual após confirmação
+  /// Deleta o experience atual após confirmação
   /// Navega de volta para a página de comunidade após deletar
-  Future<void> deleteSharingCommand(BuildContext context, int sharingId) async {
+  Future<void> deleteExperienceCommand(BuildContext context, int experienceId) async {
     if (!canDelete()) {
       _setError('You do not have permission to delete this experience');
       return;
     }
 
     try {
-      await _repository.deleteSharing(sharingId);
+      await _repository.deleteExperience(experienceId);
 
       if (context.mounted) {
         Navigator.pop(context);
@@ -82,21 +82,21 @@ class SharingViewViewModel extends ChangeNotifier {
     }
   }
 
-  /// Alterna o estado de lock do sharing
+  /// Alterna o estado de lock do experience
   /// Quando locked, usuários não podem comentar
-  Future<void> toggleLockCommand(int sharingId) async {
+  Future<void> toggleLockCommand(int experienceId) async {
     if (!canLock()) {
       _setError('You do not have permission to lock this experience');
       return;
     }
 
-    if (_sharing == null) return;
+    if (_experience == null) return;
 
     try {
-      await _repository.toggleSharingLock(sharingId, _sharing!.locked ?? false);
+      await _repository.toggleExperienceLock(experienceId, _experience!.locked ?? false);
 
-      // Recarregar sharing para obter estado atualizado
-      await loadSharing(sharingId);
+      // Recarregar experience para obter estado atualizado
+      await loadExperience(experienceId);
     } catch (e) {
       _setError('Error toggling lock: $e');
     }
@@ -104,12 +104,12 @@ class SharingViewViewModel extends ChangeNotifier {
 
   /// Deleta um comentário específico
   /// Recarrega a lista de comentários após deletar
-  Future<void> deleteCommentCommand(int commentId, int sharingId) async {
+  Future<void> deleteCommentCommand(int commentId, int experienceId) async {
     try {
       await _repository.deleteComment(commentId);
 
       // Recarregar comentários
-      _comments = await _repository.getComments(sharingId);
+      _comments = await _repository.getComments(experienceId);
       notifyListeners();
     } catch (e) {
       _setError('Error deleting comment: $e');
@@ -118,12 +118,12 @@ class SharingViewViewModel extends ChangeNotifier {
 
   /// Recarrega apenas os comentários
   /// Útil após adicionar um novo comentário
-  Future<void> refreshComments(int sharingId) async {
+  Future<void> refreshComments(int experienceId) async {
     try {
-      _comments = await _repository.getComments(sharingId);
+      _comments = await _repository.getComments(experienceId);
 
-      // Atualizar também o contador de comentários no sharing
-      _sharing = await _repository.getSharingById(sharingId);
+      // Atualizar também o contador de comentários no experience
+      _experience = await _repository.getExperienceById(experienceId);
 
       notifyListeners();
     } catch (e) {
@@ -133,28 +133,39 @@ class SharingViewViewModel extends ChangeNotifier {
 
   // ========== VALIDATIONS ==========
 
-  /// Verifica se o usuário atual pode deletar o sharing
+  /// Verifica se o usuário atual pode deletar o experience
   /// Pode deletar se for o autor OU se for admin
   bool canDelete() {
-    if (_sharing == null) return false;
+    if (_experience == null) return false;
 
-    return _sharing!.userId == currentUserUid || _isAdmin();
+    return _experience!.userId == currentUserUid || _isAdmin();
   }
 
-  /// Verifica se o usuário atual pode editar o sharing
+  /// Verifica se o usuário atual pode editar o experience
   /// Pode editar apenas se for o autor
   bool canEdit() {
-    if (_sharing == null) return false;
+    if (_experience == null) return false;
 
-    return _sharing!.userId == currentUserUid;
+    // Cannot edit if waiting for approval
+    if (_experience!.moderationStatus == 'awaiting_approval') {
+      return false;
+    }
+
+    return _experience!.userId == currentUserUid;
   }
 
-  /// Verifica se o usuário atual pode fazer lock/unlock do sharing
+  /// Verifica se o usuário atual pode fazer lock/unlock do experience
   /// Pode fazer lock se for o autor OU se for admin
   bool canLock() {
-    if (_sharing == null) return false;
+    if (_experience == null) return false;
 
-    return _sharing!.userId == currentUserUid || _isAdmin();
+    // Check if user is the owner (author)
+    final isOwner = _experience!.userId == currentUserUid;
+
+    // Check if user is admin
+    final isAdmin = _isAdmin();
+
+    return isOwner || isAdmin;
   }
 
   /// Verifica se o usuário atual pode deletar um comentário específico
@@ -163,14 +174,18 @@ class SharingViewViewModel extends ChangeNotifier {
     return commentUserId == currentUserUid || _isAdmin();
   }
 
-  /// Verifica se o sharing está bloqueado para comentários
+  /// Verifica se o experience está bloqueado para comentários
   bool isLocked() {
-    return _sharing?.locked ?? false;
+    return _experience?.locked ?? false;
   }
 
   /// Verifica se o usuário atual é administrador
   bool _isAdmin() {
-    return appState.loginUser.roles.hasAdmin;
+    try {
+      return appState.loginUser.roles.hasAdmin;
+    } catch (e) {
+      return false;
+    }
   }
 
   // ========== HELPER METHODS ==========

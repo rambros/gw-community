@@ -24,7 +24,7 @@ class AnnouncementRepository {
       'group_id': groupId,
       'updated_at': supaSerialize<DateTime>(getCurrentTimestamp),
       'visibility': visibility,
-      'type': SharingType.notification.name,
+      'type': ExperienceType.notification.name,
     });
   }
 
@@ -33,9 +33,9 @@ class AnnouncementRepository {
     return result.isNotEmpty ? result.first : null;
   }
 
-  Future<List<CcViewOrderedCommentsRow>> getComments(int sharingId) async {
+  Future<List<CcViewOrderedCommentsRow>> getComments(int experienceId) async {
     return CcViewOrderedCommentsTable().queryRows(
-      queryFn: (q) => q.eqOrNull('sharing_id', sharingId).order('sort_path', ascending: true),
+      queryFn: (q) => q.eqOrNull('sharing_id', experienceId).order('sort_path', ascending: true),
     );
   }
 
@@ -121,7 +121,7 @@ class AnnouncementRepository {
         queryFn: (q) => q.eq('user_id', userId).inFilter('sharing_id', notificationIds),
       );
 
-      return reads.map((r) => r.sharingId).toSet();
+      return reads.map((r) => r.experienceId).toSet();
     } catch (e) {
       print('Error fetching read notification IDs: $e');
       return {};
@@ -143,7 +143,7 @@ class AnnouncementRepository {
         queryFn: (q) => q.eq('user_id', userId).inFilter('sharing_id', notificationIds),
       );
 
-      final readIds = reads.map((r) => r.sharingId).toSet();
+      final readIds = reads.map((r) => r.experienceId).toSet();
       return notificationIds.where((id) => !readIds.contains(id)).length;
     } catch (e) {
       print('Error fetching unread notification count: $e');

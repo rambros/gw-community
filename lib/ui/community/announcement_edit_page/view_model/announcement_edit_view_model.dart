@@ -6,17 +6,17 @@ import 'package:gw_community/data/services/supabase/supabase.dart';
 class AnnouncementEditViewModel extends ChangeNotifier {
   AnnouncementEditViewModel({
     required AnnouncementRepository repository,
-    required CcViewNotificationsUsersRow sharingRow,
+    required CcViewNotificationsUsersRow experienceRow,
   })  : _repository = repository,
-        _sharingRow = sharingRow {
-    titleController.text = sharingRow.title ?? '';
-    descriptionController.text = sharingRow.text ?? '';
-    _visibility = sharingRow.visibility ?? 'group_only';
-    _privacy = sharingRow.privacy ?? 'public';
+        _experienceRow = experienceRow {
+    titleController.text = experienceRow.title ?? '';
+    descriptionController.text = experienceRow.text ?? '';
+    _visibility = experienceRow.visibility ?? 'group_only';
+    _privacy = experienceRow.privacy ?? 'public';
   }
 
   final AnnouncementRepository _repository;
-  final CcViewNotificationsUsersRow _sharingRow;
+  final CcViewNotificationsUsersRow _experienceRow;
 
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
@@ -35,9 +35,9 @@ class AnnouncementEditViewModel extends ChangeNotifier {
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
 
-  CcViewNotificationsUsersRow get sharingRow => _sharingRow;
+  CcViewNotificationsUsersRow get experienceRow => _experienceRow;
 
-  bool get canSelectVisibility => sharingRow.groupName != null && sharingRow.groupName!.isNotEmpty;
+  bool get canSelectVisibility => experienceRow.groupName != null && experienceRow.groupName!.isNotEmpty;
 
   void setVisibility(String? value) {
     if (value == null) return;
@@ -54,7 +54,7 @@ class AnnouncementEditViewModel extends ChangeNotifier {
     _setSaving(true);
     try {
       await _repository.updateAnnouncement(
-        id: sharingRow.id!,
+        id: experienceRow.id!,
         title: titleController.text.trim(),
         text: descriptionController.text.trim(),
         privacy: _privacy,

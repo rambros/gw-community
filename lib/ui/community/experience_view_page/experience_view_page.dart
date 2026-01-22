@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:gw_community/ui/community/sharing_edit_page/sharing_edit_page.dart';
-import 'package:gw_community/ui/community/sharing_view_page/view_model/sharing_view_view_model.dart';
-import 'package:gw_community/ui/community/sharing_view_page/widgets/comment_item_widget.dart';
-import 'package:gw_community/ui/community/sharing_view_page/widgets/sharing_actions_widget.dart';
-import 'package:gw_community/ui/community/sharing_view_page/widgets/sharing_content_widget.dart';
-import 'package:gw_community/ui/community/sharing_view_page/widgets/sharing_header_widget.dart';
+import 'package:gw_community/ui/community/experience_edit_page/experience_edit_page.dart';
+import 'package:gw_community/ui/community/experience_view_page/view_model/experience_view_view_model.dart';
+import 'package:gw_community/ui/community/experience_view_page/widgets/comment_item_widget.dart';
+import 'package:gw_community/ui/community/experience_view_page/widgets/experience_actions_widget.dart';
+import 'package:gw_community/ui/community/experience_view_page/widgets/experience_content_widget.dart';
+import 'package:gw_community/ui/community/experience_view_page/widgets/experience_header_widget.dart';
 import 'package:gw_community/ui/community/widgets/add_comment/add_comment_widget.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
@@ -15,47 +15,47 @@ import 'package:provider/provider.dart';
 import 'package:sticky_headers/sticky_headers.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
 
-/// Página de visualização de um Sharing individual
+/// Página de visualização de um Experience individual
 /// Refatorada para seguir arquitetura MVVM estilo Compass
-class SharingViewPage extends StatefulWidget {
-  const SharingViewPage({
+class ExperienceViewPage extends StatefulWidget {
+  const ExperienceViewPage({
     super.key,
-    required this.sharingId,
+    required this.experienceId,
     this.groupModerators,
   });
 
-  final int? sharingId;
+  final int? experienceId;
 
-  /// Who can delete sharing
+  /// Who can delete experience
   final List<int>? groupModerators;
 
-  static String routeName = 'sharingViewPage';
-  static String routePath = '/sharingViewPage';
+  static String routeName = 'experienceViewPage';
+  static String routePath = '/experienceViewPage';
 
   @override
-  State<SharingViewPage> createState() => _SharingViewPageState();
+  State<ExperienceViewPage> createState() => _ExperienceViewPageState();
 }
 
-class _SharingViewPageState extends State<SharingViewPage> {
+class _ExperienceViewPageState extends State<ExperienceViewPage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
 
-    logFirebaseEvent('screen_view', parameters: {'screen_name': 'sharingViewPage'});
+    logFirebaseEvent('screen_view', parameters: {'screen_name': 'experienceViewPage'});
 
     // Carregar dados após o build
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (widget.sharingId != null) {
-        context.read<SharingViewViewModel>().loadSharing(widget.sharingId!);
+      if (widget.experienceId != null) {
+        context.read<ExperienceViewViewModel>().loadExperience(widget.experienceId!);
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<SharingViewViewModel>();
+    final viewModel = context.watch<ExperienceViewViewModel>();
 
     return GestureDetector(
       onTap: () {
@@ -108,7 +108,7 @@ class _SharingViewPageState extends State<SharingViewPage> {
     );
   }
 
-  Widget _buildBody(BuildContext context, SharingViewViewModel viewModel) {
+  Widget _buildBody(BuildContext context, ExperienceViewViewModel viewModel) {
     // Loading state
     if (viewModel.isLoading) {
       return Center(
@@ -142,7 +142,7 @@ class _SharingViewPageState extends State<SharingViewPage> {
     }
 
     // Empty state
-    if (viewModel.sharing == null) {
+    if (viewModel.experience == null) {
       return Center(
         child: Text(
           'Experience not found',
@@ -155,7 +155,7 @@ class _SharingViewPageState extends State<SharingViewPage> {
     }
 
     // Success state
-    final sharing = viewModel.sharing!;
+    final experience = viewModel.experience!;
 
     return SafeArea(
       top: true,
@@ -176,16 +176,16 @@ class _SharingViewPageState extends State<SharingViewPage> {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       // Header com informações do autor
-                      SharingHeaderWidget(sharing: sharing),
+                      ExperienceHeaderWidget(experience: experience),
                     ],
                   ),
                   content: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      // Conteúdo do sharing
-                      SharingContentWidget(sharing: sharing),
+                      // Conteúdo do experience
+                      ExperienceContentWidget(experience: experience),
                       // Ações (comentar, deletar, lock)
-                      _buildActionsCard(context, viewModel, sharing),
+                      _buildActionsCard(context, viewModel, experience),
                       // Lista de comentários
                       _buildCommentsList(context, viewModel),
                     ],
@@ -199,7 +199,7 @@ class _SharingViewPageState extends State<SharingViewPage> {
     );
   }
 
-  Widget _buildActionsCard(BuildContext context, SharingViewViewModel viewModel, sharing) {
+  Widget _buildActionsCard(BuildContext context, ExperienceViewViewModel viewModel, experience) {
     return Card(
       clipBehavior: Clip.antiAliasWithSaveLayer,
       color: AppTheme.of(context).primaryBackground,
@@ -212,15 +212,15 @@ class _SharingViewPageState extends State<SharingViewPage> {
         children: [
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 4.0, 8.0),
-            child: SharingActionsWidget(
-              sharing: sharing,
-              canEdit: viewModel.canEdit(),
-              canDelete: viewModel.canDelete(),
+            child: ExperienceActionsWidget(
+              experience: experience,
+              canEdit: false,
+              canDelete: false,
               canLock: viewModel.canLock(),
-              onComment: () => _showAddCommentModal(context, widget.sharingId!, null),
-              onEdit: () => _handleEditSharing(context, sharing),
-              onDelete: () => _handleDeleteSharing(context, viewModel),
-              onToggleLock: () => viewModel.toggleLockCommand(widget.sharingId!),
+              onComment: () => _showAddCommentModal(context, widget.experienceId!, null),
+              onEdit: () => _handleEditExperience(context, experience),
+              onDelete: () => _handleDeleteExperience(context, viewModel),
+              onToggleLock: () => viewModel.toggleLockCommand(widget.experienceId!),
             ),
           ),
         ],
@@ -228,7 +228,7 @@ class _SharingViewPageState extends State<SharingViewPage> {
     );
   }
 
-  Widget _buildCommentsList(BuildContext context, SharingViewViewModel viewModel) {
+  Widget _buildCommentsList(BuildContext context, ExperienceViewViewModel viewModel) {
     if (viewModel.comments.isEmpty) {
       return Padding(
         padding: const EdgeInsets.all(16.0),
@@ -271,7 +271,7 @@ class _SharingViewPageState extends State<SharingViewPage> {
 
   Future<void> _showAddCommentModal(
     BuildContext context,
-    int sharingId,
+    int experienceId,
     int? parentId,
   ) async {
     await showModalBottomSheet(
@@ -291,7 +291,7 @@ class _SharingViewPageState extends State<SharingViewPage> {
               child: SizedBox(
                 height: 200.0,
                 child: AddCommentWidget(
-                  sharingId: sharingId,
+                  experienceId: experienceId,
                   parentId: parentId,
                   photoUrl: context.read<FFAppState>().loginUser.photoUrl,
                   fullName: context.read<FFAppState>().loginUser.fullName,
@@ -304,25 +304,25 @@ class _SharingViewPageState extends State<SharingViewPage> {
     );
 
     if (context.mounted) {
-      context.read<SharingViewViewModel>().refreshComments(sharingId);
+      context.read<ExperienceViewViewModel>().refreshComments(experienceId);
     }
   }
 
-  Future<void> _handleEditSharing(BuildContext context, sharing) async {
+  Future<void> _handleEditExperience(BuildContext context, experience) async {
     await context.pushNamed(
-      SharingEditPage.routeName,
-      extra: {'sharingRow': sharing},
+      ExperienceEditPage.routeName,
+      extra: {'experienceRow': experience},
     );
 
     // Recarregar dados após voltar da edição
-    if (context.mounted && widget.sharingId != null) {
-      context.read<SharingViewViewModel>().loadSharing(widget.sharingId!);
+    if (context.mounted && widget.experienceId != null) {
+      context.read<ExperienceViewViewModel>().loadExperience(widget.experienceId!);
     }
   }
 
-  Future<void> _handleDeleteSharing(
+  Future<void> _handleDeleteExperience(
     BuildContext context,
-    SharingViewViewModel viewModel,
+    ExperienceViewViewModel viewModel,
   ) async {
     final confirmDialogResponse = await showDialog<bool>(
           context: context,
@@ -347,15 +347,15 @@ class _SharingViewPageState extends State<SharingViewPage> {
         ) ??
         false;
 
-    if (confirmDialogResponse && widget.sharingId != null) {
+    if (confirmDialogResponse && widget.experienceId != null) {
       if (!context.mounted) return;
-      await viewModel.deleteSharingCommand(context, widget.sharingId!);
+      await viewModel.deleteExperienceCommand(context, widget.experienceId!);
     }
   }
 
   Future<void> _handleDeleteComment(
     BuildContext context,
-    SharingViewViewModel viewModel,
+    ExperienceViewViewModel viewModel,
     int commentId,
   ) async {
     final confirmDialogResponse = await showDialog<bool>(
@@ -381,9 +381,9 @@ class _SharingViewPageState extends State<SharingViewPage> {
         ) ??
         false;
 
-    if (confirmDialogResponse && widget.sharingId != null) {
+    if (confirmDialogResponse && widget.experienceId != null) {
       if (!mounted) return;
-      await viewModel.deleteCommentCommand(commentId, widget.sharingId!);
+      await viewModel.deleteCommentCommand(commentId, widget.experienceId!);
     }
   }
 }

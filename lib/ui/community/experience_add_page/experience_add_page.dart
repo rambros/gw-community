@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:gw_community/data/repositories/sharing_repository.dart';
-import 'package:gw_community/ui/community/sharing_add_page/view_model/sharing_add_view_model.dart';
+import 'package:gw_community/data/repositories/experience_repository.dart';
+import 'package:gw_community/ui/community/experience_add_page/view_model/experience_add_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
@@ -11,10 +11,10 @@ import 'package:gw_community/utils/context_extensions.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
 
-/// Página de adicionar novo Sharing
+/// Página de adicionar novo Experience
 /// Refatorada para seguir arquitetura MVVM estilo Compass
-class SharingAddPage extends StatelessWidget {
-  const SharingAddPage({
+class ExperienceAddPage extends StatelessWidget {
+  const ExperienceAddPage({
     super.key,
     this.groupId,
     this.groupName,
@@ -25,31 +25,31 @@ class SharingAddPage extends StatelessWidget {
   final String? groupName;
   final String privacy;
 
-  static String routeName = 'sharingAddPage';
-  static String routePath = '/sharingAddPage';
+  static String routeName = 'experienceAddPage';
+  static String routePath = '/experienceAddPage';
 
   @override
   Widget build(BuildContext context) {
     // Provider local para o formulário
     return ChangeNotifierProvider(
-      create: (_) => SharingAddViewModel(
-        repository: context.read<SharingRepository>(),
+      create: (_) => ExperienceAddViewModel(
+        repository: context.read<ExperienceRepository>(),
         currentUserUid: context.currentUserIdOrEmpty,
         groupId: groupId,
         groupName: groupName,
         privacy: privacy,
       ),
-      child: const _SharingAddPageContent(),
+      child: const _ExperienceAddPageContent(),
     );
   }
 }
 
-class _SharingAddPageContent extends StatelessWidget {
-  const _SharingAddPageContent();
+class _ExperienceAddPageContent extends StatelessWidget {
+  const _ExperienceAddPageContent();
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<SharingAddViewModel>();
+    final viewModel = context.watch<ExperienceAddViewModel>();
 
     return GestureDetector(
       onTap: () {
@@ -99,7 +99,7 @@ class _SharingAddPageContent extends StatelessWidget {
     );
   }
 
-  Widget _buildBody(BuildContext context, SharingAddViewModel viewModel) {
+  Widget _buildBody(BuildContext context, ExperienceAddViewModel viewModel) {
     // Loading state
     if (viewModel.isLoading) {
       return Center(
@@ -145,7 +145,7 @@ class _SharingAddPageContent extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context, SharingAddViewModel viewModel) {
+  Widget _buildHeader(BuildContext context, ExperienceAddViewModel viewModel) {
     final user = viewModel.currentUser;
 
     return Padding(
@@ -193,7 +193,7 @@ class _SharingAddPageContent extends StatelessWidget {
     );
   }
 
-  Widget _buildTextField(BuildContext context, SharingAddViewModel viewModel) {
+  Widget _buildTextField(BuildContext context, ExperienceAddViewModel viewModel) {
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(4.0, 8.0, 4.0, 4.0),
       child: TextFormField(
@@ -252,7 +252,7 @@ class _SharingAddPageContent extends StatelessWidget {
     );
   }
 
-  Widget _buildErrorMessage(BuildContext context, SharingAddViewModel viewModel) {
+  Widget _buildErrorMessage(BuildContext context, ExperienceAddViewModel viewModel) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Text(
@@ -266,7 +266,7 @@ class _SharingAddPageContent extends StatelessWidget {
     );
   }
 
-  Widget _buildSuccessMessage(BuildContext context, SharingAddViewModel viewModel) {
+  Widget _buildSuccessMessage(BuildContext context, ExperienceAddViewModel viewModel) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Text(
@@ -280,7 +280,7 @@ class _SharingAddPageContent extends StatelessWidget {
     );
   }
 
-  Widget _buildCommentsToggle(BuildContext context, SharingAddViewModel viewModel) {
+  Widget _buildCommentsToggle(BuildContext context, ExperienceAddViewModel viewModel) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
       child: Row(
@@ -316,7 +316,7 @@ class _SharingAddPageContent extends StatelessWidget {
     );
   }
 
-  Widget _buildActions(BuildContext context, SharingAddViewModel viewModel) {
+  Widget _buildActions(BuildContext context, ExperienceAddViewModel viewModel) {
     return Padding(
       padding: const EdgeInsets.all(4.0),
       child: Row(
@@ -359,13 +359,13 @@ class _SharingAddPageContent extends StatelessWidget {
                       if (success && context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: const Text('Reflection saved'),
+                            content: const Text('Draft saved'),
                             backgroundColor: AppTheme.of(context).success,
                           ),
                         );
                       }
                     },
-              text: 'Keep in Reflection',
+              text: 'Draft',
               options: FFButtonOptions(
                 height: 40.0,
                 padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),

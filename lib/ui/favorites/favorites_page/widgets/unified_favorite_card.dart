@@ -241,8 +241,14 @@ class _UnifiedFavoriteCardState extends State<UnifiedFavoriteCard> {
     final tags = <Widget>[];
 
     // Tag de origem (From Library ou From Journey)
+    String originLabel = 'From Library';
+    if (widget.item.isActivity) {
+      final title = widget.item.journeyTitle;
+      originLabel = title != null ? 'From $title' : 'From Journey';
+    }
+
     tags.add(_CategoryTag(
-      label: widget.item.isRecording ? 'From Library' : 'From Journey',
+      label: originLabel,
       context: context,
       isPrimary: false,
     ));

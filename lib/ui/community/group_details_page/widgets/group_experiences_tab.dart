@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
-import 'package:gw_community/ui/community/community_page/widgets/sharing_card_widget.dart';
+import 'package:gw_community/ui/community/community_page/widgets/experience_card_widget.dart';
 import 'package:gw_community/ui/community/group_details_page/view_model/group_details_view_model.dart';
-import 'package:gw_community/ui/community/sharing_add_page/sharing_add_page.dart';
+import 'package:gw_community/ui/community/experience_add_page/experience_add_page.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
 
-class GroupSharingsTab extends StatelessWidget {
-  const GroupSharingsTab({super.key});
+class GroupExperiencesTab extends StatelessWidget {
+  const GroupExperiencesTab({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +51,7 @@ class GroupSharingsTab extends StatelessWidget {
               Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 0.0),
                 child: StreamBuilder<List<CcViewSharingsUsersRow>>(
-                  stream: viewModel.sharingsStream,
+                  stream: viewModel.experiencesStream,
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
                       return Center(
@@ -65,8 +65,8 @@ class GroupSharingsTab extends StatelessWidget {
                         ),
                       );
                     }
-                    final sharingsList = snapshot.data!;
-                    if (sharingsList.isEmpty) {
+                    final experiencesList = snapshot.data!;
+                    if (experiencesList.isEmpty) {
                       return Center(
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
@@ -83,15 +83,15 @@ class GroupSharingsTab extends StatelessWidget {
                       padding: const EdgeInsets.only(bottom: 80.0),
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: sharingsList.length,
+                      itemCount: experiencesList.length,
                       itemBuilder: (context, index) {
-                        final sharing = sharingsList[index];
-                        return SharingCardWidget(
-                          sharingRow: sharing,
+                        final experience = experiencesList[index];
+                        return ExperienceCardWidget(
+                          experienceRow: experience,
                           index: index,
-                          totalCount: sharingsList.length,
+                          totalCount: experiencesList.length,
                           onDelete: (context) async {
-                            await viewModel.deleteSharing(sharing.id!);
+                            await viewModel.deleteExperience(experience.id!);
                             if (!context.mounted) return;
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
@@ -121,7 +121,7 @@ class GroupSharingsTab extends StatelessWidget {
           child: FloatingActionButton.extended(
             onPressed: () async {
               context.pushNamed(
-                SharingAddPage.routeName,
+                ExperienceAddPage.routeName,
                 queryParameters: {
                   'groupId': serializeParam(
                     group.id,

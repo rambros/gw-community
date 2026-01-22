@@ -14,10 +14,10 @@ import 'package:provider/provider.dart';
 class AnnouncementEditPage extends StatefulWidget {
   const AnnouncementEditPage({
     super.key,
-    required this.sharingRow,
+    required this.experienceRow,
   });
 
-  final CcViewNotificationsUsersRow? sharingRow;
+  final CcViewNotificationsUsersRow? experienceRow;
 
   static String routeName = 'announcementEditPage';
   static String routePath = '/announcementEditPage';
@@ -36,7 +36,7 @@ class _AnnouncementEditPageState extends State<AnnouncementEditPage> {
     logFirebaseEvent('screen_view', parameters: {'screen_name': 'announcementEditPage'});
     _viewModel = AnnouncementEditViewModel(
       repository: context.read<AnnouncementRepository>(),
-      sharingRow: widget.sharingRow!,
+      experienceRow: widget.experienceRow!,
     );
   }
 
@@ -123,7 +123,7 @@ class _AnnouncementEditPageState extends State<AnnouncementEditPage> {
   }
 
   Widget _buildHeader(BuildContext context, AnnouncementEditViewModel viewModel) {
-    final sharing = viewModel.sharingRow;
+    final experience = viewModel.experienceRow;
 
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(16.0, 24.0, 16.0, 32.0),
@@ -134,7 +134,7 @@ class _AnnouncementEditPageState extends State<AnnouncementEditPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  valueOrDefault<String>(sharing.displayName, 'name'),
+                  valueOrDefault<String>(experience.displayName, 'name'),
                   style: AppTheme.of(context).bodyLarge.override(
                         font: GoogleFonts.inter(
                           fontWeight: FontWeight.normal,
@@ -145,9 +145,9 @@ class _AnnouncementEditPageState extends State<AnnouncementEditPage> {
                         letterSpacing: 0.0,
                       ),
                 ),
-                if (sharing.groupName != null && sharing.groupName!.isNotEmpty)
+                if (experience.groupName != null && experience.groupName!.isNotEmpty)
                   Text(
-                    'From group ${sharing.groupName}',
+                    'From group ${experience.groupName}',
                     style: AppTheme.of(context).bodyMedium.override(
                           font: GoogleFonts.lexendDeca(
                             fontWeight: AppTheme.of(context).bodyMedium.fontWeight,

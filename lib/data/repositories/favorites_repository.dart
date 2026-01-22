@@ -17,6 +17,8 @@ class FavoritesRepository {
   String? _cachedAuthUserId;
 
   /// Busca o member_id baseado no auth_user_id
+  /// Nota: No banco de dados, a coluna member_id da cc_user_favorites
+  /// aponta para cc_members.auth_user_id, não para cc_members.id.
   Future<String?> getMemberIdByAuthUserId(String authUserId) async {
     // Retorna do cache se disponível
     if (_cachedAuthUserId == authUserId && _cachedMemberId != null) {
@@ -28,7 +30,8 @@ class FavoritesRepository {
         queryFn: (q) => q.eqOrNull('auth_user_id', authUserId),
       );
       if (result.isNotEmpty) {
-        _cachedMemberId = result.first.id;
+        // Usamos o auth_user_id conforme a constraint do banco
+        _cachedMemberId = result.first.authUserId;
         _cachedAuthUserId = authUserId;
         return _cachedMemberId;
       }
@@ -56,10 +59,8 @@ class FavoritesRepository {
       if (memberId == null) return false;
 
       final result = await CcUserFavoritesTable().queryRows(
-        queryFn: (q) => q
-            .eqOrNull('member_id', memberId)
-            .eqOrNull('content_type', contentType)
-            .eqOrNull('content_id', contentId),
+        queryFn: (q) =>
+            q.eqOrNull('member_id', memberId).eqOrNull('content_type', contentType).eqOrNull('content_id', contentId),
       );
       return result.isNotEmpty;
     } catch (e) {
@@ -78,9 +79,12 @@ class FavoritesRepository {
     try {
       final memberId = await getMemberIdByAuthUserId(authUserId);
       if (memberId == null) {
-        debugPrint('Error: member_id not found for auth_user_id: $authUserId');
+        debugPrint('Error adding favorite: Member record not found for auth_user_id: $authUserId');
+        debugPrint('The user may not have completed profile creation yet.');
         return false;
       }
+
+      debugPrint('Adding favorite: member_id=$memberId, contentType=$contentType, contentId=$contentId');
 
       await CcUserFavoritesTable().insert({
         'member_id': memberId,
@@ -91,6 +95,7 @@ class FavoritesRepository {
       return true;
     } catch (e) {
       debugPrint('Error adding favorite: $e');
+      debugPrint('This may indicate a database constraint issue or the member record may be missing.');
       return false;
     }
   }
@@ -160,9 +165,7 @@ class FavoritesRepository {
       if (memberId == null) return {};
 
       final result = await CcUserFavoritesTable().queryRows(
-        queryFn: (q) => q
-            .eqOrNull('member_id', memberId)
-            .eqOrNull('content_type', contentType),
+        queryFn: (q) => q.eqOrNull('member_id', memberId).eqOrNull('content_type', contentType),
       );
       return result.map((row) => row.contentId!).toSet();
     } catch (e) {
@@ -180,9 +183,7 @@ class FavoritesRepository {
       if (memberId == null) return [];
 
       final result = await CcViewUserFavoriteRecordingsTable().queryRows(
-        queryFn: (q) => q
-            .eqOrNull('member_id', memberId)
-            .order('favorited_at', ascending: false),
+        queryFn: (q) => q.eqOrNull('member_id', memberId).order('favorited_at', ascending: false),
       );
       return result;
     } catch (e) {
@@ -200,9 +201,7 @@ class FavoritesRepository {
       if (memberId == null) return [];
 
       final result = await CcViewUserFavoriteActivitiesTable().queryRows(
-        queryFn: (q) => q
-            .eqOrNull('member_id', memberId)
-            .order('favorited_at', ascending: false),
+        queryFn: (q) => q.eqOrNull('member_id', memberId).order('favorited_at', ascending: false),
       );
       return result;
     } catch (e) {

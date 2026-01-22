@@ -17,7 +17,7 @@ import 'package:gw_community/data/repositories/journal_repository.dart';
 import 'package:gw_community/data/repositories/journeys_repository.dart';
 import 'package:gw_community/data/repositories/learn_repository.dart';
 import 'package:gw_community/data/repositories/announcement_repository.dart';
-import 'package:gw_community/data/repositories/sharing_repository.dart';
+import 'package:gw_community/data/repositories/experience_repository.dart';
 import 'package:gw_community/data/repositories/step_activities_repository.dart';
 import 'package:gw_community/data/repositories/unsplash_repository.dart';
 import 'package:gw_community/data/repositories/user_profile_repository.dart';
@@ -29,7 +29,7 @@ import 'package:gw_community/ui/auth/create_account_page/view_model/create_accou
 import 'package:gw_community/ui/auth/forgot_password_page/view_model/forgot_password_view_model.dart';
 import 'package:gw_community/ui/auth/login_page/view_model/login_view_model.dart';
 import 'package:gw_community/ui/auth/on_boarding_page/view_model/on_boarding_view_model.dart';
-import 'package:gw_community/ui/community/sharing_view_page/view_model/sharing_view_view_model.dart';
+import 'package:gw_community/ui/community/experience_view_page/view_model/experience_view_view_model.dart';
 import 'package:gw_community/ui/core/app/view_model/app_view_model.dart';
 import 'package:gw_community/ui/home/home_page/view_model/home_view_model.dart';
 import 'package:gw_community/ui/journey/journeys_list_page/view_model/journeys_list_view_model.dart';
@@ -81,7 +81,7 @@ void main() async {
             authService: context.read<AuthService>(),
           ),
         ),
-        Provider(create: (_) => SharingRepository()),
+        Provider(create: (_) => ExperienceRepository()),
         Provider(create: (_) => EventRepository()),
         Provider(create: (_) => CommunityRepository()),
         Provider(create: (_) => AnnouncementRepository()),
@@ -129,8 +129,8 @@ void main() async {
           ),
         ),
         ChangeNotifierProvider(
-          create: (context) => SharingViewViewModel(
-            repository: context.read<SharingRepository>(),
+          create: (context) => ExperienceViewViewModel(
+            repository: context.read<ExperienceRepository>(),
             appState: context.read<FFAppState>(),
           ),
         ),

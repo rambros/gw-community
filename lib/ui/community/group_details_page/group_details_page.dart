@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:gw_community/data/repositories/event_repository.dart';
-import 'package:gw_community/data/repositories/experience_moderation_repository.dart';
 import 'package:gw_community/data/repositories/group_repository.dart';
 import 'package:gw_community/data/repositories/announcement_repository.dart';
-import 'package:gw_community/data/repositories/sharing_repository.dart';
+import 'package:gw_community/data/repositories/experience_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 
 import 'package:gw_community/ui/community/group_details_page/view_model/group_details_view_model.dart';
@@ -14,9 +14,9 @@ import 'package:gw_community/data/repositories/journeys_repository.dart';
 import 'package:gw_community/data/repositories/learn_repository.dart';
 import 'package:gw_community/ui/community/group_details_page/widgets/group_about_tab.dart';
 import 'package:gw_community/ui/community/group_details_page/widgets/group_events_tab.dart';
-import 'package:gw_community/ui/community/group_details_page/widgets/group_journeys_tab.dart';
+
 import 'package:gw_community/ui/community/group_details_page/widgets/group_announcements_tab.dart';
-import 'package:gw_community/ui/community/group_details_page/widgets/group_sharings_tab.dart';
+import 'package:gw_community/ui/community/group_details_page/widgets/group_experiences_tab.dart';
 import 'package:gw_community/ui/community/group_details_page/member_management_page/member_management_page.dart';
 import 'package:gw_community/ui/community/group_edit_page/group_edit_page.dart';
 import 'package:gw_community/ui/community/group_moderation_page/group_moderation_page.dart';
@@ -26,7 +26,6 @@ import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/utils/context_extensions.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
-import 'package:webviewx_plus/webviewx_plus.dart';
 
 class GroupDetailsPage extends StatefulWidget {
   final CcGroupsRow groupRow;
@@ -49,7 +48,7 @@ class _GroupDetailsPageState extends State<GroupDetailsPage> with TickerProvider
     return ChangeNotifierProvider(
       create: (context) => GroupDetailsViewModel(
         context.read<GroupRepository>(),
-        context.read<SharingRepository>(),
+        context.read<ExperienceRepository>(),
         context.read<EventRepository>(),
         context.read<AnnouncementRepository>(),
         context.read<JourneysRepository>(),
@@ -148,45 +147,39 @@ class GroupDetailsPageView extends StatelessWidget {
                               ),
                             // Moderation button (ADMIN or GROUP_MANAGER only)
                             if (FFAppState().loginUser.roles.hasAdminOrGroupManager)
-                              FutureBuilder<int>(
-                                future: ExperienceModerationRepository().getPendingCountForGroup(group.id),
-                                builder: (context, snapshot) {
-                                  final pendingCount = snapshot.data ?? 0;
-                                  return Badge(
-                                    label: Text(
-                                      '$pendingCount',
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    isLabelVisible: pendingCount > 0,
-                                    backgroundColor: Colors.red.shade700,
-                                    child: FlutterFlowIconButton(
-                                      borderColor: Colors.transparent,
-                                      borderRadius: 30.0,
-                                      borderWidth: 1.0,
-                                      buttonSize: 48.0,
-                                      icon: const Icon(
-                                        Icons.admin_panel_settings,
-                                        color: Colors.white,
-                                        size: 24.0,
-                                      ),
-                                      onPressed: () async {
-                                        await context.pushNamed(
-                                          GroupModerationPage.routeName,
-                                          queryParameters: {
-                                            'groupId': '${group.id}',
-                                            'groupName': group.name ?? 'Group',
-                                          },
-                                        );
-                                        // Refresh group details after moderation
-                                        viewModel.refreshGroup();
+                              Badge(
+                                label: Text(
+                                  '${viewModel.pendingModerationCount}',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                isLabelVisible: viewModel.pendingModerationCount > 0,
+                                backgroundColor: Colors.red.shade700,
+                                child: FlutterFlowIconButton(
+                                  borderColor: Colors.transparent,
+                                  borderRadius: 30.0,
+                                  borderWidth: 1.0,
+                                  buttonSize: 48.0,
+                                  icon: const Icon(
+                                    Icons.admin_panel_settings,
+                                    color: Colors.white,
+                                    size: 24.0,
+                                  ),
+                                  onPressed: () async {
+                                    await context.pushNamed(
+                                      GroupModerationPage.routeName,
+                                      queryParameters: {
+                                        'groupId': '${group.id}',
+                                        'groupName': group.name ?? 'Group',
                                       },
-                                    ),
-                                  );
-                                },
+                                    );
+                                    // Refresh group details after moderation
+                                    viewModel.refreshGroup();
+                                  },
+                                ),
                               ),
                             if (viewModel.isMember || FFAppState().loginUser.roles.hasAdminOrGroupManager)
                               const SizedBox(width: 4),
@@ -203,63 +196,6 @@ class GroupDetailsPageView extends StatelessWidget {
                                       queryParameters: {
                                         'groupId': '${group.id}',
                                         'customTitle': 'Group Resources',
-                                      },
-                                    );
-                                  } else if (value == 'about') {
-                                    await showModalBottomSheet(
-                                      isScrollControlled: true,
-                                      backgroundColor: Colors.transparent,
-                                      enableDrag: false,
-                                      useSafeArea: true,
-                                      context: context,
-                                      builder: (context) {
-                                        return WebViewAware(
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              FocusScope.of(context).unfocus();
-                                              FocusManager.instance.primaryFocus?.unfocus();
-                                            },
-                                            child: Padding(
-                                              padding: MediaQuery.viewInsetsOf(context),
-                                              child: Container(
-                                                height: MediaQuery.sizeOf(context).height * 0.85,
-                                                decoration: BoxDecoration(
-                                                  color: AppTheme.of(context).secondaryBackground,
-                                                  borderRadius: const BorderRadius.only(
-                                                    topLeft: Radius.circular(16.0),
-                                                    topRight: Radius.circular(16.0),
-                                                  ),
-                                                ),
-                                                child: Column(
-                                                  children: [
-                                                    Padding(
-                                                      padding: const EdgeInsets.all(16.0),
-                                                      child: Row(
-                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                        children: [
-                                                          Text(
-                                                            'About this group',
-                                                            style: AppTheme.of(context).titleMedium,
-                                                          ),
-                                                          IconButton(
-                                                            icon: const Icon(Icons.close),
-                                                            onPressed: () => Navigator.pop(context),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    Expanded(
-                                                      child: ChangeNotifierProvider.value(
-                                                        value: viewModel,
-                                                        child: const GroupAboutTab(),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        );
                                       },
                                     );
                                   } else if (value == 'edit') {
@@ -328,21 +264,6 @@ class GroupDetailsPageView extends StatelessWidget {
                                         ],
                                       ),
                                     ),
-                                  if (viewModel.isMember)
-                                    PopupMenuItem(
-                                      value: 'about',
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons.info_outline,
-                                            size: 20,
-                                            color: AppTheme.of(context).secondary,
-                                          ),
-                                          const SizedBox(width: 12),
-                                          const Text('About this group'),
-                                        ],
-                                      ),
-                                    ),
                                   if (FFAppState().loginUser.roles.hasAdminOrGroupManager)
                                     PopupMenuItem(
                                       value: 'edit',
@@ -394,142 +315,151 @@ class GroupDetailsPageView extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header
-              Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 8.0),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(16.0),
-                      child: Image.network(
-                        group.groupImageUrl!,
-                        width: 70.0,
-                        height: 70.0,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) => Container(
+              if (viewModel.isCheckingMembership)
+                Expanded(
+                  child: Center(
+                    child: SpinKitRipple(
+                      color: AppTheme.of(context).secondary,
+                      size: 50.0,
+                    ),
+                  ),
+                )
+              else ...[
+                // Header
+                Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 8.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(16.0),
+                        child: Image.network(
+                          group.groupImageUrl!,
                           width: 70.0,
                           height: 70.0,
-                          color: Colors.grey[300],
-                          child: const Icon(Icons.image_not_supported),
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) => Container(
+                            width: 70.0,
+                            height: 70.0,
+                            color: Colors.grey[300],
+                            child: const Icon(Icons.image_not_supported),
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 16.0),
-                    Expanded(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            group.name!,
-                            style: AppTheme.of(context).headlineSmall.override(
-                                  font: GoogleFonts.lexendDeca(),
-                                  fontSize: 20.0,
-                                ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsetsDirectional.fromSTEB(0.0, 2.0, 0.0, 0.0),
-                            child: Text(
-                              '${group.groupPrivacy} group - ${formatNumber(
-                                group.numberMembers,
-                                formatType: FormatType.compact,
-                              )} ${group.numberMembers == 1 ? 'member' : 'members'}',
-                              style: AppTheme.of(context).bodyMedium.override(
+                      const SizedBox(width: 16.0),
+                      Expanded(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              group.name!,
+                              style: AppTheme.of(context).headlineSmall.override(
                                     font: GoogleFonts.lexendDeca(),
-                                    color: AppTheme.of(context).secondary,
-                                    fontSize: 14.0,
+                                    fontSize: 20.0,
                                   ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              // Tabs
-              Expanded(
-                child: viewModel.isCheckingMembership
-                    ? Center(
-                        child: SpinKitRipple(
-                          color: AppTheme.of(context).primary,
-                          size: 50.0,
+                            Padding(
+                              padding: const EdgeInsetsDirectional.fromSTEB(0.0, 2.0, 0.0, 0.0),
+                              child: Text(
+                                '${group.groupPrivacy} group - ${formatNumber(
+                                  group.numberMembers,
+                                  formatType: FormatType.compact,
+                                )} ${group.numberMembers == 1 ? 'member' : 'members'}',
+                                style: AppTheme.of(context).bodyMedium.override(
+                                      font: GoogleFonts.lexendDeca(),
+                                      color: AppTheme.of(context).secondary,
+                                      fontSize: 14.0,
+                                    ),
+                              ),
+                            ),
+                          ],
                         ),
-                      )
-                    : viewModel.shouldShowOnlyAbout
-                        ? const GroupAboutTab(key: ValueKey('page_about_only'))
-                        : Column(
-                            children: [
-                              Align(
-                                alignment: const Alignment(0.0, 0),
-                                child: TabBar(
-                                  isScrollable: true,
-                                  labelColor: AppTheme.of(context).primary,
-                                  labelStyle: AppTheme.of(context).bodyMedium.override(
-                                        font: GoogleFonts.lexendDeca(),
-                                        fontSize: 16.0,
-                                      ),
-                                  unselectedLabelStyle: const TextStyle(),
-                                  indicatorColor: AppTheme.of(context).secondary,
-                                  labelPadding: const EdgeInsets.symmetric(horizontal: 10.0),
-                                  tabs: [
-                                    const Tab(key: ValueKey('tab_experiences'), text: 'Experiences'),
-                                    const Tab(key: ValueKey('tab_events'), text: 'Events'),
-                                    Tab(
-                                      key: const ValueKey('tab_notifications'),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          const Text('Announcements'),
-                                          if (viewModel.unreadNotificationCount > 0) ...[
-                                            const SizedBox(width: 6),
-                                            Container(
-                                              padding: const EdgeInsets.all(4),
-                                              decoration: BoxDecoration(
-                                                color: AppTheme.of(context).secondary,
-                                                shape: BoxShape.circle,
-                                              ),
-                                              constraints: const BoxConstraints(
-                                                minWidth: 16,
-                                                minHeight: 16,
-                                              ),
-                                              child: Center(
-                                                child: Text(
-                                                  '${viewModel.unreadNotificationCount}',
-                                                  style: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 10,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
+                      ),
+                    ],
+                  ),
+                ),
+                // Tabs
+                Expanded(
+                  child: viewModel.shouldShowOnlyAbout
+                      ? const GroupAboutTab(key: ValueKey('page_about_only'))
+                      : Column(
+                          children: [
+                            Align(
+                              alignment: const Alignment(0.0, 0),
+                              child: TabBar(
+                                isScrollable: true,
+                                labelColor: AppTheme.of(context).primary,
+                                labelStyle: AppTheme.of(context).bodyMedium.override(
+                                      font: GoogleFonts.lexendDeca(),
+                                      fontSize: 17.0,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                unselectedLabelStyle: AppTheme.of(context).bodyMedium.override(
+                                      font: GoogleFonts.lexendDeca(),
+                                      fontSize: 17.0,
+                                      fontWeight: FontWeight.normal,
+                                    ),
+                                indicatorColor: AppTheme.of(context).secondary,
+                                labelPadding: const EdgeInsets.symmetric(horizontal: 10.0),
+                                tabs: [
+                                  const Tab(key: ValueKey('tab_experiences'), text: 'Experiences'),
+                                  const Tab(key: ValueKey('tab_events'), text: 'Events'),
+                                  Tab(
+                                    key: const ValueKey('tab_notifications'),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Text('Messages'),
+                                        if (viewModel.unreadNotificationCount > 0) ...[
+                                          const SizedBox(width: 6),
+                                          Container(
+                                            padding: const EdgeInsets.all(4),
+                                            decoration: BoxDecoration(
+                                              color: AppTheme.of(context).secondary,
+                                              shape: BoxShape.circle,
+                                            ),
+                                            constraints: const BoxConstraints(
+                                              minWidth: 16,
+                                              minHeight: 16,
+                                            ),
+                                            child: Center(
+                                              child: Text(
+                                                '${viewModel.unreadNotificationCount}',
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 10,
+                                                  fontWeight: FontWeight.bold,
                                                 ),
                                               ),
                                             ),
-                                          ],
+                                          ),
                                         ],
-                                      ),
+                                      ],
                                     ),
-                                    const Tab(key: ValueKey('tab_journeys'), text: 'Journeys'),
-                                  ],
-                                  controller: viewModel.tabController,
-                                ),
+                                  ),
+                                  const Tab(key: ValueKey('tab_about'), text: 'About'),
+                                ],
+                                controller: viewModel.tabController,
                               ),
-                              Expanded(
-                                child: TabBarView(
-                                  key: const ValueKey('tab_view_content'),
-                                  controller: viewModel.tabController,
-                                  children: const [
-                                    GroupSharingsTab(key: ValueKey('page_experiences')),
-                                    GroupEventsTab(key: ValueKey('page_events')),
-                                    GroupAnnouncementsTab(key: ValueKey('page_notifications')),
-                                    GroupJourneysTab(key: ValueKey('page_journeys')),
-                                  ],
-                                ),
+                            ),
+                            Expanded(
+                              child: TabBarView(
+                                key: const ValueKey('tab_view_content'),
+                                controller: viewModel.tabController,
+                                children: const [
+                                  GroupExperiencesTab(key: ValueKey('page_experiences')),
+                                  GroupEventsTab(key: ValueKey('page_events')),
+                                  GroupAnnouncementsTab(key: ValueKey('page_notifications')),
+                                  GroupAboutTab(key: ValueKey('page_about_member')),
+                                ],
                               ),
-                            ],
-                          ),
-              ),
+                            ),
+                          ],
+                        ),
+                ),
+              ],
             ],
           ),
         ),

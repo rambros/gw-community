@@ -30,8 +30,8 @@ enum SortContentType {
   alphabetical,
 }
 
-enum SharingType {
-  sharing,
+enum ExperienceType {
+  experience,
   notification,
 }
 
@@ -51,8 +51,8 @@ T? deserializeEnum<T>(String? value) {
       return CottEventType.values.deserialize(value) as T?;
     case == SortContentType:
       return SortContentType.values.deserialize(value) as T?;
-    case == SharingType:
-      return SharingType.values.deserialize(value) as T?;
+    case == ExperienceType:
+      return ExperienceType.values.deserialize(value) as T?;
     default:
       return null;
   }

@@ -14,11 +14,11 @@ class ExperienceModerationRepository {
   // ==========================================================================
 
   /// Returns all experiences from the pending view
-  /// Only returns sharings (type = 'sharing'), not notifications
+  /// Only returns experiences (type = 'experience'), not notifications
   Future<List<CcViewPendingExperiencesRow>> getAllExperiences() async {
     try {
       final result = await CcViewPendingExperiencesTable().queryRows(
-        queryFn: (q) => q.eq('type', 'sharing').order('created_at', ascending: false),
+        queryFn: (q) => q.order('created_at', ascending: false),
       );
       debugPrint('ExperienceModerationRepository: loaded ${result.length} experiences');
       return result;
@@ -29,7 +29,7 @@ class ExperienceModerationRepository {
   }
 
   /// Returns experiences for multiple groups (for group managers)
-  /// Only returns sharings (type = 'sharing'), not notifications
+  /// Only returns experiences (type = 'experience'), not notifications
   Future<List<CcViewPendingExperiencesRow>> getExperiencesForGroups(List<int> groupIds, {String? status}) async {
     if (groupIds.isEmpty) {
       debugPrint('ExperienceModerationRepository: No group IDs provided');
@@ -39,7 +39,7 @@ class ExperienceModerationRepository {
     try {
       final result = await CcViewPendingExperiencesTable().queryRows(
         queryFn: (q) {
-          var query = q.eq('type', 'sharing').inFilter('group_id', groupIds);
+          var query = q.inFilter('group_id', groupIds);
           if (status != null) {
             query = query.eq('moderation_status', status);
           }
@@ -68,7 +68,7 @@ class ExperienceModerationRepository {
   /// Returns experiences filtered by status
   Future<List<CcViewPendingExperiencesRow>> getExperiencesByStatus(String status) async {
     return await CcViewPendingExperiencesTable().queryRows(
-      queryFn: (q) => q.eq('type', 'sharing').eq('moderation_status', status).order('created_at', ascending: false),
+      queryFn: (q) => q.eq('moderation_status', status).order('created_at', ascending: false),
     );
   }
 

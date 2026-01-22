@@ -103,7 +103,7 @@ class _HomePageState extends State<HomePage> {
 
                     // Groups Section
                     if (viewModel.userGroups.isNotEmpty) ...[
-                      _buildSectionTitle(context, 'Your Groups'),
+                      _buildSectionTitle(context, 'My Groups'),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: Column(
@@ -111,7 +111,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ] else ...[
-                      _buildSectionTitle(context, 'Public Groups'),
+                      _buildSectionTitle(context, 'Other Groups'),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: Column(

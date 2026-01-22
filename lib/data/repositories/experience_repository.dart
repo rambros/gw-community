@@ -2,47 +2,47 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 
-/// Repository responsável por todas as operações de dados relacionadas a Sharings e Comentários
+/// Repository responsável por todas as operações de dados relacionadas a Experiences e Comentários
 /// Segue padrão de arquitetura Compass - camada de dados isolada
-class SharingRepository {
-  /// Busca um sharing específico por ID com informações do usuário
+class ExperienceRepository {
+  /// Busca um experience específico por ID com informações do usuário
   ///
-  /// Retorna null se o sharing não for encontrado
-  Future<CcViewSharingsUsersRow?> getSharingById(int id) async {
+  /// Retorna null se o experience não for encontrado
+  Future<CcViewSharingsUsersRow?> getExperienceById(int id) async {
     final result = await CcViewSharingsUsersTable().querySingleRow(queryFn: (q) => q.eqOrNull('id', id));
     return result.isNotEmpty ? result.first : null;
   }
 
-  /// Deleta um sharing e todos os seus comentários associados
+  /// Deleta um experience e todos os seus comentários associados
   ///
   /// Esta operação é irreversível e remove:
-  /// - O sharing da tabela cc_sharings
+  /// - O experience da tabela cc_sharings
   /// - Todos os comentários relacionados da tabela cc_comments
-  Future<void> deleteSharing(int id) async {
+  Future<void> deleteExperience(int id) async {
     // Deletar comentários primeiro (foreign key)
     await CcCommentsTable().delete(matchingRows: (rows) => rows.eqOrNull('sharing_id', id));
 
-    // Deletar o sharing
+    // Deletar o experience
     await CcSharingsTable().delete(matchingRows: (rows) => rows.eqOrNull('id', id));
   }
 
-  /// Alterna o estado de lock de um sharing
+  /// Alterna o estado de lock de um experience
   ///
   /// Quando locked = true, usuários não podem adicionar comentários
-  Future<void> toggleSharingLock(int id, bool currentLockState) async {
+  Future<void> toggleExperienceLock(int id, bool currentLockState) async {
     await CcSharingsTable().update(
       data: {'locked': !currentLockState},
       matchingRows: (rows) => rows.eqOrNull('id', id),
     );
   }
 
-  /// Busca todos os comentários de um sharing ordenados hierarquicamente
+  /// Busca todos os comentários de um experience ordenados hierarquicamente
   ///
   /// Os comentários são retornados ordenados por sort_path, que mantém
   /// a hierarquia de respostas (parent -> children)
-  Future<List<CcViewOrderedCommentsRow>> getComments(int sharingId) async {
+  Future<List<CcViewOrderedCommentsRow>> getComments(int experienceId) async {
     final result = await CcViewOrderedCommentsTable().queryRows(
-      queryFn: (q) => q.eqOrNull('sharing_id', sharingId).order('sort_path', ascending: true),
+      queryFn: (q) => q.eqOrNull('sharing_id', experienceId).order('sort_path', ascending: true),
     );
     return result;
   }
@@ -55,12 +55,12 @@ class SharingRepository {
     await CcCommentsTable().delete(matchingRows: (rows) => rows.eqOrNull('id', commentId));
   }
 
-  /// Cria um novo comentário para um sharing específico
+  /// Cria um novo comentário para um experience específico
   ///
   /// [content] deve ser validado antes de chegar aqui
   Future<void> createComment({
     required String userId,
-    required int sharingId,
+    required int experienceId,
     required String content,
     int? parentId,
   }) async {
@@ -68,18 +68,18 @@ class SharingRepository {
       'user_id': userId,
       'parent_id': parentId,
       'content': content,
-      'sharing_id': sharingId,
+      'sharing_id': experienceId,
       'created_at': supaSerialize<DateTime>(DateTime.now()),
       'updated_at': supaSerialize<DateTime>(DateTime.now()),
     });
   }
 
-  /// Atualiza um sharing existente
+  /// Atualiza um experience existente
   ///
-  /// Atualiza título, texto, visibilidade e privacy de um sharing.
+  /// Atualiza título, texto, visibilidade e privacy de um experience.
   /// Se [keepAsDraft] for true, mantém como draft.
   /// Caso contrário, resets moderation_status to 'pending' for re-review.
-  Future<void> updateSharing({
+  Future<void> updateExperience({
     required int id,
     required String title,
     required String text,
@@ -104,16 +104,16 @@ class SharingRepository {
     );
   }
 
-  /// Retorna um stream de sharings para um grupo específico
+  /// Retorna um stream de experiences para um grupo específico
   /// Aplica filtro de moderação: mostra apenas experiências aprovadas ou do próprio usuário
   ///
   /// Nota: Supabase Realtime não funciona com views, então escutamos a tabela real
   /// e re-fazemos a query na view quando há mudanças.
-  Stream<List<CcViewSharingsUsersRow>> getSharingsStream(int groupId, {String? currentUserId}) {
+  Stream<List<CcViewSharingsUsersRow>> getExperiencesStream(int groupId, {String? currentUserId}) {
     final controller = StreamController<List<CcViewSharingsUsersRow>>();
 
     // Carrega dados iniciais
-    _loadSharingsFromView(groupId, currentUserId).then((data) {
+    _loadExperiencesFromView(groupId, currentUserId).then((data) {
       if (!controller.isClosed) {
         controller.add(data);
       }
@@ -121,14 +121,14 @@ class SharingRepository {
 
     // Escuta mudanças na tabela real (cc_sharings)
     final subscription = SupaFlow.client.from('cc_sharings').stream(primaryKey: ['id']).eq('group_id', groupId).listen((
-      _,
-    ) async {
-      // Quando há mudança, re-carrega da view
-      final data = await _loadSharingsFromView(groupId, currentUserId);
-      if (!controller.isClosed) {
-        controller.add(data);
-      }
-    });
+          _,
+        ) async {
+          // Quando há mudança, re-carrega da view
+          final data = await _loadExperiencesFromView(groupId, currentUserId);
+          if (!controller.isClosed) {
+            controller.add(data);
+          }
+        });
 
     // Cleanup quando o stream for cancelado
     controller.onCancel = () {
@@ -139,8 +139,8 @@ class SharingRepository {
     return controller.stream.asBroadcastStream();
   }
 
-  /// Helper para carregar sharings da view com filtro de moderação
-  Future<List<CcViewSharingsUsersRow>> _loadSharingsFromView(int groupId, String? currentUserId) async {
+  /// Helper para carregar experiences da view com filtro de moderação
+  Future<List<CcViewSharingsUsersRow>> _loadExperiencesFromView(int groupId, String? currentUserId) async {
     final result = await CcViewSharingsUsersTable().queryRows(
       queryFn: (q) => q.eqOrNull('group_id', groupId).order('updated_at', ascending: false),
     );
@@ -160,12 +160,12 @@ class SharingRepository {
     return filtered;
   }
 
-  /// Cria um novo sharing
+  /// Cria um novo experience
   ///
-  /// Insere um novo sharing no banco de dados com todos os campos necessários.
+  /// Insere um novo experience no banco de dados com todos os campos necessários.
   /// Se [isDraft] for true, cria com moderation_status = 'draft' (rascunho).
   /// Caso contrário, cria com moderation_status = 'pending' para moderação.
-  Future<void> createSharing({
+  Future<void> createExperience({
     required String title,
     required String text,
     required String privacy,
@@ -239,7 +239,7 @@ class SharingRepository {
         'user_id': userId,
         'group_id': groupId,
         'visibility': visibility,
-        'type': 'sharing',
+        'type': 'experience',
         'moderation_status': 'awaiting_review',
         'locked': false,
         'created_at': supaSerialize<DateTime>(DateTime.now()),
@@ -258,11 +258,11 @@ class SharingRepository {
       final result = await CcSharingsTable().querySingleRow(queryFn: (q) => q.eqOrNull('id', experienceId));
       if (result.isEmpty) return null;
 
-      final sharing = result.first;
+      final experience = result.first;
       return {
-        'moderation_status': sharing.data['moderation_status'],
-        'moderation_reason': sharing.data['moderation_reason'],
-        'moderated_at': sharing.data['moderated_at'],
+        'moderation_status': experience.data['moderation_status'],
+        'moderation_reason': experience.data['moderation_reason'],
+        'moderated_at': experience.data['moderated_at'],
       };
     } catch (e) {
       debugPrint('Error fetching moderation status: $e');

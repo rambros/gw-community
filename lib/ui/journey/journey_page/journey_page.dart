@@ -15,7 +15,6 @@ import 'package:gw_community/ui/journey/themes/journey_theme_extension.dart';
 import 'package:gw_community/ui/learn/learn_list_page/learn_list_page.dart';
 import 'package:gw_community/ui/onboarding/splash_page/splash_page.dart';
 import 'package:gw_community/ui/profile/widgets/confirm_profile_action_dialog.dart';
-import 'package:gw_community/ui/support/support_page/support_page.dart';
 import 'package:gw_community/utils/context_extensions.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 
@@ -97,8 +96,6 @@ class _JourneyPageState extends State<JourneyPage> {
                   onSelected: (value) async {
                     if (value == 'support_documents') {
                       await _handleSupportDocuments(context, viewModel);
-                    } else if (value == 'help') {
-                      await _handleHelp(context);
                     } else if (value == 'restart_journey') {
                       await _handleRestartJourney(context, viewModel);
                     } else if (value == 'about') {
@@ -117,20 +114,6 @@ class _JourneyPageState extends State<JourneyPage> {
                           ),
                           const SizedBox(width: 12),
                           const Text('Journey Resources'),
-                        ],
-                      ),
-                    ),
-                    PopupMenuItem(
-                      value: 'help',
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.help_outline,
-                            size: 20,
-                            color: AppTheme.of(context).secondary,
-                          ),
-                          const SizedBox(width: 12),
-                          const Text('Ask a Question'),
                         ],
                       ),
                     ),
@@ -363,21 +346,6 @@ class _JourneyPageState extends State<JourneyPage> {
         'journeyId': viewModel.journeyId.toString(),
         'customTitle': 'Journey Resources',
       }.withoutNulls,
-      extra: <String, dynamic>{
-        kTransitionInfoKey: const TransitionInfo(
-          hasTransition: true,
-          transitionType: PageTransitionType.fade,
-          duration: Duration(milliseconds: 0),
-        ),
-      },
-    );
-  }
-
-  Future<void> _handleHelp(BuildContext context) async {
-    if (!context.mounted) return;
-
-    await context.pushNamed(
-      SupportPage.routeName,
       extra: <String, dynamic>{
         kTransitionInfoKey: const TransitionInfo(
           hasTransition: true,

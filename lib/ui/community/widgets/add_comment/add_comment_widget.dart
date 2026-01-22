@@ -1,7 +1,7 @@
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:gw_community/data/repositories/sharing_repository.dart';
+import 'package:gw_community/data/repositories/experience_repository.dart';
 import 'package:gw_community/index.dart';
 import 'package:gw_community/ui/community/widgets/add_comment/view_model/add_comment_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
@@ -14,13 +14,13 @@ import 'package:provider/provider.dart';
 class AddCommentWidget extends StatelessWidget {
   const AddCommentWidget({
     super.key,
-    required this.sharingId,
+    required this.experienceId,
     this.parentId,
     this.photoUrl,
     required this.fullName,
   });
 
-  final int sharingId;
+  final int experienceId;
   final int? parentId;
   final String? photoUrl;
   final String? fullName;
@@ -29,15 +29,15 @@ class AddCommentWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (_) => AddCommentViewModel(
-        repository: context.read<SharingRepository>(),
+        repository: context.read<ExperienceRepository>(),
         currentUserUid: context.currentUserIdOrEmpty,
-        sharingId: sharingId,
+        experienceId: experienceId,
         parentId: parentId,
       ),
       child: _AddCommentView(
         fullName: fullName,
         photoUrl: photoUrl,
-        sharingId: sharingId,
+        experienceId: experienceId,
       ),
     );
   }
@@ -47,12 +47,12 @@ class _AddCommentView extends StatelessWidget {
   const _AddCommentView({
     required this.fullName,
     required this.photoUrl,
-    required this.sharingId,
+    required this.experienceId,
   });
 
   final String? photoUrl;
   final String? fullName;
-  final int sharingId;
+  final int experienceId;
 
   @override
   Widget build(BuildContext context) {
@@ -192,9 +192,9 @@ class _AddCommentView extends StatelessWidget {
                             if (context.mounted) {
                               Navigator.pop(context, true);
                               context.pushNamed(
-                                SharingViewPage.routeName,
+                                ExperienceViewPage.routeName,
                                 queryParameters: {
-                                  'sharingId': serializeParam(sharingId, ParamType.int),
+                                  'experienceId': serializeParam(experienceId, ParamType.int),
                                 }.withoutNulls,
                               );
                             }

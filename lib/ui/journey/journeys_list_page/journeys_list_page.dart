@@ -80,7 +80,7 @@ class _JourneysListPageState extends State<JourneysListPage> with TickerProvider
                       padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 0.0),
                       tabs: const [
                         Tab(text: 'My Journeys'),
-                        Tab(text: 'Available Journeys'),
+                        Tab(text: 'Other Journeys'),
                       ],
                       controller: _tabBarController,
                     ),

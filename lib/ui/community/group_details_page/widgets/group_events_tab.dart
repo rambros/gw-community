@@ -7,6 +7,7 @@ import 'package:gw_community/ui/community/group_details_page/view_model/group_de
 import 'package:gw_community/ui/community/widgets/event_card.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
+import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:provider/provider.dart';
 
 class GroupEventsTab extends StatelessWidget {
@@ -84,7 +85,8 @@ class GroupEventsTab extends StatelessWidget {
                             time: event.eventTime != null ? event.eventTime.toString().substring(0, 5) : '',
                             event: event,
                             groupId: group.id,
-                            userRegistered: false, // Logic for registration status needs to be handled if available in row
+                            userRegistered:
+                                false, // Logic for registration status needs to be handled if available in row
                           ),
                         );
                       },
@@ -95,47 +97,50 @@ class GroupEventsTab extends StatelessWidget {
             ],
           ),
         ),
-        Positioned(
-          bottom: 16.0,
-          right: 16.0,
-          child: FloatingActionButton.extended(
-            onPressed: () async {
-              context.pushNamed(
-                EventAddPage.routeName,
-                queryParameters: {
-                  'groupId': serializeParam(
-                    group.id,
-                    ParamType.int,
-                  ),
-                  'groupName': serializeParam(
-                    group.name,
-                    ParamType.String,
-                  ),
-                }.withoutNulls,
-                extra: <String, dynamic>{
-                  kTransitionInfoKey: const TransitionInfo(
-                    hasTransition: true,
-                    transitionType: PageTransitionType.fade,
-                    duration: Duration(milliseconds: 0),
-                  ),
-                },
-              );
-            },
-            backgroundColor: AppTheme.of(context).primary,
-            elevation: 8.0,
-            icon: Icon(
-              Icons.add,
-              color: AppTheme.of(context).primaryBackground,
-            ),
-            label: Text(
-              'New event',
-              style: AppTheme.of(context).labelLarge.override(
-                    font: GoogleFonts.poppins(),
-                    color: AppTheme.of(context).primaryBackground,
-                  ),
+        // Show FAB only for moderators or admins
+        if (viewModel.groupManagerIds.contains(viewModel.currentUserId) ||
+            context.read<FFAppState>().loginUser.roles.hasAdmin)
+          Positioned(
+            bottom: 16.0,
+            right: 16.0,
+            child: FloatingActionButton.extended(
+              onPressed: () async {
+                context.pushNamed(
+                  EventAddPage.routeName,
+                  queryParameters: {
+                    'groupId': serializeParam(
+                      group.id,
+                      ParamType.int,
+                    ),
+                    'groupName': serializeParam(
+                      group.name,
+                      ParamType.String,
+                    ),
+                  }.withoutNulls,
+                  extra: <String, dynamic>{
+                    kTransitionInfoKey: const TransitionInfo(
+                      hasTransition: true,
+                      transitionType: PageTransitionType.fade,
+                      duration: Duration(milliseconds: 0),
+                    ),
+                  },
+                );
+              },
+              backgroundColor: AppTheme.of(context).primary,
+              elevation: 8.0,
+              icon: Icon(
+                Icons.add,
+                color: AppTheme.of(context).primaryBackground,
+              ),
+              label: Text(
+                'New event',
+                style: AppTheme.of(context).labelLarge.override(
+                      font: GoogleFonts.poppins(),
+                      color: AppTheme.of(context).primaryBackground,
+                    ),
+              ),
             ),
           ),
-        ),
       ],
     );
   }
