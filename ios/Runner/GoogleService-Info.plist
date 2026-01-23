@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>875067654858-gpb8r62b64dfnecc146536ncj63ah7is.apps.googleusercontent.com</string>
+	<string>875067654858-94e84guh654pk3589gjvo3i6d1ft07fl.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.875067654858-gpb8r62b64dfnecc146536ncj63ah7is</string>
+	<string>com.googleusercontent.apps.875067654858-94e84guh654pk3589gjvo3i6d1ft07fl</string>
 	<key>ANDROID_CLIENT_ID</key>
 	<string>875067654858-2n9ih6fu9tpp257u868fi5datf1dprk8.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
@@ -15,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>app.brahmakumaris.gwcommunity</string>
+	<string>org.callofthetime.gw</string>
 	<key>PROJECT_ID</key>
 	<string>good-wishes-project</string>
 	<key>STORAGE_BUCKET</key>
@@ -31,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:875067654858:ios:b1d94ef4dbaa841ce9aa33</string>
+	<string>1:875067654858:ios:fd74e4386d9c17c5e9aa33</string>
 </dict>
 </plist>

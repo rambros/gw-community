@@ -1,4 +1,4 @@
-package app.brahmakumaris.gwcommunity
+package org.callofthetime.gw
 
 import io.flutter.embedding.android.FlutterActivity
 
