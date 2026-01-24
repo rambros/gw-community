@@ -141,6 +141,7 @@ class _JourneysListPageState extends State<JourneysListPage> with TickerProvider
                   stepsCompleted: item.stepsCompleted ?? 0,
                   stepsTotal: item.stepsTotal ?? 0,
                   buttonText: 'RESUME',
+                  journeyStatus: item.journeyStatus,
                   onTap: () async {
                     context.pushNamed(
                       JourneyPage.routeName,

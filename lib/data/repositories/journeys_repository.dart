@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 
@@ -192,5 +193,118 @@ class JourneysRepository {
     }
 
     return journeys;
+  }
+
+  /// Get journeys the user has started (for "My Journeys" section)
+  Future<List<CcJourneysRow>> getMyJourneys(String userId) async {
+    try {
+      // Query user_journeys to get started journey IDs
+      final userJourneys = await CcUserJourneysTable().queryRows(
+        queryFn: (q) => q.eq('user_id', userId),
+      );
+
+      if (userJourneys.isEmpty) return [];
+
+      final journeyIds = userJourneys
+          .map((uj) => uj.journeyId)
+          .where((id) => id != null)
+          .cast<int>()
+          .toList();
+
+      if (journeyIds.isEmpty) return [];
+
+      // Get journey details (exclude draft journeys)
+      final journeys = await CcJourneysTable().queryRows(
+        queryFn: (q) => q.inFilter('id', journeyIds).neq('status', 'draft'),
+      );
+
+      return journeys;
+    } catch (e) {
+      return [];
+    }
+  }
+
+  /// Get available journeys for the journey list
+  /// Returns public journeys + private journeys (via groups) that user has NOT started yet
+  Future<List<CcJourneysRow>> getAvailableJourneysForList(String userId) async {
+    try {
+      // Get journey IDs user has already started
+      final userJourneys = await CcUserJourneysTable().queryRows(
+        queryFn: (q) => q.eq('user_id', userId),
+      );
+
+      final startedJourneyIds = userJourneys
+          .map((uj) => uj.journeyId)
+          .where((id) => id != null)
+          .cast<int>()
+          .toSet();
+
+      // Get all public journeys (exclude draft journeys)
+      final publicJourneys = await CcJourneysTable().queryRows(
+        queryFn: (q) => q.eq('is_public', true).neq('status', 'draft'),
+      );
+
+      // Get private journeys via user's group memberships
+      final privateJourneys = await _getPrivateJourneysForUser(userId);
+
+      // Combine and filter out started journeys
+      final allAvailable = <CcJourneysRow>[];
+      final seenIds = <int>{};
+
+      for (final journey in [...publicJourneys, ...privateJourneys]) {
+        final journeyId = journey.id;
+        if (!startedJourneyIds.contains(journeyId) && seenIds.add(journeyId)) {
+          allAvailable.add(journey);
+        }
+      }
+
+      return allAvailable;
+    } catch (e) {
+      debugPrint('Error in getAvailableJourneysForList: $e');
+      return [];
+    }
+  }
+
+  /// Get private journeys accessible via user's group memberships
+  Future<List<CcJourneysRow>> _getPrivateJourneysForUser(String userId) async {
+    try {
+      // Get user's groups
+      final groupMembers = await CcGroupMembersTable().queryRows(
+        queryFn: (q) => q.eq('user_id', userId),
+      );
+
+      if (groupMembers.isEmpty) return [];
+
+      final groupIds = groupMembers
+          .map((gm) => gm.groupId)
+          .where((id) => id != null)
+          .cast<int>()
+          .toList();
+
+      if (groupIds.isEmpty) return [];
+
+      // Get journeys associated with these groups via cc_group_journeys
+      // Exclude draft journeys
+      final response = await SupaFlow.client
+          .from('cc_group_journeys')
+          .select('journey_id, cc_journeys!inner(*)')
+          .inFilter('group_id', groupIds)
+          .isFilter('deleted_at', null)
+          .neq('cc_journeys.status', 'draft');
+
+      if ((response as List).isEmpty) return [];
+
+      final journeys = <CcJourneysRow>[];
+      for (final row in response as List<dynamic>) {
+        final journeyData = row['cc_journeys'] as Map<String, dynamic>?;
+        if (journeyData != null) {
+          journeys.add(CcJourneysRow(journeyData));
+        }
+      }
+
+      return journeys;
+    } catch (e) {
+      return [];
+    }
   }
 }

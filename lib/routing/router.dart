@@ -8,6 +8,7 @@ import 'package:gw_community/index.dart';
 import 'package:gw_community/ui/community/group_moderation_page/group_moderation_page.dart';
 import 'package:gw_community/ui/community/group_details_page/member_management_page/member_management_page.dart';
 import 'package:gw_community/ui/core/nav_bar/nav_bar_page.dart';
+import 'package:gw_community/ui/journey/journey_list_page/journey_list_page.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
 
@@ -376,6 +377,11 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
                       ),
                     ),
                   )),
+        FFRoute(
+          name: JourneyListPage.routeName,
+          path: JourneyListPage.routePath,
+          builder: (context, params) => const NavBarPage(initialPage: 'journeyPage'),
+        ),
         FFRoute(
           name: GroupAddPage.routeName,
           path: GroupAddPage.routePath,

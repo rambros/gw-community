@@ -5,8 +5,7 @@ class CcViewUserJourneysTable extends SupabaseTable<CcViewUserJourneysRow> {
   String get tableName => 'cc_view_user_journeys';
 
   @override
-  CcViewUserJourneysRow createRow(Map<String, dynamic> data) =>
-      CcViewUserJourneysRow(data);
+  CcViewUserJourneysRow createRow(Map<String, dynamic> data) => CcViewUserJourneysRow(data);
 }
 
 class CcViewUserJourneysRow extends SupabaseDataRow {
@@ -30,6 +29,9 @@ class CcViewUserJourneysRow extends SupabaseDataRow {
   String? get description => getField<String>('description');
   set description(String? value) => setField<String>('description', value);
 
+  String? get imageUrl => getField<String>('image_url');
+  set imageUrl(String? value) => setField<String>('image_url', value);
+
   int? get stepsTotal => getField<int>('steps_total');
   set stepsTotal(int? value) => setField<int>('steps_total', value);
 
@@ -37,11 +39,13 @@ class CcViewUserJourneysRow extends SupabaseDataRow {
   set stepsCompleted(int? value) => setField<int>('steps_completed', value);
 
   DateTime? get lastAccessDate => getField<DateTime>('last_access_date');
-  set lastAccessDate(DateTime? value) =>
-      setField<DateTime>('last_access_date', value);
+  set lastAccessDate(DateTime? value) => setField<DateTime>('last_access_date', value);
 
   String? get journeyStatus => getField<String>('journey_status');
   set journeyStatus(String? value) => setField<String>('journey_status', value);
+
+  bool get isFeatured => getField<bool>('is_featured') ?? false;
+  set isFeatured(bool value) => setField<bool>('is_featured', value);
 
   bool get enableDateControl => getField<bool>('enable_date_control') ?? true;
   set enableDateControl(bool value) => setField<bool>('enable_date_control', value);

@@ -6,6 +6,7 @@ import 'package:webviewx_plus/webviewx_plus.dart';
 import 'package:gw_community/data/repositories/journeys_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
+import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/ui/journey/journey_page/view_model/journey_view_model.dart';
 import 'package:gw_community/ui/journey/journey_page/widgets/journey_about_dialog.dart';
 import 'package:gw_community/ui/journey/journey_page/widgets/journey_intro_widget.dart';
@@ -21,10 +22,10 @@ import 'package:gw_community/utils/flutter_flow_util.dart';
 class JourneyPage extends StatefulWidget {
   const JourneyPage({
     super.key,
-    int? journeyId,
-  }) : journeyId = journeyId ?? 1;
+    this.journeyId,
+  });
 
-  final int journeyId;
+  final int? journeyId;
 
   static String routeName = 'journeyPage';
   static String routePath = '/journeyPage';
@@ -44,10 +45,14 @@ class _JourneyPageState extends State<JourneyPage> {
       if (!mounted) return;
 
       final appState = context.read<FFAppState>();
+
+      // Use provided journeyId or default to 1 (Good Wishes Journey)
+      final effectiveJourneyId = widget.journeyId ?? 1;
+
       _viewModel = JourneyViewModel(
         repository: context.read<JourneysRepository>(),
         currentUserUid: context.currentUserIdOrEmpty,
-        journeyId: widget.journeyId,
+        journeyId: effectiveJourneyId,
         startedJourneys: appState.listStartedJourneys,
       );
       setState(() {});
@@ -76,12 +81,6 @@ class _JourneyPageState extends State<JourneyPage> {
         appBar: AppBar(
           backgroundColor: AppTheme.of(context).primary,
           automaticallyImplyLeading: false,
-          title: Text(
-            'Journey',
-            style: AppTheme.of(context).journey.pageTitle.override(
-                  color: Colors.white,
-                ),
-          ),
           actions: [
             Consumer<JourneyViewModel>(
               builder: (context, viewModel, _) {
@@ -154,6 +153,45 @@ class _JourneyPageState extends State<JourneyPage> {
               },
             ),
           ],
+          flexibleSpace: FlexibleSpaceBar(
+            background: Align(
+              alignment: const AlignmentDirectional(0.0, 1.0),
+              child: SizedBox(
+                height: 60.0,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    // Back button (only shown when navigation stack allows pop)
+                    if (Navigator.canPop(context))
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: FlutterFlowIconButton(
+                          borderColor: Colors.transparent,
+                          borderRadius: 30.0,
+                          borderWidth: 1.0,
+                          buttonSize: 60.0,
+                          icon: const Icon(
+                            Icons.arrow_back_rounded,
+                            color: Colors.white,
+                            size: 30.0,
+                          ),
+                          onPressed: () async {
+                            context.safePop();
+                          },
+                        ),
+                      ),
+                    // Title
+                    Text(
+                      'Journey',
+                      style: AppTheme.of(context).journey.pageTitle.override(
+                            color: Colors.white,
+                          ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
           centerTitle: true,
           elevation: 4.0,
         ),

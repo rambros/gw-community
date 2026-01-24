@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gw_community/data/models/structs/index.dart';
+import 'package:gw_community/data/models/app_config.dart';
+import 'package:gw_community/data/repositories/settings_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:gw_community/utils/request_manager.dart';
@@ -25,12 +27,32 @@ class FFAppState extends ChangeNotifier {
     });
   }
 
+  /// Load app configuration from settings
+  Future<void> loadAppConfig(SettingsRepository settingsRepo) async {
+    try {
+      final settings = await settingsRepo.getSettingsByCategory('mobile_features');
+      _appConfig = AppConfig.fromMap(settings);
+      notifyListeners();
+    } catch (e) {
+      // Keep defaults on error
+      _appConfig = AppConfig.defaults();
+    }
+  }
+
   void update(VoidCallback callback) {
     callback();
     notifyListeners();
   }
 
   late SharedPreferences prefs;
+
+  // App configuration from settings
+  AppConfig _appConfig = AppConfig.defaults();
+  AppConfig get appConfig => _appConfig;
+  set appConfig(AppConfig value) {
+    _appConfig = value;
+    notifyListeners();
+  }
 
   String typeSelectedEvent = 'upcoming';
 
