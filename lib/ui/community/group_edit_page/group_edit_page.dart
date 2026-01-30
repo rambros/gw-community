@@ -294,7 +294,7 @@ class GroupEditPageView extends StatelessWidget {
                                           fontSize: 12.0,
                                         ),
                                   ),
-                                  activeColor: AppTheme.of(context).primary,
+                                  activeThumbColor: AppTheme.of(context).primary,
                                   activeTrackColor: AppTheme.of(context).primary.withValues(alpha: 0.5),
                                   dense: false,
                                   controlAffinity: ListTileControlAffinity.trailing,

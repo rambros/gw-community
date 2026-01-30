@@ -47,6 +47,8 @@ import 'package:gw_community/ui/utility/unsplash_page/view_model/unsplash_view_m
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:gw_community/utils/internationalization.dart';
 import 'package:provider/provider.dart';
+import 'package:app_links/app_links.dart';
+import 'dart:async';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -76,11 +78,7 @@ void main() async {
 
         // ========== REPOSITORIES ==========
         Provider<AuthService>(create: (_) => SupabaseAuthService()),
-        Provider<AuthRepository>(
-          create: (context) => AuthRepositoryImpl(
-            authService: context.read<AuthService>(),
-          ),
-        ),
+        Provider<AuthRepository>(create: (context) => AuthRepositoryImpl(authService: context.read<AuthService>())),
         Provider(create: (_) => ExperienceRepository()),
         Provider(create: (_) => EventRepository()),
         Provider(create: (_) => CommunityRepository()),
@@ -95,39 +93,21 @@ void main() async {
         Provider(create: (_) => JournalRepository()),
         Provider(create: (_) => FavoritesRepository()),
 
-        ChangeNotifierProvider(
-          create: (context) => AppViewModel(
-            authRepository: context.read<AuthRepository>(),
-          ),
-        ),
+        ChangeNotifierProvider(create: (context) => AppViewModel(authRepository: context.read<AuthRepository>())),
 
         // ========== VIEW MODELS ==========
         ChangeNotifierProvider(create: (_) => LearnListViewModel()),
+        ChangeNotifierProvider(create: (context) => LoginViewModel(authRepository: context.read<AuthRepository>())),
         ChangeNotifierProvider(
-          create: (context) => LoginViewModel(
-            authRepository: context.read<AuthRepository>(),
-          ),
+          create: (context) => CreateAccountViewModel(authRepository: context.read<AuthRepository>()),
         ),
         ChangeNotifierProvider(
-          create: (context) => CreateAccountViewModel(
-            authRepository: context.read<AuthRepository>(),
-          ),
+          create: (context) => ForgotPasswordViewModel(authRepository: context.read<AuthRepository>()),
         ),
         ChangeNotifierProvider(
-          create: (context) => ForgotPasswordViewModel(
-            authRepository: context.read<AuthRepository>(),
-          ),
+          create: (context) => ChangePasswordViewModel(authRepository: context.read<AuthRepository>()),
         ),
-        ChangeNotifierProvider(
-          create: (context) => ChangePasswordViewModel(
-            authRepository: context.read<AuthRepository>(),
-          ),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => OnBoardingViewModel(
-            appState: context.read<FFAppState>(),
-          ),
-        ),
+        ChangeNotifierProvider(create: (context) => OnBoardingViewModel(appState: context.read<FFAppState>())),
         ChangeNotifierProvider(
           create: (context) => ExperienceViewViewModel(
             repository: context.read<ExperienceRepository>(),
@@ -135,62 +115,34 @@ void main() async {
           ),
         ),
         ChangeNotifierProvider(
-          create: (context) => UserProfileViewModel(
-            repository: context.read<UserProfileRepository>(),
-          ),
+          create: (context) => UserProfileViewModel(repository: context.read<UserProfileRepository>()),
         ),
         ChangeNotifierProvider(
-          create: (context) => UserEditProfileViewModel(
-            repository: context.read<UserProfileRepository>(),
-          ),
+          create: (context) => UserEditProfileViewModel(repository: context.read<UserProfileRepository>()),
         ),
         ChangeNotifierProvider(
-          create: (context) => UserCreateProfileViewModel(
-            repository: context.read<UserProfileRepository>(),
-          ),
+          create: (context) => UserCreateProfileViewModel(repository: context.read<UserProfileRepository>()),
         ),
         ChangeNotifierProvider(
-          create: (context) => UserJournalListViewModel(
-            repository: context.read<UserProfileRepository>(),
-          ),
+          create: (context) => UserJournalListViewModel(repository: context.read<UserProfileRepository>()),
         ),
         ChangeNotifierProvider(
-          create: (context) => UserJournalViewModel(
-            repository: context.read<UserProfileRepository>(),
-          ),
+          create: (context) => UserJournalViewModel(repository: context.read<UserProfileRepository>()),
         ),
         ChangeNotifierProvider(
-          create: (context) => UserJournalEditViewModel(
-            repository: context.read<UserProfileRepository>(),
-          ),
+          create: (context) => UserJournalEditViewModel(repository: context.read<UserProfileRepository>()),
         ),
         ChangeNotifierProvider(
-          create: (context) => UserJournalOptionsViewModel(
-            repository: context.read<UserProfileRepository>(),
-          ),
+          create: (context) => UserJournalOptionsViewModel(repository: context.read<UserProfileRepository>()),
         ),
         ChangeNotifierProvider(
-          create: (context) => UserJourneysViewModel(
-            repository: context.read<UserProfileRepository>(),
-          ),
+          create: (context) => UserJourneysViewModel(repository: context.read<UserProfileRepository>()),
         ),
+        ChangeNotifierProvider(create: (context) => HomeViewModel(repository: context.read<HomeRepository>())),
+        ChangeNotifierProvider(create: (context) => SplashViewModel()),
+        ChangeNotifierProvider(create: (context) => UnsplashViewModel(repository: context.read<UnsplashRepository>())),
         ChangeNotifierProvider(
-          create: (context) => HomeViewModel(
-            repository: context.read<HomeRepository>(),
-          ),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => SplashViewModel(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => UnsplashViewModel(
-            repository: context.read<UnsplashRepository>(),
-          ),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => JourneysListViewModel(
-            repository: context.read<JourneysRepository>(),
-          ),
+          create: (context) => JourneysListViewModel(repository: context.read<JourneysRepository>()),
         ),
       ],
       child: const MyApp(),
@@ -200,14 +152,86 @@ void main() async {
 
 class MyAppScrollBehavior extends MaterialScrollBehavior {
   @override
-  Set<PointerDeviceKind> get dragDevices => {
-        PointerDeviceKind.touch,
-        PointerDeviceKind.mouse,
-      };
+  Set<PointerDeviceKind> get dragDevices => {PointerDeviceKind.touch, PointerDeviceKind.mouse};
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final _appLinks = AppLinks();
+  StreamSubscription<Uri>? _linkSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _initDeepLinks();
+  }
+
+  Future<void> _initDeepLinks() async {
+    // Handle deep link when app is already running
+    _linkSubscription = _appLinks.uriLinkStream.listen(
+      (uri) {
+        _handleDeepLink(uri);
+      },
+      onError: (err) {
+        debugPrint('Deep link error: $err');
+      },
+    );
+
+    // Handle deep link that opened the app
+    try {
+      final initialUri = await _appLinks.getInitialLink();
+      if (initialUri != null) {
+        _handleDeepLink(initialUri);
+      }
+    } catch (e) {
+      debugPrint('Failed to get initial link: $e');
+    }
+  }
+
+  void _handleDeepLink(Uri uri) {
+    debugPrint('🔗 Deep link received: $uri');
+    debugPrint('🔗 Scheme: ${uri.scheme}');
+    debugPrint('🔗 Host: ${uri.host}');
+    debugPrint('🔗 Path: ${uri.path}');
+    debugPrint('🔗 Query: ${uri.query}');
+
+    // Check if it's an invite link
+    if (uri.scheme == 'gw' && uri.host == 'invite') {
+      final token = uri.queryParameters['token'];
+      debugPrint('🔗 Token found: $token');
+
+      if (token != null && token.isNotEmpty) {
+        // Wait for widget to be built before navigating
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          try {
+            final appViewModel = context.read<AppViewModel>();
+            final targetUrl = '/invite?token=$token';
+            debugPrint('🔗 Navigating to: $targetUrl');
+            appViewModel.router.go(targetUrl);
+            debugPrint('🔗 Navigation completed');
+          } catch (e) {
+            debugPrint('🔗 Navigation error: $e');
+          }
+        });
+      } else {
+        debugPrint('🔗 Token is null or empty');
+      }
+    } else {
+      debugPrint('🔗 Not an invite link (scheme: ${uri.scheme}, host: ${uri.host})');
+    }
+  }
+
+  @override
+  void dispose() {
+    _linkSubscription?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -226,13 +250,8 @@ class MyApp extends StatelessWidget {
         FallbackCupertinoLocalizationDelegate(),
       ],
       locale: appViewModel.locale,
-      supportedLocales: const [
-        Locale('en'),
-      ],
-      theme: ThemeData(
-        brightness: Brightness.light,
-        useMaterial3: false,
-      ),
+      supportedLocales: const [Locale('en')],
+      theme: ThemeData(brightness: Brightness.light, useMaterial3: false),
       themeMode: appViewModel.themeMode,
       routerConfig: appViewModel.router,
     );

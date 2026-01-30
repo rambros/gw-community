@@ -1,0 +1,16 @@
+{
+  "projects": {},
+  "targets": {
+    "good-wishes-project": {
+      "hosting": {
+        "invite": [
+          "gw-invite"
+        ],
+        "app": [
+          "gw-app"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

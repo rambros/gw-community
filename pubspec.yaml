@@ -1,9 +1,8 @@
 name: gw_community
-description: A new Flutter project.
-
+description: The GW Community App
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
-version: 0.7.0+70
+version: 0.7.2+72
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -75,6 +74,7 @@ dependencies:
       ref: 4f84ece5e06d52643c5d844f41880baf8440c584
   youtube_player_iframe: 5.2.1
   flutter_app_badger: ^1.5.0
+  app_links: ^6.4.1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

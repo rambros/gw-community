@@ -11,7 +11,7 @@
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32"/>
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="32"/>
   <application
-    android:label="GW Community"
+    android:label="Good Wishes"
     tools:replace="android:label"
     android:icon="@mipmap/ic_launcher"
     android:requestLegacyExternalStorage="true"
@@ -40,6 +40,13 @@
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="gwcommunity" android:host="gwcommunity.com"/>
+      </intent-filter>
+      <!-- Deep link for invitations -->
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
+        <data android:scheme="gw"/>
       </intent-filter>
     </activity>
     <activity android:name="com.yalantis.ucrop.UCropActivity" android:screenOrientation="portrait" android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
