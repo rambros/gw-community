@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
 
@@ -14,7 +13,9 @@ class JourneyCard extends StatelessWidget {
     this.onTap,
   });
 
-  final CcJourneysRow journeyRow;
+  // Accepts either CcJourneysRow or CcViewUserJourneysRow
+  // Both have the required fields: title, stepsTotal, isPublic, imageUrl
+  final dynamic journeyRow;
   final bool isStarted;
   final int? stepsCompleted;
   final String? journeyStatus;

@@ -317,37 +317,6 @@ class GroupInvitationPageView extends StatelessWidget {
                     );
                   },
                 ),
-                Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 0.0, 0.0),
-                  child: Text(
-                    'Group policy',
-                    style: AppTheme.of(context).bodyMedium.override(
-                          font: GoogleFonts.lexendDeca(fontWeight: FontWeight.w500),
-                          color: AppTheme.of(context).secondary,
-                          fontSize: 16.0,
-                        ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
-                  child: Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: AppTheme.of(context).primaryBackground,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 0.0),
-                      child: Text(
-                        valueOrDefault<String>(group.policyMessage, 'policy message'),
-                        textAlign: TextAlign.start,
-                        style: AppTheme.of(context).bodySmall.override(
-                              font: GoogleFonts.lexendDeca(),
-                              color: AppTheme.of(context).primary,
-                            ),
-                      ),
-                    ),
-                  ),
-                ),
               ],
             ),
           ),

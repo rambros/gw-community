@@ -3,16 +3,42 @@ import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 
 class JourneysRepository {
+  List<int>? _publishedJourneyIdsCache;
+  DateTime? _lastCacheTime;
+  static const _cacheDuration = Duration(minutes: 5);
+
+  Future<List<int>> getPublishedJourneyIds() async {
+    final now = DateTime.now();
+    if (_publishedJourneyIdsCache != null &&
+        _lastCacheTime != null &&
+        now.difference(_lastCacheTime!) < _cacheDuration) {
+      return _publishedJourneyIdsCache!;
+    }
+
+    final res = await CcJourneysTable().queryRows(
+      queryFn: (q) => q.inFilter('status', ['published', 'Published']).select('id'),
+    );
+    _publishedJourneyIdsCache = res.map((e) => e.id).whereType<int>().toList();
+    _lastCacheTime = now;
+    return _publishedJourneyIdsCache!;
+  }
+
   Future<List<CcViewUserJourneysRow>> getUserJourneys(String userId) async {
+    final publishedIds = await getPublishedJourneyIds();
+    if (publishedIds.isEmpty) return [];
+
     final result = await CcViewUserJourneysTable().queryRows(
-      queryFn: (q) => q.eqOrNull('user_id', userId),
+      queryFn: (q) => q.eqOrNull('user_id', userId).inFilter('journey_id', publishedIds),
     );
     return result;
   }
 
   Future<List<CcViewAvailJourneysRow>> getAvailableJourneys(String userId) async {
+    final publishedIds = await getPublishedJourneyIds();
+    if (publishedIds.isEmpty) return [];
+
     final result = await CcViewAvailJourneysTable().queryRows(
-      queryFn: (q) => q.eqOrNull('user_id', userId),
+      queryFn: (q) => q.eqOrNull('user_id', userId).inFilter('id', publishedIds),
     );
     return result;
   }
@@ -36,6 +62,47 @@ class JourneysRepository {
       queryFn: (q) =>
           q.eqOrNull('user_id', userId).eqOrNull('journey_id', journeyId).order('step_number', ascending: true),
     );
+
+    // Clean up duplicates if found
+    await _cleanUpDuplicateUserSteps(result);
+
+    return result;
+  }
+
+  Future<void> _cleanUpDuplicateUserSteps(List<CcViewUserStepsRow> userSteps) async {
+    // Group steps by journey_step_id
+    final stepsByJourneyStepId = <int, List<CcViewUserStepsRow>>{};
+    for (final step in userSteps) {
+      final journeyStepId = step.journeyStepId;
+      if (journeyStepId != null) {
+        stepsByJourneyStepId.putIfAbsent(journeyStepId, () => []).add(step);
+      }
+    }
+
+    // Find and delete duplicates (keep the most recent one)
+    for (final entry in stepsByJourneyStepId.entries) {
+      final steps = entry.value;
+      if (steps.length > 1) {
+        // Sort by id (most recent has higher id)
+        steps.sort((a, b) => (b.id ?? 0).compareTo(a.id ?? 0));
+
+        // Delete all except the first (most recent)
+        for (var i = 1; i < steps.length; i++) {
+          final stepToDelete = steps[i];
+          if (stepToDelete.id != null) {
+            await CcUserStepsTable().delete(
+              matchingRows: (rows) => rows.eq('id', stepToDelete.id!),
+            );
+          }
+        }
+      }
+    }
+  }
+
+  Future<List<CcJourneyStepsRow>> getJourneySteps(int journeyId) async {
+    final result = await CcJourneyStepsTable().queryRows(
+      queryFn: (q) => q.eq('journey_id', journeyId).order('step_number', ascending: true),
+    );
     return result;
   }
 
@@ -51,6 +118,16 @@ class JourneysRepository {
   Future<CcUserJourneysRow?> startJourney(String userId, int journeyId) async {
     if (userId.isEmpty) {
       return null;
+    }
+
+    // Check if user has already started this journey
+    final existingUserJourney = await CcUserJourneysTable().queryRows(
+      queryFn: (q) => q.eq('user_id', userId).eq('journey_id', journeyId),
+    );
+
+    if (existingUserJourney.isNotEmpty) {
+      // Journey already started, return existing record
+      return existingUserJourney.first;
     }
 
     final now = getCurrentTimestamp;
@@ -205,17 +282,13 @@ class JourneysRepository {
 
       if (userJourneys.isEmpty) return [];
 
-      final journeyIds = userJourneys
-          .map((uj) => uj.journeyId)
-          .where((id) => id != null)
-          .cast<int>()
-          .toList();
+      final journeyIds = userJourneys.map((uj) => uj.journeyId).where((id) => id != null).cast<int>().toList();
 
       if (journeyIds.isEmpty) return [];
 
       // Get journey details (exclude draft journeys)
       final journeys = await CcJourneysTable().queryRows(
-        queryFn: (q) => q.inFilter('id', journeyIds).neq('status', 'draft'),
+        queryFn: (q) => q.inFilter('id', journeyIds).inFilter('status', ['published', 'Published']),
       );
 
       return journeys;
@@ -233,16 +306,17 @@ class JourneysRepository {
         queryFn: (q) => q.eq('user_id', userId),
       );
 
-      final startedJourneyIds = userJourneys
-          .map((uj) => uj.journeyId)
-          .where((id) => id != null)
-          .cast<int>()
-          .toSet();
+      final startedJourneyIds = userJourneys.map((uj) => uj.journeyId).where((id) => id != null).cast<int>().toSet();
 
       // Get all public journeys (exclude draft journeys)
       final publicJourneys = await CcJourneysTable().queryRows(
-        queryFn: (q) => q.eq('is_public', true).neq('status', 'draft'),
+        queryFn: (q) => q.eq('is_public', true).inFilter('status', ['published', 'Published']),
       );
+      debugPrint('🔍 JourneyRepo: Found ${publicJourneys.length} public journeys');
+      debugPrint('🔍 JourneyRepo: Started journey IDs: $startedJourneyIds');
+      for (final journey in publicJourneys) {
+        debugPrint('  - ${journey.title} (ID: ${journey.id}, is_public: ${journey.isPublic}, status: ${journey.status})');
+      }
 
       // Get private journeys via user's group memberships
       final privateJourneys = await _getPrivateJourneysForUser(userId);
@@ -253,11 +327,14 @@ class JourneysRepository {
 
       for (final journey in [...publicJourneys, ...privateJourneys]) {
         final journeyId = journey.id;
+        final isStarted = startedJourneyIds.contains(journeyId);
+        debugPrint('  Checking ${journey.title} (ID: $journeyId): started=$isStarted');
         if (!startedJourneyIds.contains(journeyId) && seenIds.add(journeyId)) {
           allAvailable.add(journey);
         }
       }
 
+      debugPrint('📊 JourneyRepo: ${allAvailable.length} journeys available (not started)');
       return allAvailable;
     } catch (e) {
       debugPrint('Error in getAvailableJourneysForList: $e');
@@ -275,11 +352,7 @@ class JourneysRepository {
 
       if (groupMembers.isEmpty) return [];
 
-      final groupIds = groupMembers
-          .map((gm) => gm.groupId)
-          .where((id) => id != null)
-          .cast<int>()
-          .toList();
+      final groupIds = groupMembers.map((gm) => gm.groupId).where((id) => id != null).cast<int>().toList();
 
       if (groupIds.isEmpty) return [];
 
@@ -290,7 +363,7 @@ class JourneysRepository {
           .select('journey_id, cc_journeys!inner(*)')
           .inFilter('group_id', groupIds)
           .isFilter('deleted_at', null)
-          .neq('cc_journeys.status', 'draft');
+          .inFilter('cc_journeys.status', ['published', 'Published']);
 
       if ((response as List).isEmpty) return [];
 

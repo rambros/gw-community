@@ -8,16 +8,25 @@ import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
 import 'package:gw_community/ui/journey/themes/journey_theme_extension.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 
-class JourneyIntroWidget extends StatelessWidget {
+class JourneyIntroWidget extends StatefulWidget {
   const JourneyIntroWidget({
     super.key,
     required this.journey,
+    required this.journeySteps,
     required this.onStart,
+    this.isJourneyStarted = false,
   });
 
   final CcJourneysRow journey;
+  final List<CcJourneyStepsRow> journeySteps;
   final VoidCallback onStart;
+  final bool isJourneyStarted;
 
+  @override
+  State<JourneyIntroWidget> createState() => _JourneyIntroWidgetState();
+}
+
+class _JourneyIntroWidgetState extends State<JourneyIntroWidget> {
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -31,7 +40,7 @@ class JourneyIntroWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                journey.title ?? 'Journey Title',
+                widget.journey.title ?? 'Journey Title',
                 style: AppTheme.of(context).journey.sectionTitle.override(
                       color: AppTheme.of(context).tertiary,
                     ),
@@ -42,7 +51,7 @@ class JourneyIntroWidget extends StatelessWidget {
         Padding(
           padding: const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 8.0, 0.0),
           child: MarkdownBody(
-            data: journey.description ?? 'Description',
+            data: widget.journey.description ?? 'Description',
             onTapLink: (text, href, title) {
               if (href != null) {
                 launchURL(href);
@@ -50,19 +59,19 @@ class JourneyIntroWidget extends StatelessWidget {
             },
             styleSheet: MarkdownStyleSheet(
               p: GoogleFonts.lexendDeca(
-                color: AppTheme.of(context).primaryText,
+                color: Colors.white.withValues(alpha: 0.7),
                 fontSize: 14.0,
                 fontWeight: FontWeight.w300,
                 height: 1.5,
               ),
               strong: GoogleFonts.lexendDeca(
-                color: AppTheme.of(context).primaryText,
+                color: Colors.white,
                 fontSize: 14.0,
                 fontWeight: FontWeight.bold,
                 height: 1.5,
               ),
               em: GoogleFonts.lexendDeca(
-                color: AppTheme.of(context).primaryText,
+                color: Colors.white.withValues(alpha: 0.7),
                 fontSize: 14.0,
                 fontStyle: FontStyle.italic,
                 height: 1.5,
@@ -88,12 +97,98 @@ class JourneyIntroWidget extends StatelessWidget {
                 decoration: TextDecoration.underline,
               ),
               listBullet: GoogleFonts.lexendDeca(
-                color: AppTheme.of(context).primaryText,
+                color: Colors.white.withValues(alpha: 0.7),
                 fontSize: 14.0,
               ),
             ),
           ),
         ),
+        // Steps Section
+        if (widget.journeySteps.isNotEmpty)
+          Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(16.0, 24.0, 16.0, 16.0),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Steps',
+                        style: AppTheme.of(context).journey.bodyText.override(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16.0,
+                            ),
+                      ),
+                    ],
+                  ),
+                ),
+                ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  padding: EdgeInsets.zero,
+                  itemCount: widget.journeySteps.length,
+                  separatorBuilder: (context, index) => const SizedBox(height: 16.0),
+                  itemBuilder: (context, index) {
+                    final step = widget.journeySteps[index];
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 28.0,
+                          height: 28.0,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(
+                            child: Text(
+                              '${step.stepNumber}',
+                              style: AppTheme.of(context).bodySmall.override(
+                                    color: AppTheme.of(context).secondary,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 13.0,
+                                  ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12.0),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                step.title ?? 'Step ${step.stepNumber}',
+                                style: AppTheme.of(context).bodyMedium.override(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 15.0,
+                                    ),
+                              ),
+                              if (step.description != null && step.description!.isNotEmpty)
+                                Padding(
+                                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 0.0),
+                                  child: Text(
+                                    step.description!,
+                                    style: AppTheme.of(context).bodySmall.override(
+                                          color: Colors.white.withValues(alpha: 0.7),
+                                          fontSize: 14.0,
+                                        ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        // Start Button - placed after Steps section
         Padding(
           padding: const EdgeInsets.all(32.0),
           child: Row(
@@ -104,8 +199,8 @@ class JourneyIntroWidget extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
                   child: FFButtonWidget(
-                    onPressed: onStart,
-                    text: 'Start',
+                    onPressed: widget.onStart,
+                    text: widget.isJourneyStarted ? 'Resume' : 'Start',
                     options: FFButtonOptions(
                       height: 40.0,
                       padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),

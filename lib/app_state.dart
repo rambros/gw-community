@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gw_community/data/models/structs/index.dart';
 import 'package:gw_community/data/models/app_config.dart';
+import 'package:gw_community/data/models/structs/index.dart';
 import 'package:gw_community/data/repositories/settings_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';

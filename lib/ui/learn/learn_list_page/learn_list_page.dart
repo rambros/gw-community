@@ -94,7 +94,7 @@ class _LearnListPageState extends State<LearnListPage> {
             widget.customTitle ?? 'Library',
             style: AppTheme.of(context).headlineMedium.override(
                   color: Colors.white,
-                  fontSize: 22.0,
+                  fontSize: 20.0,
                 ),
           ),
           centerTitle: true,
@@ -138,8 +138,7 @@ class _LearnListPageState extends State<LearnListPage> {
                               ),
 
                             // Search Bar
-                            if (widget.journeyId == null &&
-                                widget.groupId == null)
+                            if (widget.journeyId == null && widget.groupId == null)
                               Padding(
                                 padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 16.0, 0.0),
                                 child: Container(
@@ -302,8 +301,8 @@ class _LearnListPageState extends State<LearnListPage> {
                                           padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
                                           color: AppTheme.of(context).primaryBackground,
                                           textStyle: AppTheme.of(context).labelLarge.override(
-                                            color: AppTheme.of(context).secondary,
-                                          ),
+                                                color: AppTheme.of(context).secondary,
+                                              ),
                                           elevation: 0.0,
                                           borderSide: BorderSide(
                                             color: AppTheme.of(context).secondaryBackground,

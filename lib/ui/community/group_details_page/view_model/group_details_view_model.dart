@@ -1,15 +1,14 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
 
-import 'package:gw_community/data/repositories/event_repository.dart';
-import 'package:gw_community/data/repositories/group_repository.dart';
+import 'package:flutter/material.dart';
 import 'package:gw_community/data/repositories/announcement_repository.dart';
+import 'package:gw_community/data/repositories/event_repository.dart';
+import 'package:gw_community/data/repositories/experience_moderation_repository.dart';
 import 'package:gw_community/data/repositories/experience_repository.dart';
-import 'package:gw_community/data/services/supabase/supabase.dart';
-
+import 'package:gw_community/data/repositories/group_repository.dart';
 import 'package:gw_community/data/repositories/journeys_repository.dart';
 import 'package:gw_community/data/repositories/learn_repository.dart';
-import 'package:gw_community/data/repositories/experience_moderation_repository.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
 
 class GroupDetailsViewModel extends ChangeNotifier {
   final GroupRepository _groupRepository;

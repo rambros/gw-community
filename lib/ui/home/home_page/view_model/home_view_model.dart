@@ -29,13 +29,8 @@ class HomeViewModel extends ChangeNotifier {
   List<CcUserJourneysRow> _userJourneys = [];
   List<CcUserJourneysRow> get userJourneys => _userJourneys;
 
-  CcJourneysRow? _journeyDetails;
-  CcJourneysRow? get journeyDetails => _journeyDetails;
-
-  bool get isJourney1Started => _userJourneys.any((j) => j.journeyId == 1);
-
-  CcViewUserJourneysRow? _userJourneyProgress;
-  CcViewUserJourneysRow? get userJourneyProgress => _userJourneyProgress;
+  List<CcViewUserJourneysRow> _userJourneyProgressList = [];
+  List<CcViewUserJourneysRow> get userJourneyProgressList => _userJourneyProgressList;
 
   List<CcEventsRow> _upcomingEvents = [];
   List<CcEventsRow> get upcomingEvents => _upcomingEvents;
@@ -58,15 +53,8 @@ class HomeViewModel extends ChangeNotifier {
         _loadUserJourneys(),
         _loadUpcomingEvents(),
         _loadGroups(),
+        _loadAllUserJourneyProgress(),
       ]);
-
-      // Always load journey ID 1 details as requested
-      // This ensures the user sees the first journey with a "Start" button even if not yet started
-      await _loadJourneyDetails(1);
-
-      if (_userJourneys.isNotEmpty) {
-        await _loadUserJourneyProgress();
-      }
     } catch (e) {
       _setError('Error loading home data: $e');
     } finally {
@@ -100,12 +88,55 @@ class HomeViewModel extends ChangeNotifier {
     FFAppState().hasStartedJourney = _userJourneys.isNotEmpty;
   }
 
-  Future<void> _loadJourneyDetails(int journeyId) async {
-    _journeyDetails = await _repository.getJourneyDetails(journeyId);
-  }
+  Future<void> _loadAllUserJourneyProgress() async {
+    try {
+      // Fetch both progress and completed steps lists in parallel
+      final results = await Future.wait([
+        _repository.getAllUserJourneyProgress(currentUserUid),
+        _repository.getAllCompletedSteps(currentUserUid),
+      ]);
 
-  Future<void> _loadUserJourneyProgress() async {
-    _userJourneyProgress = await _repository.getUserJourneyProgress(currentUserUid, 1);
+      final allProgress = results[0] as List<CcViewUserJourneysRow>;
+      final allCompletedSteps = results[1] as List<CcViewUserStepsRow>;
+
+      // Map to store unique journey_step_ids by journey_id for deduplication
+      final uniqueStepsByJourney = <int, Set<int>>{};
+      for (final step in allCompletedSteps) {
+        if (step.journeyId != null && step.journeyStepId != null) {
+          uniqueStepsByJourney.putIfAbsent(step.journeyId!, () => {}).add(step.journeyStepId!);
+        }
+      }
+
+      // Filter to keep only PUBLISHED journeys (check cc_journeys.status, not user journey_status)
+      // Since the view doesn't expose cc_journeys.status, we need to query it separately
+      final publishedJourneyIds = <int>{};
+      if (allProgress.isNotEmpty) {
+        final journeyIds = allProgress.map((j) => j.journeyId).where((id) => id != null).cast<int>().toList();
+        if (journeyIds.isNotEmpty) {
+          final publishedJourneys = await CcJourneysTable().queryRows(
+            queryFn: (q) => q.inFilter('id', journeyIds).inFilter('status', ['published', 'Published']),
+          );
+          publishedJourneyIds.addAll(publishedJourneys.map((j) => j.id));
+        }
+      }
+
+      // Filter to only include published journeys
+      final finalProgressList = <CcViewUserJourneysRow>[];
+      for (final progress in allProgress) {
+        final journeyId = progress.journeyId;
+        final isPublished = publishedJourneyIds.contains(journeyId);
+
+        if (isPublished) {
+          // Update stepsCompleted count with deduplicated value
+          progress.stepsCompleted = uniqueStepsByJourney[journeyId]?.length ?? 0;
+          finalProgressList.add(progress);
+        }
+      }
+
+      _userJourneyProgressList = finalProgressList;
+    } catch (e) {
+      debugPrint('Error loading all user journey progress: $e');
+    }
   }
 
   Future<void> _loadUpcomingEvents() async {
@@ -119,6 +150,21 @@ class HomeViewModel extends ChangeNotifier {
   }
 
   // ========== HELPER METHODS ==========
+
+  String? getGroupNameById(int? groupId) {
+    if (groupId == null) return null;
+    try {
+      final group = _userGroups.firstWhere(
+        (g) => g.id == groupId,
+        orElse: () => _publicGroups.firstWhere(
+          (g) => g.id == groupId,
+        ),
+      );
+      return group.name;
+    } catch (e) {
+      return null;
+    }
+  }
 
   void _setLoading(bool value) {
     _isLoading = value;

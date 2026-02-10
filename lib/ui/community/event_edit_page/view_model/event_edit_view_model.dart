@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gw_community/data/repositories/event_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
+import 'package:gw_community/utils/upload_data.dart';
 
 class EventEditViewModel extends ChangeNotifier {
   EventEditViewModel({
@@ -54,6 +55,12 @@ class EventEditViewModel extends ChangeNotifier {
 
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
+
+  String? _uploadedImageUrl;
+  String? get uploadedImageUrl => _uploadedImageUrl;
+
+  // Helper to get the display image URL (uploaded or existing)
+  String? get displayImageUrl => _uploadedImageUrl ?? _event.eventImageUrl;
 
   void _initialize(CcEventsRow eventRow) {
     titleController.text = eventRow.title ?? '';
@@ -119,6 +126,42 @@ class EventEditViewModel extends ChangeNotifier {
     return isValid;
   }
 
+  // Image Upload
+  Future<void> uploadImage(BuildContext context) async {
+    final selectedMedia = await selectMediaWithSourceBottomSheet(
+      context: context,
+      storageFolderPath: 'events',
+      maxWidth: 800.00,
+      maxHeight: 400.00,
+      allowPhoto: true,
+      includeBlurHash: true,
+    );
+
+    if (selectedMedia != null && selectedMedia.every((m) => validateFileFormat(m.storagePath, context))) {
+      if (!context.mounted) return;
+      _setSaving(true);
+      try {
+        showUploadMessage(context, 'Uploading file...', showLoading: true);
+
+        final downloadUrls = await uploadSupabaseStorageFiles(bucketName: 'portal', selectedFiles: selectedMedia);
+
+        if (downloadUrls.isNotEmpty) {
+          _uploadedImageUrl = downloadUrls.first;
+          notifyListeners();
+        }
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error uploading image: $e')));
+        }
+      } finally {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        }
+        _setSaving(false);
+      }
+    }
+  }
+
   Future<bool> saveEvent() async {
     if (!validateForm()) return false;
     if (_eventDate == null || _eventTime == null) {
@@ -149,6 +192,7 @@ class EventEditViewModel extends ChangeNotifier {
         registrationUrl: urlRegistrationController.text.trim().isEmpty
             ? null
             : urlRegistrationController.text.trim(),
+        imageUrl: _uploadedImageUrl, // Only pass if new image uploaded, null otherwise
       );
 
       final updated = await _repository.getEventById(_event.id);

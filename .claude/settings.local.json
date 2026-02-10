@@ -22,7 +22,9 @@
       "Bash(flutter devices:*)",
       "Bash(xcodebuild:*)",
       "Bash(git log:*)",
-      "Bash(git mv:*)"
+      "Bash(git mv:*)",
+      "Bash(flutter --version:*)",
+      "Bash(jarsigner:*)"
     ]
   }
 }

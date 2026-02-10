@@ -90,20 +90,28 @@ class EventRepository {
     required String status,
     required String visibility,
     String? registrationUrl,
+    String? imageUrl,
   }) async {
+    final data = {
+      'title': title,
+      'description': description,
+      'event_date': supaSerialize<DateTime>(eventDate),
+      'duration': durationMinutes,
+      'event_page_url': registrationUrl,
+      'event_status': status,
+      'event_time': supaSerialize<PostgresTime>(PostgresTime(eventTime)),
+      'facilitator_name': facilitatorName,
+      'facilitator_id': facilitatorId,
+      'visibility': visibility,
+    };
+
+    // Only add imageUrl if it's provided (null means don't update)
+    if (imageUrl != null) {
+      data['event_image_url'] = imageUrl;
+    }
+
     await CcEventsTable().update(
-      data: {
-        'title': title,
-        'description': description,
-        'event_date': supaSerialize<DateTime>(eventDate),
-        'duration': durationMinutes,
-        'event_page_url': registrationUrl,
-        'event_status': status,
-        'event_time': supaSerialize<PostgresTime>(PostgresTime(eventTime)),
-        'facilitator_name': facilitatorName,
-        'facilitator_id': facilitatorId,
-        'visibility': visibility,
-      },
+      data: data,
       matchingRows: (rows) => rows.eqOrNull('id', id),
     );
   }

@@ -10,6 +10,8 @@ import 'package:gw_community/ui/profile/user_profile_page/widgets/profile_menu_i
 import 'package:gw_community/ui/profile/widgets/confirm_profile_action_dialog.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
+import 'package:gw_community/ui/community/community_guidelines_page/community_guidelines_page.dart';
+import 'package:gw_community/ui/community/community_guidelines_edit_page/community_guidelines_edit_page.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
 
 class UserProfilePage extends StatefulWidget {
@@ -279,6 +281,15 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     },
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
+                  child: ProfileMenuItemWidget(
+                    text: 'Community Guidelines',
+                    onTap: () async {
+                      context.pushNamed(CommunityGuidelinesPage.routeName);
+                    },
+                  ),
+                ),
               ],
             ),
 
@@ -344,6 +355,16 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     },
                   ),
                 ),
+                if ((viewModel.userProfile?.userRole ?? []).hasAdmin)
+                  Padding(
+                    padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
+                    child: ProfileMenuItemWidget(
+                      text: 'Edit Guidelines',
+                      onTap: () async {
+                        context.pushNamed(CommunityGuidelinesEditPage.routeName);
+                      },
+                    ),
+                  ),
               ],
             ),
             Padding(

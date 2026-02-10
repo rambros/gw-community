@@ -6,9 +6,9 @@ import 'package:gw_community/ui/community/experience_edit_page/experience_edit_p
 import 'package:gw_community/ui/community/experience_view_page/experience_view_page.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
+import 'package:gw_community/ui/core/widgets/confirmation_dialog.dart';
 import 'package:gw_community/ui/core/widgets/user_avatar.dart';
 import 'package:gw_community/utils/context_extensions.dart';
-import 'package:gw_community/ui/core/widgets/confirmation_dialog.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 
 class ExperienceCardWidget extends StatelessWidget {

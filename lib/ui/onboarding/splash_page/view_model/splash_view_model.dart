@@ -17,7 +17,7 @@ class SplashViewModel extends ChangeNotifier {
       debugPrint('Error loading app config: $e');
     }
 
-    await Future.delayed(const Duration(milliseconds: 2000));
+    await Future.delayed(const Duration(milliseconds: 4000));
 
     if (context.mounted) {
       AppStateNotifier.instance.stopShowingSplashImage();

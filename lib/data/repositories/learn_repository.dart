@@ -137,10 +137,8 @@ class LearnRepository {
     int? offset,
   }) async {
     // First, get IDs of exclusive resources
-    final exclusiveResponse = await SupaFlow.client
-        .from('cc_group_resources')
-        .select('portal_item_id')
-        .eq('visibility', 'exclusive');
+    final exclusiveResponse =
+        await SupaFlow.client.from('cc_group_resources').select('portal_item_id').eq('visibility', 'exclusive');
 
     final exclusiveIds = (exclusiveResponse as List).map((row) => row['portal_item_id'] as int).toList();
 
@@ -179,7 +177,9 @@ class LearnRepository {
   }
 
   Future<List<CcJourneysRow>> getJourneys() async {
-    return CcJourneysTable().queryRows(queryFn: (q) => q.order('title', ascending: true));
+    return CcJourneysTable().queryRows(
+      queryFn: (q) => q.inFilter('status', ['published', 'Published']).order('title', ascending: true),
+    );
   }
 
   Future<List<CcGroupsRow>> getGroups() async {

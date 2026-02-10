@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:provider/provider.dart';
-import 'package:webviewx_plus/webviewx_plus.dart';
-
 import 'package:gw_community/data/repositories/journeys_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
@@ -18,6 +15,8 @@ import 'package:gw_community/ui/onboarding/splash_page/splash_page.dart';
 import 'package:gw_community/ui/profile/widgets/confirm_profile_action_dialog.dart';
 import 'package:gw_community/utils/context_extensions.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
+import 'package:provider/provider.dart';
+import 'package:webviewx_plus/webviewx_plus.dart';
 
 class JourneyPage extends StatefulWidget {
   const JourneyPage({
@@ -181,11 +180,18 @@ class _JourneyPageState extends State<JourneyPage> {
                         ),
                       ),
                     // Title
-                    Text(
-                      'Journey',
-                      style: AppTheme.of(context).journey.pageTitle.override(
-                            color: Colors.white,
-                          ),
+                    Consumer<JourneyViewModel>(
+                      builder: (context, viewModel, _) {
+                        return Text(
+                          viewModel.journey?.title ?? viewModel.userJourney?.title ?? 'Journey',
+                          style: AppTheme.of(context).journey.pageTitle.override(
+                                color: Colors.white,
+                              ),
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -257,7 +263,9 @@ class _JourneyPageState extends State<JourneyPage> {
         padding: const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 8.0, 0.0),
         child: JourneyIntroWidget(
           journey: viewModel.journey!,
+          journeySteps: viewModel.journeySteps,
           onStart: () => _handleStartJourney(context, viewModel),
+          isJourneyStarted: viewModel.isJourneyStarted,
         ),
       ),
     );

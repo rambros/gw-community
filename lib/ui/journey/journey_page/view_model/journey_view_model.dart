@@ -35,7 +35,10 @@ class JourneyViewModel extends ChangeNotifier {
   List<CcViewUserStepsRow> _userSteps = [];
   List<CcViewUserStepsRow> get userSteps => _userSteps;
 
-  bool get isJourneyStarted => _startedJourneys.contains(journeyId);
+  List<CcJourneyStepsRow> _journeySteps = [];
+  List<CcJourneyStepsRow> get journeySteps => _journeySteps;
+
+  bool get isJourneyStarted => _userJourney != null || _startedJourneys.contains(journeyId);
 
   // ========== COMMANDS ==========
 
@@ -47,25 +50,40 @@ class JourneyViewModel extends ChangeNotifier {
       // Always load base journey info (static content like title, description)
       _journey = await _repository.getJourneyById(journeyId);
 
-      if (isJourneyStarted) {
-        // Load user journey and steps
-        final results = await Future.wait([
-          _repository.getUserJourney(currentUserUid, journeyId),
-          _repository.getUserSteps(currentUserUid, journeyId),
-        ]);
+      // Always check if user has started this journey (from database, not just app state)
+      _userJourney = await _repository.getUserJourney(currentUserUid, journeyId);
 
-        _userJourney = results[0] as CcViewUserJourneysRow?;
-        final steps = results[1] as List<CcViewUserStepsRow>;
+      if (_userJourney != null) {
+        // Journey has been started - load user steps
+        final steps = await _repository.getUserSteps(currentUserUid, journeyId);
 
-        // Remove duplicates based on step ID using a Map
+        // Remove duplicates based on journey_step_id using a Map
+        // Keep the most recent user_step for each journey_step
         final stepsMap = <int, CcViewUserStepsRow>{};
         for (final step in steps) {
-          final stepId = step.id;
-          if (stepId != null && !stepsMap.containsKey(stepId)) {
-            stepsMap[stepId] = step;
+          final journeyStepId = step.journeyStepId;
+          if (journeyStepId != null) {
+            final existing = stepsMap[journeyStepId];
+            // Keep the most recent step (higher id means more recent)
+            if (existing == null || (step.id != null && existing.id != null && step.id! > existing.id!)) {
+              stepsMap[journeyStepId] = step;
+            }
           }
         }
         _userSteps = stepsMap.values.toList()..sort((a, b) => (a.stepNumber ?? 0).compareTo(b.stepNumber ?? 0));
+
+        // Sync app state if needed
+        if (!_startedJourneys.contains(journeyId)) {
+          _startedJourneys = [..._startedJourneys, journeyId];
+        }
+      } else {
+        // Journey hasn't been started - load generic journey steps
+        _journeySteps = await _repository.getJourneySteps(journeyId);
+
+        // Clean up app state if needed
+        if (_startedJourneys.contains(journeyId)) {
+          _startedJourneys = _startedJourneys.where((id) => id != journeyId).toList();
+        }
       }
 
       notifyListeners();
@@ -82,14 +100,28 @@ class JourneyViewModel extends ChangeNotifier {
   ) async {
     _setLoading(true);
     try {
+      // Check if journey is already started (from database)
+      final existingUserJourney = await _repository.getUserJourney(currentUserUid, journeyId);
+
+      if (existingUserJourney != null) {
+        // Journey already started, just reload data and sync state
+        await loadJourneyData();
+
+        if (!_startedJourneys.contains(journeyId)) {
+          _startedJourneys = [..._startedJourneys, journeyId];
+          await _repository.updateUserStartedJourneys(currentUserUid, _startedJourneys);
+          onUpdateStartedJourneys(_startedJourneys);
+        }
+        return;
+      }
+
+      // Start the journey
       await _repository.startJourney(currentUserUid, journeyId);
 
-      if (!_startedJourneys.contains(journeyId)) {
-        _startedJourneys = [..._startedJourneys, journeyId];
-        await _repository.updateUserStartedJourneys(currentUserUid, _startedJourneys);
-        onUpdateStartedJourneys(_startedJourneys);
-        notifyListeners();
-      }
+      _startedJourneys = [..._startedJourneys, journeyId];
+      await _repository.updateUserStartedJourneys(currentUserUid, _startedJourneys);
+      onUpdateStartedJourneys(_startedJourneys);
+      notifyListeners();
 
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

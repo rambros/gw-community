@@ -19,7 +19,7 @@ class JourneyTypography {
         font: GoogleFonts.lexendDeca(
           fontWeight: FontWeight.w500,
         ),
-        fontSize: 28.0,
+        fontSize: 20.0,
         letterSpacing: 0.0,
         fontWeight: FontWeight.w500,
       );

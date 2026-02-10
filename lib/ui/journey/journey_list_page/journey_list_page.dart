@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/journeys_repository.dart';
+import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/journey/journey_list_page/view_model/journey_list_view_model.dart';
 import 'package:gw_community/ui/journey/journey_list_page/widgets/journeys_tab_widget.dart';
-import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/utils/context_extensions.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';

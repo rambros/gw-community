@@ -62,9 +62,7 @@ class CommunityViewModel extends ChangeNotifier {
 
   /// Força refresh dos experiences (recria o stream)
   Future<void> refreshExperiences() async {
-    if (_memberId == null) {
-      _memberId = await _repository.getMemberIdByAuthUserId(currentUserUid);
-    }
+    _memberId ??= await _repository.getMemberIdByAuthUserId(currentUserUid);
     _refreshStreams();
     notifyListeners();
   }

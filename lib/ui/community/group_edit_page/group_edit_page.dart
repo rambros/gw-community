@@ -7,8 +7,8 @@ import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/ui/community/group_edit_page/view_model/group_edit_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
-import 'package:gw_community/ui/core/widgets/user_avatar.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
+import 'package:gw_community/ui/core/widgets/user_avatar.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
 
@@ -182,13 +182,13 @@ class GroupEditPageView extends StatelessWidget {
                                 },
                               ),
                             ),
-                            // Welcome Message Field
+                            // More Information Field
                             Padding(
                               padding: const EdgeInsetsDirectional.fromSTEB(4.0, 8.0, 4.0, 8.0),
                               child: TextFormField(
-                                controller: viewModel.welcomeMessageController,
+                                controller: viewModel.moreInformationController,
                                 decoration: InputDecoration(
-                                  labelText: 'Welcome message',
+                                  labelText: 'More information',
                                   labelStyle: AppTheme.of(context).labelLarge.override(
                                         font: GoogleFonts.poppins(),
                                         color: AppTheme.of(context).primary,
@@ -223,47 +223,7 @@ class GroupEditPageView extends StatelessWidget {
                                 },
                               ),
                             ),
-                            // Policy Message Field
-                            Padding(
-                              padding: const EdgeInsetsDirectional.fromSTEB(4.0, 8.0, 4.0, 8.0),
-                              child: TextFormField(
-                                controller: viewModel.policyMessageController,
-                                decoration: InputDecoration(
-                                  labelText: 'Policy message',
-                                  labelStyle: AppTheme.of(context).labelLarge.override(
-                                        font: GoogleFonts.poppins(),
-                                        color: AppTheme.of(context).primary,
-                                      ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: AppTheme.of(context).alternate,
-                                      width: 1.0,
-                                    ),
-                                    borderRadius: BorderRadius.circular(16.0),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: AppTheme.of(context).alternate,
-                                      width: 1.0,
-                                    ),
-                                    borderRadius: BorderRadius.circular(16.0),
-                                  ),
-                                  filled: true,
-                                  fillColor: const Color(0xFFF9FAFB),
-                                ),
-                                style: AppTheme.of(context).bodyMedium.override(
-                                      font: GoogleFonts.lexendDeca(),
-                                      color: AppTheme.of(context).secondary,
-                                    ),
-                                maxLines: 5,
-                                validator: (val) {
-                                  if (val == null || val.isEmpty) {
-                                    return 'Field is required';
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ),
+
                             // Privacy Toggle
                             Padding(
                               padding: const EdgeInsetsDirectional.fromSTEB(4.0, 8.0, 4.0, 8.0),

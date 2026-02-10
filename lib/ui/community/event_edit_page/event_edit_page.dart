@@ -131,6 +131,88 @@ class _EventEditFormState extends State<_EventEditForm> {
     return null;
   }
 
+  Widget _buildImageSection(BuildContext context, EventEditViewModel vm) {
+    final imageUrl = vm.displayImageUrl;
+    final hasImage = imageUrl != null && imageUrl.isNotEmpty && imageUrl != '';
+
+    return Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(4.0, 8.0, 4.0, 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Event Header Image',
+            style: AppTheme.of(context).labelLarge.override(
+                  font: GoogleFonts.poppins(
+                    fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                    fontStyle: AppTheme.of(context).labelLarge.fontStyle,
+                  ),
+                  color: AppTheme.of(context).primary,
+                ),
+          ),
+          const SizedBox(height: 8.0),
+          if (hasImage)
+            Container(
+              width: double.infinity,
+              height: 140.0,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8.0),
+                border: Border.all(
+                  color: AppTheme.of(context).alternate,
+                  width: 1.0,
+                ),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: Image.network(
+                  imageUrl,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      color: AppTheme.of(context).alternate,
+                      child: Icon(
+                        Icons.broken_image,
+                        color: AppTheme.of(context).secondaryText,
+                        size: 40.0,
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          const SizedBox(height: 8.0),
+          FFButtonWidget(
+            onPressed: vm.isSaving ? null : () => vm.uploadImage(context),
+            text: hasImage ? 'Change Image' : 'Upload Image',
+            icon: Icon(
+              hasImage ? Icons.edit : Icons.upload,
+              size: 20.0,
+              color: AppTheme.of(context).primaryBackground,
+            ),
+            options: FFButtonOptions(
+              height: 44.0,
+              padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+              color: AppTheme.of(context).primary,
+              textStyle: AppTheme.of(context).labelMedium.override(
+                    font: GoogleFonts.poppins(
+                      fontWeight: AppTheme.of(context).labelMedium.fontWeight,
+                      fontStyle: AppTheme.of(context).labelMedium.fontStyle,
+                    ),
+                    color: AppTheme.of(context).primaryBackground,
+                  ),
+              elevation: 1.0,
+              borderSide: BorderSide(
+                color: AppTheme.of(context).secondaryBackground,
+                width: 0.5,
+              ),
+              borderRadius: BorderRadius.circular(12.0),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<EventEditViewModel>();
@@ -148,6 +230,7 @@ class _EventEditFormState extends State<_EventEditForm> {
           child: SingleChildScrollView(
             child: Column(
               children: [
+                _buildImageSection(context, vm),
                 _buildTextField(context, vm.titleController, vm.titleFocus, 'Title'),
                 _buildTextField(context, vm.facilitatorController, vm.facilitatorFocus, 'Facilitator'),
                 _buildTextField(

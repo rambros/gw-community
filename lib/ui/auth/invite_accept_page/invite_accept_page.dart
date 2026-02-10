@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
-import 'view_model/invite_accept_view_model.dart';
+import 'package:gw_community/ui/auth/invite_accept_page/view_model/invite_accept_view_model.dart';
 
 class InviteAcceptPage extends StatefulWidget {
   const InviteAcceptPage({super.key, required this.token});

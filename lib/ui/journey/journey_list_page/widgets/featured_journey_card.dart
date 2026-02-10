@@ -112,7 +112,7 @@ class FeaturedJourneyCard extends StatelessWidget {
                       const SizedBox(height: 12.0),
                       FFButtonWidget(
                         onPressed: onTap,
-                        text: isCompleted ? 'VIEW AGAIN' : 'RESUME',
+                        text: isCompleted ? 'VIEW AGAIN' : (journeyStatus != null ? 'RESUME' : 'START'),
                         options: FFButtonOptions(
                           width: 120.0,
                           height: 36.0,

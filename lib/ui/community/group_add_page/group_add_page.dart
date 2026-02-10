@@ -178,13 +178,13 @@ class GroupAddPageView extends StatelessWidget {
                                 },
                               ),
                             ),
-                            // Welcome Message Field
+                            // More Information Field
                             Padding(
                               padding: const EdgeInsetsDirectional.fromSTEB(4.0, 8.0, 4.0, 8.0),
                               child: TextFormField(
-                                controller: viewModel.welcomeMessageController,
+                                controller: viewModel.moreInformationController,
                                 decoration: InputDecoration(
-                                  labelText: 'Welcome message',
+                                  labelText: 'More information',
                                   labelStyle: AppTheme.of(context).labelLarge.override(
                                         font: GoogleFonts.poppins(),
                                         color: AppTheme.of(context).primary,
@@ -219,47 +219,7 @@ class GroupAddPageView extends StatelessWidget {
                                 },
                               ),
                             ),
-                            // Policy Message Field
-                            Padding(
-                              padding: const EdgeInsetsDirectional.fromSTEB(4.0, 8.0, 4.0, 8.0),
-                              child: TextFormField(
-                                controller: viewModel.policyMessageController,
-                                decoration: InputDecoration(
-                                  labelText: 'Policy message',
-                                  labelStyle: AppTheme.of(context).labelLarge.override(
-                                        font: GoogleFonts.poppins(),
-                                        color: AppTheme.of(context).primary,
-                                      ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: AppTheme.of(context).alternate,
-                                      width: 1.0,
-                                    ),
-                                    borderRadius: BorderRadius.circular(16.0),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: AppTheme.of(context).alternate,
-                                      width: 1.0,
-                                    ),
-                                    borderRadius: BorderRadius.circular(16.0),
-                                  ),
-                                  filled: true,
-                                  fillColor: const Color(0xFFF9FAFB),
-                                ),
-                                style: AppTheme.of(context).bodyMedium.override(
-                                      font: GoogleFonts.lexendDeca(),
-                                      color: AppTheme.of(context).secondary,
-                                    ),
-                                maxLines: 5,
-                                validator: (val) {
-                                  if (val == null || val.isEmpty) {
-                                    return 'Field is required';
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ),
+
                             // Managers Dropdown
                             Padding(
                               padding: const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 0.0, 0.0),
@@ -285,7 +245,8 @@ class GroupAddPageView extends StatelessWidget {
                                 child: FlutterFlowDropDown<String>(
                                   multiSelectController: FormListFieldController<String>(viewModel.selectedManagerIds),
                                   options: viewModel.availableManagers.map((e) => e.id).toList(),
-                                  optionLabels: viewModel.availableManagers.map((e) => e.displayName ?? 'Unknown').toList(),
+                                  optionLabels:
+                                      viewModel.availableManagers.map((e) => e.displayName ?? 'Unknown').toList(),
                                   onMultiSelectChanged: (val) => viewModel.setSelectedManagers(val),
                                   width: double.infinity,
                                   height: 50.0,

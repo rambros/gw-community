@@ -3,8 +3,8 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/ui/community/community_page/widgets/experience_card_widget.dart';
-import 'package:gw_community/ui/community/group_details_page/view_model/group_details_view_model.dart';
 import 'package:gw_community/ui/community/experience_add_page/experience_add_page.dart';
+import 'package:gw_community/ui/community/group_details_page/view_model/group_details_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
@@ -29,19 +29,12 @@ class GroupExperiencesTab extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Share a genuine experience from your practice.',
+                      'A space to share your experiences, inspire others, and receive good wishes from the community',
                       style: AppTheme.of(context).titleSmall.override(
                             font: GoogleFonts.lexendDeca(
                               fontWeight: FontWeight.normal,
                             ),
-                            fontSize: 16.0,
-                          ),
-                    ),
-                    Text(
-                      'Your words may inspire others.',
-                      style: AppTheme.of(context).bodySmall.override(
-                            font: GoogleFonts.lexendDeca(),
-                            color: AppTheme.of(context).primary,
+                            color: AppTheme.of(context).secondary,
                             fontSize: 14.0,
                           ),
                     ),

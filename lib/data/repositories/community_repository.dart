@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 
+import 'package:gw_community/data/services/supabase/database/tables/cc_settings.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 
 class CommunityRepository {
@@ -121,5 +122,59 @@ class CommunityRepository {
         id,
       ),
     );
+  }
+
+  // Key used in the cc_settings table
+  static const String _guidelinesKey = 'community_guidelines';
+
+  /// Fetches the community guidelines content from cc_settings.
+  Future<String?> getCommunityGuidelines() async {
+    try {
+      final rows = await CcSettingsTable().queryRows(
+        queryFn: (q) => q.eq('setting_key', _guidelinesKey),
+      );
+
+      if (rows.isNotEmpty) {
+        return rows.first.value;
+      }
+      return null;
+    } catch (e) {
+      debugPrint('Error fetching community guidelines: $e');
+      return null;
+    }
+  }
+
+  /// Updates the community guidelines content.
+  Future<void> updateCommunityGuidelines(String content) async {
+    try {
+      // Check existence
+      final rows = await CcSettingsTable().queryRows(
+        queryFn: (q) => q.eq('setting_key', _guidelinesKey),
+      );
+
+      if (rows.isNotEmpty) {
+        // Update
+        await SupaFlow.client.from('cc_settings').update({
+          'value': content,
+          'updated_at': DateTime.now().toIso8601String(),
+        }).eq('setting_key', _guidelinesKey);
+      } else {
+        // Insert
+        await SupaFlow.client.from('cc_settings').insert({
+          'setting_key': _guidelinesKey,
+          'setting_name': 'Community Guidelines',
+          'description': 'Global community guidelines and policy.',
+          'value': content,
+          'value_type': 'string',
+          'is_active': true,
+          'is_encrypted': false,
+          'created_at': DateTime.now().toIso8601String(),
+          'updated_at': DateTime.now().toIso8601String(),
+        });
+      }
+    } catch (e) {
+      debugPrint('Error updating community guidelines: $e');
+      throw Exception('Failed to update community guidelines: $e');
+    }
   }
 }

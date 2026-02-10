@@ -18,16 +18,14 @@ class GroupRepository {
   Future<CcGroupsRow?> createGroup({
     required String name,
     required String description,
-    required String welcomeMessage,
-    required String policyMessage,
+    required String moreInformation,
     required String imageUrl,
     String privacy = 'Public',
   }) async {
     return await CcGroupsTable().insert({
       'name': name,
       'description': description,
-      'welcome_message': welcomeMessage,
-      'policy_message': policyMessage,
+      'more_information': moreInformation,
       'group_image_url': imageUrl,
       'group_privacy': privacy,
       'number_members': 1, // Start with 1 member (creator)
@@ -41,16 +39,14 @@ class GroupRepository {
     required int id,
     String? name,
     String? description,
-    String? welcomeMessage,
-    String? policyMessage,
+    String? moreInformation,
     String? imageUrl,
     String? privacy,
   }) async {
     final data = <String, dynamic>{'updated_at': supaSerialize<DateTime>(DateTime.now())};
     if (name != null) data['name'] = name;
     if (description != null) data['description'] = description;
-    if (welcomeMessage != null) data['welcome_message'] = welcomeMessage;
-    if (policyMessage != null) data['policy_message'] = policyMessage;
+    if (moreInformation != null) data['more_information'] = moreInformation;
     if (imageUrl != null) data['group_image_url'] = imageUrl;
     if (privacy != null) data['group_privacy'] = privacy;
 
@@ -110,9 +106,9 @@ class GroupRepository {
   /// Fetches users with GROUP_MANAGER role
   Future<List<CcMembersRow>> getGroupManagers() async {
     final result = await CcMembersTable().queryRows(
-      queryFn: (q) => q
-          .containsOrNull('user_role', [UserRole.groupManager.value, 'Manager', 'group_manager'])
-          .order('display_name', ascending: true),
+      queryFn: (q) => q.containsOrNull('user_role', [UserRole.groupManager.value, 'Manager', 'group_manager']).order(
+          'display_name',
+          ascending: true),
     );
     return result;
   }

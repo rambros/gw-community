@@ -135,34 +135,62 @@ abstract class AppTheme {
 }
 
 class LightModeTheme extends AppTheme {
+  @override
   late Color primary = GWPalette.purplePrimary;
+  @override
   late Color secondary = GWPalette.purpleSecondary;
+  @override
   late Color tertiary = GWPalette.yellowTertiary;
+  @override
   late Color alternate = GWPalette.lilacAlternate;
+  @override
   late Color primaryText = GWPalette.textPrimary;
+  @override
   late Color secondaryText = GWPalette.textSecondary;
+  @override
   late Color primaryBackground = GWPalette.bgPrimary;
+  @override
   late Color secondaryBackground = GWPalette.bgSecondary;
+  @override
   late Color accent1 = GWPalette.gray1;
+  @override
   late Color accent2 = GWPalette.gray2;
+  @override
   late Color accent3 = GWPalette.gray3;
+  @override
   late Color accent4 = GWPalette.gray4;
+  @override
   late Color success = GWPalette.success;
+  @override
   late Color warning = GWPalette.warning;
+  @override
   late Color error = GWPalette.error;
+  @override
   late Color info = GWPalette.info;
 
+  @override
   late Color rebeccaPurple = GWPalette.rebeccaPurple;
+  @override
   late Color copperRed = GWPalette.copperRed;
+  @override
   late Color orangeYellowCrayola = GWPalette.orangeYellow;
+  @override
   late Color cadetGrey = GWPalette.cadetGrey;
+  @override
   late Color beauBlue = GWPalette.beauBlue;
+  @override
   late Color transparent = GWPalette.black; // Kept as 'transparent' for compatibility, but mapped to Black
+  @override
   late Color grayIcon = GWPalette.grayIcon;
+  @override
   late Color gray200 = GWPalette.gray200;
+  @override
   late Color gray600 = GWPalette.gray600;
+  @override
   late Color black600 = GWPalette.black600;
+  @override
   late Color tertiary400 = GWPalette.teal;
+  @override
   late Color textColor = GWPalette.textDark;
 }
 
@@ -219,106 +247,151 @@ class ThemeTypography extends Typography {
 
   final AppTheme theme;
 
+  @override
   String get displayLargeFamily => 'Poppins';
+  @override
   bool get displayLargeIsCustom => false;
+  @override
   TextStyle get displayLarge => GoogleFonts.poppins(
         color: theme.primaryText,
         fontWeight: FontWeight.normal,
         fontSize: 57.0,
       );
+  @override
   String get displayMediumFamily => 'Poppins';
+  @override
   bool get displayMediumIsCustom => false;
+  @override
   TextStyle get displayMedium => GoogleFonts.poppins(
         color: theme.primaryText,
         fontWeight: FontWeight.normal,
         fontSize: 45.0,
       );
+  @override
   String get displaySmallFamily => 'Lexend Deca';
+  @override
   bool get displaySmallIsCustom => false;
+  @override
   TextStyle get displaySmall => GoogleFonts.lexendDeca(
         color: theme.secondary, // Dynamic
         fontWeight: FontWeight.w600,
         fontSize: 28.0,
       );
+  @override
   String get headlineLargeFamily => 'Poppins';
+  @override
   bool get headlineLargeIsCustom => false;
+  @override
   TextStyle get headlineLarge => GoogleFonts.poppins(
         color: theme.primaryText,
         fontWeight: FontWeight.normal,
         fontSize: 32.0,
       );
+  @override
   String get headlineMediumFamily => 'Lexend Deca';
+  @override
   bool get headlineMediumIsCustom => false;
+  @override
   TextStyle get headlineMedium => GoogleFonts.lexendDeca(
         color: theme.secondary, // Dynamic
         fontWeight: FontWeight.w500,
         fontSize: 24.0,
       );
+  @override
   String get headlineSmallFamily => 'Lexend Deca';
+  @override
   bool get headlineSmallIsCustom => false;
+  @override
   TextStyle get headlineSmall => GoogleFonts.lexendDeca(
         color: theme.secondary, // Dynamic
         fontWeight: FontWeight.w500,
         fontSize: 20.0,
       );
+  @override
   String get titleLargeFamily => 'Poppins';
+  @override
   bool get titleLargeIsCustom => false;
+  @override
   TextStyle get titleLarge => GoogleFonts.poppins(
         color: theme.primaryText,
         fontWeight: FontWeight.w500,
         fontSize: 22.0,
       );
+  @override
   String get titleMediumFamily => 'Lexend Deca';
+  @override
   bool get titleMediumIsCustom => false;
+  @override
   TextStyle get titleMedium => GoogleFonts.lexendDeca(
         color: theme.grayIcon, // Dynamic
         fontWeight: FontWeight.w500,
         fontSize: 18.0,
       );
+  @override
   String get titleSmallFamily => 'Lexend Deca';
+  @override
   bool get titleSmallIsCustom => false;
+  @override
   TextStyle get titleSmall => GoogleFonts.lexendDeca(
         color: theme.secondary, // Dynamic
         fontWeight: FontWeight.normal,
         fontSize: 16.0,
       );
+  @override
   String get labelLargeFamily => 'Poppins';
+  @override
   bool get labelLargeIsCustom => false;
+  @override
   TextStyle get labelLarge => GoogleFonts.poppins(
         color: theme.primaryText,
         fontWeight: FontWeight.w500,
         fontSize: 14.0,
       );
+  @override
   String get labelMediumFamily => 'Poppins';
+  @override
   bool get labelMediumIsCustom => false;
+  @override
   TextStyle get labelMedium => GoogleFonts.poppins(
         color: theme.primaryText,
         fontWeight: FontWeight.w500,
         fontSize: 12.0,
       );
+  @override
   String get labelSmallFamily => 'Poppins';
+  @override
   bool get labelSmallIsCustom => false;
+  @override
   TextStyle get labelSmall => GoogleFonts.poppins(
         color: theme.primaryText,
         fontWeight: FontWeight.w500,
         fontSize: 11.0,
       );
+  @override
   String get bodyLargeFamily => 'Poppins';
+  @override
   bool get bodyLargeIsCustom => false;
+  @override
   TextStyle get bodyLarge => GoogleFonts.poppins(
         color: theme.primaryText,
         fontWeight: FontWeight.normal,
         fontSize: 16.0,
       );
+  @override
   String get bodyMediumFamily => 'Lexend Deca';
+  @override
   bool get bodyMediumIsCustom => false;
+  @override
   TextStyle get bodyMedium => GoogleFonts.lexendDeca(
         color: theme.grayIcon, // Dynamic
         fontWeight: FontWeight.normal,
         fontSize: 14.0,
       );
+  @override
   String get bodySmallFamily => 'Lexend Deca';
+  @override
   bool get bodySmallIsCustom => false;
+  @override
   TextStyle get bodySmall => GoogleFonts.lexendDeca(
         color: theme.secondary, // Dynamic
         fontWeight: FontWeight.normal,

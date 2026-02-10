@@ -160,7 +160,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
   }
 
   Widget _buildHeroImage(BuildContext context, EventDetailsViewModel viewModel) {
-    final imageUrl = viewModel.event?.eventAudioUrl ?? 'https://picsum.photos/seed/945/600';
+    final imageUrl = viewModel.event?.eventImageUrl ?? 'https://picsum.photos/seed/945/600';
     // Se o URL não for uma imagem (ex: mp3), podemos usar o placeholder
     final isImage = imageUrl.contains(RegExp(r'\.(jpg|jpeg|png|webp|gif)', caseSensitive: false));
 

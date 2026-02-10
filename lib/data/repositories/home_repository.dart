@@ -11,8 +11,11 @@ class HomeRepository {
 
   /// Fetches user journeys
   Future<List<CcUserJourneysRow>> getUserJourneys(String userId) async {
+    // Filter user journeys by ensuring the related journey has status='published'
     return await CcUserJourneysTable().queryRows(
-      queryFn: (q) => q.eqOrNull('user_id', userId),
+      queryFn: (q) => q
+          .eqOrNull('user_id', userId)
+          .inFilter('cc_journeys.status', ['published', 'Published']).select('*, cc_journeys!inner(status)'),
     );
   }
 
@@ -30,6 +33,20 @@ class HomeRepository {
       queryFn: (q) => q.eqOrNull('user_id', userId).eqOrNull('journey_id', journeyId),
     );
     return rows.isNotEmpty ? rows.first : null;
+  }
+
+  /// Fetches all journey progress records for a user
+  Future<List<CcViewUserJourneysRow>> getAllUserJourneyProgress(String userId) async {
+    return await CcViewUserJourneysTable().queryRows(
+      queryFn: (q) => q.eqOrNull('user_id', userId),
+    );
+  }
+
+  /// Fetches all completed steps for a user across all journeys
+  Future<List<CcViewUserStepsRow>> getAllCompletedSteps(String userId) async {
+    return await CcViewUserStepsTable().queryRows(
+      queryFn: (q) => q.eqOrNull('user_id', userId).inFilter('step_status', ['completed', 'Completed']),
+    );
   }
 
   /// Fetches upcoming events

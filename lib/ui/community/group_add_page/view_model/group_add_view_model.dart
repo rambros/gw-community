@@ -16,8 +16,7 @@ class GroupAddViewModel extends ChangeNotifier {
   // Controllers
   final nameController = TextEditingController();
   final descriptionController = TextEditingController();
-  final welcomeMessageController = TextEditingController();
-  final policyMessageController = TextEditingController();
+  final moreInformationController = TextEditingController();
 
   // State
   List<String> _selectedManagerIds = [];
@@ -116,8 +115,7 @@ class GroupAddViewModel extends ChangeNotifier {
       final group = await _groupRepository.createGroup(
         name: nameController.text.trim(),
         description: descriptionController.text.trim(),
-        welcomeMessage: welcomeMessageController.text.trim(),
-        policyMessage: policyMessageController.text.trim(),
+        moreInformation: moreInformationController.text.trim(),
         imageUrl: _uploadedImageUrl!,
         privacy: 'Public', // Defaulting to Public as per original code implicit behavior or UI
       );
@@ -152,8 +150,7 @@ class GroupAddViewModel extends ChangeNotifier {
   void dispose() {
     nameController.dispose();
     descriptionController.dispose();
-    welcomeMessageController.dispose();
-    policyMessageController.dispose();
+    moreInformationController.dispose();
     super.dispose();
   }
 }

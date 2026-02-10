@@ -17,8 +17,7 @@ class GroupEditViewModel extends ChangeNotifier {
   // Controllers
   late TextEditingController nameController;
   late TextEditingController descriptionController;
-  late TextEditingController welcomeMessageController;
-  late TextEditingController policyMessageController;
+  late TextEditingController moreInformationController;
 
   // State
   List<String> _selectedManagerIds = [];
@@ -60,8 +59,7 @@ class GroupEditViewModel extends ChangeNotifier {
       // Initialize controllers with existing data
       nameController = TextEditingController(text: group.name);
       descriptionController = TextEditingController(text: group.description);
-      welcomeMessageController = TextEditingController(text: group.welcomeMessage);
-      policyMessageController = TextEditingController(text: group.policyMessage);
+      moreInformationController = TextEditingController(text: group.moreInformation);
 
       // Initialize privacy
       _isPrivate = (group.groupPrivacy?.toLowerCase() ?? 'public') == 'private';
@@ -201,8 +199,7 @@ class GroupEditViewModel extends ChangeNotifier {
         id: group.id,
         name: nameController.text.trim(),
         description: descriptionController.text.trim(),
-        welcomeMessage: welcomeMessageController.text.trim(),
-        policyMessage: policyMessageController.text.trim(),
+        moreInformation: moreInformationController.text.trim(),
         imageUrl: _uploadedImageUrl, // Only pass if new image uploaded, repository handles null
         privacy: _isPrivate ? 'Private' : 'Public', // Update privacy
       );
@@ -245,8 +242,7 @@ class GroupEditViewModel extends ChangeNotifier {
   void dispose() {
     nameController.dispose();
     descriptionController.dispose();
-    welcomeMessageController.dispose();
-    policyMessageController.dispose();
+    moreInformationController.dispose();
     _debounce?.cancel();
     super.dispose();
   }

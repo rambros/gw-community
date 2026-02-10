@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/ui/community/group_details_page/group_details_page.dart';
 import 'package:gw_community/ui/community/widgets/group_card.dart';
-import 'package:gw_community/data/services/supabase/supabase.dart';
-import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/widgets/notification_bell/notification_bell_widget.dart';
 import 'package:gw_community/ui/home/home_page/view_model/home_view_model.dart';
 import 'package:gw_community/ui/home/home_page/widgets/home_event_card.dart';
 import 'package:gw_community/ui/home/home_page/widgets/home_journey_card.dart';
+import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -66,24 +66,43 @@ class _HomePageState extends State<HomePage> {
                     _buildCommunityMessage(context),
                     _buildSectionTitle(context, 'My Journeys'),
 
-                    // Journey Card
-                    Padding(
-                      padding: const EdgeInsetsDirectional.fromSTEB(0.0, 6.0, 0.0, 6.0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 4.0, 0.0),
-                            child: HomeJourneyCard(
-                              journeyDetails: viewModel.journeyDetails,
-                              userJourneyProgress: viewModel.userJourneyProgress,
-                              hasStartedJourney: viewModel.isJourney1Started,
+                    // Journey Cards List
+                    if (viewModel.userJourneyProgressList.isEmpty)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+                        child: Text(
+                          'No journeys started yet',
+                          style: AppTheme.of(context).bodyMedium.override(
+                                color: AppTheme.of(context).secondaryText,
+                              ),
+                        ),
+                      )
+                    else
+                      ListView.builder(
+                        padding: const EdgeInsets.symmetric(vertical: 6.0),
+                        primary: false,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: viewModel.userJourneyProgressList.length,
+                        itemBuilder: (context, index) {
+                          final progress = viewModel.userJourneyProgressList[index];
+                          return Padding(
+                            padding: const EdgeInsetsDirectional.fromSTEB(0.0, 6.0, 0.0, 6.0),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 4.0, 0.0),
+                                  child: HomeJourneyCard(
+                                    userJourneyProgress: progress,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
+                          );
+                        },
                       ),
-                    ),
 
                     _buildSectionTitle(context, 'Upcoming Events'),
 
@@ -97,7 +116,11 @@ class _HomePageState extends State<HomePage> {
                       itemCount: viewModel.upcomingEvents.length,
                       itemBuilder: (context, index) {
                         final event = viewModel.upcomingEvents[index];
-                        return HomeEventCard(eventRow: event);
+                        final groupName = viewModel.getGroupNameById(event.groupId);
+                        return HomeEventCard(
+                          eventRow: event,
+                          groupName: groupName,
+                        );
                       },
                     ),
 
@@ -185,7 +208,7 @@ class _HomePageState extends State<HomePage> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          'Where are a community of nn well wishers\ncreating together a new world',
+          'We are a community of well-wishers\ncreating a new world together',
           textAlign: TextAlign.center,
           style: AppTheme.of(context).bodyMedium.override(
                 color: Colors.black,

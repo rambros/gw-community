@@ -10,9 +10,11 @@ class HomeEventCard extends StatelessWidget {
   const HomeEventCard({
     super.key,
     required this.eventRow,
+    this.groupName,
   });
 
   final CcEventsRow eventRow;
+  final String? groupName;
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +86,7 @@ class HomeEventCard extends StatelessWidget {
                               mainAxisSize: MainAxisSize.max,
                               children: [
                                 Text(
-                                  'from  Good Wishes Team',
+                                  'from  ${groupName ?? 'Good Wishes Team'}',
                                   style: AppTheme.of(context).titleMedium.override(
                                         fontWeight: FontWeight.w300,
                                         fontSize: 12.0,
@@ -143,10 +145,18 @@ class HomeEventCard extends StatelessWidget {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(16.0),
                             child: Image.network(
-                              'https://picsum.photos/seed/256/600',
+                              eventRow.eventImageUrl ?? 'https://picsum.photos/seed/256/600',
                               width: 74.0,
                               height: 74.0,
                               fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Image.network(
+                                  'https://picsum.photos/seed/256/600',
+                                  width: 74.0,
+                                  height: 74.0,
+                                  fit: BoxFit.cover,
+                                );
+                              },
                             ),
                           ),
                         ),

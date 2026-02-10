@@ -25,7 +25,7 @@ class FavoriteActivityCard extends StatefulWidget {
 }
 
 class _FavoriteActivityCardState extends State<FavoriteActivityCard> {
-  int _favoriteVersion = 0;
+  final int _favoriteVersion = 0;
 
   @override
   Widget build(BuildContext context) {

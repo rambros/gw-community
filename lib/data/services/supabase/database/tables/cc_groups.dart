@@ -29,11 +29,8 @@ class CcGroupsRow extends SupabaseDataRow {
   String? get groupImageUrl => getField<String>('group_image_url');
   set groupImageUrl(String? value) => setField<String>('group_image_url', value);
 
-  String? get welcomeMessage => getField<String>('welcome_message');
-  set welcomeMessage(String? value) => setField<String>('welcome_message', value);
-
-  String? get policyMessage => getField<String>('policy_message');
-  set policyMessage(String? value) => setField<String>('policy_message', value);
+  String? get moreInformation => getField<String>('more_information');
+  set moreInformation(String? value) => setField<String>('more_information', value);
 
   int? get numberMembers => getField<int>('number_members');
   set numberMembers(int? value) => setField<int>('number_members', value);

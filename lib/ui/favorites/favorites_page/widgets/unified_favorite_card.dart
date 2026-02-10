@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:webviewx_plus/webviewx_plus.dart';
-
 import 'package:gw_community/data/repositories/favorites_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/domain/models/favorites/unified_favorite_item.dart';
@@ -13,6 +10,8 @@ import 'package:gw_community/ui/learn/content_view/content_view.dart';
 import 'package:gw_community/ui/learn/themes/learn_theme_extension.dart';
 import 'package:gw_community/utils/context_extensions.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
+import 'package:provider/provider.dart';
+import 'package:webviewx_plus/webviewx_plus.dart';
 
 /// Card unificado que exibe tanto recordings quanto activities
 class UnifiedFavoriteCard extends StatefulWidget {

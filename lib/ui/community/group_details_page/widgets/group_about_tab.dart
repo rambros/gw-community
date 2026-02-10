@@ -24,28 +24,8 @@ class GroupAboutTab extends StatelessWidget {
           children: [
             _buildSection(context, 'Description', group.description),
             if (viewModel.shouldShowOnlyAbout) ...[
-              const SizedBox(height: 24.0),
-              if (viewModel.canJoin)
-                Center(
-                  child: FFButtonWidget(
-                    onPressed: () => viewModel.joinGroup(),
-                    text: 'Join Group',
-                    options: FFButtonOptions(
-                      width: double.infinity,
-                      height: 50.0,
-                      padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      color: AppTheme.of(context).primary,
-                      textStyle: AppTheme.of(
-                        context,
-                      ).titleSmall.override(font: GoogleFonts.lexendDeca(), color: Colors.white, fontSize: 16.0),
-                      elevation: 2.0,
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                    showLoadingIndicator: viewModel.isJoining,
-                  ),
-                )
-              else if (group.groupPrivacy?.toLowerCase().trim() == 'private')
+              if (!viewModel.canJoin && group.groupPrivacy?.toLowerCase().trim() == 'private') ...[
+                const SizedBox(height: 24.0),
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(16.0),
@@ -68,11 +48,33 @@ class GroupAboutTab extends StatelessWidget {
                     ],
                   ),
                 ),
+              ],
             ],
             const SizedBox(height: 16.0),
-            _buildSection(context, 'Welcome Message', group.welcomeMessage),
-            const SizedBox(height: 16.0),
-            _buildSection(context, 'Policy Message', group.policyMessage),
+            if (group.moreInformation != null && group.moreInformation!.isNotEmpty)
+              _CollapsibleSection(title: 'More Information', content: group.moreInformation!),
+            if (viewModel.shouldShowOnlyAbout && viewModel.canJoin) ...[
+              const SizedBox(height: 24.0),
+              Center(
+                child: FFButtonWidget(
+                  onPressed: () => viewModel.joinGroup(),
+                  text: 'Join Group',
+                  options: FFButtonOptions(
+                    width: double.infinity,
+                    height: 50.0,
+                    padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                    iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                    color: AppTheme.of(context).primary,
+                    textStyle: AppTheme.of(
+                      context,
+                    ).titleSmall.override(font: GoogleFonts.lexendDeca(), color: Colors.white, fontSize: 16.0),
+                    elevation: 2.0,
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  showLoadingIndicator: viewModel.isJoining,
+                ),
+              ),
+            ],
             const SizedBox(height: 24.0),
             if (viewModel.isLoadingMembers)
               Center(child: SpinKitRipple(color: AppTheme.of(context).primary, size: 30.0))
@@ -100,7 +102,7 @@ class GroupAboutTab extends StatelessWidget {
           title,
           style: AppTheme.of(
             context,
-          ).titleSmall.override(font: GoogleFonts.lexendDeca(), color: AppTheme.of(context).secondary),
+          ).titleMedium.override(font: GoogleFonts.lexendDeca(), color: AppTheme.of(context).primary),
         ),
         const SizedBox(height: 4.0),
         Text(
@@ -195,6 +197,59 @@ class GroupAboutTab extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _CollapsibleSection extends StatefulWidget {
+  final String title;
+  final String content;
+
+  const _CollapsibleSection({required this.title, required this.content});
+
+  @override
+  State<_CollapsibleSection> createState() => _CollapsibleSectionState();
+}
+
+class _CollapsibleSectionState extends State<_CollapsibleSection> {
+  bool _isExpanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        InkWell(
+          onTap: () => setState(() => _isExpanded = !_isExpanded),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                widget.title,
+                style: AppTheme.of(context).titleMedium.override(
+                      font: GoogleFonts.lexendDeca(),
+                      color: AppTheme.of(context).primary,
+                    ),
+              ),
+              Icon(
+                _isExpanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
+                color: AppTheme.of(context).secondary,
+                size: 24.0,
+              ),
+            ],
+          ),
+        ),
+        if (_isExpanded)
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Text(
+              widget.content,
+              style: AppTheme.of(context).bodyMedium.override(
+                    color: AppTheme.of(context).textColor,
+                  ),
+            ),
+          ),
+      ],
     );
   }
 }

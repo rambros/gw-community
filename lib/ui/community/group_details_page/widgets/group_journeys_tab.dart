@@ -4,9 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/ui/community/group_details_page/view_model/group_details_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
-import 'package:gw_community/ui/journey/journeys_list_page/widgets/journey_card_widget.dart';
 import 'package:gw_community/ui/journey/journey_page/journey_page.dart';
-
+import 'package:gw_community/ui/journey/journeys_list_page/widgets/journey_card_widget.dart';
 import 'package:provider/provider.dart';
 
 class GroupJourneysTab extends StatelessWidget {

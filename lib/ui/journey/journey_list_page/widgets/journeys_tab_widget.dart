@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:gw_community/ui/journey/journey_list_page/view_model/journey_list_view_model.dart';
-import 'package:gw_community/ui/journey/journey_page/journey_page.dart';
-import 'package:gw_community/ui/journey/journey_list_page/widgets/journey_card.dart';
-import 'package:gw_community/ui/journey/journey_list_page/widgets/featured_journey_card.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
+import 'package:gw_community/ui/journey/journey_list_page/view_model/journey_list_view_model.dart';
+import 'package:gw_community/ui/journey/journey_list_page/widgets/featured_journey_card.dart';
+import 'package:gw_community/ui/journey/journey_list_page/widgets/journey_card.dart';
+import 'package:gw_community/ui/journey/journey_page/journey_page.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
 
@@ -44,12 +44,9 @@ class JourneysTabWidget extends StatelessWidget {
             padding: const EdgeInsetsDirectional.fromSTEB(12.0, 4.0, 12.0, 4.0),
             child: Builder(
               builder: (context) {
-                // 1. Get the featured journey from progress (where all details are combined)
-                final featuredProgress = viewModel.myJourneysProgress.where((p) => p.isFeatured).firstOrNull;
+                final allProgress = viewModel.myJourneysProgress.toList();
 
-                final myJourneysRows = viewModel.myJourneys.toList();
-
-                if (myJourneysRows.isEmpty && featuredProgress == null) {
+                if (allProgress.isEmpty) {
                   return Padding(
                     padding: const EdgeInsets.all(24.0),
                     child: Text(
@@ -60,6 +57,10 @@ class JourneysTabWidget extends StatelessWidget {
                     ),
                   );
                 }
+
+                // Separate featured from regular
+                final featuredProgress = allProgress.where((p) => p.isFeatured).firstOrNull;
+                final regularProgress = allProgress.where((p) => !p.isFeatured).toList();
 
                 return Column(
                   mainAxisSize: MainAxisSize.max,
@@ -84,18 +85,18 @@ class JourneysTabWidget extends StatelessWidget {
                         ),
                       ),
 
-                    // REGULAR CARDS (Exclude featured)
-                    ...myJourneysRows.where((row) => row.id != featuredProgress?.journeyId).map((myJourneysListItem) {
+                    // REGULAR CARDS
+                    ...regularProgress.map((progress) {
                       return JourneyCard(
-                        journeyRow: myJourneysListItem,
+                        journeyRow: progress,
                         isStarted: true,
-                        stepsCompleted: viewModel.getStepsCompleted(myJourneysListItem.id),
-                        journeyStatus: viewModel.getJourneyStatus(myJourneysListItem.id),
+                        stepsCompleted: progress.stepsCompleted,
+                        journeyStatus: progress.journeyStatus,
                         onTap: () async {
                           context.pushNamed(
                             JourneyPage.routeName,
                             queryParameters: {
-                              'journeyId': myJourneysListItem.id.toString(),
+                              'journeyId': progress.journeyId.toString(),
                             }.withoutNulls,
                             extra: <String, dynamic>{
                               kTransitionInfoKey: const TransitionInfo(

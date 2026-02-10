@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:app_links/app_links.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -6,18 +9,18 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:gw_community/config/audio/audio_service.dart';
 import 'package:gw_community/config/firebase/firebase_config.dart';
+import 'package:gw_community/data/repositories/announcement_repository.dart';
 import 'package:gw_community/data/repositories/auth_repository.dart';
 import 'package:gw_community/data/repositories/auth_repository_impl.dart';
 import 'package:gw_community/data/repositories/community_repository.dart';
 import 'package:gw_community/data/repositories/event_repository.dart';
+import 'package:gw_community/data/repositories/experience_repository.dart';
 import 'package:gw_community/data/repositories/favorites_repository.dart';
 import 'package:gw_community/data/repositories/group_repository.dart';
 import 'package:gw_community/data/repositories/home_repository.dart';
 import 'package:gw_community/data/repositories/journal_repository.dart';
 import 'package:gw_community/data/repositories/journeys_repository.dart';
 import 'package:gw_community/data/repositories/learn_repository.dart';
-import 'package:gw_community/data/repositories/announcement_repository.dart';
-import 'package:gw_community/data/repositories/experience_repository.dart';
 import 'package:gw_community/data/repositories/step_activities_repository.dart';
 import 'package:gw_community/data/repositories/unsplash_repository.dart';
 import 'package:gw_community/data/repositories/user_profile_repository.dart';
@@ -47,8 +50,6 @@ import 'package:gw_community/ui/utility/unsplash_page/view_model/unsplash_view_m
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:gw_community/utils/internationalization.dart';
 import 'package:provider/provider.dart';
-import 'package:app_links/app_links.dart';
-import 'dart:async';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -6,10 +6,12 @@ import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/domain/models/app_auth_user.dart';
 import 'package:gw_community/index.dart';
 import 'package:gw_community/ui/auth/invite_accept_page/invite_accept_page.dart';
-import 'package:gw_community/ui/community/group_moderation_page/group_moderation_page.dart';
 import 'package:gw_community/ui/community/group_details_page/member_management_page/member_management_page.dart';
+import 'package:gw_community/ui/community/group_moderation_page/group_moderation_page.dart';
 import 'package:gw_community/ui/core/nav_bar/nav_bar_page.dart';
 import 'package:gw_community/ui/journey/journey_list_page/journey_list_page.dart';
+import 'package:gw_community/ui/community/community_guidelines_page/community_guidelines_page.dart';
+import 'package:gw_community/ui/community/community_guidelines_edit_page/community_guidelines_edit_page.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
 
@@ -74,348 +76,360 @@ class AppStateNotifier extends ChangeNotifier {
 }
 
 GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
-  initialLocation: '/',
-  debugLogDiagnostics: false,
-  refreshListenable: appStateNotifier,
-  navigatorKey: appNavigatorKey,
-  errorBuilder: (context, state) => appStateNotifier.loggedIn ? const NavBarPage() : const LoginPage(),
-  redirect: (context, state) {
-    if (appStateNotifier.loading) {
-      return null;
-    }
-    final loggedIn = appStateNotifier.loggedIn;
-    final publicRoutes = [
-      '/',
-      SplashPage.routePath,
-      LoginPage.routePath,
-      CreateAccountPage.routePath,
-      ForgotPasswordPage.routePath,
-      InviteAcceptPage.routePath,
-    ];
-    // Check if current path matches any public route path or name
-    final isPublicRoute = publicRoutes.contains(state.uri.path);
-
-    if (!loggedIn && !isPublicRoute) {
-      debugPrint('ROUTER: User not logged in and on protected page ${state.uri.path}. Redirecting to Login.');
-      return LoginPage.routePath;
-    }
-
-    if (loggedIn && (state.uri.path == LoginPage.routePath || state.uri.path == CreateAccountPage.routePath)) {
-      debugPrint('ROUTER: User logged in and on auth page. Redirecting to Home.');
-      return '/';
-    }
-
-    return null;
-  },
-  routes: [
-    FFRoute(
-      name: '_initialize',
-      path: '/',
-      builder: (context, _) {
+      initialLocation: '/',
+      debugLogDiagnostics: false,
+      refreshListenable: appStateNotifier,
+      navigatorKey: appNavigatorKey,
+      errorBuilder: (context, state) => appStateNotifier.loggedIn ? const NavBarPage() : const LoginPage(),
+      redirect: (context, state) {
         if (appStateNotifier.loading) {
-          return const SplashPage();
+          return null;
         }
-        return appStateNotifier.loggedIn ? const NavBarPage() : const LoginPage();
+        final loggedIn = appStateNotifier.loggedIn;
+        final publicRoutes = [
+          '/',
+          SplashPage.routePath,
+          LoginPage.routePath,
+          CreateAccountPage.routePath,
+          ForgotPasswordPage.routePath,
+          InviteAcceptPage.routePath,
+        ];
+        // Check if current path matches any public route path or name
+        final isPublicRoute = publicRoutes.contains(state.uri.path);
+
+        if (!loggedIn && !isPublicRoute) {
+          debugPrint('ROUTER: User not logged in and on protected page ${state.uri.path}. Redirecting to Login.');
+          return LoginPage.routePath;
+        }
+
+        if (loggedIn && (state.uri.path == LoginPage.routePath || state.uri.path == CreateAccountPage.routePath)) {
+          debugPrint('ROUTER: User logged in and on auth page. Redirecting to Home.');
+          return '/';
+        }
+
+        return null;
       },
-    ),
-    FFRoute(name: SplashPage.routeName, path: SplashPage.routePath, builder: (context, params) => const SplashPage()),
-    FFRoute(name: LoginPage.routeName, path: LoginPage.routePath, builder: (context, params) => const LoginPage()),
-    FFRoute(
-      name: CreateAccountPage.routeName,
-      path: CreateAccountPage.routePath,
-      builder: (context, params) => const CreateAccountPage(),
-    ),
-    FFRoute(
-      name: UserCreateProfilePage.routeName,
-      path: UserCreateProfilePage.routePath,
-      builder: (context, params) => const UserCreateProfilePage(),
-    ),
-    FFRoute(
-      name: ForgotPasswordPage.routeName,
-      path: ForgotPasswordPage.routePath,
-      builder: (context, params) => const ForgotPasswordPage(),
-    ),
-    FFRoute(
-      name: InviteAcceptPage.routeName,
-      path: InviteAcceptPage.routePath,
-      builder: (context, params) => InviteAcceptPage(token: params.getParam('token', ParamType.String)),
-    ),
-    FFRoute(
-      name: HomePage.routeName,
-      path: HomePage.routePath,
-      builder: (context, params) => params.isEmpty ? const NavBarPage(initialPage: 'homePage') : const HomePage(),
-    ),
-    FFRoute(
-      name: LearnListPage.routeName,
-      path: LearnListPage.routePath,
-      builder: (context, params) => params.isEmpty
-          ? const NavBarPage(initialPage: 'learnListPage')
-          : LearnListPage(
-              journeyId: params.getParam('journeyId', ParamType.int),
-              groupId: params.getParam('groupId', ParamType.int),
-              customTitle: params.getParam('customTitle', ParamType.String),
-            ),
-    ),
-    FFRoute(
-      name: JourneysListPage.routeName,
-      path: JourneysListPage.routePath,
-      builder: (context, params) => const JourneysListPage(),
-    ),
-    FFRoute(
-      name: UserProfilePage.routeName,
-      path: UserProfilePage.routePath,
-      builder: (context, params) =>
-          params.isEmpty ? const NavBarPage(initialPage: 'userProfilePage') : const UserProfilePage(),
-    ),
-    FFRoute(
-      name: EventDetailsPage.routeName,
-      path: EventDetailsPage.routePath,
-      builder: (context, params) => EventDetailsPage(
-        eventRow: params.getParam<CcEventsRow>('eventRow', ParamType.SupabaseRow),
-        groupId: params.getParam('groupId', ParamType.int),
-      ),
-    ),
-    FFRoute(
-      name: UserEditProfilePage.routeName,
-      path: UserEditProfilePage.routePath,
-      builder: (context, params) => const UserEditProfilePage(),
-    ),
-    FFRoute(
-      name: ChangePasswordPage.routeName,
-      path: ChangePasswordPage.routePath,
-      builder: (context, params) => const ChangePasswordPage(),
-    ),
-    FFRoute(
-      name: UnsplashPage.routeName,
-      path: UnsplashPage.routePath,
-      builder: (context, params) => const UnsplashPage(),
-    ),
-    FFRoute(
-      name: CommunityPage.routeName,
-      path: CommunityPage.routePath,
-      builder: (context, params) =>
-          params.isEmpty ? const NavBarPage(initialPage: 'communityPage') : const CommunityPage(),
-    ),
-    FFRoute(
-      name: ExperienceViewPage.routeName,
-      path: ExperienceViewPage.routePath,
-      builder: (context, params) => ExperienceViewPage(experienceId: params.getParam('experienceId', ParamType.int)),
-    ),
-    FFRoute(
-      name: ExperienceAddPage.routeName,
-      path: ExperienceAddPage.routePath,
-      builder: (context, params) => ExperienceAddPage(
-        groupId: params.getParam('groupId', ParamType.int),
-        groupName: params.getParam('groupName', ParamType.String),
-        privacy: params.getParam('privacy', ParamType.String),
-      ),
-    ),
-    FFRoute(
-      name: ExperienceEditPage.routeName,
-      path: ExperienceEditPage.routePath,
-      builder: (context, params) => ExperienceEditPage(
-        experienceRow: params.getParam<CcViewSharingsUsersRow>('experienceRow', ParamType.SupabaseRow),
-      ),
-    ),
-    FFRoute(
-      name: GroupDetailsPage.routeName,
-      path: GroupDetailsPage.routePath,
-      builder: (context, params) =>
-          GroupDetailsPage(groupRow: params.getParam<CcGroupsRow>('groupRow', ParamType.SupabaseRow)),
-    ),
-    FFRoute(
-      name: GroupInvitationPage.routeName,
-      path: GroupInvitationPage.routePath,
-      builder: (context, params) =>
-          GroupInvitationPage(groupRow: params.getParam<CcGroupsRow>('groupRow', ParamType.SupabaseRow)),
-    ),
-    FFRoute(
-      name: EventAddPage.routeName,
-      path: EventAddPage.routePath,
-      builder: (context, params) => EventAddPage(
-        groupId: params.getParam('groupId', ParamType.int),
-        groupName: params.getParam('groupName', ParamType.String),
-      ),
-    ),
-    FFRoute(
-      name: EventEditPage.routeName,
-      path: EventEditPage.routePath,
-      builder: (context, params) =>
-          EventEditPage(eventRow: params.getParam<CcEventsRow>('eventRow', ParamType.SupabaseRow)),
-    ),
-    FFRoute(
-      name: JourneyStepDetailsPage.routeName,
-      path: JourneyStepDetailsPage.routePath,
-      builder: (context, params) => JourneyStepDetailsPage(journeyId: params.getParam('journeyId', ParamType.int)),
-    ),
-    FFRoute(
-      name: StepDetailsPage.routeName,
-      path: StepDetailsPage.routePath,
-      builder: (context, params) =>
-          StepDetailsPage(userStepRow: params.getParam<CcViewUserStepsRow>('userStepRow', ParamType.SupabaseRow)),
-    ),
-    FFRoute(
-      name: StepTextViewPage.routeName,
-      path: StepTextViewPage.routePath,
-      builder: (context, params) => StepTextViewPage(
-        stepTextTitle: params.getParam('stepTextTitle', ParamType.String),
-        stepTextContent: params.getParam('stepTextContent', ParamType.String),
-        activityId: params.getParam('activityId', ParamType.int),
-      ),
-    ),
-    FFRoute(
-      name: StepAudioPlayerPage.routeName,
-      path: StepAudioPlayerPage.routePath,
-      builder: (context, params) => StepAudioPlayerPage(
-        stepAudioUrl: params.getParam('stepAudioUrl', ParamType.String),
-        audioTitle: params.getParam('audioTitle', ParamType.String),
-        typeAnimation: params.getParam('typeAnimation', ParamType.String),
-        audioArt: params.getParam('audioArt', ParamType.String),
-        typeStep: params.getParam('typeStep', ParamType.String),
-        activityId: params.getParam('activityId', ParamType.int),
-      ),
-    ),
-    FFRoute(
-      name: StepJournalPage.routeName,
-      path: StepJournalPage.routePath,
-      builder: (context, params) =>
-          StepJournalPage(activityRow: params.getParam<CcViewUserActivitiesRow>('activityRow', ParamType.SupabaseRow)),
-    ),
-    FFRoute(
-      name: JourneyPage.routeName,
-      path: JourneyPage.routePath,
-      builder: (context, params) => params.isEmpty
-          ? const NavBarPage(initialPage: 'journeyPage')
-          : NavBarPage(
-              initialPage: 'journeyPage',
-              page: JourneyPage(journeyId: params.getParam('journeyId', ParamType.int)),
-            ),
-    ),
-    FFRoute(
-      name: JourneyListPage.routeName,
-      path: JourneyListPage.routePath,
-      builder: (context, params) => const NavBarPage(initialPage: 'journeyPage'),
-    ),
-    FFRoute(
-      name: GroupAddPage.routeName,
-      path: GroupAddPage.routePath,
-      builder: (context, params) => const GroupAddPage(),
-    ),
-    FFRoute(
-      name: GroupEditPage.routeName,
-      path: GroupEditPage.routePath,
-      builder: (context, params) =>
-          GroupEditPage(groupRow: params.getParam<CcGroupsRow>('groupRow', ParamType.SupabaseRow)),
-    ),
-    FFRoute(
-      name: AnnouncementAddPage.routeName,
-      path: AnnouncementAddPage.routePath,
-      builder: (context, params) => AnnouncementAddPage(
-        groupId: params.getParam('groupId', ParamType.int),
-        groupName: params.getParam('groupName', ParamType.String),
-        privacy: params.getParam('privacy', ParamType.String),
-      ),
-    ),
-    FFRoute(
-      name: AnnouncementEditPage.routeName,
-      path: AnnouncementEditPage.routePath,
-      builder: (context, params) => AnnouncementEditPage(
-        experienceRow: params.getParam<CcViewNotificationsUsersRow>('experienceRow', ParamType.SupabaseRow),
-      ),
-    ),
-    FFRoute(
-      name: AnnouncementViewPage.routeName,
-      path: AnnouncementViewPage.routePath,
-      builder: (context, params) => AnnouncementViewPage(
-        announcementId: params.getParam('announcementId', ParamType.int),
-        groupModerators: params.getParam<int>('groupModerators', ParamType.int, isList: true),
-      ),
-    ),
-    FFRoute(
-      name: UserJournalListPage.routeName,
-      path: UserJournalListPage.routePath,
-      builder: (context, params) => const UserJournalListPage(),
-    ),
-    FFRoute(
-      name: UserJournalViewPage.routeName,
-      path: UserJournalViewPage.routePath,
-      builder: (context, params) =>
-          UserJournalViewPage(userActivitiesId: params.getParam('userActivitiesId', ParamType.int)),
-    ),
-    FFRoute(
-      name: UserJournalEditPage.routeName,
-      path: UserJournalEditPage.routePath,
-      builder: (context, params) =>
-          UserJournalEditPage(userJournalEntryRow: params.getParam('userJournalEntryRow', ParamType.SupabaseRow)),
-    ),
-    FFRoute(
-      name: UserJourneysViewPage.routeName,
-      path: UserJourneysViewPage.routePath,
-      builder: (context, params) => const UserJourneysViewPage(),
-    ),
-    FFRoute(
-      name: OnBoardingPage.routeName,
-      path: OnBoardingPage.routePath,
-      builder: (context, params) => const OnBoardingPage(),
-    ),
-    FFRoute(
-      name: InAppNotificationsPage.routeName,
-      path: InAppNotificationsPage.routePath,
-      builder: (context, params) => const InAppNotificationsPage(),
-    ),
-    FFRoute(
-      name: MyExperiencesPage.routeName,
-      path: MyExperiencesPage.routePath,
-      builder: (context, params) => const MyExperiencesPage(),
-    ),
-    FFRoute(
-      name: FavoritesPage.routeName,
-      path: FavoritesPage.routePath,
-      builder: (context, params) => const FavoritesPage(),
-    ),
-    // Support / Help Center routes
-    FFRoute(
-      name: SupportPage.routeName,
-      path: SupportPage.routePath,
-      builder: (context, params) => SupportPage(
-        contextType: params.getParam('contextType', ParamType.String),
-        contextId: params.getParam('contextId', ParamType.int),
-        contextTitle: params.getParam('contextTitle', ParamType.String),
-      ),
-    ),
-    FFRoute(
-      name: NewRequestPage.routeName,
-      path: NewRequestPage.routePath,
-      builder: (context, params) => NewRequestPage(
-        contextType: params.getParam('contextType', ParamType.String),
-        contextId: params.getParam('contextId', ParamType.int),
-        contextTitle: params.getParam('contextTitle', ParamType.String),
-      ),
-    ),
-    FFRoute(
-      name: RequestChatPage.routeName,
-      path: RequestChatPage.routePath,
-      builder: (context, params) => RequestChatPage(requestId: params.getParam('id', ParamType.int) ?? 0),
-    ),
-    FFRoute(
-      name: GroupModerationPage.routeName,
-      path: GroupModerationPage.routePath,
-      builder: (context, params) => GroupModerationPage(
-        groupId: params.getParam('groupId', ParamType.int),
-        groupName: params.getParam('groupName', ParamType.String),
-      ),
-    ),
-    FFRoute(
-      name: MemberManagementPage.routeName,
-      path: MemberManagementPage.routePath,
-      builder: (context, params) => MemberManagementPage(
-        groupId: params.getParam('groupId', ParamType.int),
-        groupName: params.getParam('groupName', ParamType.String),
-      ),
-    ),
-  ].map((r) => r.toRoute(appStateNotifier)).toList(),
-  observers: [routeObserver],
-);
+      routes: [
+        FFRoute(
+          name: '_initialize',
+          path: '/',
+          builder: (context, _) {
+            if (appStateNotifier.loading) {
+              return const SplashPage();
+            }
+            return appStateNotifier.loggedIn ? const NavBarPage() : const LoginPage();
+          },
+        ),
+        FFRoute(
+            name: SplashPage.routeName, path: SplashPage.routePath, builder: (context, params) => const SplashPage()),
+        FFRoute(name: LoginPage.routeName, path: LoginPage.routePath, builder: (context, params) => const LoginPage()),
+        FFRoute(
+          name: CreateAccountPage.routeName,
+          path: CreateAccountPage.routePath,
+          builder: (context, params) => const CreateAccountPage(),
+        ),
+        FFRoute(
+          name: UserCreateProfilePage.routeName,
+          path: UserCreateProfilePage.routePath,
+          builder: (context, params) => const UserCreateProfilePage(),
+        ),
+        FFRoute(
+          name: ForgotPasswordPage.routeName,
+          path: ForgotPasswordPage.routePath,
+          builder: (context, params) => const ForgotPasswordPage(),
+        ),
+        FFRoute(
+          name: InviteAcceptPage.routeName,
+          path: InviteAcceptPage.routePath,
+          builder: (context, params) => InviteAcceptPage(token: params.getParam('token', ParamType.String)),
+        ),
+        FFRoute(
+          name: HomePage.routeName,
+          path: HomePage.routePath,
+          builder: (context, params) => params.isEmpty ? const NavBarPage(initialPage: 'homePage') : const HomePage(),
+        ),
+        FFRoute(
+          name: LearnListPage.routeName,
+          path: LearnListPage.routePath,
+          builder: (context, params) => params.isEmpty
+              ? const NavBarPage(initialPage: 'learnListPage')
+              : LearnListPage(
+                  journeyId: params.getParam('journeyId', ParamType.int),
+                  groupId: params.getParam('groupId', ParamType.int),
+                  customTitle: params.getParam('customTitle', ParamType.String),
+                ),
+        ),
+        FFRoute(
+          name: JourneysListPage.routeName,
+          path: JourneysListPage.routePath,
+          builder: (context, params) => const JourneysListPage(),
+        ),
+        FFRoute(
+          name: UserProfilePage.routeName,
+          path: UserProfilePage.routePath,
+          builder: (context, params) =>
+              params.isEmpty ? const NavBarPage(initialPage: 'userProfilePage') : const UserProfilePage(),
+        ),
+        FFRoute(
+          name: EventDetailsPage.routeName,
+          path: EventDetailsPage.routePath,
+          builder: (context, params) => EventDetailsPage(
+            eventRow: params.getParam<CcEventsRow>('eventRow', ParamType.SupabaseRow),
+            groupId: params.getParam('groupId', ParamType.int),
+          ),
+        ),
+        FFRoute(
+          name: UserEditProfilePage.routeName,
+          path: UserEditProfilePage.routePath,
+          builder: (context, params) => const UserEditProfilePage(),
+        ),
+        FFRoute(
+          name: ChangePasswordPage.routeName,
+          path: ChangePasswordPage.routePath,
+          builder: (context, params) => const ChangePasswordPage(),
+        ),
+        FFRoute(
+          name: UnsplashPage.routeName,
+          path: UnsplashPage.routePath,
+          builder: (context, params) => const UnsplashPage(),
+        ),
+        FFRoute(
+          name: CommunityPage.routeName,
+          path: CommunityPage.routePath,
+          builder: (context, params) =>
+              params.isEmpty ? const NavBarPage(initialPage: 'communityPage') : const CommunityPage(),
+        ),
+        FFRoute(
+          name: ExperienceViewPage.routeName,
+          path: ExperienceViewPage.routePath,
+          builder: (context, params) =>
+              ExperienceViewPage(experienceId: params.getParam('experienceId', ParamType.int)),
+        ),
+        FFRoute(
+          name: ExperienceAddPage.routeName,
+          path: ExperienceAddPage.routePath,
+          builder: (context, params) => ExperienceAddPage(
+            groupId: params.getParam('groupId', ParamType.int),
+            groupName: params.getParam('groupName', ParamType.String),
+            privacy: params.getParam('privacy', ParamType.String),
+          ),
+        ),
+        FFRoute(
+          name: ExperienceEditPage.routeName,
+          path: ExperienceEditPage.routePath,
+          builder: (context, params) => ExperienceEditPage(
+            experienceRow: params.getParam<CcViewSharingsUsersRow>('experienceRow', ParamType.SupabaseRow),
+          ),
+        ),
+        FFRoute(
+          name: GroupDetailsPage.routeName,
+          path: GroupDetailsPage.routePath,
+          builder: (context, params) =>
+              GroupDetailsPage(groupRow: params.getParam<CcGroupsRow>('groupRow', ParamType.SupabaseRow)),
+        ),
+        FFRoute(
+          name: GroupInvitationPage.routeName,
+          path: GroupInvitationPage.routePath,
+          builder: (context, params) =>
+              GroupInvitationPage(groupRow: params.getParam<CcGroupsRow>('groupRow', ParamType.SupabaseRow)),
+        ),
+        FFRoute(
+          name: EventAddPage.routeName,
+          path: EventAddPage.routePath,
+          builder: (context, params) => EventAddPage(
+            groupId: params.getParam('groupId', ParamType.int),
+            groupName: params.getParam('groupName', ParamType.String),
+          ),
+        ),
+        FFRoute(
+          name: EventEditPage.routeName,
+          path: EventEditPage.routePath,
+          builder: (context, params) =>
+              EventEditPage(eventRow: params.getParam<CcEventsRow>('eventRow', ParamType.SupabaseRow)),
+        ),
+        FFRoute(
+          name: JourneyStepDetailsPage.routeName,
+          path: JourneyStepDetailsPage.routePath,
+          builder: (context, params) => JourneyStepDetailsPage(journeyId: params.getParam('journeyId', ParamType.int)),
+        ),
+        FFRoute(
+          name: StepDetailsPage.routeName,
+          path: StepDetailsPage.routePath,
+          builder: (context, params) =>
+              StepDetailsPage(userStepRow: params.getParam<CcViewUserStepsRow>('userStepRow', ParamType.SupabaseRow)),
+        ),
+        FFRoute(
+          name: StepTextViewPage.routeName,
+          path: StepTextViewPage.routePath,
+          builder: (context, params) => StepTextViewPage(
+            stepTextTitle: params.getParam('stepTextTitle', ParamType.String),
+            stepTextContent: params.getParam('stepTextContent', ParamType.String),
+            activityId: params.getParam('activityId', ParamType.int),
+          ),
+        ),
+        FFRoute(
+          name: StepAudioPlayerPage.routeName,
+          path: StepAudioPlayerPage.routePath,
+          builder: (context, params) => StepAudioPlayerPage(
+            stepAudioUrl: params.getParam('stepAudioUrl', ParamType.String),
+            audioTitle: params.getParam('audioTitle', ParamType.String),
+            typeAnimation: params.getParam('typeAnimation', ParamType.String),
+            audioArt: params.getParam('audioArt', ParamType.String),
+            typeStep: params.getParam('typeStep', ParamType.String),
+            activityId: params.getParam('activityId', ParamType.int),
+          ),
+        ),
+        FFRoute(
+          name: StepJournalPage.routeName,
+          path: StepJournalPage.routePath,
+          builder: (context, params) => StepJournalPage(
+              activityRow: params.getParam<CcViewUserActivitiesRow>('activityRow', ParamType.SupabaseRow)),
+        ),
+        FFRoute(
+          name: JourneyPage.routeName,
+          path: JourneyPage.routePath,
+          builder: (context, params) => params.isEmpty
+              ? const NavBarPage(initialPage: 'journeyPage')
+              : NavBarPage(
+                  initialPage: 'journeyPage',
+                  page: JourneyPage(journeyId: params.getParam('journeyId', ParamType.int)),
+                ),
+        ),
+        FFRoute(
+          name: JourneyListPage.routeName,
+          path: JourneyListPage.routePath,
+          builder: (context, params) => const NavBarPage(initialPage: 'journeyPage'),
+        ),
+        FFRoute(
+          name: GroupAddPage.routeName,
+          path: GroupAddPage.routePath,
+          builder: (context, params) => const GroupAddPage(),
+        ),
+        FFRoute(
+          name: GroupEditPage.routeName,
+          path: GroupEditPage.routePath,
+          builder: (context, params) =>
+              GroupEditPage(groupRow: params.getParam<CcGroupsRow>('groupRow', ParamType.SupabaseRow)),
+        ),
+        FFRoute(
+          name: AnnouncementAddPage.routeName,
+          path: AnnouncementAddPage.routePath,
+          builder: (context, params) => AnnouncementAddPage(
+            groupId: params.getParam('groupId', ParamType.int),
+            groupName: params.getParam('groupName', ParamType.String),
+            privacy: params.getParam('privacy', ParamType.String),
+          ),
+        ),
+        FFRoute(
+          name: AnnouncementEditPage.routeName,
+          path: AnnouncementEditPage.routePath,
+          builder: (context, params) => AnnouncementEditPage(
+            experienceRow: params.getParam<CcViewNotificationsUsersRow>('experienceRow', ParamType.SupabaseRow),
+          ),
+        ),
+        FFRoute(
+          name: AnnouncementViewPage.routeName,
+          path: AnnouncementViewPage.routePath,
+          builder: (context, params) => AnnouncementViewPage(
+            announcementId: params.getParam('announcementId', ParamType.int),
+            groupModerators: params.getParam<int>('groupModerators', ParamType.int, isList: true),
+          ),
+        ),
+        FFRoute(
+          name: UserJournalListPage.routeName,
+          path: UserJournalListPage.routePath,
+          builder: (context, params) => const UserJournalListPage(),
+        ),
+        FFRoute(
+          name: UserJournalViewPage.routeName,
+          path: UserJournalViewPage.routePath,
+          builder: (context, params) =>
+              UserJournalViewPage(userActivitiesId: params.getParam('userActivitiesId', ParamType.int)),
+        ),
+        FFRoute(
+          name: UserJournalEditPage.routeName,
+          path: UserJournalEditPage.routePath,
+          builder: (context, params) =>
+              UserJournalEditPage(userJournalEntryRow: params.getParam('userJournalEntryRow', ParamType.SupabaseRow)),
+        ),
+        FFRoute(
+          name: UserJourneysViewPage.routeName,
+          path: UserJourneysViewPage.routePath,
+          builder: (context, params) => const UserJourneysViewPage(),
+        ),
+        FFRoute(
+          name: OnBoardingPage.routeName,
+          path: OnBoardingPage.routePath,
+          builder: (context, params) => const OnBoardingPage(),
+        ),
+        FFRoute(
+          name: InAppNotificationsPage.routeName,
+          path: InAppNotificationsPage.routePath,
+          builder: (context, params) => const InAppNotificationsPage(),
+        ),
+        FFRoute(
+          name: MyExperiencesPage.routeName,
+          path: MyExperiencesPage.routePath,
+          builder: (context, params) => const MyExperiencesPage(),
+        ),
+        FFRoute(
+          name: FavoritesPage.routeName,
+          path: FavoritesPage.routePath,
+          builder: (context, params) => const FavoritesPage(),
+        ),
+        // Support / Help Center routes
+        FFRoute(
+          name: SupportPage.routeName,
+          path: SupportPage.routePath,
+          builder: (context, params) => SupportPage(
+            contextType: params.getParam('contextType', ParamType.String),
+            contextId: params.getParam('contextId', ParamType.int),
+            contextTitle: params.getParam('contextTitle', ParamType.String),
+          ),
+        ),
+        FFRoute(
+          name: NewRequestPage.routeName,
+          path: NewRequestPage.routePath,
+          builder: (context, params) => NewRequestPage(
+            contextType: params.getParam('contextType', ParamType.String),
+            contextId: params.getParam('contextId', ParamType.int),
+            contextTitle: params.getParam('contextTitle', ParamType.String),
+          ),
+        ),
+        FFRoute(
+          name: RequestChatPage.routeName,
+          path: RequestChatPage.routePath,
+          builder: (context, params) => RequestChatPage(requestId: params.getParam('id', ParamType.int) ?? 0),
+        ),
+        FFRoute(
+          name: GroupModerationPage.routeName,
+          path: GroupModerationPage.routePath,
+          builder: (context, params) => GroupModerationPage(
+            groupId: params.getParam('groupId', ParamType.int),
+            groupName: params.getParam('groupName', ParamType.String),
+          ),
+        ),
+        FFRoute(
+          name: MemberManagementPage.routeName,
+          path: MemberManagementPage.routePath,
+          builder: (context, params) => MemberManagementPage(
+            groupId: params.getParam('groupId', ParamType.int),
+            groupName: params.getParam('groupName', ParamType.String),
+          ),
+        ),
+        FFRoute(
+          name: CommunityGuidelinesPage.routeName,
+          path: CommunityGuidelinesPage.routePath,
+          builder: (context, params) => const CommunityGuidelinesPage(),
+        ),
+        FFRoute(
+          name: CommunityGuidelinesEditPage.routeName,
+          path: CommunityGuidelinesEditPage.routePath,
+          builder: (context, params) => const CommunityGuidelinesEditPage(),
+        ),
+      ].map((r) => r.toRoute(appStateNotifier)).toList(),
+      observers: [routeObserver],
+    );
 
 extension NavParamExtensions on Map<String, String?> {
   Map<String, String> get withoutNulls =>
@@ -430,9 +444,10 @@ extension NavigationExtensions on BuildContext {
     Map<String, String> queryParameters = const <String, String>{},
     Object? extra,
     bool ignoreRedirect = false,
-  }) => !mounted || GoRouter.of(this).shouldRedirect(ignoreRedirect)
-      ? null
-      : goNamed(name, pathParameters: pathParameters, queryParameters: queryParameters, extra: extra);
+  }) =>
+      !mounted || GoRouter.of(this).shouldRedirect(ignoreRedirect)
+          ? null
+          : goNamed(name, pathParameters: pathParameters, queryParameters: queryParameters, extra: extra);
 
   void pushNamedAuth(
     String name,
@@ -441,9 +456,10 @@ extension NavigationExtensions on BuildContext {
     Map<String, String> queryParameters = const <String, String>{},
     Object? extra,
     bool ignoreRedirect = false,
-  }) => !mounted || GoRouter.of(this).shouldRedirect(ignoreRedirect)
-      ? null
-      : pushNamed(name, pathParameters: pathParameters, queryParameters: queryParameters, extra: extra);
+  }) =>
+      !mounted || GoRouter.of(this).shouldRedirect(ignoreRedirect)
+          ? null
+          : pushNamed(name, pathParameters: pathParameters, queryParameters: queryParameters, extra: extra);
 
   void safePop() {
     // If there is only one route on the stack, navigate to the initial
@@ -491,15 +507,15 @@ class FFParameters {
   bool isAsyncParam(MapEntry<String, dynamic> param) => asyncParams.containsKey(param.key) && param.value is String;
   bool get hasFutures => state.allParams.entries.any(isAsyncParam);
   Future<bool> completeFutures() => Future.wait(
-    state.allParams.entries.where(isAsyncParam).map((param) async {
-      final doc = await asyncParams[param.key]!(param.value).onError((_, __) => null);
-      if (doc != null) {
-        futureParamValues[param.key] = doc;
-        return true;
-      }
-      return false;
-    }),
-  ).onError((_, __) => [false]).then((v) => v.every((e) => e));
+        state.allParams.entries.where(isAsyncParam).map((param) async {
+          final doc = await asyncParams[param.key]!(param.value).onError((_, __) => null);
+          if (doc != null) {
+            futureParamValues[param.key] = doc;
+            return true;
+          }
+          return false;
+        }),
+      ).onError((_, __) => [false]).then((v) => v.every((e) => e));
 
   dynamic getParam<T>(String paramName, ParamType type, {bool isList = false, StructBuilder<T>? structBuilder}) {
     if (futureParamValues.containsKey(paramName)) {
@@ -536,47 +552,47 @@ class FFRoute {
   final List<GoRoute> routes;
 
   GoRoute toRoute(AppStateNotifier appStateNotifier) => GoRoute(
-    name: name,
-    path: path,
-    redirect: (context, state) {
-      if (appStateNotifier.shouldRedirect) {
-        final redirectLocation = appStateNotifier.getRedirectLocation();
-        appStateNotifier.clearRedirectLocation();
-        return redirectLocation;
-      }
+        name: name,
+        path: path,
+        redirect: (context, state) {
+          if (appStateNotifier.shouldRedirect) {
+            final redirectLocation = appStateNotifier.getRedirectLocation();
+            appStateNotifier.clearRedirectLocation();
+            return redirectLocation;
+          }
 
-      if (requireAuth && !appStateNotifier.loggedIn) {
-        appStateNotifier.setRedirectLocationIfUnset(state.uri.toString());
-        return '/splash';
-      }
-      return null;
-    },
-    pageBuilder: (context, state) {
-      fixStatusBarOniOS16AndBelow(context);
-      final ffParams = FFParameters(state, asyncParams);
-      final page = ffParams.hasFutures
-          ? FutureBuilder(future: ffParams.completeFutures(), builder: (context, _) => builder(context, ffParams))
-          : builder(context, ffParams);
-      final child = page;
+          if (requireAuth && !appStateNotifier.loggedIn) {
+            appStateNotifier.setRedirectLocationIfUnset(state.uri.toString());
+            return '/splash';
+          }
+          return null;
+        },
+        pageBuilder: (context, state) {
+          fixStatusBarOniOS16AndBelow(context);
+          final ffParams = FFParameters(state, asyncParams);
+          final page = ffParams.hasFutures
+              ? FutureBuilder(future: ffParams.completeFutures(), builder: (context, _) => builder(context, ffParams))
+              : builder(context, ffParams);
+          final child = page;
 
-      final transitionInfo = state.transitionInfo;
-      return transitionInfo.hasTransition
-          ? CustomTransitionPage(
-              key: state.pageKey,
-              child: child,
-              transitionDuration: transitionInfo.duration,
-              transitionsBuilder: (context, animation, secondaryAnimation, child) => PageTransition(
-                type: transitionInfo.transitionType,
-                duration: transitionInfo.duration,
-                reverseDuration: transitionInfo.duration,
-                alignment: transitionInfo.alignment,
-                child: child,
-              ).buildTransitions(context, animation, secondaryAnimation, child),
-            )
-          : MaterialPage(key: state.pageKey, child: child);
-    },
-    routes: routes,
-  );
+          final transitionInfo = state.transitionInfo;
+          return transitionInfo.hasTransition
+              ? CustomTransitionPage(
+                  key: state.pageKey,
+                  child: child,
+                  transitionDuration: transitionInfo.duration,
+                  transitionsBuilder: (context, animation, secondaryAnimation, child) => PageTransition(
+                    type: transitionInfo.transitionType,
+                    duration: transitionInfo.duration,
+                    reverseDuration: transitionInfo.duration,
+                    alignment: transitionInfo.alignment,
+                    child: child,
+                  ).buildTransitions(context, animation, secondaryAnimation, child),
+                )
+              : MaterialPage(key: state.pageKey, child: child);
+        },
+        routes: routes,
+      );
 }
 
 class TransitionInfo {
@@ -614,9 +630,8 @@ class RootPageContext {
 extension GoRouterLocationExtension on GoRouter {
   String getCurrentLocation() {
     final RouteMatch lastMatch = routerDelegate.currentConfiguration.last;
-    final RouteMatchList matchList = lastMatch is ImperativeRouteMatch
-        ? lastMatch.matches
-        : routerDelegate.currentConfiguration;
+    final RouteMatchList matchList =
+        lastMatch is ImperativeRouteMatch ? lastMatch.matches : routerDelegate.currentConfiguration;
     return matchList.uri.toString();
   }
 }
