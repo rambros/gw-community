@@ -7,6 +7,8 @@ import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
 import 'package:gw_community/ui/profile/user_profile_page/view_model/user_profile_view_model.dart';
 import 'package:gw_community/ui/profile/user_profile_page/widgets/profile_menu_item_widget.dart';
+import 'package:gw_community/ui/profile/user_profile_page/widgets/profile_menu_section.dart';
+import 'package:gw_community/ui/profile/user_profile_page/widgets/account_settings_menu_section.dart';
 import 'package:gw_community/ui/profile/widgets/confirm_profile_action_dialog.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
@@ -207,165 +209,33 @@ class _UserProfilePageState extends State<UserProfilePage> {
               ],
             ),
 
-            ListView(
-              padding: EdgeInsets.zero,
-              shrinkWrap: true,
-              scrollDirection: Axis.vertical,
-              children: [
-                ProfileMenuItemWidget(
-                  text: 'My Favorites',
-                  onTap: () async {
-                    context.pushNamed(
-                      FavoritesPage.routeName,
-                      extra: <String, dynamic>{
-                        kTransitionInfoKey: const TransitionInfo(
-                          hasTransition: true,
-                          transitionType: PageTransitionType.fade,
-                          duration: Duration(milliseconds: 0),
-                        ),
-                      },
-                    );
-                  },
-                ),
-                Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
-                  child: ProfileMenuItemWidget(
-                    text: 'My Journal',
-                    onTap: () async {
-                      context.pushNamed(
-                        UserJournalListPage.routeName,
-                        extra: <String, dynamic>{
-                          kTransitionInfoKey: const TransitionInfo(
-                            hasTransition: true,
-                            transitionType: PageTransitionType.fade,
-                            duration: Duration(milliseconds: 0),
-                          ),
-                        },
-                      );
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
-                  child: ProfileMenuItemWidget(
-                    text: 'My Journeys',
-                    onTap: () async {
-                      context.pushNamed(
-                        UserJourneysViewPage.routeName,
-                        extra: <String, dynamic>{
-                          kTransitionInfoKey: const TransitionInfo(
-                            hasTransition: true,
-                            transitionType: PageTransitionType.fade,
-                            duration: Duration(milliseconds: 0),
-                          ),
-                        },
-                      );
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
-                  child: ProfileMenuItemWidget(
-                    text: 'My Experiences',
-                    onTap: () async {
-                      context.pushNamed(MyExperiencesPage.routeName);
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
-                  child: ProfileMenuItemWidget(
-                    text: 'Ask a Question',
-                    onTap: () async {
-                      context.pushNamed(SupportPage.routeName);
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
-                  child: ProfileMenuItemWidget(
-                    text: 'Community Guidelines',
-                    onTap: () async {
-                      context.pushNamed(CommunityGuidelinesPage.routeName);
-                    },
-                  ),
-                ),
-              ],
-            ),
+            const ProfileMenuSection(),
 
             // Account Settings Header
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(24.0, 12.0, 0.0, 12.0),
-                  child: Text(
+            Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(24.0, 24.0, 0.0, 12.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Text(
                     'Account Settings',
-                    style: AppTheme.of(context).bodyMedium.override(
+                    style: AppTheme.of(context).titleMedium.override(
                           font: GoogleFonts.lexendDeca(
-                            fontWeight: FontWeight.bold,
-                            fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
+                            fontWeight: AppTheme.of(context).titleMedium.fontWeight,
+                            fontStyle: AppTheme.of(context).titleMedium.fontStyle,
                           ),
                           color: AppTheme.of(context).secondary,
-                          fontSize: 14.0,
                           letterSpacing: 0.0,
-                          fontWeight: FontWeight.bold,
-                          fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
                         ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-
-            ListView(
-              padding: EdgeInsets.zero,
-              shrinkWrap: true,
-              scrollDirection: Axis.vertical,
-              children: [
-                ProfileMenuItemWidget(
-                  text: 'Edit Profile',
-                  onTap: () async {
-                    context.pushNamed(UserEditProfilePage.routeName);
-                  },
-                ),
-                Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
-                  child: ProfileMenuItemWidget(
-                    text: 'Change Password',
-                    onTap: () async {
-                      context.pushNamed(ChangePasswordPage.routeName);
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
-                  child: ProfileMenuItemWidget(
-                    text: 'Set Notifications',
-                    onTap: () async {
-                      // No action in original code
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
-                  child: ProfileMenuItemWidget(
-                    text: 'Reset Onboarding',
-                    onTap: () async {
-                      await _handleResetOnboarding(context, viewModel);
-                    },
-                  ),
-                ),
-                if ((viewModel.userProfile?.userRole ?? []).hasAdmin)
-                  Padding(
-                    padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
-                    child: ProfileMenuItemWidget(
-                      text: 'Edit Guidelines',
-                      onTap: () async {
-                        context.pushNamed(CommunityGuidelinesEditPage.routeName);
-                      },
-                    ),
-                  ),
-              ],
+            AccountSettingsMenuSection(
+              onResetOnboarding: () async {
+                await _handleResetOnboarding(context, viewModel);
+              },
+              userProfile: viewModel.userProfile,
             ),
             Padding(
               padding: const EdgeInsetsDirectional.fromSTEB(24.0, 24.0, 24.0, 24.0),

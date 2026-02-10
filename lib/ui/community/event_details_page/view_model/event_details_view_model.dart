@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:gw_community/app_state.dart';
 import 'package:gw_community/data/models/enums/enums.dart';
-import 'package:gw_community/data/repositories/community_repository.dart';
 import 'package:gw_community/data/repositories/event_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 
@@ -30,9 +29,6 @@ class EventDetailsViewModel extends ChangeNotifier {
   bool _isActionInProgress = false;
   String? _errorMessage;
 
-  String? _memberId;
-  String? get memberId => _memberId;
-
   CcEventsRow? get event => _event;
   List<CcMembersRow> get participants => _participants;
   bool get isLoading => _isLoading;
@@ -41,14 +37,12 @@ class EventDetailsViewModel extends ChangeNotifier {
   int get participantsCount => _participants.length;
 
   bool get isUserRegistered {
-    final idToCompare = _memberId ?? currentUserUid;
-    return _participants.any((p) => p.id == idToCompare);
+    return _participants.any((p) => p.id == currentUserUid);
   }
 
   bool get canEdit {
     final loginUser = appState.loginUser;
-    final idToCompare = _memberId ?? currentUserUid;
-    return loginUser.roles.hasAdminOrGroupManager || (_event?.facilitatorId == idToCompare);
+    return loginUser.roles.hasAdminOrGroupManager || (_event?.facilitatorId == currentUserUid);
   }
 
   bool get canDelete => canEdit;
@@ -65,13 +59,6 @@ class EventDetailsViewModel extends ChangeNotifier {
     }
     _setLoading(true);
     try {
-      if (_memberId == null) {
-        // Resolvemos o memberId se ainda não tivermos
-        final communityRepo = CommunityRepository(); // Ou injetar se preferir, mas como é stateless call...
-        _memberId = await communityRepo.getMemberIdByAuthUserId(currentUserUid);
-        debugPrint('EventDetailsViewModel.loadEvent: resolved memberId to $_memberId');
-      }
-
       final fetchedEvent = await _repository.getEventById(_eventId!);
       if (fetchedEvent != null) {
         _event = fetchedEvent;
@@ -89,8 +76,7 @@ class EventDetailsViewModel extends ChangeNotifier {
     if (_eventId == null) return false;
     _setActionInProgress(true);
     try {
-      final idToUse = _memberId ?? currentUserUid;
-      await _repository.registerUser(eventId: _eventId!, userId: idToUse);
+      await _repository.registerUser(eventId: _eventId!, userId: currentUserUid);
       await loadEvent();
       return true;
     } catch (e) {
@@ -105,8 +91,7 @@ class EventDetailsViewModel extends ChangeNotifier {
     if (_eventId == null) return false;
     _setActionInProgress(true);
     try {
-      final idToUse = _memberId ?? currentUserUid;
-      await _repository.unregisterUser(eventId: _eventId!, userId: idToUse);
+      await _repository.unregisterUser(eventId: _eventId!, userId: currentUserUid);
       await loadEvent();
       return true;
     } catch (e) {
