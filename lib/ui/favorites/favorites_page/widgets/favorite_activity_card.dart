@@ -94,6 +94,18 @@ class _FavoriteActivityCardState extends State<FavoriteActivityCard> {
                       fontWeight: FontWeight.w600,
                     ),
               ),
+              if (widget.activity.stepTitle != null) ...[
+                const SizedBox(height: 4.0),
+                Text(
+                  'Step ${widget.activity.stepNumber ?? 1}: ${widget.activity.stepTitle}',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTheme.of(context).learn.metadata.override(
+                        color: AppTheme.of(context).secondary,
+                        fontSize: 12.0,
+                      ),
+                ),
+              ],
               const SizedBox(height: 6.0),
               // Descrição
               Text(

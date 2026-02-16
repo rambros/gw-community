@@ -12,6 +12,7 @@ import 'package:gw_community/ui/core/widgets/user_avatar.dart';
 import 'package:gw_community/utils/context_extensions.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
 
 class EventDetailsPage extends StatefulWidget {
@@ -300,6 +301,46 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                     ),
               ),
             ),
+            // Event Link
+            if (event.eventPageUrl != null && event.eventPageUrl!.isNotEmpty)
+              Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(0.0, 12.0, 0.0, 0.0),
+                child: InkWell(
+                  onTap: () async {
+                    final url = Uri.tryParse(event.eventPageUrl!);
+                    if (url != null && await canLaunchUrl(url)) {
+                      await launchUrl(url, mode: LaunchMode.externalApplication);
+                    }
+                  },
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 12.0, 0.0),
+                        child: FaIcon(
+                          FontAwesomeIcons.link,
+                          color: AppTheme.of(context).secondary,
+                          size: 24.0,
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          'Event Link',
+                          style: AppTheme.of(context).bodyMedium.override(
+                                font: GoogleFonts.lexendDeca(
+                                  fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                                  fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
+                                ),
+                                color: AppTheme.of(context).secondary,
+                                fontSize: 16.0,
+                                letterSpacing: 0.0,
+                                decoration: TextDecoration.underline,
+                              ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
           ],
         ),
       ),

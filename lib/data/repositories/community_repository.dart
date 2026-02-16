@@ -130,16 +130,21 @@ class CommunityRepository {
   /// Fetches the community guidelines content from cc_settings.
   Future<String?> getCommunityGuidelines() async {
     try {
+      debugPrint('🔵 [Guidelines] Fetching with key: $_guidelinesKey');
       final rows = await CcSettingsTable().queryRows(
         queryFn: (q) => q.eq('setting_key', _guidelinesKey),
       );
 
+      debugPrint('🔵 [Guidelines] Found ${rows.length} rows');
       if (rows.isNotEmpty) {
-        return rows.first.value;
+        final value = rows.first.value;
+        debugPrint('✅ [Guidelines] Loaded content (${value?.length ?? 0} chars): ${value?.substring(0, value.length > 50 ? 50 : value.length)}...');
+        return value;
       }
+      debugPrint('⚠️ [Guidelines] No content found');
       return null;
     } catch (e) {
-      debugPrint('Error fetching community guidelines: $e');
+      debugPrint('❌ [Guidelines] Error fetching: $e');
       return null;
     }
   }
@@ -147,6 +152,8 @@ class CommunityRepository {
   /// Updates the community guidelines content.
   Future<void> updateCommunityGuidelines(String content) async {
     try {
+      debugPrint('🔵 [Guidelines] Saving content (${content.length} chars): ${content.substring(0, content.length > 50 ? 50 : content.length)}...');
+
       // Check existence
       final rows = await CcSettingsTable().queryRows(
         queryFn: (q) => q.eq('setting_key', _guidelinesKey),
@@ -154,12 +161,15 @@ class CommunityRepository {
 
       if (rows.isNotEmpty) {
         // Update
+        debugPrint('🔵 [Guidelines] Updating existing row with key: $_guidelinesKey');
         await SupaFlow.client.from('cc_settings').update({
           'value': content,
           'updated_at': DateTime.now().toIso8601String(),
         }).eq('setting_key', _guidelinesKey);
+        debugPrint('✅ [Guidelines] Update successful');
       } else {
         // Insert
+        debugPrint('🔵 [Guidelines] Inserting new row with key: $_guidelinesKey');
         await SupaFlow.client.from('cc_settings').insert({
           'setting_key': _guidelinesKey,
           'setting_name': 'Community Guidelines',
@@ -171,6 +181,7 @@ class CommunityRepository {
           'created_at': DateTime.now().toIso8601String(),
           'updated_at': DateTime.now().toIso8601String(),
         });
+        debugPrint('✅ [Guidelines] Insert successful');
       }
     } catch (e) {
       debugPrint('Error updating community guidelines: $e');

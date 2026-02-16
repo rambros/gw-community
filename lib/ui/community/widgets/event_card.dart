@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -77,62 +78,101 @@ class EventCardWidget extends StatelessWidget {
               width: 1.0,
             ),
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+          child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Event Name
-              Text(
-                eventName ?? '',
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: AppTheme.of(context).titleMedium.override(
-                      font: GoogleFonts.lexendDeca(),
-                      color: AppTheme.of(context).secondary,
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w600,
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Event Name
+                    Text(
+                      eventName ?? '',
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTheme.of(context).titleMedium.override(
+                            font: GoogleFonts.lexendDeca(),
+                            color: AppTheme.of(context).secondary,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w600,
+                          ),
                     ),
-              ),
-              const SizedBox(height: 4.0),
-              // Facilitator
-              Text(
-                'by ${facilitator ?? '-'}',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: AppTheme.of(context).bodyMedium.override(
-                      font: GoogleFonts.lexendDeca(),
-                      color: AppTheme.of(context).secondary,
-                      fontSize: 12.0,
+                    const SizedBox(height: 4.0),
+                    // Facilitator
+                    Text(
+                      'by ${facilitator ?? '-'}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTheme.of(context).bodyMedium.override(
+                            font: GoogleFonts.lexendDeca(),
+                            color: AppTheme.of(context).secondary,
+                            fontSize: 12.0,
+                          ),
                     ),
-              ),
-              const SizedBox(height: 4.0),
-              // Date & Time
-              Text(
-                '$date, $time',
-                style: AppTheme.of(context).bodySmall.override(
-                      font: GoogleFonts.lexendDeca(),
-                      color: AppTheme.of(context).secondary,
-                      fontSize: 12.0,
+                    const SizedBox(height: 4.0),
+                    // Date & Time
+                    Text(
+                      '$date, $time',
+                      style: AppTheme.of(context).bodySmall.override(
+                            font: GoogleFonts.lexendDeca(),
+                            color: AppTheme.of(context).secondary,
+                            fontSize: 12.0,
+                          ),
                     ),
+                    if (userRegistered == true) ...[
+                      const SizedBox(height: 10.0),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
+                        decoration: BoxDecoration(
+                          color: AppTheme.of(context).primary.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        child: Text(
+                          'Registered',
+                          style: GoogleFonts.lexendDeca(
+                            color: AppTheme.of(context).primary,
+                            fontSize: 11.0,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
               ),
-              if (userRegistered == true) ...[
-                const SizedBox(height: 10.0),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
-                  decoration: BoxDecoration(
-                    color: AppTheme.of(context).primary.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                  child: Text(
-                    'Registered',
-                    style: GoogleFonts.lexendDeca(
-                      color: AppTheme.of(context).primary,
-                      fontSize: 11.0,
-                      fontWeight: FontWeight.w600,
+              if (event?.eventImageUrl != null && event!.eventImageUrl!.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(left: 12.0),
+                  child: Hero(
+                    tag: 'eventImage_${event?.id}',
+                    child: Container(
+                      width: 80.0,
+                      height: 80.0,
+                      decoration: BoxDecoration(
+                        color: AppTheme.of(context).alternate,
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8.0),
+                        child: CachedNetworkImage(
+                          imageUrl: event!.eventImageUrl!,
+                          width: 80.0,
+                          height: 80.0,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) => Container(
+                            color: AppTheme.of(context).alternate,
+                          ),
+                          errorWidget: (context, url, error) => Icon(
+                            Icons.event,
+                            color: AppTheme.of(context).secondaryText,
+                            size: 32.0,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ],
             ],
           ),
         ),

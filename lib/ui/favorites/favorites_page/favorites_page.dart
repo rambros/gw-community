@@ -105,9 +105,8 @@ class _FavoritesPageContent extends StatelessWidget {
     if (viewModel.unifiedFavorites.isEmpty) {
       return _buildEmptyState(
         context,
-        icon: Icons.favorite_border,
+        icon: Icons.favorite_border_outlined,
         message: 'No favorites yet',
-        subtitle: 'Tap the heart icon on any content to add it here',
       );
     }
 
@@ -137,7 +136,6 @@ class _FavoritesPageContent extends StatelessWidget {
     BuildContext context, {
     required IconData icon,
     required String message,
-    required String subtitle,
   }) {
     return Center(
       child: Padding(
@@ -159,12 +157,25 @@ class _FavoritesPageContent extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8.0),
-            Text(
-              subtitle,
-              style: AppTheme.of(context).bodyMedium.override(
-                    color: AppTheme.of(context).secondaryText,
-                  ),
+            RichText(
               textAlign: TextAlign.center,
+              text: TextSpan(
+                style: AppTheme.of(context).bodyMedium.override(
+                      color: AppTheme.of(context).secondaryText,
+                    ),
+                children: [
+                  const TextSpan(text: 'Tap '),
+                  WidgetSpan(
+                    alignment: PlaceholderAlignment.middle,
+                    child: Icon(
+                      Icons.favorite_border_outlined,
+                      color: AppTheme.of(context).secondaryText,
+                      size: 16.0,
+                    ),
+                  ),
+                  const TextSpan(text: ' throughout the app to collect your favorites'),
+                ],
+              ),
             ),
           ],
         ),

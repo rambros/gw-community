@@ -33,13 +33,26 @@ class CommunityGuidelinesEditViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
+      debugPrint('🔵 [GuidelinesEdit] Attempting to save...');
       await _communityRepository.updateCommunityGuidelines(contentController.text);
-      return true;
-    } catch (e) {
-      debugPrint('Error saving guidelines: $e');
+      debugPrint('✅ [GuidelinesEdit] Save completed successfully');
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to save guidelines. Please try again.')),
+          SnackBar(
+            content: const Text('Guidelines saved successfully!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+      return true;
+    } catch (e) {
+      debugPrint('❌ [GuidelinesEdit] Error saving guidelines: $e');
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to save guidelines: $e'),
+            backgroundColor: Colors.red,
+          ),
         );
       }
       return false;

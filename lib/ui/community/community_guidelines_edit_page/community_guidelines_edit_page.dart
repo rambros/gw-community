@@ -98,6 +98,39 @@ class CommunityGuidelinesEditPageView extends StatelessWidget {
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: [
+                    // Markdown info banner
+                    Container(
+                      padding: const EdgeInsets.all(12.0),
+                      margin: const EdgeInsets.only(bottom: 16.0),
+                      decoration: BoxDecoration(
+                        color: AppTheme.of(context).primary.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8.0),
+                        border: Border.all(
+                          color: AppTheme.of(context).primary.withOpacity(0.3),
+                          width: 1.0,
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.info_outline,
+                            color: AppTheme.of(context).primary,
+                            size: 20.0,
+                          ),
+                          const SizedBox(width: 8.0),
+                          Expanded(
+                            child: Text(
+                              'Markdown supported: **bold**, *italic*, # heading, - list',
+                              style: AppTheme.of(context).bodySmall.override(
+                                    font: GoogleFonts.readexPro(),
+                                    color: AppTheme.of(context).primary,
+                                    fontSize: 12.0,
+                                  ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     Expanded(
                       child: TextField(
                         controller: viewModel.contentController,

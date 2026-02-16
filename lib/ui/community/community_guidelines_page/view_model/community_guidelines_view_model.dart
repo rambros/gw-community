@@ -17,9 +17,11 @@ class CommunityGuidelinesViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
+      debugPrint('🔵 [GuidelinesView] Loading guidelines...');
       _guidelines = await _communityRepository.getCommunityGuidelines();
+      debugPrint('✅ [GuidelinesView] Loaded: ${_guidelines?.length ?? 0} chars');
     } catch (e) {
-      debugPrint('Error loading guidelines: $e');
+      debugPrint('❌ [GuidelinesView] Error loading guidelines: $e');
     } finally {
       _isLoading = false;
       notifyListeners();

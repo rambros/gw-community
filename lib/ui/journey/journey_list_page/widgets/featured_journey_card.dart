@@ -56,104 +56,108 @@ class FeaturedJourneyCard extends StatelessWidget {
           // Content
           Padding(
             padding: const EdgeInsets.all(20.0),
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Left Side: Image of the journey
-                if (journeyRow.imageUrl != null && journeyRow.imageUrl!.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(right: 16.0),
-                    child: Container(
-                      width: 90.0,
-                      height: 90.0,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(16.0),
+                Text(
+                  'FEATURED',
+                  style: AppTheme.of(context).labelSmall.override(
+                        color: AppTheme.of(context).tertiary,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.2,
+                        fontSize: 10.0,
                       ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(16.0),
-                        child: CachedNetworkImage(
-                          imageUrl: journeyRow.imageUrl!,
-                          fit: BoxFit.cover,
-                          errorWidget: (context, url, error) => Image.asset(
-                            'assets/images/logo_goodwishes_300.png',
-                            fit: BoxFit.contain,
+                ),
+                const SizedBox(height: 4.0),
+                Text(
+                  journeyRow.title ?? 'Untitled Journey',
+                  style: AppTheme.of(context).headlineSmall.override(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18.0,
+                      ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Expanded(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      // Logo of the journey
+                      if (journeyRow.imageUrl != null && journeyRow.imageUrl!.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(right: 16.0),
+                          child: Container(
+                            width: 80.0,
+                            height: 80.0,
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(16.0),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(16.0),
+                              child: CachedNetworkImage(
+                                imageUrl: journeyRow.imageUrl!,
+                                fit: BoxFit.cover,
+                                errorWidget: (context, url, error) => Image.asset(
+                                  'assets/images/logo_goodwishes_300.png',
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                      // Button
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 4.0),
+                        child: FFButtonWidget(
+                          onPressed: onTap,
+                          text: isCompleted ? 'VIEW AGAIN' : (journeyStatus != null ? 'RESUME' : 'START'),
+                          options: FFButtonOptions(
+                            width: 120.0,
+                            height: 36.0,
+                            color: isCompleted ? AppTheme.of(context).tertiary : AppTheme.of(context).primary,
+                            textStyle: AppTheme.of(context).bodySmall.override(
+                                  color: isCompleted ? AppTheme.of(context).secondary : Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                            borderRadius: BorderRadius.circular(18.0),
+                            elevation: 2.0,
                           ),
                         ),
                       ),
-                    ),
-                  ),
 
-                // Middle: Text Info
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'FEATURED',
-                        style: AppTheme.of(context).labelSmall.override(
-                              color: AppTheme.of(context).tertiary,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 1.2,
-                              fontSize: 10.0,
-                            ),
-                      ),
-                      const SizedBox(height: 4.0),
-                      Text(
-                        journeyRow.title ?? 'Untitled Journey',
-                        style: AppTheme.of(context).headlineSmall.override(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18.0,
-                            ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 12.0),
-                      FFButtonWidget(
-                        onPressed: onTap,
-                        text: isCompleted ? 'VIEW AGAIN' : (journeyStatus != null ? 'RESUME' : 'START'),
-                        options: FFButtonOptions(
-                          width: 120.0,
-                          height: 36.0,
-                          color: isCompleted ? AppTheme.of(context).tertiary : AppTheme.of(context).primary,
-                          textStyle: AppTheme.of(context).bodySmall.override(
-                                color: isCompleted ? AppTheme.of(context).secondary : Colors.white,
-                                fontWeight: FontWeight.bold,
+                      const Spacer(),
+
+                      // Right Side: Circular Progress
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            SizedBox(
+                              width: 60.0,
+                              height: 60.0,
+                              child: CircularProgressIndicator(
+                                value: progress,
+                                strokeWidth: 6.0,
+                                backgroundColor: Colors.white.withOpacity(0.1),
+                                color: AppTheme.of(context).tertiary,
                               ),
-                          borderRadius: BorderRadius.circular(18.0),
-                          elevation: 2.0,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Right Side: Circular Progress
-                Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      SizedBox(
-                        width: 60.0,
-                        height: 60.0,
-                        child: CircularProgressIndicator(
-                          value: progress,
-                          strokeWidth: 6.0,
-                          backgroundColor: Colors.white.withOpacity(0.1),
-                          color: AppTheme.of(context).tertiary,
-                        ),
-                      ),
-                      Text(
-                        isCompleted
-                            ? '${journeyRow.stepsTotal ?? 0}/${journeyRow.stepsTotal ?? 0}'
-                            : '$stepsCompleted/${journeyRow.stepsTotal ?? 0}',
-                        style: AppTheme.of(context).bodySmall.override(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 11.0,
                             ),
+                            Text(
+                              isCompleted
+                                  ? '${journeyRow.stepsTotal ?? 0}/${journeyRow.stepsTotal ?? 0}'
+                                  : '$stepsCompleted/${journeyRow.stepsTotal ?? 0}',
+                              style: AppTheme.of(context).bodySmall.override(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 11.0,
+                                  ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),

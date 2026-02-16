@@ -33,4 +33,6 @@ class CcViewUserFavoriteActivitiesRow extends SupabaseDataRow {
   String? get videoUrl => getField<String>('video_url');
   String? get journal => getField<String>('journal');
   String? get journeyTitle => getField<String>('journey_title');
+  int? get stepNumber => getField<int>('step_number');
+  String? get stepTitle => getField<String>('step_title');
 }

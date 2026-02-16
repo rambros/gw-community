@@ -51,13 +51,14 @@ class AccountSettingsMenuSection extends StatelessWidget {
             },
           ),
         ),
-        Padding(
-          padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
-          child: ProfileMenuItemWidget(
-            text: 'Reset Onboarding',
-            onTap: onResetOnboarding,
+        if (isAdmin)
+          Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
+            child: ProfileMenuItemWidget(
+              text: 'Reset Onboarding',
+              onTap: onResetOnboarding,
+            ),
           ),
-        ),
         if (isAdmin)
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),

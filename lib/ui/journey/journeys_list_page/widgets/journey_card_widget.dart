@@ -44,37 +44,38 @@ class JourneyCardWidget extends StatelessWidget {
             color: const Color(0xFFF5FBFB),
           ),
         ),
-        child: Row(
+        child: Column(
           mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Journey Title - Full Width
+            Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 0.0),
+              child: Text(
+                title,
+                style: AppTheme.of(context).journey.stepTitle.override(
+                      color: AppTheme.of(context).secondary,
+                    ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            // Bottom Info and Logo
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
+                padding: const EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 12.0, 12.0),
+                child: Row(
                   mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Padding(
-                      padding: const EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 3.0),
-                      child: Row(
+                    Expanded(
+                      child: Column(
                         mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          // Steps progress
                           Text(
-                            title,
-                            style: AppTheme.of(context).journey.stepTitle.override(
-                                  color: AppTheme.of(context).secondary,
-                                ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 12.0),
-                          child: Text(
                             (stepsCompleted > 0)
                                 ? 'Completed $stepsCompleted of $stepsTotal steps'
                                 : '$stepsTotal steps',
@@ -82,40 +83,28 @@ class JourneyCardWidget extends StatelessWidget {
                                   color: AppTheme.of(context).secondary,
                                 ),
                           ),
-                        ),
-                      ],
-                    ),
-                    // Privacy tag
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 8.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: AppTheme.of(context).accent4,
-                              borderRadius: BorderRadius.circular(16.0),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsetsDirectional.fromSTEB(8.0, 2.0, 8.0, 2.0),
-                              child: Text(
-                                'public',
-                                style: AppTheme.of(context).bodyMedium.override(
-                                      color: AppTheme.of(context).secondary,
-                                      fontSize: 10.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                          // Privacy tag
+                          Padding(
+                            padding: const EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 8.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: AppTheme.of(context).accent4,
+                                borderRadius: BorderRadius.circular(16.0),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsetsDirectional.fromSTEB(8.0, 2.0, 8.0, 2.0),
+                                child: Text(
+                                  'public',
+                                  style: AppTheme.of(context).bodyMedium.override(
+                                        color: AppTheme.of(context).secondary,
+                                        fontSize: 10.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 8.0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
+                          // Action button
                           Builder(
                             builder: (context) {
                               Color buttonColor = AppTheme.of(context).secondary;
@@ -164,27 +153,22 @@ class JourneyCardWidget extends StatelessWidget {
                         ],
                       ),
                     ),
+                    // Journey Image/Logo - Aligned to bottom right
+                    Padding(
+                      padding: const EdgeInsetsDirectional.fromSTEB(4.0, 0.0, 0.0, 0.0),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16.0),
+                        child: Image.asset(
+                          'assets/images/logo_goodwishes_300.png',
+                          width: 74.0,
+                          height: 74.0,
+                          fit: BoxFit.scaleDown,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
-            ),
-            Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16.0),
-                    child: Image.asset(
-                      'assets/images/logo_goodwishes_300.png',
-                      width: 74.0,
-                      height: 74.0,
-                      fit: BoxFit.scaleDown,
-                    ),
-                  ),
-                ),
-              ],
             ),
           ],
         ),

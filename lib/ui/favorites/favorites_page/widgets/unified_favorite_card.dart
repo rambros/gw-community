@@ -169,11 +169,22 @@ class _UnifiedFavoriteCardState extends State<UnifiedFavoriteCard> {
                       fontWeight: FontWeight.w600,
                     ),
               ),
-              // Autor (apenas para recordings)
+              // Autor (apenas para recordings) ou Step Info (apenas para activities de jornada)
               if (widget.item.isRecording && widget.item.recording!.authorsNames.isNotEmpty) ...[
                 const SizedBox(height: 4.0),
                 Text(
                   widget.item.recording!.authorsNames.join(', '),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTheme.of(context).learn.metadata.override(
+                        color: AppTheme.of(context).secondary,
+                        fontSize: 12.0,
+                      ),
+                ),
+              ] else if (widget.item.isActivity && widget.item.stepTitle != null) ...[
+                const SizedBox(height: 4.0),
+                Text(
+                  'Step ${widget.item.stepNumber ?? 1}: ${widget.item.stepTitle}',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: AppTheme.of(context).learn.metadata.override(

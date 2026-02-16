@@ -74,4 +74,10 @@ class UnifiedFavoriteItem {
 
   /// Título da jornada (para atividades)
   String? get journeyTitle => activity?.journeyTitle;
+
+  /// Número do step (para atividades)
+  int? get stepNumber => activity?.stepNumber;
+
+  /// Título do step (para atividades)
+  String? get stepTitle => activity?.stepTitle;
 }

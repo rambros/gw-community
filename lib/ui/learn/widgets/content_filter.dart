@@ -146,7 +146,7 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
             width: double.infinity,
             height: double.infinity,
             decoration: BoxDecoration(
-              color: AppTheme.of(context).primaryBackground.withValues(alpha: 0.82),
+              color: AppTheme.of(context).primaryBackground.withValues(alpha: 0.5),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.max,
@@ -179,7 +179,7 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Padding(
-                              padding: const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 0.0, 0.0),
+                              padding: const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 0.0, 8.0),
                               child: Text(
                                 'Content Filter',
                                 style: AppTheme.of(context).headlineMedium,
@@ -200,12 +200,14 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
                                 setState(() {
                                   _selectedAuthorId = val ?? 0;
                                 });
+                                // Auto-close dropdown after selection
+                                FocusScope.of(context).unfocus();
                               },
                               width: double.infinity,
                               height: 50.0,
                               textStyle: AppTheme.of(context).bodyMedium.override(
-                                color: AppTheme.of(context).textColor,
-                              ),
+                                    color: AppTheme.of(context).textColor,
+                                  ),
                               hintText: 'Select Author',
                               searchHintText: 'Search for an author...',
                               icon: Icon(
@@ -239,12 +241,14 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
                                 setState(() {
                                   _selectedEventId = val ?? 0;
                                 });
+                                // Auto-close dropdown after selection
+                                FocusScope.of(context).unfocus();
                               },
                               width: double.infinity,
                               height: 50.0,
                               textStyle: AppTheme.of(context).bodyMedium.override(
-                                color: AppTheme.of(context).textColor,
-                              ),
+                                    color: AppTheme.of(context).textColor,
+                                  ),
                               hintText: 'Select Event',
                               searchHintText: 'Search for an event...',
                               icon: Icon(
@@ -278,12 +282,14 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
                                 setState(() {
                                   _selectedYear = val ?? '';
                                 });
+                                // Auto-close dropdown after selection
+                                FocusScope.of(context).unfocus();
                               },
                               width: double.infinity,
                               height: 50.0,
                               textStyle: AppTheme.of(context).bodyMedium.override(
-                                color: AppTheme.of(context).textColor,
-                              ),
+                                    color: AppTheme.of(context).textColor,
+                                  ),
                               hintText: 'Select Year',
                               searchHintText: 'Search for a year...',
                               icon: Icon(
@@ -321,10 +327,10 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
                               width: double.infinity,
                               height: 50.0,
                               textStyle: AppTheme.of(context).bodyMedium.override(
-                                color: AppTheme.of(context).textColor,
-                              ),
+                                    color: AppTheme.of(context).textColor,
+                                  ),
                               hintText: 'Select Topics',
-                              searchHintText: 'Search for topics...',
+                              searchHintText: 'Search... (tap outside to close)',
                               icon: Icon(
                                 Icons.keyboard_arrow_down_rounded,
                                 color: AppTheme.of(context).secondaryText,
@@ -371,7 +377,7 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
                                   ),
                                   FFButtonWidget(
                                     onPressed: () => _applyFilters(context, viewModel),
-                                    text: 'Apply Filter',
+                                    text: 'Apply Filters',
                                     options: FFButtonOptions(
                                       height: 44.0,
                                       padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),

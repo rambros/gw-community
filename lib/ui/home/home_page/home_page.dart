@@ -104,26 +104,6 @@ class _HomePageState extends State<HomePage> {
                         },
                       ),
 
-                    _buildSectionTitle(context, 'Upcoming Events'),
-
-                    // Events List
-                    ListView.builder(
-                      padding: EdgeInsets.zero,
-                      primary: false,
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      scrollDirection: Axis.vertical,
-                      itemCount: viewModel.upcomingEvents.length,
-                      itemBuilder: (context, index) {
-                        final event = viewModel.upcomingEvents[index];
-                        final groupName = viewModel.getGroupNameById(event.groupId);
-                        return HomeEventCard(
-                          eventRow: event,
-                          groupName: groupName,
-                        );
-                      },
-                    ),
-
                     // Groups Section
                     if (viewModel.userGroups.isNotEmpty) ...[
                       _buildSectionTitle(context, 'My Groups'),
@@ -143,6 +123,26 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ],
+
+                    _buildSectionTitle(context, 'Upcoming Events'),
+
+                    // Events List
+                    ListView.builder(
+                      padding: EdgeInsets.zero,
+                      primary: false,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      scrollDirection: Axis.vertical,
+                      itemCount: viewModel.upcomingEvents.length,
+                      itemBuilder: (context, index) {
+                        final event = viewModel.upcomingEvents[index];
+                        final groupName = viewModel.getGroupNameById(event.groupId);
+                        return HomeEventCard(
+                          eventRow: event,
+                          groupName: groupName,
+                        );
+                      },
+                    ),
                     const SizedBox(height: 24.0),
                   ],
                 ),

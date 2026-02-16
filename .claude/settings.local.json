@@ -24,7 +24,8 @@
       "Bash(git log:*)",
       "Bash(git mv:*)",
       "Bash(flutter --version:*)",
-      "Bash(jarsigner:*)"
+      "Bash(jarsigner:*)",
+      "Bash(flutter pub add:*)"
     ]
   }
 }

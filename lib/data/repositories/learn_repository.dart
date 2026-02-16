@@ -3,7 +3,7 @@ import 'package:gw_community/data/services/supabase/supabase.dart';
 class LearnRepository {
   // Columns to select for list view to avoid fetching heavy data
   static final String _listColumns =
-      'content_id, title, description, authors_names, midia_type, is_published, cott_event_id, event_name, audio_url, midia_file_url';
+      'content_id, title, description, authors_names, midia_type, is_published, cott_event_id, event_name, audio_url, midia_file_url, date_published';
 
   Future<List<ViewContentRow>> searchContent(
     String searchString, {
@@ -13,8 +13,8 @@ class LearnRepository {
     List<String> filterByTopics = const [],
     int filterByJourneyId = 0,
     int filterByGroupId = 0,
-    bool ascending = true,
-    String sortColumn = 'title',
+    bool ascending = false,
+    String sortColumn = 'date_published',
     int? limit,
     int? offset,
   }) async {
@@ -79,8 +79,8 @@ class LearnRepository {
     List<String> filterByTopics = const [],
     int filterByJourneyId = 0,
     int filterByGroupId = 0,
-    bool ascending = true,
-    String sortColumn = 'title',
+    bool ascending = false,
+    String sortColumn = 'date_published',
     int? limit,
     int? offset,
   }) async {
@@ -131,14 +131,16 @@ class LearnRepository {
   }
 
   Future<List<ViewContentRow>> getAllContent({
-    bool ascending = true,
-    String sortColumn = 'title',
+    bool ascending = false,
+    String sortColumn = 'date_published',
     int? limit,
     int? offset,
   }) async {
     // First, get IDs of exclusive resources
-    final exclusiveResponse =
-        await SupaFlow.client.from('cc_group_resources').select('portal_item_id').eq('visibility', 'exclusive');
+    final exclusiveResponse = await SupaFlow.client
+        .from('cc_group_resources')
+        .select('portal_item_id')
+        .eq('visibility', 'exclusive');
 
     final exclusiveIds = (exclusiveResponse as List).map((row) => row['portal_item_id'] as int).toList();
 
@@ -163,9 +165,7 @@ class LearnRepository {
   }
 
   Future<List<AuthorWithContentRow>> getAuthors() async {
-    return AuthorWithContentTable().queryRows(
-      queryFn: (q) => q.eqOrNull('has_content', true).order('name', ascending: true),
-    );
+    return AuthorWithContentTable().queryRows(queryFn: (q) => q.order('name', ascending: true));
   }
 
   Future<List<ViewEventsRow>> getEvents() async {

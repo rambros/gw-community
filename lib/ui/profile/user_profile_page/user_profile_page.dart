@@ -3,6 +3,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:gw_community/index.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
 import 'package:gw_community/ui/profile/user_profile_page/view_model/user_profile_view_model.dart';
@@ -267,6 +268,30 @@ class _UserProfilePageState extends State<UserProfilePage> {
                   ),
                   borderRadius: BorderRadius.circular(30.0),
                 ),
+              ),
+            ),
+            // App Version
+            Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(24.0, 8.0, 24.0, 32.0),
+              child: FutureBuilder<PackageInfo>(
+                future: PackageInfo.fromPlatform(),
+                builder: (context, snapshot) {
+                  final version = snapshot.hasData ? snapshot.data!.version : '...';
+                  return Center(
+                    child: Text(
+                      'Version $version',
+                      textAlign: TextAlign.center,
+                      style: AppTheme.of(context).bodyMedium.override(
+                            font: GoogleFonts.lexendDeca(
+                              fontWeight: FontWeight.w500,
+                            ),
+                            color: AppTheme.of(context).secondary,
+                            fontSize: 14.0,
+                            letterSpacing: 0.0,
+                          ),
+                    ),
+                  );
+                },
               ),
             ),
           ],

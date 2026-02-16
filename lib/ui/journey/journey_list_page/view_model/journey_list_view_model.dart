@@ -19,14 +19,17 @@ class JourneyListViewModel extends ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
+  bool _isDisposed = false;
+
   Future<void> _init() async {
     _isLoading = true;
-    notifyListeners();
+    if (!_isDisposed) notifyListeners();
 
     await refreshJourneysList();
 
+    if (_isDisposed) return;
     _isLoading = false;
-    notifyListeners();
+    if (!_isDisposed) notifyListeners();
   }
 
   /// Refresh both journey lists
@@ -64,7 +67,13 @@ class JourneyListViewModel extends ChangeNotifier {
         availableJourneys = await _repository.getAvailableJourneysForList(currentUserUid);
       }),
     ]);
-    notifyListeners();
+    if (!_isDisposed) notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _isDisposed = true;
+    super.dispose();
   }
 
   /// Recalculate steps completed for all journeys, removing duplicates
