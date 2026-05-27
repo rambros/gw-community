@@ -275,6 +275,8 @@ class ExperienceCardWidget extends StatelessWidget {
                     confirmColor: AppTheme.of(context).secondary,
                   );
 
+                  if (!context.mounted) return;
+
                   if (confirmed && onDelete != null) {
                     await onDelete!(context);
                   }

@@ -55,35 +55,35 @@ abstract class AppTheme {
     return LightModeTheme();
   }
 
-  late Color primary;
-  late Color secondary;
-  late Color tertiary;
-  late Color alternate;
-  late Color primaryText;
-  late Color secondaryText;
-  late Color primaryBackground;
-  late Color secondaryBackground;
-  late Color accent1;
-  late Color accent2;
-  late Color accent3;
-  late Color accent4;
-  late Color success;
-  late Color warning;
-  late Color error;
-  late Color info;
+  Color get primary;
+  Color get secondary;
+  Color get tertiary;
+  Color get alternate;
+  Color get primaryText;
+  Color get secondaryText;
+  Color get primaryBackground;
+  Color get secondaryBackground;
+  Color get accent1;
+  Color get accent2;
+  Color get accent3;
+  Color get accent4;
+  Color get success;
+  Color get warning;
+  Color get error;
+  Color get info;
 
-  late Color rebeccaPurple;
-  late Color copperRed;
-  late Color orangeYellowCrayola;
-  late Color cadetGrey;
-  late Color beauBlue;
-  late Color transparent;
-  late Color grayIcon;
-  late Color gray200;
-  late Color gray600;
-  late Color black600;
-  late Color tertiary400;
-  late Color textColor;
+  Color get rebeccaPurple;
+  Color get copperRed;
+  Color get orangeYellowCrayola;
+  Color get cadetGrey;
+  Color get beauBlue;
+  Color get transparent;
+  Color get grayIcon;
+  Color get gray200;
+  Color get gray600;
+  Color get black600;
+  Color get tertiary400;
+  Color get textColor;
 
   String get displayLargeFamily => typography.displayLargeFamily;
   bool get displayLargeIsCustom => typography.displayLargeIsCustom;
@@ -136,62 +136,62 @@ abstract class AppTheme {
 
 class LightModeTheme extends AppTheme {
   @override
-  late Color primary = GWPalette.purplePrimary;
+  Color get primary => GWPalette.purplePrimary;
   @override
-  late Color secondary = GWPalette.purpleSecondary;
+  Color get secondary => GWPalette.purpleSecondary;
   @override
-  late Color tertiary = GWPalette.yellowTertiary;
+  Color get tertiary => GWPalette.yellowTertiary;
   @override
-  late Color alternate = GWPalette.lilacAlternate;
+  Color get alternate => GWPalette.lilacAlternate;
   @override
-  late Color primaryText = GWPalette.textPrimary;
+  Color get primaryText => GWPalette.textPrimary;
   @override
-  late Color secondaryText = GWPalette.textSecondary;
+  Color get secondaryText => GWPalette.textSecondary;
   @override
-  late Color primaryBackground = GWPalette.bgPrimary;
+  Color get primaryBackground => GWPalette.bgPrimary;
   @override
-  late Color secondaryBackground = GWPalette.bgSecondary;
+  Color get secondaryBackground => GWPalette.bgSecondary;
   @override
-  late Color accent1 = GWPalette.gray1;
+  Color get accent1 => GWPalette.gray1;
   @override
-  late Color accent2 = GWPalette.gray2;
+  Color get accent2 => GWPalette.gray2;
   @override
-  late Color accent3 = GWPalette.gray3;
+  Color get accent3 => GWPalette.gray3;
   @override
-  late Color accent4 = GWPalette.gray4;
+  Color get accent4 => GWPalette.gray4;
   @override
-  late Color success = GWPalette.success;
+  Color get success => GWPalette.success;
   @override
-  late Color warning = GWPalette.warning;
+  Color get warning => GWPalette.warning;
   @override
-  late Color error = GWPalette.error;
+  Color get error => GWPalette.error;
   @override
-  late Color info = GWPalette.info;
+  Color get info => GWPalette.info;
 
   @override
-  late Color rebeccaPurple = GWPalette.rebeccaPurple;
+  Color get rebeccaPurple => GWPalette.rebeccaPurple;
   @override
-  late Color copperRed = GWPalette.copperRed;
+  Color get copperRed => GWPalette.copperRed;
   @override
-  late Color orangeYellowCrayola = GWPalette.orangeYellow;
+  Color get orangeYellowCrayola => GWPalette.orangeYellow;
   @override
-  late Color cadetGrey = GWPalette.cadetGrey;
+  Color get cadetGrey => GWPalette.cadetGrey;
   @override
-  late Color beauBlue = GWPalette.beauBlue;
+  Color get beauBlue => GWPalette.beauBlue;
   @override
-  late Color transparent = GWPalette.black; // Kept as 'transparent' for compatibility, but mapped to Black
+  Color get transparent => GWPalette.black; // Kept as 'transparent' for compatibility, but mapped to Black
   @override
-  late Color grayIcon = GWPalette.grayIcon;
+  Color get grayIcon => GWPalette.grayIcon;
   @override
-  late Color gray200 = GWPalette.gray200;
+  Color get gray200 => GWPalette.gray200;
   @override
-  late Color gray600 = GWPalette.gray600;
+  Color get gray600 => GWPalette.gray600;
   @override
-  late Color black600 = GWPalette.black600;
+  Color get black600 => GWPalette.black600;
   @override
-  late Color tertiary400 = GWPalette.teal;
+  Color get tertiary400 => GWPalette.teal;
   @override
-  late Color textColor = GWPalette.textDark;
+  Color get textColor => GWPalette.textDark;
 }
 
 abstract class Typography {

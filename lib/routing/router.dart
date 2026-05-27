@@ -6,12 +6,12 @@ import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/domain/models/app_auth_user.dart';
 import 'package:gw_community/index.dart';
 import 'package:gw_community/ui/auth/invite_accept_page/invite_accept_page.dart';
+import 'package:gw_community/ui/community/community_guidelines_edit_page/community_guidelines_edit_page.dart';
+import 'package:gw_community/ui/community/community_guidelines_page/community_guidelines_page.dart';
 import 'package:gw_community/ui/community/group_details_page/member_management_page/member_management_page.dart';
 import 'package:gw_community/ui/community/group_moderation_page/group_moderation_page.dart';
 import 'package:gw_community/ui/core/nav_bar/nav_bar_page.dart';
 import 'package:gw_community/ui/journey/journey_list_page/journey_list_page.dart';
-import 'package:gw_community/ui/community/community_guidelines_page/community_guidelines_page.dart';
-import 'package:gw_community/ui/community/community_guidelines_edit_page/community_guidelines_edit_page.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
 

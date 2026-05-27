@@ -3,11 +3,11 @@ import 'package:gw_community/data/repositories/favorites_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/widgets/favorite_button.dart';
+import 'package:gw_community/ui/journey/step_audio_player_page/step_audio_player_page.dart';
+import 'package:gw_community/ui/journey/step_text_view_page/step_text_view_page.dart';
 import 'package:gw_community/ui/learn/themes/learn_theme_extension.dart';
 import 'package:gw_community/utils/context_extensions.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
-import 'package:gw_community/ui/journey/step_audio_player_page/step_audio_player_page.dart';
-import 'package:gw_community/ui/journey/step_text_view_page/step_text_view_page.dart';
 
 /// Card de activity favorita (redesenhado com novo layout)
 class FavoriteActivityCard extends StatefulWidget {

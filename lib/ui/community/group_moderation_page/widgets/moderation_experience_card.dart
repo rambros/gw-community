@@ -335,19 +335,4 @@ class ModerationExperienceCard extends StatelessWidget {
         return const Color(0xFF1565C0); // Dark blue for better contrast
     }
   }
-
-  IconData _getStatusIcon(String status) {
-    switch (status) {
-      case 'approved':
-        return Icons.check_circle;
-      case 'rejected':
-        return Icons.cancel;
-      case 'changes_requested':
-        return Icons.edit;
-      case 'awaiting_approval':
-      case 'pending':
-      default:
-        return Icons.hourglass_empty;
-    }
-  }
 }

@@ -3,11 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
-
+import 'package:gw_community/ui/auth/invite_accept_page/view_model/invite_accept_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
-import 'package:gw_community/ui/auth/invite_accept_page/view_model/invite_accept_view_model.dart';
+import 'package:provider/provider.dart';
 
 class InviteAcceptPage extends StatefulWidget {
   const InviteAcceptPage({super.key, required this.token});

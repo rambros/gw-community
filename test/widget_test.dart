@@ -1,17 +1,32 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility that Flutter provides. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:gw_community/main.dart';
+import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('FlutterFlowIconButton renders and triggers onPressed', (WidgetTester tester) async {
+    bool tapped = false;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: FlutterFlowIconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () {
+              tapped = true;
+            },
+          ),
+        ),
+      ),
+    );
+
+    // Verify the icon is rendered
+    expect(find.byIcon(Icons.add), findsOneWidget);
+
+    // Tap the button
+    await tester.tap(find.byType(FlutterFlowIconButton));
+    await tester.pump();
+
+    // Verify onPressed was called
+    expect(tapped, isTrue);
   });
 }

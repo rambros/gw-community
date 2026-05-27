@@ -18,15 +18,15 @@ export 'dart:math' show min, max;
 export 'dart:typed_data' show Uint8List;
 
 export 'package:intl/intl.dart';
-export 'package:page_transition/page_transition.dart';
 
-export '/data/services/analytics/firebase_analytics_service.dart';
-export '/routing/router.dart';
 export '../app_state.dart';
+export '../data/services/analytics/firebase_analytics_service.dart';
+export '../routing/router.dart';
 export 'custom_icons.dart' show FFIcons;
 export 'internationalization.dart' show FFLocalizations;
 export 'keep_alive_wrapper.dart';
 export 'lat_lng.dart';
+export 'page_transition.dart';
 export 'place.dart';
 export 'uploaded_file.dart';
 

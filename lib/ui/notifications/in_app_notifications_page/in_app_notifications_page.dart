@@ -368,7 +368,7 @@ class _NotificationTile extends StatelessWidget {
         : _getNotificationColor(context);
     final textOpacity = isRead ? 0.6 : 1.0;
 
-    return Container(
+    return Material(
       color: isRead
           ? AppTheme.of(context).gray200.withValues(alpha: 0.15)
           : AppTheme.of(context).primaryBackground,

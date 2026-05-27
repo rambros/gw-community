@@ -3,18 +3,15 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:gw_community/index.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
 import 'package:gw_community/ui/profile/user_profile_page/view_model/user_profile_view_model.dart';
-import 'package:gw_community/ui/profile/user_profile_page/widgets/profile_menu_item_widget.dart';
-import 'package:gw_community/ui/profile/user_profile_page/widgets/profile_menu_section.dart';
 import 'package:gw_community/ui/profile/user_profile_page/widgets/account_settings_menu_section.dart';
+import 'package:gw_community/ui/profile/user_profile_page/widgets/profile_menu_section.dart';
 import 'package:gw_community/ui/profile/widgets/confirm_profile_action_dialog.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
-import 'package:gw_community/ui/community/community_guidelines_page/community_guidelines_page.dart';
-import 'package:gw_community/ui/community/community_guidelines_edit_page/community_guidelines_edit_page.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
 
 class UserProfilePage extends StatefulWidget {
@@ -111,7 +108,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     color: Colors.white,
                   ),
                   child: Padding(
-                    padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
+                    padding: const EdgeInsetsDirectional.fromSTEB(
+                        24.0, 0.0, 24.0, 0.0),
                     child: Column(
                       mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -123,18 +121,27 @@ class _UserProfilePageState extends State<UserProfilePage> {
                           ),
                           style: AppTheme.of(context).headlineSmall.override(
                                 font: GoogleFonts.lexendDeca(
-                                  fontWeight: AppTheme.of(context).headlineSmall.fontWeight,
-                                  fontStyle: AppTheme.of(context).headlineSmall.fontStyle,
+                                  fontWeight: AppTheme.of(context)
+                                      .headlineSmall
+                                      .fontWeight,
+                                  fontStyle: AppTheme.of(context)
+                                      .headlineSmall
+                                      .fontStyle,
                                 ),
                                 letterSpacing: 0.0,
-                                fontWeight: AppTheme.of(context).headlineSmall.fontWeight,
-                                fontStyle: AppTheme.of(context).headlineSmall.fontStyle,
+                                fontWeight: AppTheme.of(context)
+                                    .headlineSmall
+                                    .fontWeight,
+                                fontStyle: AppTheme.of(context)
+                                    .headlineSmall
+                                    .fontStyle,
                               ),
                         ),
                         Align(
                           alignment: const AlignmentDirectional(-1.0, 0.0),
                           child: Padding(
-                            padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 0.0),
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                0.0, 8.0, 0.0, 0.0),
                             child: Text(
                               valueOrDefault<String>(
                                 userProfile?.email,
@@ -144,13 +151,17 @@ class _UserProfilePageState extends State<UserProfilePage> {
                               style: AppTheme.of(context).bodyMedium.override(
                                     font: GoogleFonts.lexendDeca(
                                       fontWeight: FontWeight.normal,
-                                      fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
+                                      fontStyle: AppTheme.of(context)
+                                          .bodyMedium
+                                          .fontStyle,
                                     ),
                                     color: AppTheme.of(context).primary,
                                     fontSize: 14.0,
                                     letterSpacing: 0.0,
                                     fontWeight: FontWeight.normal,
-                                    fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
+                                    fontStyle: AppTheme.of(context)
+                                        .bodyMedium
+                                        .fontStyle,
                                   ),
                             ),
                           ),
@@ -179,17 +190,23 @@ class _UserProfilePageState extends State<UserProfilePage> {
                             return Align(
                               alignment: const AlignmentDirectional(-1.0, 0.0),
                               child: Padding(
-                                padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 16.0),
+                                padding: const EdgeInsetsDirectional.fromSTEB(
+                                    0.0, 8.0, 0.0, 16.0),
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12.0, vertical: 6.0),
                                   decoration: BoxDecoration(
-                                    color: AppTheme.of(context).primary.withOpacity(0.15),
+                                    color: AppTheme.of(context)
+                                        .primary
+                                        .withValues(alpha: 0.15),
                                     borderRadius: BorderRadius.circular(6.0),
                                   ),
                                   child: Text(
                                     roleToDisplay.displayName,
                                     textAlign: TextAlign.start,
-                                    style: AppTheme.of(context).bodyMedium.override(
+                                    style: AppTheme.of(context)
+                                        .bodyMedium
+                                        .override(
                                           font: GoogleFonts.lexendDeca(
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -214,7 +231,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
             // Account Settings Header
             Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(24.0, 24.0, 0.0, 12.0),
+              padding:
+                  const EdgeInsetsDirectional.fromSTEB(24.0, 24.0, 0.0, 12.0),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 children: [
@@ -222,8 +240,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     'Account Settings',
                     style: AppTheme.of(context).titleMedium.override(
                           font: GoogleFonts.lexendDeca(
-                            fontWeight: AppTheme.of(context).titleMedium.fontWeight,
-                            fontStyle: AppTheme.of(context).titleMedium.fontStyle,
+                            fontWeight:
+                                AppTheme.of(context).titleMedium.fontWeight,
+                            fontStyle:
+                                AppTheme.of(context).titleMedium.fontStyle,
                           ),
                           color: AppTheme.of(context).secondary,
                           letterSpacing: 0.0,
@@ -239,7 +259,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
               userProfile: viewModel.userProfile,
             ),
             Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(24.0, 24.0, 24.0, 24.0),
+              padding:
+                  const EdgeInsetsDirectional.fromSTEB(24.0, 24.0, 24.0, 24.0),
               child: FFButtonWidget(
                 onPressed: () async {
                   await _handleLogout(context, viewModel);
@@ -248,12 +269,15 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 options: FFButtonOptions(
                   width: double.infinity,
                   height: 48.0,
-                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                  iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                  padding:
+                      const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                  iconPadding:
+                      const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
                   color: AppTheme.of(context).primary,
                   textStyle: AppTheme.of(context).titleSmall.override(
                         font: GoogleFonts.lexendDeca(
-                          fontWeight: AppTheme.of(context).titleSmall.fontWeight,
+                          fontWeight:
+                              AppTheme.of(context).titleSmall.fontWeight,
                           fontStyle: AppTheme.of(context).titleSmall.fontStyle,
                         ),
                         color: Colors.white,
@@ -272,11 +296,13 @@ class _UserProfilePageState extends State<UserProfilePage> {
             ),
             // App Version
             Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(24.0, 8.0, 24.0, 32.0),
+              padding:
+                  const EdgeInsetsDirectional.fromSTEB(24.0, 8.0, 24.0, 32.0),
               child: FutureBuilder<PackageInfo>(
                 future: PackageInfo.fromPlatform(),
                 builder: (context, snapshot) {
-                  final version = snapshot.hasData ? snapshot.data!.version : '...';
+                  final version =
+                      snapshot.hasData ? snapshot.data!.version : '...';
                   return Center(
                     child: Text(
                       'Version $version',
@@ -300,14 +326,16 @@ class _UserProfilePageState extends State<UserProfilePage> {
     );
   }
 
-  Future<void> _handleResetOnboarding(BuildContext context, UserProfileViewModel viewModel) async {
+  Future<void> _handleResetOnboarding(
+      BuildContext context, UserProfileViewModel viewModel) async {
     final confirmDialogResponse = await showDialog<bool>(
           context: context,
           builder: (alertDialogContext) {
             return const WebViewAware(
               child: ConfirmProfileActionDialog(
                 title: 'Reset onboarding experience',
-                description: 'We will clear your onboarding progress so you can go through the introduction again.',
+                description:
+                    'We will clear your onboarding progress so you can go through the introduction again.',
                 confirmLabel: 'Reset Onboarding',
                 icon: Icons.flag_outlined,
               ),
@@ -352,7 +380,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
     }
   }
 
-  Future<void> _handleLogout(BuildContext context, UserProfileViewModel viewModel) async {
+  Future<void> _handleLogout(
+      BuildContext context, UserProfileViewModel viewModel) async {
     try {
       await viewModel.logoutCommand();
 

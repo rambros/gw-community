@@ -116,7 +116,6 @@ class GroupAboutTab extends StatelessWidget {
   }
 
   Widget _buildMembersSections(BuildContext context, GroupDetailsViewModel viewModel) {
-    final group = viewModel.group;
     final members = viewModel.members;
 
     // Separa facilitators (group_managers) dos membros comuns usando IDs

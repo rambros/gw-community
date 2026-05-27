@@ -100,7 +100,7 @@ enum UserRole {
   String toString() => value;
 }
 
-/// Extension methods for List<String> to work with roles
+/// Extension methods for `List<String>` to work with roles
 extension RoleListExtension on List<String> {
   /// Checks if this list contains the given role
   bool containsRole(UserRole role) {

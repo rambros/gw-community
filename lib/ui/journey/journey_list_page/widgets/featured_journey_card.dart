@@ -20,11 +20,14 @@ class FeaturedJourneyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isCompleted =
-        journeyStatus == 'completed' || (journeyRow.stepsTotal != null && stepsCompleted >= journeyRow.stepsTotal!);
+    final bool isCompleted = journeyStatus == 'completed' ||
+        (journeyRow.stepsTotal != null &&
+            stepsCompleted >= journeyRow.stepsTotal!);
 
     final double progress =
-        journeyRow.stepsTotal != null && journeyRow.stepsTotal! > 0 ? stepsCompleted / journeyRow.stepsTotal! : 0.0;
+        journeyRow.stepsTotal != null && journeyRow.stepsTotal! > 0
+            ? stepsCompleted / journeyRow.stepsTotal!
+            : 0.0;
 
     return Container(
       width: double.infinity,
@@ -49,7 +52,7 @@ class FeaturedJourneyCard extends StatelessWidget {
             child: Icon(
               Icons.auto_awesome,
               size: 150,
-              color: Colors.white.withOpacity(0.05),
+              color: Colors.white.withValues(alpha: 0.05),
             ),
           ),
 
@@ -84,14 +87,15 @@ class FeaturedJourneyCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       // Logo of the journey
-                      if (journeyRow.imageUrl != null && journeyRow.imageUrl!.isNotEmpty)
+                      if (journeyRow.imageUrl != null &&
+                          journeyRow.imageUrl!.isNotEmpty)
                         Padding(
                           padding: const EdgeInsets.only(right: 16.0),
                           child: Container(
                             width: 80.0,
                             height: 80.0,
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.1),
+                              color: Colors.white.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(16.0),
                             ),
                             child: ClipRRect(
@@ -99,7 +103,8 @@ class FeaturedJourneyCard extends StatelessWidget {
                               child: CachedNetworkImage(
                                 imageUrl: journeyRow.imageUrl!,
                                 fit: BoxFit.cover,
-                                errorWidget: (context, url, error) => Image.asset(
+                                errorWidget: (context, url, error) =>
+                                    Image.asset(
                                   'assets/images/logo_goodwishes_300.png',
                                   fit: BoxFit.contain,
                                 ),
@@ -113,13 +118,19 @@ class FeaturedJourneyCard extends StatelessWidget {
                         padding: const EdgeInsets.only(bottom: 4.0),
                         child: FFButtonWidget(
                           onPressed: onTap,
-                          text: isCompleted ? 'VIEW AGAIN' : (journeyStatus != null ? 'RESUME' : 'START'),
+                          text: isCompleted
+                              ? 'VIEW AGAIN'
+                              : (journeyStatus != null ? 'RESUME' : 'START'),
                           options: FFButtonOptions(
                             width: 120.0,
                             height: 36.0,
-                            color: isCompleted ? AppTheme.of(context).tertiary : AppTheme.of(context).primary,
+                            color: isCompleted
+                                ? AppTheme.of(context).tertiary
+                                : AppTheme.of(context).primary,
                             textStyle: AppTheme.of(context).bodySmall.override(
-                                  color: isCompleted ? AppTheme.of(context).secondary : Colors.white,
+                                  color: isCompleted
+                                      ? AppTheme.of(context).secondary
+                                      : Colors.white,
                                   fontWeight: FontWeight.bold,
                                 ),
                             borderRadius: BorderRadius.circular(18.0),
@@ -142,7 +153,8 @@ class FeaturedJourneyCard extends StatelessWidget {
                               child: CircularProgressIndicator(
                                 value: progress,
                                 strokeWidth: 6.0,
-                                backgroundColor: Colors.white.withOpacity(0.1),
+                                backgroundColor:
+                                    Colors.white.withValues(alpha: 0.1),
                                 color: AppTheme.of(context).tertiary,
                               ),
                             ),

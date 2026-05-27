@@ -24,7 +24,8 @@ class GroupAnnouncementsTab extends StatelessWidget {
             mainAxisSize: MainAxisSize.max,
             children: [
               Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 8.0),
+                padding:
+                    const EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 8.0),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -42,7 +43,8 @@ class GroupAnnouncementsTab extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 0.0),
+                padding:
+                    const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 0.0),
                 child: StreamBuilder<List<CcViewNotificationsUsersRow>>(
                   // Key baseada nos IDs lidos para forçar reconstrução quando mudarem
                   key: ValueKey(viewModel.readNotificationIds.hashCode),
@@ -75,15 +77,20 @@ class GroupAnnouncementsTab extends StatelessWidget {
 
                     // Usa os IDs lidos do viewModel (atualizados via notifyListeners)
                     final readIds = viewModel.readNotificationIds;
-                    final unreadList = notificationsList.where((n) => !readIds.contains(n.id!)).toList();
-                    final readList = notificationsList.where((n) => readIds.contains(n.id!)).toList();
+                    final unreadList = notificationsList
+                        .where((n) => !readIds.contains(n.id!))
+                        .toList();
+                    final readList = notificationsList
+                        .where((n) => readIds.contains(n.id!))
+                        .toList();
 
                     return Column(
                       children: [
                         // Unread Announcements
                         if (unreadList.isEmpty)
                           Padding(
-                            padding: const EdgeInsetsDirectional.fromSTEB(24.0, 32.0, 24.0, 32.0),
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                24.0, 32.0, 24.0, 32.0),
                             child: Column(
                               mainAxisSize: MainAxisSize.max,
                               children: [
@@ -91,7 +98,9 @@ class GroupAnnouncementsTab extends StatelessWidget {
                                   padding: const EdgeInsets.only(bottom: 16.0),
                                   child: Container(
                                     decoration: BoxDecoration(
-                                      color: AppTheme.of(context).success.withOpacity(0.15),
+                                      color: AppTheme.of(context)
+                                          .success
+                                          .withValues(alpha: 0.15),
                                       shape: BoxShape.circle,
                                     ),
                                     child: Padding(
@@ -107,18 +116,23 @@ class GroupAnnouncementsTab extends StatelessWidget {
                                 Text(
                                   'You’re all caught up.',
                                   textAlign: TextAlign.center,
-                                  style: AppTheme.of(context).headlineMedium.override(
+                                  style: AppTheme.of(context)
+                                      .headlineMedium
+                                      .override(
                                         font: GoogleFonts.poppins(),
                                         color: AppTheme.of(context).secondary,
                                         fontSize: 22.0,
                                       ),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 0.0),
+                                  padding: const EdgeInsetsDirectional.fromSTEB(
+                                      0.0, 8.0, 0.0, 0.0),
                                   child: Text(
                                     'There are no new messages at the moment.',
                                     textAlign: TextAlign.center,
-                                    style: AppTheme.of(context).bodyMedium.override(
+                                    style: AppTheme.of(context)
+                                        .bodyMedium
+                                        .override(
                                           font: GoogleFonts.lexendDeca(),
                                           color: AppTheme.of(context).gray600,
                                         ),
@@ -126,13 +140,18 @@ class GroupAnnouncementsTab extends StatelessWidget {
                                 ),
                                 if (readList.isNotEmpty)
                                   Padding(
-                                    padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 0.0),
+                                    padding:
+                                        const EdgeInsetsDirectional.fromSTEB(
+                                            0.0, 8.0, 0.0, 0.0),
                                     child: Text(
                                       'Past messages are available below.',
                                       textAlign: TextAlign.center,
-                                      style: AppTheme.of(context).bodyMedium.override(
+                                      style: AppTheme.of(context)
+                                          .bodyMedium
+                                          .override(
                                             font: GoogleFonts.lexendDeca(),
-                                            color: AppTheme.of(context).grayIcon,
+                                            color:
+                                                AppTheme.of(context).grayIcon,
                                           ),
                                     ),
                                   ),
@@ -146,21 +165,24 @@ class GroupAnnouncementsTab extends StatelessWidget {
                             physics: const NeverScrollableScrollPhysics(),
                             itemCount: unreadList.length,
                             itemBuilder: (context, index) {
-                              return _buildAnnouncementCard(context, viewModel, unreadList[index], false);
+                              return _buildAnnouncementCard(
+                                  context, viewModel, unreadList[index], false);
                             },
                           ),
 
                         // Past Announcements (Read)
                         if (readList.isNotEmpty)
                           Padding(
-                            padding: const EdgeInsetsDirectional.fromSTEB(16.0, 8.0, 16.0, 24.0),
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                16.0, 8.0, 16.0, 24.0),
                             child: Theme(
                               data: Theme.of(context).copyWith(
                                 dividerColor: Colors.transparent,
                                 listTileTheme: ListTileThemeData(
                                   dense: true,
                                   minVerticalPadding: 0,
-                                  contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 16.0),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12.0),
                                   ),
@@ -169,29 +191,38 @@ class GroupAnnouncementsTab extends StatelessWidget {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(12.0),
                                 child: Container(
-                                  color: const Color(0xFFF1F4F8), // Light grey background
+                                  color: const Color(
+                                      0xFFF1F4F8), // Light grey background
                                   child: ExpansionTile(
                                     title: Text(
                                       'Past messages',
-                                      style: AppTheme.of(context).bodyMedium.override(
+                                      style: AppTheme.of(context)
+                                          .bodyMedium
+                                          .override(
                                             font: GoogleFonts.lexendDeca(),
-                                            color: AppTheme.of(context).secondary,
+                                            color:
+                                                AppTheme.of(context).secondary,
                                             fontSize: 14.0,
                                             fontWeight: FontWeight.w500,
                                           ),
                                     ),
                                     backgroundColor: const Color(0xFFF1F4F8),
-                                    collapsedBackgroundColor: const Color(0xFFF1F4F8),
+                                    collapsedBackgroundColor:
+                                        const Color(0xFFF1F4F8),
                                     iconColor: AppTheme.of(context).primary,
-                                    collapsedIconColor: AppTheme.of(context).secondary,
+                                    collapsedIconColor:
+                                        AppTheme.of(context).secondary,
                                     children: [
                                       ListView.builder(
-                                        padding: const EdgeInsets.only(top: 8.0),
+                                        padding:
+                                            const EdgeInsets.only(top: 8.0),
                                         shrinkWrap: true,
-                                        physics: const NeverScrollableScrollPhysics(),
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
                                         itemCount: readList.length,
                                         itemBuilder: (context, index) {
-                                          return _buildAnnouncementCard(context, viewModel, readList[index], true);
+                                          return _buildAnnouncementCard(context,
+                                              viewModel, readList[index], true);
                                         },
                                       ),
                                     ],
@@ -296,7 +327,9 @@ class GroupAnnouncementsTab extends StatelessWidget {
             decoration: BoxDecoration(
               color: isRead
                   ? AppTheme.of(context).primaryBackground
-                  : AppTheme.of(context).primaryBackground.withOpacity(0.95),
+                  : AppTheme.of(context)
+                      .primaryBackground
+                      .withValues(alpha: 0.95),
               boxShadow: const [
                 BoxShadow(
                   blurRadius: 15.0,
@@ -307,7 +340,9 @@ class GroupAnnouncementsTab extends StatelessWidget {
               ],
               borderRadius: BorderRadius.circular(12.0),
               border: Border.all(
-                color: isRead ? AppTheme.of(context).primaryBackground : AppTheme.of(context).primary.withOpacity(0.3),
+                color: isRead
+                    ? AppTheme.of(context).primaryBackground
+                    : AppTheme.of(context).primary.withValues(alpha: 0.3),
                 width: isRead ? 1.0 : 2.0,
               ),
             ),
@@ -318,13 +353,15 @@ class GroupAnnouncementsTab extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 4.0),
+                    padding: const EdgeInsetsDirectional.fromSTEB(
+                        16.0, 12.0, 16.0, 4.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 12.0, 0.0),
+                          padding: const EdgeInsetsDirectional.fromSTEB(
+                              0.0, 0.0, 12.0, 0.0),
                           child: Container(
                             decoration: BoxDecoration(
                               color: AppTheme.of(context).primary,
@@ -345,7 +382,9 @@ class GroupAnnouncementsTab extends StatelessWidget {
                             notification.title!,
                             style: AppTheme.of(context).titleMedium.override(
                                   font: GoogleFonts.inter(
-                                    fontWeight: isRead ? FontWeight.normal : FontWeight.bold,
+                                    fontWeight: isRead
+                                        ? FontWeight.normal
+                                        : FontWeight.bold,
                                   ),
                                   color: AppTheme.of(context).secondary,
                                   fontSize: 16.0,
@@ -368,7 +407,8 @@ class GroupAnnouncementsTab extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 12.0),
+                    padding: const EdgeInsetsDirectional.fromSTEB(
+                        16.0, 0.0, 16.0, 12.0),
                     child: Text(
                       '${dateTimeFormat('MMM d', notification.updatedAt)} - From ${notification.displayName ?? 'User'} - Facilitator',
                       style: AppTheme.of(context).labelSmall.override(

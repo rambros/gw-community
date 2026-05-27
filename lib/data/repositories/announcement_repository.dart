@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
@@ -102,7 +103,7 @@ class AnnouncementRepository {
       }
     } catch (e) {
       // Ignora erro silenciosamente - se falhar não deve impedir o fluxo
-      print('Error marking notification as read: $e');
+      debugPrint('Error marking notification as read: $e');
     }
   }
 
@@ -123,7 +124,7 @@ class AnnouncementRepository {
 
       return reads.map((r) => r.experienceId).toSet();
     } catch (e) {
-      print('Error fetching read notification IDs: $e');
+      debugPrint('Error fetching read notification IDs: $e');
       return {};
     }
   }
@@ -146,7 +147,7 @@ class AnnouncementRepository {
       final readIds = reads.map((r) => r.experienceId).toSet();
       return notificationIds.where((id) => !readIds.contains(id)).length;
     } catch (e) {
-      print('Error fetching unread notification count: $e');
+      debugPrint('Error fetching unread notification count: $e');
       return 0;
     }
   }

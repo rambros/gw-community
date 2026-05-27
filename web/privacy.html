@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Good Wishes - Privacy Policy</title>
+    <meta name="description" content="Official Privacy Policy of the Good Wishes App. Learn how we protect, collect, and handle your personal data.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #7C52A0;
+            --primary-dark: #340964;
+            --primary-light: #f5f0fa;
+            --text-dark: #1a202c;
+            --text-muted: #718096;
+            --bg-light: #f7fafc;
+            --white: #ffffff;
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Premium Header Background Gradient */
+        .hero-banner {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+            color: var(--white);
+            padding: 80px 20px 120px;
+            text-align: center;
+            position: relative;
+            clip-path: ellipse(150% 100% at 50% 0%);
+        }
+
+        .hero-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.15));
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .hero-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            font-weight: 400;
+            opacity: 0.9;
+            max-width: 600px;
+        }
+
+        .last-update {
+            font-size: 0.9rem;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 6px 16px;
+            border-radius: 30px;
+            backdrop-filter: blur(8px);
+            margin-top: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-weight: 500;
+        }
+
+        /* Content Layout */
+        .main-layout {
+            max-width: 1200px;
+            margin: -50px auto 80px;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 40px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Sticky Sidebar Navigation */
+        .sidebar {
+            position: sticky;
+            top: 40px;
+            height: fit-content;
+            background: var(--white);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+
+        .sidebar-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-light);
+        }
+
+        .sidebar-nav {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .sidebar-nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: var(--transition);
+            display: block;
+            padding: 6px 12px;
+            border-radius: 8px;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-nav a:hover {
+            color: var(--primary);
+            background: var(--primary-light);
+            border-left-color: var(--primary);
+            padding-left: 16px;
+        }
+
+        .sidebar-nav a.active {
+            color: var(--primary-dark);
+            background: var(--primary-light);
+            border-left-color: var(--primary-dark);
+            font-weight: 600;
+        }
+
+        /* Policy Cards Content */
+        .content-area {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .policy-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(0,0,0,0.02);
+            transition: var(--transition);
+        }
+
+        .policy-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.08);
+        }
+
+        .section-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title::before {
+            content: "";
+            display: inline-block;
+            width: 6px;
+            height: 24px;
+            background: linear-gradient(to bottom, var(--primary), var(--primary-dark));
+            border-radius: 4px;
+        }
+
+        .policy-card p {
+            color: var(--text-dark);
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 18px;
+        }
+
+        .policy-card p:last-child {
+            margin-bottom: 0;
+        }
+
+        .policy-card strong {
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .policy-list {
+            list-style-type: none;
+            margin: 15px 0 20px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .policy-list li {
+            position: relative;
+            padding-left: 20px;
+            color: var(--text-dark);
+        }
+
+        .policy-list li::before {
+            content: "•";
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 1.2rem;
+            position: absolute;
+            left: 0;
+            top: -2px;
+        }
+
+        /* Interactive Contact / Delete Section */
+        .deletion-box {
+            background: linear-gradient(135deg, rgba(124, 82, 160, 0.05) 0%, rgba(52, 9, 100, 0.05) 100%);
+            border-radius: 14px;
+            padding: 24px;
+            border: 1px dashed var(--primary);
+            margin-top: 20px;
+        }
+
+        .action-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+            text-decoration: none;
+            padding: 12px 28px;
+            border-radius: 10px;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(124, 82, 160, 0.2);
+            transition: var(--transition);
+            margin-top: 15px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 12px rgba(124, 82, 160, 0.3);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--primary-dark);
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            padding: 40px 20px;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        footer a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        footer a:hover {
+            color: var(--primary);
+        }
+
+        /* Media Queries */
+        @media (max-width: 900px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+                margin-top: -30px;
+            }
+
+            .sidebar {
+                display: none; /* Hide sticky sidebar on small screens for simplicity */
+            }
+
+            .hero-title {
+                font-size: 2.2rem;
+            }
+
+            .policy-card {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero Banner with Corporate Theme styling -->
+    <header class="hero-banner">
+        <div class="hero-container">
+            <img src="assets/images/logo.png" alt="Good Wishes Logo" class="logo">
+            <h1 class="hero-title">Privacy Policy</h1>
+            <p class="hero-subtitle">Learn how the Good Wishes App collects, uses, and protects your personal data with complete security and transparency.</p>
+            <div class="last-update">Last Updated: May 2026</div>
+        </div>
+    </header>
+
+    <!-- Main Responsive Layout -->
+    <main class="main-layout">
+        
+        <!-- Sticky Left-hand Sidebar Navigation -->
+        <aside class="sidebar">
+            <h3 class="sidebar-title">Navigation</h3>
+            <ul class="sidebar-nav">
+                <li><a href="#introduction" class="active">1. Introduction</a></li>
+                <li><a href="#data-collection">2. Data Collection</a></li>
+                <li><a href="#data-use">3. How We Use Data</a></li>
+                <li><a href="#data-sharing">4. Data Sharing</a></li>
+                <li><a href="#permissions">5. Required Permissions</a></li>
+                <li><a href="#user-rights">6. Your Rights & Deletion</a></li>
+                <li><a href="#security">7. Data Security</a></li>
+                <li><a href="#contact">8. Contact & Support</a></li>
+            </ul>
+        </aside>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            
+            <article id="introduction" class="policy-card">
+                <h2 class="section-title">1. Introduction</h2>
+                <p>Welcome to <strong>Good Wishes App</strong>. We deeply value your privacy and are firmly committed to ensuring security and transparency when processing our users' personal information.</p>
+                <p>This Privacy Policy describes how we collect, process, store, and protect your information when you use the Good Wishes App mobile application (available for Android and iOS) and our related services.</p>
+                <p>By downloading, installing, or using the application, you agree to the practices described in this document in compliance with applicable data protection laws, including the Brazilian General Data Protection Law (LGPD), GDPR, and the guidelines set forth by the Apple App Store and Google Play Store.</p>
+            </article>
+
+            <article id="data-collection" class="policy-card">
+                <h2 class="section-title">2. Data Collection</h2>
+                <p>We collect only the necessary information to provide our core services of engagement and experience sharing within the community. We categorize this information as follows:</p>
+                
+                <h3 style="margin: 15px 0 10px; color: var(--primary-dark); font-weight:600;">a) Registration and Account Information</h3>
+                <ul class="policy-list">
+                    <li><strong>Personal Data:</strong> Full name, email address, and secure authentication details provided during account pre-provisioning by system administrators or when logging in.</li>
+                    <li><strong>User Profile:</strong> Profile picture (if you choose to upload one), biography, or display details that you customize within the community.</li>
+                    <li><strong>Third-Party Credentials:</strong> Secure access tokens provided when you choose to use the fast sign-in features of <strong>Google Sign-In</strong> or <strong>Sign In with Apple</strong>.</li>
+                </ul>
+
+                <h3 style="margin: 20px 0 10px; color: var(--primary-dark); font-weight:600;">b) User-Generated Content</h3>
+                <ul class="policy-list">
+                    <li>Posts, comments, reactions, shares ("sharings"), announcements, and shared activities within the community groups that you choose to join.</li>
+                </ul>
+
+                <h3 style="margin: 20px 0 10px; color: var(--primary-dark); font-weight:600;">c) Technical and Diagnostic Data</h3>
+                <ul class="policy-list">
+                    <li><strong>Device Information:</strong> Device model, operating system version (iOS or Android), and unique device identifiers.</li>
+                    <li><strong>Crash Logs and Diagnostics:</strong> Technical statistics collected through tools such as <strong>Firebase Crashlytics</strong> to identify and resolve app malfunction or unexpected bugs.</li>
+                    <li><strong>Usage Data:</strong> Anonymous interaction statistics collected via <strong>Firebase Analytics</strong> to help us understand how the app is being used and continuously improve the overall experience.</li>
+                </ul>
+            </article>
+
+            <article id="data-use" class="policy-card">
+                <h2 class="section-title">3. How We Use Data</h2>
+                <p>We utilize the collected data securely for the following legitimate business purposes:</p>
+                <ul class="policy-list">
+                    <li><strong>Service Provision:</strong> To validate your login, manage your profile, allow you to create, join, and manage groups, and share experiences across the network.</li>
+                    <li><strong>Communication and Alerts:</strong> To send important updates regarding the app or group activities via native push notifications on your mobile device.</li>
+                    <li><strong>Safety and Fraud Prevention:</strong> To ensure the platform's integrity and prevent the creation of abusive accounts or content.</li>
+                    <li><strong>Continuous Improvement:</strong> To analyze system crashes technically and quantify user engagement with new features.</li>
+                </ul>
+            </article>
+
+            <article id="data-sharing" class="policy-card">
+                <h2 class="section-title">4. Data Sharing</h2>
+                <p><strong>We never sell, rent, or trade your personal data with third parties.</strong> Your data is securely processed and stored using high-trust infrastructure partners:</p>
+                <ul class="policy-list">
+                    <li><strong>Supabase:</strong> Used as our secure relational database and cloud storage provider to host user profiles, posts, and community group details.</li>
+                    <li><strong>Firebase (Google LLC):</strong> Used for critical app infrastructure, including authentication, mobile push notifications (FCM), engagement analytics (Firebase Analytics), and stability monitoring (Firebase Crashlytics).</li>
+                </ul>
+                <p>These service providers have strict security policies in place and process your data solely under our instructions and in full compliance with global privacy regulations.</p>
+            </article>
+
+            <article id="permissions" class="policy-card">
+                <h2 class="section-title">5. Required Permissions</h2>
+                <p>To enable the full interactive features of the Good Wishes App, the application may request the following permissions on your mobile device:</p>
+                <ul class="policy-list">
+                    <li><strong>Photo Library and Camera:</strong> Required if you choose to upload or change your profile picture or attach images to your posts and shared experiences.</li>
+                    <li><strong>Push Notifications:</strong> Requested to alert you in real-time when other users comment, react, or interact within your groups of interest.</li>
+                </ul>
+                <p>You can revoke or adjust any of these permissions at any time directly through the privacy settings of your mobile device's operating system (iOS/Android).</p>
+            </article>
+
+            <article id="user-rights" class="policy-card">
+                <h2 class="section-title">6. Your Rights and Data Deletion</h2>
+                <p>You hold full control over your personal information in compliance with international regulations (including LGPD and GDPR). Your rights include access to your personal data, correction of inaccurate data, and complete deletion of your account.</p>
+                
+                <div class="deletion-box">
+                    <p style="margin-bottom: 16px; font-size: 1.1rem; color: var(--primary-dark); font-weight: 700;"><strong>How to Request Account & Data Deletion</strong></p>
+                    
+                    <p>Users of the <strong>Good Wishes App</strong>, developed by the <strong>Good Wishes App Development Team</strong> (managed by developer <strong>Rodrigo Ambros</strong>), have the absolute right to delete their accounts and all associated data at any time. You can request deletion through one of the two clear methods below:</p>
+                    
+                    <h4 style="margin: 20px 0 8px; color: var(--primary-dark); font-size: 1rem; font-weight: 600;">Method 1: In-App Deletion (Instant)</h4>
+                    <ol style="margin-left: 25px; margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px; color: var(--text-dark);">
+                        <li style="padding-left: 5px;">Open the <strong>Good Wishes App</strong> on your device and sign in.</li>
+                        <li style="padding-left: 5px;">Navigate to your <strong>Profile</strong> tab.</li>
+                        <li style="padding-left: 5px;">Tap on <strong>Settings</strong> (gear icon).</li>
+                        <li style="padding-left: 5px;">Select <strong>Delete Account</strong> and confirm. Your account will be closed and all active personal data purged immediately.</li>
+                    </ol>
+
+                    <h4 style="margin: 20px 0 8px; color: var(--primary-dark); font-size: 1rem; font-weight: 600;">Method 2: Request via Email</h4>
+                    <ol style="margin-left: 25px; margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px; color: var(--text-dark);">
+                        <li style="padding-left: 5px;">Send an email to <strong>rodrigo.ambros@callofthetime.org</strong> with the subject <strong>"Account Deletion Request"</strong>.</li>
+                        <li style="padding-left: 5px;">Clearly state the registered email address and name of the account you wish to delete.</li>
+                        <li style="padding-left: 5px;">Our support team will process your request and completely purge your account data within <strong>15 days</strong>.</li>
+                    </ol>
+
+                    <h4 style="margin: 24px 0 8px; color: var(--primary-dark); font-size: 1.1rem; font-weight: 700;">Types of Data Deleted vs. Retained</h4>
+                    <p style="margin-bottom: 12px;">Upon an account deletion request, the following actions are executed:</p>
+                    <ul class="policy-list" style="margin-left: 20px; margin-bottom: 20px;">
+                        <li><strong>Permanently Deleted:</strong> Your personal credentials (name, email), profile photograph, user-generated posts/experiences ("sharings"), group memberships, notifications logs, and personal settings are permanently wiped from our active databases.</li>
+                        <li><strong>Retained Data:</strong> No personal details are retained. In extremely rare circumstances, anonymized telemetry or system logs (which contain no personally identifiable information) may be kept solely for security diagnostic purposes.</li>
+                        <li><strong>Storage & Backup Retention Period:</strong> Personal data is purged from active production servers immediately. Secure backup snapshots containing database states are encrypted and kept for a maximum rotation period of <strong>30 days</strong>, after which they are automatically and permanently overwritten and deleted.</li>
+                    </ul>
+
+                    <a href="mailto:rodrigo.ambros@callofthetime.org?subject=Account%20and%20Data%20Deletion%20Request%20-%20Good%20Wishes%20App" class="action-button">
+                        ✉ Request Data Deletion by Email
+                    </a>
+                </div>
+            </article>
+
+            <article id="security" class="policy-card">
+                <h2 class="section-title">7. Data Security</h2>
+                <p>We adopt strict technical, administrative, and physical protection measures designed to safeguard data confidentiality and security against loss, unauthorized access, alterations, or unwanted disclosures.</p>
+                <p>We employ data-in-transit encryption (HTTPS and SSL/TLS protocols) and robust access controls on database nodes managed on Supabase and Firebase.</p>
+            </article>
+
+            <article id="contact" class="policy-card">
+                <h2 class="section-title">8. Contact and Support</h2>
+                <p>If you have any questions concerning this Privacy Policy or wish to exercise any of your legal privacy rights, please feel free to contact our Data Protection Officer (DPO) through the following channels:</p>
+                <ul class="policy-list">
+                    <li><strong>Support Email:</strong> <a href="mailto:rodrigo.ambros@callofthetime.org" style="color: var(--primary); font-weight: 500; text-decoration: none;">rodrigo.ambros@callofthetime.org</a></li>
+                    <li><strong>Responsible Entity:</strong> Good Wishes App Development Team</li>
+                </ul>
+            </article>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Good Wishes App. All rights reserved.</p>
+        <p style="margin-top: 10px; font-size: 0.85rem; opacity: 0.8;">Hosted securely in full compliance with App Store and Google Play Store guidelines.</p>
+    </footer>
+
+    <!-- Interactive navigation highlighter script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('article[id]');
+            const navLinks = document.querySelectorAll('.sidebar-nav a');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    // Check if scrolled past this section
+                    if (window.scrollY >= (sectionTop - 120)) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

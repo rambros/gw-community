@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/community_repository.dart';
 import 'package:gw_community/ui/community/community_guidelines_edit_page/view_model/community_guidelines_edit_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:provider/provider.dart';
-import 'package:go_router/go_router.dart';
 
 class CommunityGuidelinesEditPage extends StatelessWidget {
   static const String routeName = 'communityGuidelinesEdit';
@@ -103,10 +103,13 @@ class CommunityGuidelinesEditPageView extends StatelessWidget {
                       padding: const EdgeInsets.all(12.0),
                       margin: const EdgeInsets.only(bottom: 16.0),
                       decoration: BoxDecoration(
-                        color: AppTheme.of(context).primary.withOpacity(0.1),
+                        color:
+                            AppTheme.of(context).primary.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(8.0),
                         border: Border.all(
-                          color: AppTheme.of(context).primary.withOpacity(0.3),
+                          color: AppTheme.of(context)
+                              .primary
+                              .withValues(alpha: 0.3),
                           width: 1.0,
                         ),
                       ),
