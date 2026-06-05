@@ -1,11 +1,15 @@
 // lib/ui/auth/invite_accept_page/invite_accept_page.dart
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/ui/auth/invite_accept_page/view_model/invite_accept_view_model.dart';
+import 'package:gw_community/ui/auth/widgets/login_apple_button.dart';
+import 'package:gw_community/ui/auth/widgets/login_google_button.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
+import 'package:gw_community/ui/home/home_page/home_page.dart';
 import 'package:provider/provider.dart';
 
 class InviteAcceptPage extends StatefulWidget {
@@ -400,8 +404,58 @@ class _InviteAcceptPageState extends State<InviteAcceptPage> {
               showLoadingIndicator: viewModel.isLoading,
             ),
           ),
+          // OAuth divider
+          Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(0.0, 24.0, 0.0, 8.0),
+            child: Row(
+              children: [
+                Expanded(child: Divider(color: AppTheme.of(context).alternate)),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                  child: Text(
+                    'or continue with',
+                    style: AppTheme.of(context).bodySmall.override(
+                          font: GoogleFonts.lexendDeca(),
+                          color: AppTheme.of(context).secondaryText,
+                        ),
+                  ),
+                ),
+                Expanded(child: Divider(color: AppTheme.of(context).alternate)),
+              ],
+            ),
+          ),
+          // Google Sign-In
+          Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 0.0),
+            child: LoginGoogleButton(
+              onPressed: () => _handleOAuth(context, viewModel, isApple: false),
+              isLoading: viewModel.isLoading,
+            ),
+          ),
+          // Apple Sign-In (iOS only)
+          if (defaultTargetPlatform == TargetPlatform.iOS || kIsWeb)
+            Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(0.0, 12.0, 0.0, 24.0),
+              child: LoginAppleButton(
+                onPressed: () => _handleOAuth(context, viewModel, isApple: true),
+                isLoading: viewModel.isLoading,
+              ),
+            )
+          else
+            const SizedBox(height: 24.0),
         ],
       ),
     );
+  }
+
+  Future<void> _handleOAuth(
+    BuildContext context,
+    InviteAcceptViewModel viewModel, {
+    required bool isApple,
+  }) async {
+    final success = await viewModel.signInWithOAuth(isApple: isApple);
+    if (success && context.mounted) {
+      context.go(HomePage.routePath);
+    }
   }
 }

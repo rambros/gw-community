@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gw_community/data/models/app_config.dart';
 import 'package:gw_community/data/models/structs/index.dart';
+import 'package:gw_community/data/repositories/home_repository.dart';
 import 'package:gw_community/data/repositories/settings_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
@@ -36,6 +37,27 @@ class FFAppState extends ChangeNotifier {
     } catch (e) {
       // Keep defaults on error
       _appConfig = AppConfig.defaults();
+    }
+  }
+
+  // Per-group module visibility flags (default: true = visible)
+  bool enableLibraryModule = true;
+  bool enableJourneyModule = true;
+
+  /// Loads module visibility flags from the current user's groups.
+  /// If the user belongs to multiple groups, a module is visible if ANY group enables it.
+  /// Defaults to true when the user has no groups or an error occurs.
+  Future<void> loadGroupModuleConfig(HomeRepository homeRepo) async {
+    try {
+      final uid = SupaFlow.client.auth.currentUser?.id ?? '';
+      if (uid.isEmpty) return;
+      final groups = await homeRepo.getMyGroups(uid);
+      if (groups.isEmpty) return;
+      enableLibraryModule = groups.any((g) => g.enableLibraryModule);
+      enableJourneyModule = groups.any((g) => g.enableJourneyModule);
+      notifyListeners();
+    } catch (_) {
+      // Keep defaults (true) on error
     }
   }
 

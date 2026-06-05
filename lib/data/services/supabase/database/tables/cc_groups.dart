@@ -47,4 +47,10 @@ class CcGroupsRow extends SupabaseDataRow {
 
   DateTime? get updatedAt => getField<DateTime>('updated_at');
   set updatedAt(DateTime? value) => setField<DateTime>('updated_at', value);
+
+  bool get enableLibraryModule =>
+      getField<bool>('enable_library_module') ?? true;
+
+  bool get enableJourneyModule =>
+      getField<bool>('enable_journey_module') ?? true;
 }

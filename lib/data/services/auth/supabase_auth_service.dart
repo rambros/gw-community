@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:gw_community/data/services/auth/auth_service.dart';
 import 'package:gw_community/data/services/auth/providers/email_auth_provider.dart';
+import 'package:gw_community/data/services/auth/providers/apple_auth_provider.dart';
 import 'package:gw_community/data/services/auth/providers/google_auth_provider.dart';
 import 'package:gw_community/data/services/auth/supabase_auth_user_provider.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
@@ -83,6 +84,11 @@ class SupabaseAuthService implements AuthService {
   @override
   Future<UserEntity?> signInWithGoogle(BuildContext context) async {
     return _signInOrCreateAccount(context, googleSignInFunc);
+  }
+
+  @override
+  Future<UserEntity?> signInWithApple(BuildContext context) async {
+    return _signInOrCreateAccount(context, appleSignInFunc);
   }
 
   @override
@@ -203,7 +209,13 @@ class SupabaseAuthService implements AuthService {
 
   @override
   Future<void> refreshUser() async {
-    await SupaFlow.client.auth.refreshSession();
+    // No session exists yet (e.g. app resumed during OAuth flow) — skip silently.
+    if (SupaFlow.client.auth.currentSession == null) return;
+    try {
+      await SupaFlow.client.auth.refreshSession();
+    } on AuthSessionMissingException {
+      // Session was lost between the null-check and the refresh call — ignore.
+    }
   }
 
   /// Helper method to sign in or create an account.

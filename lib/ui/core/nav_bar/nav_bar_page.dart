@@ -39,8 +39,8 @@ class _NavBarPageState extends State<NavBarPage> {
       create: (context) => NavBarViewModel()..setInitialPage(widget.initialPage, widget.page),
       child: Consumer<NavBarViewModel>(
         builder: (context, viewModel, child) {
-          // Build tabs based on configuration
-          final tabs = _buildTabs(config);
+          // Build tabs based on configuration and per-group module flags
+          final tabs = _buildTabs(appState, config);
           final currentIndex = tabs.keys.toList().indexOf(viewModel.currentPageName);
 
           return Scaffold(
@@ -55,7 +55,7 @@ class _NavBarPageState extends State<NavBarPage> {
               showSelectedLabels: true,
               showUnselectedLabels: false,
               type: BottomNavigationBarType.fixed,
-              items: _buildBottomNavItems(context, config),
+              items: _buildBottomNavItems(context, appState, config),
             ),
           );
         },
@@ -63,21 +63,27 @@ class _NavBarPageState extends State<NavBarPage> {
     );
   }
 
-  /// Build tabs map based on app configuration
-  Map<String, Widget> _buildTabs(AppConfig config) {
+  /// Build tabs map based on app configuration and per-group module flags
+  Map<String, Widget> _buildTabs(FFAppState appState, AppConfig config) {
     final tabs = <String, Widget>{
       'homePage': const HomePage(),
-      'learnListPage': const LearnListPage(),
     };
 
-    // Journey tab - show list or single journey based on config
-    if (config.enableJourneyList) {
-      tabs['journeyPage'] = const JourneyListPage();
-    } else {
-      tabs['journeyPage'] = const JourneyPage(journeyId: 1);
+    // Library tab - only include if enabled for the user's group
+    if (appState.enableLibraryModule) {
+      tabs['learnListPage'] = const LearnListPage();
     }
 
-    // Community tab - only include if enabled
+    // Journey tab - only include if enabled for the user's group
+    if (appState.enableJourneyModule) {
+      if (config.enableJourneyList) {
+        tabs['journeyPage'] = const JourneyListPage();
+      } else {
+        tabs['journeyPage'] = const JourneyPage(journeyId: 1);
+      }
+    }
+
+    // Community tab - only include if enabled globally
     if (config.enableCommunityModule) {
       tabs['communityPage'] = const CommunityPage();
     }
@@ -87,28 +93,40 @@ class _NavBarPageState extends State<NavBarPage> {
     return tabs;
   }
 
-  /// Build bottom navigation items based on app configuration
-  List<BottomNavigationBarItem> _buildBottomNavItems(BuildContext context, AppConfig config) {
+  /// Build bottom navigation items based on app configuration and per-group module flags
+  List<BottomNavigationBarItem> _buildBottomNavItems(BuildContext context, FFAppState appState, AppConfig config) {
     final items = <BottomNavigationBarItem>[
       const BottomNavigationBarItem(
         icon: Icon(Icons.home_outlined, size: 28.0),
         label: 'Home',
         tooltip: '',
       ),
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.library_music, size: 24.0),
-        label: 'Library',
-        tooltip: '',
-      ),
-      const BottomNavigationBarItem(
-        icon: Icon(FFIcons.kiconLogo, size: 24.0),
-        activeIcon: Icon(FFIcons.kiconLogo, size: 24.0),
-        label: 'Journey',
-        tooltip: '',
-      ),
     ];
 
-    // Add Community tab if enabled
+    // Library item - only if enabled for the user's group
+    if (appState.enableLibraryModule) {
+      items.add(
+        const BottomNavigationBarItem(
+          icon: Icon(Icons.library_music, size: 24.0),
+          label: 'Library',
+          tooltip: '',
+        ),
+      );
+    }
+
+    // Journey item - only if enabled for the user's group
+    if (appState.enableJourneyModule) {
+      items.add(
+        const BottomNavigationBarItem(
+          icon: Icon(FFIcons.kiconLogo, size: 24.0),
+          activeIcon: Icon(FFIcons.kiconLogo, size: 24.0),
+          label: 'Journey',
+          tooltip: '',
+        ),
+      );
+    }
+
+    // Add Community tab if enabled globally
     if (config.enableCommunityModule) {
       items.add(
         const BottomNavigationBarItem(

@@ -3,6 +3,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:gw_community/data/services/auth/providers/apple_auth_provider.dart';
+import 'package:gw_community/data/services/auth/providers/google_auth_provider.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 
 class InviteAcceptViewModel extends ChangeNotifier {
@@ -154,6 +156,58 @@ class InviteAcceptViewModel extends ChangeNotifier {
       notifyListeners();
       return false;
     }
+  }
+
+  // ========== OAUTH ==========
+
+  Future<bool> signInWithOAuth({required bool isApple}) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final user = isApple ? await appleSignInFunc() : await googleSignInFunc();
+
+      if (user == null) {
+        _isLoading = false;
+        notifyListeners();
+        return false;
+      }
+
+      // Link the authenticated OAuth user to the invite record
+      final response = await SupaFlow.client.functions
+          .invoke('accept-invite-oauth', body: {'token': token})
+          .timeout(
+            const Duration(seconds: 15),
+            onTimeout: () => throw TimeoutException('Request timed out'),
+          );
+
+      if (response.status == 200 && response.data != null) {
+        final data = response.data as Map<String, dynamic>;
+        if (data['success'] == true) {
+          _isLoading = false;
+          notifyListeners();
+          return true;
+        }
+        _errorMessage = data['error'] as String? ?? 'Failed to accept invitation.';
+      } else {
+        final data = response.data as Map<String, dynamic>?;
+        _errorMessage = data?['error'] as String? ?? 'Failed to accept invitation.';
+      }
+
+      // Link failed — sign out to avoid a partially-linked session
+      await SupaFlow.client.auth.signOut();
+    } on TimeoutException {
+      _errorMessage = 'Request timed out. Please check your connection and try again.';
+      await SupaFlow.client.auth.signOut();
+    } catch (e) {
+      _errorMessage = 'An unexpected error occurred: ${e.toString()}';
+      await SupaFlow.client.auth.signOut();
+    }
+
+    _isLoading = false;
+    notifyListeners();
+    return false;
   }
 
   // ========== VALIDATORS ==========

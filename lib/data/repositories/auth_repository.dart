@@ -40,6 +40,11 @@ abstract class AuthRepository {
   /// Returns the authenticated user on success, null on failure.
   Future<UserEntity?> signInWithGoogle();
 
+  /// Signs in with Apple OAuth.
+  ///
+  /// Returns the authenticated user on success, null on failure.
+  Future<UserEntity?> signInWithApple();
+
   /// Signs out the current user.
   Future<void> signOut();
 

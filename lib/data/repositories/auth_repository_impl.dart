@@ -77,6 +77,18 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<UserEntity?> signInWithApple() {
+    throw UnimplementedError(
+      'Use signInWithAppleContext instead - requires BuildContext for error handling',
+    );
+  }
+
+  /// Signs in with Apple (requires context for error messages).
+  Future<UserEntity?> signInWithAppleContext(BuildContext context) {
+    return _authService.signInWithApple(context);
+  }
+
+  @override
   Future<void> signOut() {
     return _authService.signOut();
   }

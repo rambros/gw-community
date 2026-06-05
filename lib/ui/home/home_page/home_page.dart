@@ -38,6 +38,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<HomeViewModel>();
+    final appState = context.watch<FFAppState>();
 
     return Scaffold(
       key: scaffoldKey,
@@ -64,45 +65,47 @@ class _HomePageState extends State<HomePage> {
                     _buildHeader(context),
                     _buildWelcomeMessage(context, viewModel),
                     _buildCommunityMessage(context),
-                    _buildSectionTitle(context, 'My Journeys'),
+                    if (appState.enableJourneyModule) ...[
+                      _buildSectionTitle(context, 'My Journeys'),
 
-                    // Journey Cards List
-                    if (viewModel.userJourneyProgressList.isEmpty)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
-                        child: Text(
-                          'No journeys started yet',
-                          style: AppTheme.of(context).bodyMedium.override(
-                                color: AppTheme.of(context).secondaryText,
-                              ),
-                        ),
-                      )
-                    else
-                      ListView.builder(
-                        padding: const EdgeInsets.symmetric(vertical: 6.0),
-                        primary: false,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: viewModel.userJourneyProgressList.length,
-                        itemBuilder: (context, index) {
-                          final progress = viewModel.userJourneyProgressList[index];
-                          return Padding(
-                            padding: const EdgeInsetsDirectional.fromSTEB(0.0, 6.0, 0.0, 6.0),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 4.0, 0.0),
-                                  child: HomeJourneyCard(
-                                    userJourneyProgress: progress,
-                                  ),
+                      // Journey Cards List
+                      if (viewModel.userJourneyProgressList.isEmpty)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+                          child: Text(
+                            'No journeys started yet',
+                            style: AppTheme.of(context).bodyMedium.override(
+                                  color: AppTheme.of(context).secondaryText,
                                 ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
+                          ),
+                        )
+                      else
+                        ListView.builder(
+                          padding: const EdgeInsets.symmetric(vertical: 6.0),
+                          primary: false,
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: viewModel.userJourneyProgressList.length,
+                          itemBuilder: (context, index) {
+                            final progress = viewModel.userJourneyProgressList[index];
+                            return Padding(
+                              padding: const EdgeInsetsDirectional.fromSTEB(0.0, 6.0, 0.0, 6.0),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 4.0, 0.0),
+                                    child: HomeJourneyCard(
+                                      userJourneyProgress: progress,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                    ],
 
                     // Groups Section
                     if (viewModel.userGroups.isNotEmpty) ...[

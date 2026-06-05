@@ -49,6 +49,11 @@ abstract class AuthService {
   /// Returns the authenticated user on success, null on failure.
   Future<UserEntity?> signInWithGoogle(BuildContext context);
 
+  /// Signs in with Apple OAuth.
+  ///
+  /// Returns the authenticated user on success, null on failure.
+  Future<UserEntity?> signInWithApple(BuildContext context);
+
   /// Signs out the current user.
   Future<void> signOut();
 

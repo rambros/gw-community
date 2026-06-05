@@ -186,13 +186,25 @@ class GroupDetailsPageView extends StatelessWidget {
                                   color: Colors.white,
                                 ),
                                 onSelected: (value) async {
-                                  if (value == 'group_resources') {
-                                    await context.pushNamed(
-                                      'learnListPage',
-                                      queryParameters: {
-                                        'groupId': '${group.id}',
-                                        'customTitle': 'Group Resources',
-                                      },
+                                  if (value == 'about') {
+                                    await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (ctx) => ChangeNotifierProvider.value(
+                                          value: viewModel,
+                                          child: Scaffold(
+                                            appBar: AppBar(
+                                              backgroundColor: AppTheme.of(context).primary,
+                                              title: Text(
+                                                'About',
+                                                style: TextStyle(color: AppTheme.of(context).primaryBackground),
+                                              ),
+                                              iconTheme: IconThemeData(color: AppTheme.of(context).primaryBackground),
+                                            ),
+                                            body: const SafeArea(top: true, child: GroupAboutTab()),
+                                          ),
+                                        ),
+                                      ),
                                     );
                                   } else if (value == 'edit') {
                                     await context.pushNamed(
@@ -247,16 +259,16 @@ class GroupDetailsPageView extends StatelessWidget {
                                 itemBuilder: (context) => [
                                   if (viewModel.isMember)
                                     PopupMenuItem(
-                                      value: 'group_resources',
+                                      value: 'about',
                                       child: Row(
                                         children: [
                                           Icon(
-                                            Icons.library_books_outlined,
+                                            Icons.info_outline_rounded,
                                             size: 20,
                                             color: AppTheme.of(context).secondary,
                                           ),
                                           const SizedBox(width: 12),
-                                          const Text('Group Resources'),
+                                          const Text('About'),
                                         ],
                                       ),
                                     ),
@@ -399,6 +411,19 @@ class GroupDetailsPageView extends StatelessWidget {
                                     ),
                                 indicatorColor: AppTheme.of(context).secondary,
                                 labelPadding: const EdgeInsets.symmetric(horizontal: 10.0),
+                                onTap: (index) async {
+                                  if (index == 3) {
+                                    final prevIndex = viewModel.tabController!.previousIndex;
+                                    viewModel.tabController!.index = prevIndex;
+                                    await context.pushNamed(
+                                      'learnListPage',
+                                      queryParameters: {
+                                        'groupId': '${group.id}',
+                                        'customTitle': 'Group Resources',
+                                      },
+                                    );
+                                  }
+                                },
                                 tabs: [
                                   const Tab(key: ValueKey('tab_experiences'), text: 'Experiences'),
                                   const Tab(key: ValueKey('tab_events'), text: 'Events'),
@@ -435,7 +460,7 @@ class GroupDetailsPageView extends StatelessWidget {
                                       ],
                                     ),
                                   ),
-                                  const Tab(key: ValueKey('tab_about'), text: 'About'),
+                                  const Tab(key: ValueKey('tab_resources'), text: 'Resources'),
                                 ],
                                 controller: viewModel.tabController,
                               ),
@@ -448,7 +473,7 @@ class GroupDetailsPageView extends StatelessWidget {
                                   GroupExperiencesTab(key: ValueKey('page_experiences')),
                                   GroupEventsTab(key: ValueKey('page_events')),
                                   GroupAnnouncementsTab(key: ValueKey('page_notifications')),
-                                  GroupAboutTab(key: ValueKey('page_about_member')),
+                                  SizedBox.shrink(key: ValueKey('page_resources')),
                                 ],
                               ),
                             ),

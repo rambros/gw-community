@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/ui/auth/login_page/view_model/login_view_model.dart';
+import 'package:gw_community/ui/auth/widgets/login_apple_button.dart';
 import 'package:gw_community/ui/auth/widgets/login_google_button.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
@@ -38,6 +40,18 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> _handleGoogleSignIn(LoginViewModel viewModel) async {
     try {
       final user = await viewModel.signInWithGoogle(context);
+      if (user != null && mounted) {
+        context.pushNamed(HomePage.routeName);
+      }
+    } catch (e) {
+      if (!mounted) return;
+      _showAuthError(e);
+    }
+  }
+
+  Future<void> _handleAppleSignIn(LoginViewModel viewModel) async {
+    try {
+      final user = await viewModel.signInWithApple(context);
       if (user != null && mounted) {
         context.pushNamed(HomePage.routeName);
       }
@@ -316,7 +330,7 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsetsDirectional.fromSTEB(0.0, 24.0, 0.0, 0.0),
+                            padding: const EdgeInsetsDirectional.fromSTEB(4.0, 24.0, 4.0, 0.0),
                             child: FFButtonWidget(
                               onPressed: () async {
                                 if (_formKey.currentState!.validate()) {
@@ -358,18 +372,66 @@ class _LoginPageState extends State<LoginPage> {
                                   color: Colors.transparent,
                                   width: 1.0,
                                 ),
-                                borderRadius: BorderRadius.circular(40.0),
+                                borderRadius: BorderRadius.circular(12.0),
                               ),
-                              showLoadingIndicator: viewModel.isLoading,
+                              showLoadingIndicator: viewModel.isEmailLoading,
+                            ),
+                          ),
+                          // Forgot password link
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Padding(
+                              padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 4.0, 0.0),
+                              child: GestureDetector(
+                                onTap: () => context.pushNamed('forgotPassword'),
+                                child: Text(
+                                  'Forgot password?',
+                                  style: AppTheme.of(context).bodySmall.override(
+                                        font: GoogleFonts.lexendDeca(),
+                                        color: AppTheme.of(context).primary,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          // OR divider
+                          Padding(
+                            padding: const EdgeInsetsDirectional.fromSTEB(4.0, 20.0, 4.0, 0.0),
+                            child: Row(
+                              children: [
+                                Expanded(child: Divider(color: AppTheme.of(context).alternate)),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                                  child: Text(
+                                    'or',
+                                    style: AppTheme.of(context).bodySmall.override(
+                                          font: GoogleFonts.lexendDeca(),
+                                          color: AppTheme.of(context).secondaryText,
+                                        ),
+                                  ),
+                                ),
+                                Expanded(child: Divider(color: AppTheme.of(context).alternate)),
+                              ],
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
+                            padding: const EdgeInsetsDirectional.fromSTEB(4.0, 16.0, 4.0, 0.0),
                             child: LoginGoogleButton(
                               onPressed: () => _handleGoogleSignIn(viewModel),
-                              isLoading: viewModel.isLoading,
+                              isLoading: viewModel.isGoogleLoading,
                             ),
                           ),
+                          if (defaultTargetPlatform == TargetPlatform.iOS || kIsWeb)
+                            Padding(
+                              padding: const EdgeInsetsDirectional.fromSTEB(4.0, 12.0, 4.0, 24.0),
+                              child: LoginAppleButton(
+                                onPressed: () => _handleAppleSignIn(viewModel),
+                                isLoading: viewModel.isAppleLoading,
+                              ),
+                            )
+                          else
+                            const SizedBox(height: 24.0),
                         ],
                       ),
                     ),

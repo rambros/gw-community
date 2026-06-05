@@ -25,7 +25,13 @@
       "Bash(git mv:*)",
       "Bash(flutter --version:*)",
       "Bash(jarsigner:*)",
-      "Bash(flutter pub add:*)"
+      "Bash(flutter pub add:*)",
+      "Bash(find /Users/rodrigoambros/Documents/Desenv/0.Clientes/Agencia/ProjGW/codigo -name \"*.ts\" -path \"*/functions/*\" | head -20 && ls /Users/rodrigoambros/Documents/Desenv/0.Clientes/Agencia/ProjGW/codigo/ 2>/dev/null)",
+      "Read(//Users/rodrigoambros/Documents/Desenv/0.Clientes/Agencia/ProjGW/codigo/**)",
+      "Bash(supabase --version)",
+      "Bash(supabase projects *)",
+      "Bash(supabase link *)",
+      "Bash(supabase functions *)"
     ]
   }
 }

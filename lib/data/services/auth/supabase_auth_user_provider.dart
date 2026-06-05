@@ -33,6 +33,17 @@ class GWCommunitySupabaseUser extends AppAuthUser {
   bool get emailVerified => user?.emailConfirmedAt != null;
 }
 
+Future<Map<String, dynamic>?> _checkMemberExists(String uid, String? email) {
+  if (email != null && email.isNotEmpty) {
+    return SupaFlow.client
+        .from('cc_members')
+        .select('id')
+        .or('auth_user_id.eq.$uid,email.eq.$email')
+        .maybeSingle();
+  }
+  return SupaFlow.client.from('cc_members').select('id').eq('auth_user_id', uid).maybeSingle();
+}
+
 /// Stream of Supabase auth state changes mapped to [AppAuthUser].
 Stream<AppAuthUser> gWCommunitySupabaseUserStream() {
   // Get current user
@@ -64,10 +75,10 @@ Stream<AppAuthUser> gWCommunitySupabaseUserStream() {
       return Stream.value(authUser);
     }
 
-    // Check if the member still exists in the database
-    return Stream.fromFuture(
-      SupaFlow.client.from('cc_members').select('id').eq('auth_user_id', authUser.uid!).maybeSingle(),
-    ).map((response) {
+    // Check if the member exists in cc_members by auth_user_id OR by email.
+    // The email fallback handles the brief window during OAuth invite acceptance
+    // where auth_user_id hasn't been linked yet by the accept-invite-oauth function.
+    return Stream.fromFuture(_checkMemberExists(authUser.uid!, authUser.email)).map((response) {
       if (response == null) {
         // User exists in Auth but not in cc_members - forced logout
         debugPrint('FORCED LOGOUT: Member record missing in database for uid ${authUser.uid}. Signing out...');
