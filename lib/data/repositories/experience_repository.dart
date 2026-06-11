@@ -163,8 +163,9 @@ class ExperienceRepository {
   /// Cria um novo experience
   ///
   /// Insere um novo experience no banco de dados com todos os campos necessários.
-  /// Se [isDraft] for true, cria com moderation_status = 'draft' (rascunho).
-  /// Caso contrário, cria com moderation_status = 'pending' para moderação.
+  /// Se [isDraft] for true, cria com moderation_status = 'draft'.
+  /// Se o grupo tiver auto_moderation_enabled = true, cria como 'approved' diretamente.
+  /// Caso contrário, cria como 'awaiting_approval' para moderação manual.
   Future<void> createExperience({
     required String title,
     required String text,
@@ -176,6 +177,22 @@ class ExperienceRepository {
     bool isDraft = false,
     bool locked = false,
   }) async {
+    String moderationStatus;
+    String? moderatedAt;
+
+    if (isDraft) {
+      moderationStatus = 'draft';
+    } else if (groupId != null) {
+      final groupRows = await CcGroupsTable().queryRows(
+        queryFn: (q) => q.eq('id', groupId),
+      );
+      final autoMod = groupRows.isNotEmpty && groupRows.first.autoModerationEnabled;
+      moderationStatus = autoMod ? 'approved' : 'awaiting_approval';
+      if (autoMod) moderatedAt = supaSerialize<DateTime>(DateTime.now());
+    } else {
+      moderationStatus = 'awaiting_approval';
+    }
+
     await CcSharingsTable().insert({
       'title': title,
       'privacy': privacy,
@@ -186,8 +203,10 @@ class ExperienceRepository {
       'updated_at': supaSerialize<DateTime>(DateTime.now()),
       'visibility': visibility,
       'type': type,
-      'moderation_status': isDraft ? 'draft' : 'awaiting_approval',
+      'moderation_status': moderationStatus,
       'locked': locked,
+      if (moderatedAt != null) 'moderated_at': moderatedAt,
+      if (moderatedAt != null) 'moderated_by': 'auto',
     });
   }
 

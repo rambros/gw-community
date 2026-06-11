@@ -10,16 +10,18 @@ class LoginGoogleButton extends StatelessWidget {
     super.key,
     required this.onPressed,
     this.isLoading = false,
+    this.loadingText = 'Signing in...',
   });
 
   final VoidCallback onPressed;
   final bool isLoading;
+  final String loadingText;
 
   @override
   Widget build(BuildContext context) {
     return FFButtonWidget(
       onPressed: isLoading ? null : onPressed,
-      text: isLoading ? 'Signing in...' : 'Sign in with Google',
+      text: isLoading ? loadingText : 'Sign in with Google',
       icon: const FaIcon(
         FontAwesomeIcons.google,
         size: 20.0,

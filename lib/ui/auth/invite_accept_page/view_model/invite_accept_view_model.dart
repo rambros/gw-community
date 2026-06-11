@@ -33,6 +33,11 @@ class InviteAcceptViewModel extends ChangeNotifier {
   bool _tokenValid = false;
   bool get tokenValid => _tokenValid;
 
+  String? _inviteEmail;
+  String? get inviteEmail => _inviteEmail;
+
+  bool get isLoggedIn => SupaFlow.client.auth.currentUser != null;
+
   bool _passwordVisibility = false;
   bool get passwordVisibility => _passwordVisibility;
 
@@ -80,7 +85,8 @@ class InviteAcceptViewModel extends ChangeNotifier {
 
         if (data['valid'] == true) {
           _tokenValid = true;
-          debugPrint('✅ Token is valid!');
+          _inviteEmail = data['email'] as String?;
+          debugPrint('✅ Token is valid! Email: $_inviteEmail');
         } else {
           _tokenValid = false;
           _tokenError = data['message'] as String? ?? 'This invitation link is invalid or has expired.';
@@ -136,6 +142,19 @@ class InviteAcceptViewModel extends ChangeNotifier {
       if (response.status == 200 && response.data != null) {
         final data = response.data as Map<String, dynamic>;
         if (data['success'] == true) {
+          // Auto-sign in so the user lands on home without typing credentials again
+          if (_inviteEmail != null) {
+            try {
+              await SupaFlow.client.auth.signInWithPassword(
+                email: _inviteEmail!,
+                password: passwordController.text.trim(),
+              );
+              debugPrint('✅ Auto-login successful for: $_inviteEmail');
+            } catch (e) {
+              // Auto-login failed — account was created; caller will redirect to login
+              debugPrint('⚠️ Auto-login failed (account still created): $e');
+            }
+          }
           _isLoading = false;
           notifyListeners();
           return true;

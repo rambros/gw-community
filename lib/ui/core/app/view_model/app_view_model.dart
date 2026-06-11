@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
+import 'package:gw_community/app_state.dart';
 import 'package:gw_community/data/repositories/auth_repository.dart';
+import 'package:gw_community/data/repositories/home_repository.dart';
 import 'package:gw_community/domain/models/app_auth_user.dart';
 import 'package:gw_community/routing/router.dart';
 import 'package:gw_community/utils/internationalization.dart';
@@ -28,9 +30,17 @@ class AppViewModel extends ChangeNotifier with WidgetsBindingObserver {
     appStateNotifier = AppStateNotifier.instance;
     router = createRouter(appStateNotifier);
 
-    // Initialize with current user from auth immediately
+    // Initialize with current user from auth immediately.
+    // Also reload module config whenever the user transitions to logged-in so
+    // the nav tabs reflect the correct group flags regardless of login method
+    // (email, Google, Apple, invite) — not just on splash for pre-logged-in users.
     _userSubscription = authRepository.authUserChanges.listen((user) {
+      final wasLoggedIn = appStateNotifier.loggedIn;
       appStateNotifier.update(user);
+      final isNowLoggedIn = appStateNotifier.loggedIn;
+      if (!wasLoggedIn && isNowLoggedIn) {
+        FFAppState().loadGroupModuleConfig(HomeRepository());
+      }
     });
 
     authRepository.jwtTokenChanges.listen((_) {});
@@ -39,8 +49,12 @@ class AppViewModel extends ChangeNotifier with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      // When the app comes back to the foreground, refresh the user to trigger validation
       authRepository.refreshUser();
+      // Refresh module flags on resume so changes made in the admin portal
+      // are reflected without requiring a log-out/log-in cycle.
+      if (appStateNotifier.loggedIn) {
+        FFAppState().loadGroupModuleConfig(HomeRepository());
+      }
     }
   }
 

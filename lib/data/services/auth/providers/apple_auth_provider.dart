@@ -1,11 +1,11 @@
 import 'package:flutter/foundation.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 Future<User?> appleSignInFunc() async {
   if (kIsWeb) {
-    final success = await SupaFlow.client.auth.signInWithOAuth(OAuthProvider.apple);
+    final success =
+        await SupaFlow.client.auth.signInWithOAuth(OAuthProvider.apple);
     return success ? SupaFlow.client.auth.currentUser : null;
   }
 

@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:gw_community/data/services/auth/auth_service.dart';
-import 'package:gw_community/data/services/auth/providers/email_auth_provider.dart';
 import 'package:gw_community/data/services/auth/providers/apple_auth_provider.dart';
+import 'package:gw_community/data/services/auth/providers/email_auth_provider.dart';
 import 'package:gw_community/data/services/auth/providers/google_auth_provider.dart';
 import 'package:gw_community/data/services/auth/supabase_auth_user_provider.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
@@ -32,8 +32,11 @@ class SupabaseAuthService implements AuthService {
           : Stream.value(authState),
     );
 
-    return (currentUser == null ? Stream<AuthState?>.value(null).concatWith([supabaseAuthStream]) : supabaseAuthStream)
-        .map<UserEntity?>((authState) => _mapToUserEntity(authState?.session?.user));
+    return (currentUser == null
+            ? Stream<AuthState?>.value(null).concatWith([supabaseAuthStream])
+            : supabaseAuthStream)
+        .map<UserEntity?>(
+            (authState) => _mapToUserEntity(authState?.session?.user));
   }
 
   @override
@@ -43,16 +46,18 @@ class SupabaseAuthService implements AuthService {
   }
 
   @override
-  Stream<AppAuthUser> get authUserChanges => _authUserStream ??= gWCommunitySupabaseUserStream();
+  Stream<AppAuthUser> get authUserChanges =>
+      _authUserStream ??= gWCommunitySupabaseUserStream();
 
   @override
-  Stream<String> get jwtTokenChanges => _jwtTokenStream ??= SupaFlow.client.auth.onAuthStateChange
-      .debounce(
-        (authState) => authState.event == AuthChangeEvent.tokenRefreshed
-            ? TimerStream(authState, const Duration(seconds: 1))
-            : Stream.value(authState),
-      )
-      .map<String>((authState) => authState.session?.accessToken ?? '');
+  Stream<String> get jwtTokenChanges =>
+      _jwtTokenStream ??= SupaFlow.client.auth.onAuthStateChange
+          .debounce(
+            (authState) => authState.event == AuthChangeEvent.tokenRefreshed
+                ? TimerStream(authState, const Duration(seconds: 1))
+                : Stream.value(authState),
+          )
+          .map<String>((authState) => authState.session?.accessToken ?? '');
 
   @override
   String? get currentUserId => SupaFlow.client.auth.currentUser?.id;
@@ -204,7 +209,8 @@ class SupabaseAuthService implements AuthService {
 
   @override
   Future<void> sendEmailVerification() async {
-    throw UnsupportedError('The send email verification operation is not yet supported.');
+    throw UnsupportedError(
+        'The send email verification operation is not yet supported.');
   }
 
   @override

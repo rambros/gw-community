@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/ui/auth/invite_accept_page/pending_invite.dart';
 import 'package:gw_community/ui/auth/login_page/view_model/login_view_model.dart';
 import 'package:gw_community/ui/auth/widgets/login_apple_button.dart';
 import 'package:gw_community/ui/auth/widgets/login_google_button.dart';
@@ -27,6 +29,21 @@ class _LoginPageState extends State<LoginPage> {
   final _emailFocusNode = FocusNode();
   final _passwordFocusNode = FocusNode();
   final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    // Fallback: if a deep-link invite arrived but direct navigation failed
+    // (e.g. GoRouter not yet ready), redirect now that LoginPage is visible.
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final token = PendingInvite.token;
+      if (token != null) {
+        PendingInvite.token = null;
+        context.go('/invite?token=$token');
+      }
+    });
+  }
 
   @override
   void dispose() {

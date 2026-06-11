@@ -30,6 +30,7 @@ import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/ui/auth/change_password_page/view_model/change_password_view_model.dart';
 import 'package:gw_community/ui/auth/create_account_page/view_model/create_account_view_model.dart';
 import 'package:gw_community/ui/auth/forgot_password_page/view_model/forgot_password_view_model.dart';
+import 'package:gw_community/ui/auth/invite_accept_page/pending_invite.dart';
 import 'package:gw_community/ui/auth/login_page/view_model/login_view_model.dart';
 import 'package:gw_community/ui/auth/on_boarding_page/view_model/on_boarding_view_model.dart';
 import 'package:gw_community/ui/community/experience_view_page/view_model/experience_view_view_model.dart';
@@ -50,6 +51,7 @@ import 'package:gw_community/ui/utility/unsplash_page/view_model/unsplash_view_m
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:gw_community/utils/internationalization.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -174,9 +176,15 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _initDeepLinks() async {
-    // Handle deep link when app is already running
+    // Track whether the stream already handled a link so getInitialLink()
+    // does not override it with a stale cached URL (Android caches the very
+    // first link the process ever saw, causing old used-tokens to fire again).
+    bool handledViaStream = false;
+
+    // Handle deep link when app is already running (warm start).
     _linkSubscription = _appLinks.uriLinkStream.listen(
       (uri) {
+        handledViaStream = true;
         _handleDeepLink(uri);
       },
       onError: (err) {
@@ -184,10 +192,11 @@ class _MyAppState extends State<MyApp> {
       },
     );
 
-    // Handle deep link that opened the app
+    // Handle deep link that cold-started the app — only if the stream
+    // hasn't already delivered a (more current) link.
     try {
       final initialUri = await _appLinks.getInitialLink();
-      if (initialUri != null) {
+      if (initialUri != null && !handledViaStream) {
         _handleDeepLink(initialUri);
       }
     } catch (e) {
@@ -195,36 +204,51 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  void _handleDeepLink(Uri uri) {
+  Future<void> _handleDeepLink(Uri uri) async {
     debugPrint('🔗 Deep link received: $uri');
-    debugPrint('🔗 Scheme: ${uri.scheme}');
-    debugPrint('🔗 Host: ${uri.host}');
-    debugPrint('🔗 Path: ${uri.path}');
-    debugPrint('🔗 Query: ${uri.query}');
-
-    // Check if it's an invite link
     if (uri.scheme == 'gw' && uri.host == 'invite') {
       final token = uri.queryParameters['token'];
-      debugPrint('🔗 Token found: $token');
-
+      debugPrint('🔗 Token: $token');
       if (token != null && token.isNotEmpty) {
-        // Wait for widget to be built before navigating
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          try {
-            final appViewModel = context.read<AppViewModel>();
-            final targetUrl = '/invite?token=$token';
-            debugPrint('🔗 Navigating to: $targetUrl');
-            appViewModel.router.go(targetUrl);
-            debugPrint('🔗 Navigation completed');
-          } catch (e) {
-            debugPrint('🔗 Navigation error: $e');
-          }
-        });
-      } else {
-        debugPrint('🔗 Token is null or empty');
+        // On Android, getInitialLink() caches the very first deep link the process
+        // ever received and returns it again on hot restart — even if that token is
+        // already used/expired.  Persist the last-navigated token so we can skip it
+        // on subsequent starts when no new link has actually been tapped.
+        final prefs = await SharedPreferences.getInstance();
+        final lastToken = prefs.getString('_gw_last_invite_token');
+        if (token == lastToken) {
+          debugPrint('🔗 Skipping stale cached invite token: $token');
+          return;
+        }
+        await prefs.setString('_gw_last_invite_token', token);
+        // Store as fallback: if navigation fails on first attempt, LoginPage picks this up.
+        PendingInvite.token = token;
+        _navigateToInvite('/invite?token=$token');
       }
+    }
+  }
+
+  // Navigates to the invite page using the GoRouter's navigator key.
+  // Retries if the context is not yet ready (e.g. cold start).
+  void _navigateToInvite(String targetUrl, [int attempt = 0]) {
+    final ctx = appNavigatorKey.currentContext;
+    if (ctx != null) {
+      debugPrint('🔗 Navigating to: $targetUrl (attempt $attempt)');
+      ctx.go(targetUrl);
+      // Navigation succeeded — the token is now in the URL, so clear the
+      // PendingInvite fallback.  Leaving it set would cause LoginPage.initState()
+      // to redirect back to /invite if the token turns out to be invalid, creating
+      // an infinite loop between "Invitation Invalid" and the login screen.
+      PendingInvite.token = null;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        AppStateNotifier.instance.stopShowingSplashImage();
+      });
+    } else if (attempt < 5) {
+      Future.delayed(Duration(milliseconds: 100 * (attempt + 1)), () {
+        _navigateToInvite(targetUrl, attempt + 1);
+      });
     } else {
-      debugPrint('🔗 Not an invite link (scheme: ${uri.scheme}, host: ${uri.host})');
+      debugPrint('🔗 Failed to navigate to $targetUrl after $attempt attempts');
     }
   }
 

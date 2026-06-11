@@ -45,19 +45,24 @@ class FFAppState extends ChangeNotifier {
   bool enableJourneyModule = true;
 
   /// Loads module visibility flags from the current user's groups.
-  /// If the user belongs to multiple groups, a module is visible if ANY group enables it.
-  /// Defaults to true when the user has no groups or an error occurs.
+  /// Queries the module flag columns directly to bypass the get_my_groups RPC which
+  /// pre-dates these columns and does not return them.
+  /// A module is visible if ANY group enables it (or has a null/unset flag).
   Future<void> loadGroupModuleConfig(HomeRepository homeRepo) async {
     try {
       final uid = SupaFlow.client.auth.currentUser?.id ?? '';
-      if (uid.isEmpty) return;
-      final groups = await homeRepo.getMyGroups(uid);
-      if (groups.isEmpty) return;
-      enableLibraryModule = groups.any((g) => g.enableLibraryModule);
-      enableJourneyModule = groups.any((g) => g.enableJourneyModule);
+      if (uid.isEmpty) {
+        debugPrint('🔧 loadGroupModuleConfig: no logged-in user, skipping');
+        return;
+      }
+      debugPrint('🔧 loadGroupModuleConfig: loading for uid=$uid');
+      final flags = await homeRepo.getGroupModuleFlags(uid);
+      debugPrint('🔧 loadGroupModuleConfig: library=${flags.enableLibrary} journey=${flags.enableJourney}');
+      enableLibraryModule = flags.enableLibrary;
+      enableJourneyModule = flags.enableJourney;
       notifyListeners();
-    } catch (_) {
-      // Keep defaults (true) on error
+    } catch (e) {
+      debugPrint('🔧 loadGroupModuleConfig ERROR: $e — keeping defaults (true)');
     }
   }
 

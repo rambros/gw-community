@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 
 class HomeRepository {
@@ -73,6 +74,64 @@ class HomeRepository {
       }).toList();
     }
     return [];
+  }
+
+  /// Returns module enable flags aggregated across all groups the user belongs to.
+  /// Returns module enable flags for all groups the user belongs to.
+  /// Tries a direct table join first (works when RLS allows user to read own rows).
+  /// Falls back to the get_group_module_flags RPC (SECURITY DEFINER) if the direct
+  /// query returns empty — which happens when RLS blocks it or the user has no groups.
+  /// A module is enabled if ANY group has the flag true or null (null = default on).
+  Future<({bool enableLibrary, bool enableJourney})> getGroupModuleFlags(String authUserId) async {
+    // --- Primary: direct join query ---
+    try {
+      final response = await SupaFlow.client
+          .from('cc_group_members')
+          .select('cc_groups!inner(enable_library_module, enable_journey_module)')
+          .eq('user_id', authUserId);
+
+      if ((response as List).isNotEmpty) {
+        bool anyLibrary = false;
+        bool anyJourney = false;
+        for (final row in response) {
+          final g = row['cc_groups'] as Map<String, dynamic>?;
+          if (g != null) {
+            if (g['enable_library_module'] != false) anyLibrary = true;
+            if (g['enable_journey_module'] != false) anyJourney = true;
+          }
+        }
+        debugPrint('🔧 getGroupModuleFlags (direct): library=$anyLibrary journey=$anyJourney');
+        return (enableLibrary: anyLibrary, enableJourney: anyJourney);
+      }
+    } catch (e) {
+      debugPrint('🔧 getGroupModuleFlags direct query failed, trying RPC: $e');
+    }
+
+    // --- Fallback: SECURITY DEFINER RPC (bypasses RLS) ---
+    try {
+      final response = await SupaFlow.client.rpc(
+        'get_group_module_flags',
+        params: {'user_input': authUserId},
+      );
+
+      final rows = response as List?;
+      if (rows == null || rows.isEmpty) {
+        debugPrint('🔧 getGroupModuleFlags RPC: no groups found, defaulting to true');
+        return (enableLibrary: true, enableJourney: true);
+      }
+
+      bool anyLibrary = false;
+      bool anyJourney = false;
+      for (final row in rows) {
+        if (row['enable_library_module'] != false) anyLibrary = true;
+        if (row['enable_journey_module'] != false) anyJourney = true;
+      }
+      debugPrint('🔧 getGroupModuleFlags (RPC): library=$anyLibrary journey=$anyJourney');
+      return (enableLibrary: anyLibrary, enableJourney: anyJourney);
+    } catch (e) {
+      debugPrint('🔧 getGroupModuleFlags RPC failed: $e — defaulting to true');
+      return (enableLibrary: true, enableJourney: true);
+    }
   }
 
   /// Fetches groups the user is a member of

@@ -51,6 +51,9 @@ class CcGroupsRow extends SupabaseDataRow {
   bool get enableLibraryModule =>
       getField<bool>('enable_library_module') ?? true;
 
+  bool get autoModerationEnabled =>
+      getField<bool>('auto_moderation_enabled') ?? false;
+
   bool get enableJourneyModule =>
       getField<bool>('enable_journey_module') ?? true;
 }

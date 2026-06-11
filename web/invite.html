@@ -117,6 +117,18 @@
                 color: white;
             }
 
+            .btn-outline {
+                background: transparent;
+                color: #7C52A0;
+                border: 2px solid #7C52A0;
+                font-size: 14px;
+                padding: 12px 24px;
+            }
+
+            .btn-outline:hover {
+                background: rgba(124, 82, 160, 0.08);
+            }
+
             .spinner {
                 border: 3px solid #f3f3f3;
                 border-top: 3px solid #667eea;
@@ -172,18 +184,13 @@
             <div id="not-installed" class="hidden">
                 <h1>Welcome to Good Wishes!</h1>
                 <p>
-                    You've been invited to join our community. Download the app
-                    to accept your invitation and get started.
+                    You've been invited to join our community.
                 </p>
 
-                <div class="status">
-                    <div class="status-icon">📱</div>
-                    <div class="status-text">
-                        App not detected. Please download to continue.
-                    </div>
-                </div>
-
                 <div class="buttons">
+                    <button onclick="openDeepLink()" class="btn btn-primary" id="open-app-btn">
+                        Open the app
+                    </button>
                     <a href="#" id="ios-link" class="btn btn-ios">
                         <span>📱</span>
                         <span>Download on App Store</span>
@@ -194,9 +201,40 @@
                     </a>
                 </div>
 
+                <p style="margin-top: 20px; font-size: 13px; color: #a0aec0">
+                    Already have the app? Tap <strong>Open the app</strong>.<br>
+                    Don't have it? Download using the button below.
+                </p>
+            </div>
+
+            <!-- Desktop State -->
+            <div id="desktop" class="hidden">
+                <h1>Open on your phone</h1>
+                <p>
+                    This invitation is for the Good Wishes app.<br>
+                    Open this link on your iPhone or Android to continue.
+                </p>
+
+                <div class="status">
+                    <div class="status-icon">💻</div>
+                    <div class="status-text">
+                        Invitation link detected on a computer.
+                    </div>
+                </div>
+
+                <div class="buttons">
+                    <a href="https://apps.apple.com/app/id6758221292" class="btn btn-ios">
+                        <span>📱</span>
+                        <span>Download on App Store</span>
+                    </a>
+                    <a href="https://play.google.com/store/apps/details?id=org.callofthetime.gw" class="btn btn-android">
+                        <span>📲</span>
+                        <span>Get it on Google Play</span>
+                    </a>
+                </div>
+
                 <p style="margin-top: 20px; font-size: 14px; color: #a0aec0">
-                    After installing, open the app and use the email from your
-                    invitation to sign in.
+                    After installing, open the invitation link again on your phone.
                 </p>
             </div>
 
@@ -211,61 +249,42 @@
         </div>
 
         <script>
-            // Get token from URL
             const urlParams = new URLSearchParams(window.location.search);
             const token = urlParams.get("token");
 
-            // App URLs - UPDATE THESE WITH YOUR ACTUAL URLS
-            const IOS_APP_STORE_URL =
-                "https://apps.apple.com/app/good-wishes/idXXXXXXXXX";
-            const ANDROID_PLAY_STORE_URL =
-                "https://play.google.com/store/apps/details?id=org.callofthetime.gw";
+            const IOS_APP_STORE_URL = "https://apps.apple.com/app/id6758221292";
+            const ANDROID_PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=org.callofthetime.gw";
             const DEEP_LINK_SCHEME = "gw://invite?token=";
 
-            // Detect platform
             function getMobileOS() {
                 const ua = navigator.userAgent;
                 if (/iPad|iPhone|iPod/.test(ua)) return "iOS";
                 if (/android/i.test(ua)) return "Android";
-                return "Other";
+                return "Desktop";
             }
 
-            // Try to open app with deep link
-            function tryOpenApp() {
-                if (!token) {
-                    showError();
-                    return;
-                }
-
+            // Attempts to open the app via deep link (called on load and by the button)
+            function openDeepLink() {
+                if (!token) return;
                 const deepLink = DEEP_LINK_SCHEME + token;
-                const platform = getMobileOS();
-
-                // Create invisible iframe to trigger deep link
+                // iframe trick avoids browser "can't open page" error on some browsers
                 const iframe = document.createElement("iframe");
                 iframe.style.display = "none";
                 iframe.src = deepLink;
                 document.body.appendChild(iframe);
-
-                // Wait to see if app opens
-                setTimeout(() => {
-                    // If still on page after 2 seconds, app is not installed
-                    showDownloadOptions(platform);
-                }, 2000);
-
-                // Also try direct navigation (works on some browsers)
+                setTimeout(() => document.body.removeChild(iframe), 3000);
+                // Direct navigation as fallback (works on Chrome Android)
                 window.location.href = deepLink;
             }
 
-            // Show download options
             function showDownloadOptions(platform) {
                 document.getElementById("loading").classList.add("hidden");
                 document.getElementById("not-installed").classList.remove("hidden");
 
-                // Set store URLs
                 document.getElementById("ios-link").href = IOS_APP_STORE_URL;
                 document.getElementById("android-link").href = ANDROID_PLAY_STORE_URL;
 
-                // Hide irrelevant button based on platform
+                // Show only the relevant store button
                 if (platform === "iOS") {
                     document.getElementById("android-link").style.display = "none";
                 } else if (platform === "Android") {
@@ -273,21 +292,44 @@
                 }
             }
 
-            // Show error
+            function showDesktop() {
+                document.getElementById("loading").classList.add("hidden");
+                document.getElementById("desktop").classList.remove("hidden");
+            }
+
             function showError() {
                 document.getElementById("loading").classList.add("hidden");
                 document.getElementById("error").classList.remove("hidden");
             }
 
-            // Start the flow
-            tryOpenApp();
+            function start() {
+                if (!token) { showError(); return; }
 
-            // Handle visibility change (detect if user came back to page)
+                const platform = getMobileOS();
+
+                if (platform === "Desktop") {
+                    showDesktop();
+                    return;
+                }
+
+                if (platform === "iOS") {
+                    // iOS blocks auto deep links without user gesture — show buttons immediately
+                    showDownloadOptions(platform);
+                    return;
+                }
+
+                // Android: try deep link automatically, show options after 2s if app didn't open
+                openDeepLink();
+                setTimeout(() => showDownloadOptions(platform), 2000);
+            }
+
+            start();
+
+            // If user returns to the page after the app didn't open (Android)
             document.addEventListener("visibilitychange", () => {
                 if (document.visibilityState === "visible") {
-                    // User came back - app didn't open
                     const platform = getMobileOS();
-                    showDownloadOptions(platform);
+                    if (platform === "Android") showDownloadOptions(platform);
                 }
             });
         </script>

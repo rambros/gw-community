@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/ui/auth/invite_accept_page/pending_invite.dart';
 import 'package:gw_community/ui/auth/invite_accept_page/view_model/invite_accept_view_model.dart';
 import 'package:gw_community/ui/auth/widgets/login_apple_button.dart';
 import 'package:gw_community/ui/auth/widgets/login_google_button.dart';
@@ -238,6 +239,37 @@ class _InviteAcceptPageState extends State<InviteAcceptPage> {
               ],
             ),
           ),
+          // Invite Email (read-only — confirms which account the user is setting up)
+          if (viewModel.inviteEmail != null)
+            Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(4.0, 0.0, 4.0, 12.0),
+              child: TextFormField(
+                initialValue: viewModel.inviteEmail,
+                readOnly: true,
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  labelStyle: AppTheme.of(context).labelLarge.override(
+                        font: GoogleFonts.poppins(),
+                        color: AppTheme.of(context).secondaryText,
+                        fontSize: 16.0,
+                      ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: AppTheme.of(context).alternate, width: 1.0),
+                    borderRadius: BorderRadius.circular(16.0),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: AppTheme.of(context).alternate, width: 1.0),
+                    borderRadius: BorderRadius.circular(16.0),
+                  ),
+                  filled: true,
+                  fillColor: const Color(0xFFF0F0F0),
+                ),
+                style: AppTheme.of(context).bodyMedium.override(
+                      font: GoogleFonts.lexendDeca(),
+                      color: AppTheme.of(context).secondaryText,
+                    ),
+              ),
+            ),
           // Password Field
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(4.0, 4.0, 4.0, 8.0),
@@ -372,19 +404,26 @@ class _InviteAcceptPageState extends State<InviteAcceptPage> {
                   : () async {
                       final success = await viewModel.submitPassword();
                       if (success && context.mounted) {
-                        context.go('/login');
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              'Account created successfully! Please log in.',
-                              style: TextStyle(color: AppTheme.of(context).primaryText),
+                        // Invite accepted — clear fallback token so LoginPage
+                        // doesn't re-open this (already-used) invite link.
+                        PendingInvite.token = null;
+                        if (viewModel.isLoggedIn) {
+                          context.go('/');
+                        } else {
+                          context.go('/login');
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Account created! Please log in with your email.',
+                                style: TextStyle(color: AppTheme.of(context).primaryText),
+                              ),
+                              backgroundColor: AppTheme.of(context).primary,
                             ),
-                            backgroundColor: AppTheme.of(context).primary,
-                          ),
-                        );
+                          );
+                        }
                       }
                     },
-              text: 'Create Account',
+              text: viewModel.isLoading ? 'Creating account...' : 'Create Account',
               options: FFButtonOptions(
                 width: double.infinity,
                 height: 50.0,
@@ -430,6 +469,7 @@ class _InviteAcceptPageState extends State<InviteAcceptPage> {
             child: LoginGoogleButton(
               onPressed: () => _handleOAuth(context, viewModel, isApple: false),
               isLoading: viewModel.isLoading,
+              loadingText: 'Creating account...',
             ),
           ),
           // Apple Sign-In (iOS only)
@@ -439,6 +479,7 @@ class _InviteAcceptPageState extends State<InviteAcceptPage> {
               child: LoginAppleButton(
                 onPressed: () => _handleOAuth(context, viewModel, isApple: true),
                 isLoading: viewModel.isLoading,
+                loadingText: 'Creating account...',
               ),
             )
           else
@@ -455,6 +496,7 @@ class _InviteAcceptPageState extends State<InviteAcceptPage> {
   }) async {
     final success = await viewModel.signInWithOAuth(isApple: isApple);
     if (success && context.mounted) {
+      PendingInvite.token = null;
       context.go(HomePage.routePath);
     }
   }

@@ -37,37 +37,51 @@ Deno.serve(async (req) => {
 
     const adminClient = createClient(supabaseUrl, serviceRoleKey);
 
-    // Find the cc_members record for this invite token
-    const { data: member, error: memberError } = await adminClient
-      .from('cc_members')
-      .select('id, auth_user_id, status')
-      .eq('invite_token', token)
+    // Find invitation in the invitations table (email-based admin invite flow)
+    const { data: invite, error: inviteError } = await adminClient
+      .from('invitations')
+      .select('*')
+      .eq('token', token)
+      .eq('status', 'pending')
       .maybeSingle();
 
-    if (memberError || !member) {
+    if (inviteError || !invite) {
       return json({ error: 'Invalid or expired invitation' }, 400);
     }
 
-    // Guard: token already consumed by a *different* user
-    if (member.auth_user_id && member.auth_user_id !== user.id) {
-      return json({ error: 'This invitation has already been used' }, 400);
+    // Check expiry
+    if (new Date(invite.expires_at) < new Date()) {
+      await adminClient.from('invitations').update({ status: 'expired' }).eq('id', invite.id);
+      return json({ error: 'Invitation has expired' }, 400);
     }
 
-    // Link the OAuth user, activate the account, and consume the token (one-time use)
-    const { error: updateError } = await adminClient
+    // Create cc_members record only if one doesn't exist yet for this auth user
+    const { data: existingMember } = await adminClient
       .from('cc_members')
-      .update({
-        auth_user_id: user.id,
-        status: 'active',
-        invite_token: null,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', member.id);
+      .select('id')
+      .eq('auth_user_id', user.id)
+      .maybeSingle();
 
-    if (updateError) {
-      console.error('Failed to update cc_members:', updateError);
-      return json({ error: 'Failed to link account' }, 500);
+    if (!existingMember) {
+      const metadata = (invite.metadata as Record<string, string>) || {};
+      const { error: memberError } = await adminClient.from('cc_members').insert({
+        auth_user_id: user.id,
+        first_name: metadata.first_name,
+        last_name: metadata.last_name,
+        email: invite.email,
+        user_role: invite.role ? [invite.role] : ['member'],
+      });
+      if (memberError) {
+        console.error('Failed to create member record:', memberError);
+        return json({ error: 'Failed to create member record' }, 500);
+      }
+      console.log(`Created member record for OAuth user: ${invite.email}`);
+    } else {
+      console.log(`Member record already exists for: ${invite.email} — skipping`);
     }
+
+    // Mark invitation as used (one-time use)
+    await adminClient.from('invitations').update({ status: 'used' }).eq('id', invite.id);
 
     return json({ success: true });
   } catch (err) {

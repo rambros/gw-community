@@ -1,11 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:gw_community/app_state.dart';
 import 'package:gw_community/data/repositories/announcement_repository.dart';
 import 'package:gw_community/data/repositories/event_repository.dart';
 import 'package:gw_community/data/repositories/experience_moderation_repository.dart';
 import 'package:gw_community/data/repositories/experience_repository.dart';
 import 'package:gw_community/data/repositories/group_repository.dart';
+import 'package:gw_community/data/repositories/home_repository.dart';
 import 'package:gw_community/data/repositories/journeys_repository.dart';
 import 'package:gw_community/data/repositories/learn_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
@@ -184,6 +186,9 @@ class GroupDetailsViewModel extends ChangeNotifier {
 
       _updateTabController();
       _fetchMembers(); // Refresh members list
+      // Reload module flags so the nav bar immediately reflects modules
+      // enabled by this newly joined group (e.g. library, journey tabs).
+      await FFAppState().loadGroupModuleConfig(HomeRepository());
       notifyListeners();
     } catch (e) {
       debugPrint('Error joining group: $e');
@@ -358,10 +363,10 @@ class GroupDetailsViewModel extends ChangeNotifier {
     try {
       await _groupRepository.removeUserFromGroup(group.id, currentUserId!);
       _isMember = false;
-
-      // Update local check
-      _isCheckingMembership = false; // logic reset
+      _isCheckingMembership = false;
       _updateTabController();
+      // Reload module flags so nav tabs are hidden/shown based on remaining groups.
+      await FFAppState().loadGroupModuleConfig(HomeRepository());
       notifyListeners();
 
       return true;

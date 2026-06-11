@@ -8,10 +8,12 @@ class LoginAppleButton extends StatelessWidget {
     super.key,
     required this.onPressed,
     this.isLoading = false,
+    this.loadingText = 'Signing in...',
   });
 
   final VoidCallback onPressed;
   final bool isLoading;
+  final String loadingText;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +24,7 @@ class LoginAppleButton extends StatelessWidget {
         onPressed: isLoading ? () {} : onPressed,
         style: SignInWithAppleButtonStyle.whiteOutlined,
         borderRadius: const BorderRadius.all(Radius.circular(12.0)),
-        text: isLoading ? 'Signing in...' : 'Sign in with Apple',
+        text: isLoading ? loadingText : 'Sign in with Apple',
       ),
     );
   }

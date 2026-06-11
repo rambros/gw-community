@@ -31,7 +31,13 @@
       "Bash(supabase --version)",
       "Bash(supabase projects *)",
       "Bash(supabase link *)",
-      "Bash(supabase functions *)"
+      "Bash(supabase functions *)",
+      "Read(//Users/rodrigoambros/**)",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); [print\\(k\\) for k in d.get\\('mcpServers',{}\\).keys\\(\\)]\")",
+      "Bash(firebase deploy *)",
+      "Bash(supabase db *)",
+      "Bash(curl -s 'https://hxhpzoyjjghtekqgfbfh.supabase.co/rest/v1/invitations?select=token,email,status,expires_at,created_at&order=created_at.desc&limit=5' -H 'apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh4aHB6b3lqamdodGVrcWdmYmZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDE5NTQ2NTcsImV4cCI6MjAxNzUzMDY1N30.AXFvKve52GjqNJu9Npg3HCnfQ5suy_ba3n-2_s5ZnDs' -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh4aHB6b3lqamdodGVrcWdmYmZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDE5NTQ2NTcsImV4cCI6MjAxNzUzMDY1N30.AXFvKve52GjqNJu9Npg3HCnfQ5suy_ba3n-2_s5ZnDs')",
+      "Bash(python3 -m json.tool)"
     ]
   }
 }
