@@ -18,12 +18,16 @@ class ExperienceCardWidget extends StatelessWidget {
     required this.index,
     required this.totalCount,
     this.onDelete,
+    this.onUnpublish,
+    this.isGroupManager = false,
   });
 
   final CcViewSharingsUsersRow experienceRow;
   final int index;
   final int totalCount;
   final Future<void> Function(BuildContext context)? onDelete;
+  final Future<void> Function(BuildContext context)? onUnpublish;
+  final bool isGroupManager;
 
   @override
   Widget build(BuildContext context) {
@@ -255,98 +259,125 @@ class ExperienceCardWidget extends StatelessWidget {
   Widget _buildActions(BuildContext context) {
     final isAdmin = FFAppState().loginUser.roles.hasAdmin;
     final isOwner = context.currentUserIdOrEmpty == experienceRow.userId;
+    // Only the owner can delete their own experience
+    final canDelete = isOwner;
+    // Admins and group managers can unpublish (not delete) experiences from others
+    final canUnpublish = (isAdmin || isGroupManager) &&
+        !isOwner &&
+        onUnpublish != null &&
+        experienceRow.moderationStatus == 'approved';
+
+    FFButtonWidget outlineBtn(String label, VoidCallback onPressed) {
+      return FFButtonWidget(
+        onPressed: onPressed,
+        text: label,
+        options: FFButtonOptions(
+          height: 40.0,
+          padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
+          iconPadding: const EdgeInsets.all(0.0),
+          color: AppTheme.of(context).primaryBackground,
+          textStyle: AppTheme.of(context).labelLarge.override(
+                font: GoogleFonts.poppins(
+                  fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                  fontStyle: AppTheme.of(context).labelLarge.fontStyle,
+                ),
+                color: AppTheme.of(context).secondary,
+                letterSpacing: 0.0,
+                fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                fontStyle: AppTheme.of(context).labelLarge.fontStyle,
+              ),
+          elevation: 0.0,
+          borderSide: BorderSide(color: AppTheme.of(context).secondaryBackground, width: 0.5),
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+      );
+    }
+
+    FFButtonWidget filledBtn(String label, VoidCallback onPressed) {
+      return FFButtonWidget(
+        onPressed: onPressed,
+        text: label,
+        options: FFButtonOptions(
+          height: 40.0,
+          padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
+          iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+          color: AppTheme.of(context).primary,
+          textStyle: AppTheme.of(context).labelLarge.override(
+                font: GoogleFonts.poppins(
+                  fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                  fontStyle: AppTheme.of(context).labelLarge.fontStyle,
+                ),
+                color: AppTheme.of(context).primaryBackground,
+                letterSpacing: 0.0,
+                fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                fontStyle: AppTheme.of(context).labelLarge.fontStyle,
+              ),
+          elevation: 1.0,
+          borderSide: BorderSide(color: AppTheme.of(context).secondaryBackground, width: 0.5),
+          borderRadius: BorderRadius.circular(20.0),
+          disabledColor: AppTheme.of(context).alternate,
+          disabledTextColor: AppTheme.of(context).secondaryText,
+        ),
+      );
+    }
+
+    final actions = <Widget>[];
+
+    if (canDelete && onDelete != null) {
+      actions.add(outlineBtn('Delete', () async {
+        final confirmed = await ConfirmationDialog.show(
+          context: context,
+          title: 'Withdraw this experience?',
+          message: 'It will be permanently removed from the group and cannot be restored.',
+          confirmLabel: 'Delete',
+          confirmColor: AppTheme.of(context).secondary,
+        );
+        if (context.mounted && confirmed) await onDelete!(context);
+      }));
+    }
+
+    if (canUnpublish) {
+      actions.add(outlineBtn('Unpublish', () async {
+        final confirmed = await ConfirmationDialog.show(
+          context: context,
+          title: 'Unpublish this experience?',
+          message: 'The experience will be removed from public view.',
+          confirmLabel: 'Unpublish',
+          confirmColor: AppTheme.of(context).secondary,
+        );
+        if (context.mounted && confirmed) await onUnpublish!(context);
+      }));
+    }
+
+    if (isOwner &&
+        experienceRow.moderationStatus != 'awaiting_approval' &&
+        experienceRow.moderationStatus != 'pending') {
+      actions.add(filledBtn('Edit', () {
+        context.pushNamed(
+          ExperienceEditPage.routeName,
+          extra: <String, dynamic>{
+            'experienceRow': experienceRow,
+            kTransitionInfoKey: const TransitionInfo(
+              hasTransition: true,
+              transitionType: PageTransitionType.fade,
+              duration: Duration(milliseconds: 0),
+            ),
+          },
+        );
+      }));
+    }
+
+    if (actions.isEmpty) return const SizedBox.shrink();
 
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 8.0, 0.0),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          if ((isAdmin || isOwner) && onDelete != null)
-            Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
-              child: FFButtonWidget(
-                onPressed: () async {
-                  final confirmed = await ConfirmationDialog.show(
-                    context: context,
-                    title: 'Withdraw this experience?',
-                    message: 'It will be permanently removed from the group and cannot be restored.',
-                    confirmLabel: 'Delete',
-                    confirmColor: AppTheme.of(context).secondary,
-                  );
-
-                  if (!context.mounted) return;
-
-                  if (confirmed && onDelete != null) {
-                    await onDelete!(context);
-                  }
-                },
-                text: 'Delete',
-                options: FFButtonOptions(
-                  height: 40.0,
-                  padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-                  iconPadding: const EdgeInsets.all(0.0),
-                  color: AppTheme.of(context).primaryBackground,
-                  textStyle: AppTheme.of(context).labelLarge.override(
-                        font: GoogleFonts.poppins(
-                          fontWeight: AppTheme.of(context).labelLarge.fontWeight,
-                          fontStyle: AppTheme.of(context).labelLarge.fontStyle,
-                        ),
-                        color: AppTheme.of(context).secondary,
-                        letterSpacing: 0.0,
-                        fontWeight: AppTheme.of(context).labelLarge.fontWeight,
-                        fontStyle: AppTheme.of(context).labelLarge.fontStyle,
-                      ),
-                  elevation: 0.0,
-                  borderSide: BorderSide(color: AppTheme.of(context).secondaryBackground, width: 0.5),
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-              ),
-            ),
-          if (isOwner &&
-              experienceRow.moderationStatus != 'awaiting_approval' &&
-              experienceRow.moderationStatus != 'pending')
-            Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
-              child: FFButtonWidget(
-                onPressed: () async {
-                  context.pushNamed(
-                    ExperienceEditPage.routeName,
-                    extra: <String, dynamic>{
-                      'experienceRow': experienceRow,
-                      kTransitionInfoKey: const TransitionInfo(
-                        hasTransition: true,
-                        transitionType: PageTransitionType.fade,
-                        duration: Duration(milliseconds: 0),
-                      ),
-                    },
-                  );
-                },
-                text: 'Edit',
-                options: FFButtonOptions(
-                  height: 40.0,
-                  padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-                  iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                  color: AppTheme.of(context).primary,
-                  textStyle: AppTheme.of(context).labelLarge.override(
-                        font: GoogleFonts.poppins(
-                          fontWeight: AppTheme.of(context).labelLarge.fontWeight,
-                          fontStyle: AppTheme.of(context).labelLarge.fontStyle,
-                        ),
-                        color: AppTheme.of(context).primaryBackground,
-                        letterSpacing: 0.0,
-                        fontWeight: AppTheme.of(context).labelLarge.fontWeight,
-                        fontStyle: AppTheme.of(context).labelLarge.fontStyle,
-                      ),
-                  elevation: 1.0,
-                  borderSide: BorderSide(color: AppTheme.of(context).secondaryBackground, width: 0.5),
-                  borderRadius: BorderRadius.circular(20.0),
-                  disabledColor: AppTheme.of(context).alternate,
-                  disabledTextColor: AppTheme.of(context).secondaryText,
-                ),
-              ),
-            ),
-        ],
+        children: actions
+            .expand((btn) => [btn, const SizedBox(width: 8)])
+            .toList()
+          ..removeLast(),
       ),
     );
   }

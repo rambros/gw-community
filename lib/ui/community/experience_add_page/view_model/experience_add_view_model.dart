@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:gw_community/data/repositories/experience_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/routing/router.dart';
@@ -158,7 +157,7 @@ class ExperienceAddViewModel extends ChangeNotifier {
         privacy: privacy,
         userId: currentUserUid,
         visibility: _visibility,
-        type: ExperienceType.experience.name,
+        type: 'sharing',
         groupId: groupId,
         isDraft: isDraft,
         locked: !_commentsEnabled, // locked = true quando comments estão desabilitados

@@ -83,6 +83,7 @@ class GroupExperiencesTab extends StatelessWidget {
                           experienceRow: experience,
                           index: index,
                           totalCount: experiencesList.length,
+                          isGroupManager: viewModel.currentUserIsGroupManager,
                           onDelete: (context) async {
                             await viewModel.deleteExperience(experience.id!);
                             if (!context.mounted) return;
@@ -90,9 +91,21 @@ class GroupExperiencesTab extends StatelessWidget {
                               SnackBar(
                                 content: Text(
                                   'Experience deleted with success',
-                                  style: TextStyle(
-                                    color: AppTheme.of(context).primaryText,
-                                  ),
+                                  style: TextStyle(color: AppTheme.of(context).primaryText),
+                                ),
+                                duration: const Duration(milliseconds: 4000),
+                                backgroundColor: AppTheme.of(context).secondary,
+                              ),
+                            );
+                          },
+                          onUnpublish: (context) async {
+                            await viewModel.unpublishExperience(experience.id!);
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Experience unpublished',
+                                  style: TextStyle(color: AppTheme.of(context).primaryText),
                                 ),
                                 duration: const Duration(milliseconds: 4000),
                                 backgroundColor: AppTheme.of(context).secondary,

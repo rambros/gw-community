@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gw_community/data/repositories/auth_repository.dart';
 import 'package:gw_community/data/repositories/auth_repository_impl.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/domain/models/user_entity.dart';
 
 class LoginViewModel extends ChangeNotifier {
@@ -50,6 +51,8 @@ class LoginViewModel extends ChangeNotifier {
 
     try {
       final user = await _repository.signInWithGoogleContext(context);
+      if (user == null) return null;
+      await _assertMemberExists(user.uid);
       return user;
     } catch (e) {
       rethrow;
@@ -68,6 +71,8 @@ class LoginViewModel extends ChangeNotifier {
 
     try {
       final user = await _repository.signInWithAppleContext(context);
+      if (user == null) return null;
+      await _assertMemberExists(user.uid);
       return user;
     } catch (e) {
       rethrow;
@@ -75,6 +80,20 @@ class LoginViewModel extends ChangeNotifier {
       _isLoading = false;
       _loadingProvider = null;
       notifyListeners();
+    }
+  }
+
+  /// Verifica se o usuário OAuth tem um registro em cc_members (aceitou convite).
+  /// Se não tiver, faz signOut e lança exceção para a UI exibir a mensagem.
+  Future<void> _assertMemberExists(String authUserId) async {
+    final rows = await CcMembersTable().querySingleRow(
+      queryFn: (q) => q.eqOrNull('auth_user_id', authUserId),
+    );
+    if (rows.isEmpty) {
+      await SupaFlow.client.auth.signOut();
+      throw Exception(
+        'No account found for this login. Please use an invitation link to register.',
+      );
     }
   }
 }

@@ -54,30 +54,6 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  Future<void> _handleGoogleSignIn(LoginViewModel viewModel) async {
-    try {
-      final user = await viewModel.signInWithGoogle(context);
-      if (user != null && mounted) {
-        context.pushNamed(HomePage.routeName);
-      }
-    } catch (e) {
-      if (!mounted) return;
-      _showAuthError(e);
-    }
-  }
-
-  Future<void> _handleAppleSignIn(LoginViewModel viewModel) async {
-    try {
-      final user = await viewModel.signInWithApple(context);
-      if (user != null && mounted) {
-        context.pushNamed(HomePage.routeName);
-      }
-    } catch (e) {
-      if (!mounted) return;
-      _showAuthError(e);
-    }
-  }
-
   void _showAuthError(Object error) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -398,7 +374,7 @@ class _LoginPageState extends State<LoginPage> {
                           Align(
                             alignment: Alignment.centerRight,
                             child: Padding(
-                              padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 4.0, 0.0),
+                              padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 4.0, 8.0),
                               child: GestureDetector(
                                 onTap: () => context.pushNamed('forgotPassword'),
                                 child: Text(
@@ -414,7 +390,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           // OR divider
                           Padding(
-                            padding: const EdgeInsetsDirectional.fromSTEB(4.0, 20.0, 4.0, 0.0),
+                            padding: const EdgeInsets.symmetric(vertical: 12.0),
                             child: Row(
                               children: [
                                 Expanded(child: Divider(color: AppTheme.of(context).alternate)),
@@ -432,19 +408,41 @@ class _LoginPageState extends State<LoginPage> {
                               ],
                             ),
                           ),
+                          // Google Sign In
                           Padding(
-                            padding: const EdgeInsetsDirectional.fromSTEB(4.0, 16.0, 4.0, 0.0),
+                            padding: const EdgeInsetsDirectional.fromSTEB(4.0, 0.0, 4.0, 12.0),
                             child: LoginGoogleButton(
-                              onPressed: () => _handleGoogleSignIn(viewModel),
                               isLoading: viewModel.isGoogleLoading,
+                              onPressed: () async {
+                                try {
+                                  final user = await viewModel.signInWithGoogle(context);
+                                  if (user != null && context.mounted) {
+                                    context.pushNamed(HomePage.routeName);
+                                  }
+                                } catch (e) {
+                                  if (context.mounted) _showAuthError(e);
+                                }
+                              },
                             ),
                           ),
-                          if (defaultTargetPlatform == TargetPlatform.iOS || kIsWeb)
+                          // Apple Sign In (iOS / macOS only)
+                          if (!kIsWeb &&
+                              (defaultTargetPlatform == TargetPlatform.iOS ||
+                                  defaultTargetPlatform == TargetPlatform.macOS))
                             Padding(
-                              padding: const EdgeInsetsDirectional.fromSTEB(4.0, 12.0, 4.0, 24.0),
+                              padding: const EdgeInsetsDirectional.fromSTEB(4.0, 0.0, 4.0, 24.0),
                               child: LoginAppleButton(
-                                onPressed: () => _handleAppleSignIn(viewModel),
                                 isLoading: viewModel.isAppleLoading,
+                                onPressed: () async {
+                                  try {
+                                    final user = await viewModel.signInWithApple(context);
+                                    if (user != null && context.mounted) {
+                                      context.pushNamed(HomePage.routeName);
+                                    }
+                                  } catch (e) {
+                                    if (context.mounted) _showAuthError(e);
+                                  }
+                                },
                               ),
                             )
                           else

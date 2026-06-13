@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gw_community/data/repositories/auth_repository.dart';
 import 'package:gw_community/data/services/auth/auth_service.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/domain/models/app_auth_user.dart';
 import 'package:gw_community/domain/models/user_entity.dart';
 
@@ -95,9 +96,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<void> resetPassword(String email, {String? redirectTo}) {
-    throw UnimplementedError(
-      'Use resetPasswordContext instead - requires BuildContext for error handling',
-    );
+    return SupaFlow.client.auth.resetPasswordForEmail(email, redirectTo: redirectTo);
   }
 
   /// Resets password (requires context for error messages).

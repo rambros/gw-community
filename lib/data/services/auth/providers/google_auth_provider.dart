@@ -9,8 +9,8 @@ Future<void>? _googleSignInInit;
 
 Future<void> _ensureGoogleSignInInitialized() {
   return _googleSignInInit ??= GoogleSignIn.instance.initialize(
-    clientId: isAndroid ? null : '720538206617-f3fnpkfmeuetlktaqdd2ckvh3cjqb9rf.apps.googleusercontent.com',
-    serverClientId: '720538206617-ardiq4kfkcrfu3qei4a2ej9l2kipmtgf.apps.googleusercontent.com',
+    clientId: isAndroid ? null : '875067654858-94e84guh654pk3589gjvo3i6d1ft07fl.apps.googleusercontent.com',
+    serverClientId: '875067654858-33f5239btrqtclbn6jjl9lbmgp7uaj4s.apps.googleusercontent.com',
   );
 }
 

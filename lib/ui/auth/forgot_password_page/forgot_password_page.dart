@@ -175,39 +175,59 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                             padding: const EdgeInsetsDirectional.fromSTEB(0.0, 24.0, 0.0, 0.0),
                             child: FFButtonWidget(
                               onPressed: () async {
-                                if (_formKey.currentState!.validate()) {
-                                  try {
-                                    await viewModel.resetPassword(
-                                      _emailController.text,
+                                if (!_formKey.currentState!.validate()) return;
+
+                                final email = _emailController.text.trim();
+
+                                // Check if this account uses OAuth (Apple/Google)
+                                final method = await viewModel.checkAuthMethod(email);
+                                if (!context.mounted) return;
+
+                                if (method == 'apple' || method == 'google') {
+                                  final provider = method == 'apple' ? 'Apple' : 'Google';
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'This account uses Sign in with $provider. '
+                                        'Please use that option to access your account.',
+                                        style: TextStyle(color: AppTheme.of(context).primaryText),
+                                      ),
+                                      backgroundColor: AppTheme.of(context).secondary,
+                                      duration: const Duration(seconds: 5),
+                                    ),
+                                  );
+                                  return;
+                                }
+
+                                try {
+                                  await viewModel.resetPassword(email);
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          'Password reset email sent',
+                                          style: TextStyle(
+                                            color: AppTheme.of(context).primaryText,
+                                          ),
+                                        ),
+                                        backgroundColor: AppTheme.of(context).secondary,
+                                      ),
                                     );
-                                    if (context.mounted) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            'Password reset email sent',
-                                            style: TextStyle(
-                                              color: AppTheme.of(context).primaryText,
-                                            ),
+                                    context.pop();
+                                  }
+                                } catch (e) {
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          e.toString(),
+                                          style: TextStyle(
+                                            color: AppTheme.of(context).primaryText,
                                           ),
-                                          backgroundColor: AppTheme.of(context).secondary,
                                         ),
-                                      );
-                                      context.pop();
-                                    }
-                                  } catch (e) {
-                                    if (context.mounted) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            e.toString(),
-                                            style: TextStyle(
-                                              color: AppTheme.of(context).primaryText,
-                                            ),
-                                          ),
-                                          backgroundColor: AppTheme.of(context).secondary,
-                                        ),
-                                      );
-                                    }
+                                        backgroundColor: AppTheme.of(context).secondary,
+                                      ),
+                                    );
                                   }
                                 }
                               },

@@ -13,6 +13,17 @@ class ExperienceRepository {
     return result.isNotEmpty ? result.first : null;
   }
 
+  /// Sets moderation_status to 'rejected' (Unpublish) without deleting
+  Future<void> unpublishExperience(int id) async {
+    await CcSharingsTable().update(
+      data: {
+        'moderation_status': 'rejected',
+        'moderated_at': supaSerialize<DateTime>(DateTime.now()),
+      },
+      matchingRows: (rows) => rows.eqOrNull('id', id),
+    );
+  }
+
   /// Deleta um experience e todos os seus comentários associados
   ///
   /// Esta operação é irreversível e remove:
@@ -120,20 +131,29 @@ class ExperienceRepository {
     });
 
     // Escuta mudanças na tabela real (cc_sharings)
-    final subscription = SupaFlow.client.from('cc_sharings').stream(primaryKey: ['id']).eq('group_id', groupId).listen((
-          _,
-        ) async {
-          // Quando há mudança, re-carrega da view
-          final data = await _loadExperiencesFromView(groupId, currentUserId);
-          if (!controller.isClosed) {
-            controller.add(data);
-          }
-        });
+    final subscription = SupaFlow.client
+        .from('cc_sharings')
+        .stream(primaryKey: ['id'])
+        .eq('group_id', groupId)
+        .listen(
+          (_) async {
+            final data = await _loadExperiencesFromView(groupId, currentUserId);
+            if (!controller.isClosed) {
+              controller.add(data);
+            }
+          },
+          // Code 1001 "Going Away" fires when the user navigates off the page.
+          // It is a normal close — swallow it to avoid unhandled-exception noise.
+          onError: (Object error) {
+            debugPrint('ℹ️ cc_sharings realtime closed: $error');
+          },
+          cancelOnError: false,
+        );
 
     // Cleanup quando o stream for cancelado
     controller.onCancel = () {
       subscription.cancel();
-      controller.close();
+      if (!controller.isClosed) controller.close();
     };
 
     return controller.stream.asBroadcastStream();

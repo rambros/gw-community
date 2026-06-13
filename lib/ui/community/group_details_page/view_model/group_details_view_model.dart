@@ -206,6 +206,9 @@ class GroupDetailsViewModel extends ChangeNotifier {
   Set<String> _groupManagerIds = {};
   Set<String> get groupManagerIds => _groupManagerIds;
 
+  bool get currentUserIsGroupManager =>
+      currentUserId != null && _groupManagerIds.contains(currentUserId);
+
   Future<void> _fetchMembers() async {
     _isLoadingMembers = true;
     notifyListeners();
@@ -340,6 +343,11 @@ class GroupDetailsViewModel extends ChangeNotifier {
 
   Future<void> deleteExperience(int id) async {
     await _experienceRepository.deleteExperience(id);
+    notifyListeners();
+  }
+
+  Future<void> unpublishExperience(int id) async {
+    await _experienceRepository.unpublishExperience(id);
     notifyListeners();
   }
 
