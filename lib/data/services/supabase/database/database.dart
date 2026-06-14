@@ -14,6 +14,8 @@ export 'tables/cc_comments.dart';
 export 'tables/cc_country.dart';
 export 'tables/cc_event_registrations.dart';
 export 'tables/cc_events.dart';
+export 'tables/cc_file_resource_groups.dart';
+export 'tables/cc_file_resources.dart';
 export 'tables/cc_group_members.dart';
 export 'tables/cc_groups.dart';
 export 'tables/cc_journey_steps.dart';

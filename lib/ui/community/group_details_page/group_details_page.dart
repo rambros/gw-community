@@ -15,6 +15,7 @@ import 'package:gw_community/ui/community/group_details_page/widgets/group_about
 import 'package:gw_community/ui/community/group_details_page/widgets/group_announcements_tab.dart';
 import 'package:gw_community/ui/community/group_details_page/widgets/group_events_tab.dart';
 import 'package:gw_community/ui/community/group_details_page/widgets/group_experiences_tab.dart';
+import 'package:gw_community/ui/community/group_details_page/widgets/group_resources_tab.dart';
 import 'package:gw_community/ui/community/group_edit_page/group_edit_page.dart';
 import 'package:gw_community/ui/community/group_moderation_page/group_moderation_page.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
@@ -411,19 +412,6 @@ class GroupDetailsPageView extends StatelessWidget {
                                     ),
                                 indicatorColor: AppTheme.of(context).secondary,
                                 labelPadding: const EdgeInsets.symmetric(horizontal: 10.0),
-                                onTap: (index) async {
-                                  if (index == 3) {
-                                    final prevIndex = viewModel.tabController!.previousIndex;
-                                    viewModel.tabController!.index = prevIndex;
-                                    await context.pushNamed(
-                                      'learnListPage',
-                                      queryParameters: {
-                                        'groupId': '${group.id}',
-                                        'customTitle': 'Group Resources',
-                                      },
-                                    );
-                                  }
-                                },
                                 tabs: [
                                   const Tab(key: ValueKey('tab_experiences'), text: 'Experiences'),
                                   const Tab(key: ValueKey('tab_events'), text: 'Events'),
@@ -473,7 +461,7 @@ class GroupDetailsPageView extends StatelessWidget {
                                   GroupExperiencesTab(key: ValueKey('page_experiences')),
                                   GroupEventsTab(key: ValueKey('page_events')),
                                   GroupAnnouncementsTab(key: ValueKey('page_notifications')),
-                                  SizedBox.shrink(key: ValueKey('page_resources')),
+                                  GroupResourcesTab(key: ValueKey('page_resources')),
                                 ],
                               ),
                             ),

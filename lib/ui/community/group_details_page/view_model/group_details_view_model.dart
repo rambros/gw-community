@@ -2,10 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:gw_community/app_state.dart';
+import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:gw_community/data/repositories/announcement_repository.dart';
 import 'package:gw_community/data/repositories/event_repository.dart';
 import 'package:gw_community/data/repositories/experience_moderation_repository.dart';
 import 'package:gw_community/data/repositories/experience_repository.dart';
+import 'package:gw_community/data/repositories/file_resource_repository.dart';
 import 'package:gw_community/data/repositories/group_repository.dart';
 import 'package:gw_community/data/repositories/home_repository.dart';
 import 'package:gw_community/data/repositories/journeys_repository.dart';
@@ -19,6 +21,7 @@ class GroupDetailsViewModel extends ChangeNotifier {
   final AnnouncementRepository _announcementRepository;
   final JourneysRepository _journeysRepository;
   final LearnRepository _learnRepository;
+  final FileResourceRepository _fileResourceRepository = FileResourceRepository();
   CcGroupsRow _group;
   CcGroupsRow get group => _group;
   final String? currentUserId;
@@ -81,6 +84,12 @@ class GroupDetailsViewModel extends ChangeNotifier {
   Future<List<ViewContentRow>> get groupLibrary =>
       _groupLibraryFuture ??= _learnRepository.filterContent(filterByGroupId: group.id);
 
+  // File resources
+  List<CcFileResourcesRow> _groupFileResources = [];
+  List<CcFileResourcesRow> get groupFileResources => _groupFileResources;
+  bool _isLoadingResources = false;
+  bool get isLoadingResources => _isLoadingResources;
+
   StreamSubscription<List<CcViewNotificationsUsersRow>>? _notificationsSubscription;
 
   void init(TickerProvider vsync) {
@@ -102,6 +111,7 @@ class GroupDetailsViewModel extends ChangeNotifier {
       _fetchMembers();
       _loadReadNotificationsAndSubscribe();
       _loadPendingModerationCount();
+      if (_isMember) loadFileResources();
     } catch (e) {
       debugPrint('Error in GroupDetailsViewModel.init: $e');
       // Ensure we stop loading state even on error
@@ -198,7 +208,17 @@ class GroupDetailsViewModel extends ChangeNotifier {
     }
   }
 
+  static const int _resourcesTabIndex = 3;
+
   void _onTabChanged() {
+    // Recarrega recursos toda vez que o usuário entra na aba Resources,
+    // para refletir mudanças de status feitas no admin portal.
+    if (tabController != null &&
+        !tabController!.indexIsChanging &&
+        tabController!.index == _resourcesTabIndex &&
+        _isMember) {
+      loadFileResources();
+    }
     notifyListeners();
   }
 
@@ -331,6 +351,70 @@ class GroupDetailsViewModel extends ChangeNotifier {
       debugPrint('Error loading pending moderation count: $e');
       _pendingModerationCount = 0;
     }
+  }
+
+  // =========================================================================
+  // File Resources
+  // =========================================================================
+
+  Future<void> loadFileResources() async {
+    _isLoadingResources = true;
+    notifyListeners();
+    try {
+      final publishedOnly = !currentUserIsGroupManager &&
+          !FFAppState().loginUser.roles.hasAdminOrGroupManager;
+      _groupFileResources = await _fileResourceRepository.getFileResourcesForGroup(
+        group.id,
+        publishedOnly: publishedOnly,
+      );
+    } catch (e) {
+      debugPrint('GroupDetailsViewModel.loadFileResources: $e');
+    } finally {
+      _isLoadingResources = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> createFileResource({
+    required String title,
+    String? description,
+    required String url,
+    required String type,
+  }) async {
+    if (currentUserId == null) return false;
+    final ok = await _fileResourceRepository.createFileResource(
+      title: title,
+      description: description,
+      url: url,
+      type: type,
+      groupId: group.id,
+      createdBy: currentUserId!,
+    );
+    if (ok) await loadFileResources();
+    return ok;
+  }
+
+  Future<bool> deleteFileResource(int resourceId) async {
+    final ok = await _fileResourceRepository.deleteFileResource(resourceId, group.id);
+    if (ok) await loadFileResources();
+    return ok;
+  }
+
+  Future<bool> toggleFileResourceStatus(int resourceId, String currentStatus) async {
+    final newStatus = currentStatus == 'published' ? 'draft' : 'published';
+    final ok = await _fileResourceRepository.updateFileResource(resourceId, status: newStatus);
+    if (ok) await loadFileResources();
+    return ok;
+  }
+
+  Future<bool> unlinkFileResource(int resourceId, int portalItemId) async {
+    final ok = await _fileResourceRepository.unlinkPortalItemFromGroup(
+      resourceId: resourceId,
+      groupId: group.id,
+      portalItemId: portalItemId,
+    );
+    if (ok) await loadFileResources();
+    return ok;
   }
 
   @override

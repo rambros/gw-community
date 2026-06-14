@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:gw_community/data/models/enums/enums.dart';
+import 'package:provider/provider.dart';
 import 'package:gw_community/data/repositories/favorites_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/widgets/favorite_button.dart';
 import 'package:gw_community/ui/learn/content_view/content_view.dart';
 import 'package:gw_community/ui/learn/themes/learn_theme_extension.dart';
+import 'package:gw_community/ui/learn/widgets/group_link_sheet.dart';
 import 'package:gw_community/utils/context_extensions.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
@@ -54,6 +57,11 @@ class _ContentCardState extends State<ContentCard> {
 
   @override
   Widget build(BuildContext context) {
+    final appState = context.watch<FFAppState>();
+    final canLink = context.currentUserIdOrEmpty.isNotEmpty &&
+        appState.loginUser.roles.hasAdminOrGroupManager &&
+        widget.contentRow.contentId != null;
+
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(16.0, 6.0, 16.0, 6.0),
       child: GestureDetector(
@@ -82,16 +90,28 @@ class _ContentCardState extends State<ContentCard> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Título
-              Text(
-                valueOrDefault<String>(widget.contentRow.title, 'Title'),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: AppTheme.of(context).learn.contentTitle.override(
-                      color: AppTheme.of(context).secondary,
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w600,
+              // Título + menu de ações (admin/manager)
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Text(
+                      valueOrDefault<String>(widget.contentRow.title, 'Title'),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTheme.of(context).learn.contentTitle.override(
+                            color: AppTheme.of(context).secondary,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w600,
+                          ),
                     ),
+                  ),
+                  if (canLink)
+                    _ActionsMenu(
+                      onLinkToGroups: () =>
+                          showGroupLinkSheet(context, widget.contentRow),
+                    ),
+                ],
               ),
               const SizedBox(height: 4.0),
               // Autor
@@ -107,7 +127,8 @@ class _ContentCardState extends State<ContentCard> {
               const SizedBox(height: 6.0),
               // Descrição
               Text(
-                valueOrDefault<String>(widget.contentRow.description, '').maybeHandleOverflow(
+                valueOrDefault<String>(widget.contentRow.description, '')
+                    .maybeHandleOverflow(
                   maxChars: 120,
                   replacement: '…',
                 ),
@@ -123,7 +144,6 @@ class _ContentCardState extends State<ContentCard> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Tags de tipo de mídia
                   Expanded(
                     child: Wrap(
                       spacing: 6.0,
@@ -131,10 +151,11 @@ class _ContentCardState extends State<ContentCard> {
                       children: _buildMediaTags(context),
                     ),
                   ),
-                  // Favorito
-                  if (context.currentUserIdOrEmpty.isNotEmpty && widget.contentRow.contentId != null)
+                  if (context.currentUserIdOrEmpty.isNotEmpty &&
+                      widget.contentRow.contentId != null)
                     FavoriteButton(
-                      key: ValueKey('favorite_${widget.contentRow.contentId}_$_favoriteVersion'),
+                      key: ValueKey(
+                          'favorite_${widget.contentRow.contentId}_$_favoriteVersion'),
                       contentType: FavoritesRepository.typeRecording,
                       contentId: widget.contentRow.contentId!,
                       authUserId: context.currentUserIdOrEmpty,
@@ -152,7 +173,6 @@ class _ContentCardState extends State<ContentCard> {
   List<Widget> _buildMediaTags(BuildContext context) {
     final tags = <Widget>[];
 
-    // Tag baseada no midiaType
     if (widget.contentRow.midiaType == 'audio') {
       tags.add(_MediaTypeTag(label: 'Audio', context: context));
     } else if (widget.contentRow.midiaType == 'video') {
@@ -161,12 +181,43 @@ class _ContentCardState extends State<ContentCard> {
       tags.add(_MediaTypeTag(label: 'Text', context: context));
     }
 
-    // Tag adicional se houver transcript
-    if (widget.contentRow.transcript != null && widget.contentRow.transcript!.isNotEmpty) {
+    if (widget.contentRow.transcript != null &&
+        widget.contentRow.transcript!.isNotEmpty) {
       tags.add(_MediaTypeTag(label: 'Transcript', context: context));
     }
 
     return tags;
+  }
+}
+
+class _ActionsMenu extends StatelessWidget {
+  const _ActionsMenu({required this.onLinkToGroups});
+
+  final VoidCallback onLinkToGroups;
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton<String>(
+      icon: Icon(
+        Icons.more_vert,
+        size: 18,
+        color: AppTheme.of(context).secondaryText,
+      ),
+      padding: EdgeInsets.zero,
+      onSelected: (value) {
+        if (value == 'link') onLinkToGroups();
+      },
+      itemBuilder: (_) => const [
+        PopupMenuItem(
+          value: 'link',
+          child: Row(children: [
+            Icon(Icons.link, size: 18),
+            SizedBox(width: 10),
+            Text('Link to Groups'),
+          ]),
+        ),
+      ],
+    );
   }
 }
 

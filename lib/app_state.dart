@@ -43,6 +43,7 @@ class FFAppState extends ChangeNotifier {
   // Per-group module visibility flags (default: true = visible)
   bool enableLibraryModule = true;
   bool enableJourneyModule = true;
+  bool enableCommunityModule = true;
 
   /// Loads module visibility flags from the current user's groups.
   /// Queries the module flag columns directly to bypass the get_my_groups RPC which
@@ -57,9 +58,10 @@ class FFAppState extends ChangeNotifier {
       }
       debugPrint('🔧 loadGroupModuleConfig: loading for uid=$uid');
       final flags = await homeRepo.getGroupModuleFlags(uid);
-      debugPrint('🔧 loadGroupModuleConfig: library=${flags.enableLibrary} journey=${flags.enableJourney}');
+      debugPrint('🔧 loadGroupModuleConfig: library=${flags.enableLibrary} journey=${flags.enableJourney} community=${flags.enableCommunity}');
       enableLibraryModule = flags.enableLibrary;
       enableJourneyModule = flags.enableJourney;
+      enableCommunityModule = flags.enableCommunity;
       notifyListeners();
     } catch (e) {
       debugPrint('🔧 loadGroupModuleConfig ERROR: $e — keeping defaults (true)');

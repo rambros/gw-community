@@ -83,8 +83,8 @@ class _NavBarPageState extends State<NavBarPage> {
       }
     }
 
-    // Community tab - only include if enabled globally
-    if (config.enableCommunityModule) {
+    // Community tab - enabled globally AND per-group
+    if (config.enableCommunityModule && appState.enableCommunityModule) {
       tabs['communityPage'] = const CommunityPage();
     }
 
@@ -126,8 +126,8 @@ class _NavBarPageState extends State<NavBarPage> {
       );
     }
 
-    // Add Community tab if enabled globally
-    if (config.enableCommunityModule) {
+    // Add Community tab if enabled globally AND per-group
+    if (config.enableCommunityModule && appState.enableCommunityModule) {
       items.add(
         const BottomNavigationBarItem(
           icon: Icon(Icons.public, size: 28.0),
