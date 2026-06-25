@@ -7,6 +7,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
+import 'package:provider/provider.dart';
 import 'package:gw_community/config/audio/audio_service.dart';
 import 'package:gw_community/config/firebase/firebase_config.dart';
 import 'package:gw_community/data/repositories/announcement_repository.dart';
@@ -28,9 +29,7 @@ import 'package:gw_community/data/services/auth/auth_service.dart';
 import 'package:gw_community/data/services/auth/supabase_auth_service.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/ui/auth/change_password_page/view_model/change_password_view_model.dart';
-import 'package:gw_community/ui/auth/create_account_page/view_model/create_account_view_model.dart';
 import 'package:gw_community/ui/auth/forgot_password_page/view_model/forgot_password_view_model.dart';
-import 'package:gw_community/ui/auth/invite_accept_page/pending_invite.dart';
 import 'package:gw_community/ui/auth/login_page/view_model/login_view_model.dart';
 import 'package:gw_community/ui/auth/on_boarding_page/view_model/on_boarding_view_model.dart';
 import 'package:gw_community/ui/community/experience_view_page/view_model/experience_view_view_model.dart';
@@ -50,7 +49,6 @@ import 'package:gw_community/ui/profile/user_profile_page/view_model/user_profil
 import 'package:gw_community/ui/utility/unsplash_page/view_model/unsplash_view_model.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:gw_community/utils/internationalization.dart';
-import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -100,9 +98,6 @@ void main() async {
         // ========== VIEW MODELS ==========
         ChangeNotifierProvider(create: (_) => LearnListViewModel()),
         ChangeNotifierProvider(create: (context) => LoginViewModel(authRepository: context.read<AuthRepository>())),
-        ChangeNotifierProvider(
-          create: (context) => CreateAccountViewModel(authRepository: context.read<AuthRepository>()),
-        ),
         ChangeNotifierProvider(
           create: (context) => ForgotPasswordViewModel(authRepository: context.read<AuthRepository>()),
         ),
@@ -285,55 +280,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       if (errorCode != null) {
         _showMagicLinkError(errorCode);
       }
-      return;
-    }
-
-    final isCustomScheme = uri.scheme == 'gw' && uri.host == 'invite';
-    final isUniversalLink = (uri.scheme == 'https' || uri.scheme == 'http') &&
-        uri.host == 'gw-invite.web.app';
-    if (!isCustomScheme && !isUniversalLink) return;
-
-    final token = uri.queryParameters['token'];
-    debugPrint('🔗 Token: $token');
-    if (token == null || token.isEmpty) return;
-
-    // Store the token — single source of truth for all navigation layers:
-    //   1. Direct ctx.go()       ← primary (works when context is ready)
-    //   2. Router redirect        ← backup (fires on any AppStateNotifier change)
-    //   3. SplashViewModel check  ← cold-start backup (after 4s delay)
-    //   4. LoginPage check        ← last resort
-    // Token is cleared ONLY in InviteAcceptPage.initState().
-    PendingInvite.token = token;
-
-    // Layer 1: direct navigation — most reliable when context is ready.
-    // Retries until context is available (handles cold-start timing).
-    _directNavigateToInvite(token);
-
-    // Layer 2: trigger router redirect — fires when AppStateNotifier notifies.
-    // On cold start loading=true so redirect ignores it now, but re-fires
-    // when SplashViewModel calls stopShowingSplashImage() at the 4s mark.
-    AppStateNotifier.instance.notifyPendingInvite();
-  }
-
-  /// Navigates directly to /invite. Retries every 300ms (up to 3s) if the
-  /// navigator context is not yet available (cold-start timing window).
-  /// The token stays in PendingInvite so SplashViewModel / LoginPage act as
-  /// further backstops even if all retries here are exhausted.
-  void _directNavigateToInvite(String token, [int attempt = 0]) {
-    final ctx = appNavigatorKey.currentContext;
-    if (ctx != null) {
-      debugPrint('🔗 Direct nav → /invite (attempt $attempt)');
-      try {
-        ctx.go('/invite?token=$token');
-      } catch (e) {
-        debugPrint('🔗 Direct nav error: $e');
-      }
-    } else if (attempt < 10) {
-      Future.delayed(const Duration(milliseconds: 300), () {
-        _directNavigateToInvite(token, attempt + 1);
-      });
-    } else {
-      debugPrint('🔗 Direct nav exhausted — relying on SplashViewModel/redirect');
     }
   }
 

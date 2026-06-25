@@ -37,7 +37,7 @@ class ForgotPasswordViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await _repository.resetPassword(email);
+      await _repository.resetPassword(email, redirectTo: 'gw://login-callback');
     } catch (e) {
       rethrow;
     } finally {

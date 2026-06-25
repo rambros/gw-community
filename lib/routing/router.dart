@@ -5,8 +5,6 @@ import 'package:gw_community/data/models/structs/index.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/domain/models/app_auth_user.dart';
 import 'package:gw_community/index.dart';
-import 'package:gw_community/ui/auth/invite_accept_page/invite_accept_page.dart';
-import 'package:gw_community/ui/auth/invite_accept_page/pending_invite.dart';
 import 'package:gw_community/ui/community/community_guidelines_edit_page/community_guidelines_edit_page.dart';
 import 'package:gw_community/ui/community/community_guidelines_page/community_guidelines_page.dart';
 import 'package:gw_community/ui/community/group_details_page/member_management_page/member_management_page.dart';
@@ -56,6 +54,8 @@ class AppStateNotifier extends ChangeNotifier {
   /// to perform subsequent actions (such as navigation) afterwards.
   void updateNotifyOnAuthChange(bool notify) => notifyOnAuthChange = notify;
 
+  bool pendingPasswordRecovery = false;
+
   void update(AppAuthUser newUser) {
     final shouldUpdate = user?.uid == null || newUser.uid == null || user?.uid != newUser.uid;
     initialUser ??= newUser;
@@ -75,9 +75,6 @@ class AppStateNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Called when a deep-link invite arrives while the app is already running.
-  /// Triggers the router redirect so it can route to the invite page immediately.
-  void notifyPendingInvite() => notifyListeners();
 }
 
 GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
@@ -91,24 +88,13 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           return null;
         }
 
-        // Highest priority: a deep-link invite is waiting.
-        // Route to the invite page regardless of auth state.
-        // The token is cleared by InviteAcceptPage.initState() once the page loads.
-        final pendingToken = PendingInvite.token;
-        if (pendingToken != null && state.uri.path != InviteAcceptPage.routePath) {
-          return '${InviteAcceptPage.routePath}?token=$pendingToken';
-        }
-
         final loggedIn = appStateNotifier.loggedIn;
         final publicRoutes = [
           '/',
           SplashPage.routePath,
           LoginPage.routePath,
-          CreateAccountPage.routePath,
           ForgotPasswordPage.routePath,
-          InviteAcceptPage.routePath,
         ];
-        // Check if current path matches any public route path or name
         final isPublicRoute = publicRoutes.contains(state.uri.path);
 
         if (!loggedIn && !isPublicRoute) {
@@ -116,7 +102,12 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           return LoginPage.routePath;
         }
 
-        if (loggedIn && isPublicRoute && state.uri.path != InviteAcceptPage.routePath) {
+        if (loggedIn && appStateNotifier.pendingPasswordRecovery) {
+          debugPrint('ROUTER: Password recovery in progress — redirecting to ChangePasswordPage.');
+          return ChangePasswordPage.routePath;
+        }
+
+        if (loggedIn && isPublicRoute) {
           debugPrint('ROUTER: User logged in and on public route ${state.uri.path}. Redirecting to Home.');
           return HomePage.routePath;
         }
@@ -138,11 +129,6 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
             name: SplashPage.routeName, path: SplashPage.routePath, builder: (context, params) => const SplashPage()),
         FFRoute(name: LoginPage.routeName, path: LoginPage.routePath, builder: (context, params) => const LoginPage()),
         FFRoute(
-          name: CreateAccountPage.routeName,
-          path: CreateAccountPage.routePath,
-          builder: (context, params) => const CreateAccountPage(),
-        ),
-        FFRoute(
           name: UserCreateProfilePage.routeName,
           path: UserCreateProfilePage.routePath,
           builder: (context, params) => const UserCreateProfilePage(),
@@ -151,11 +137,6 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: ForgotPasswordPage.routeName,
           path: ForgotPasswordPage.routePath,
           builder: (context, params) => const ForgotPasswordPage(),
-        ),
-        FFRoute(
-          name: InviteAcceptPage.routeName,
-          path: InviteAcceptPage.routePath,
-          builder: (context, params) => InviteAcceptPage(token: params.getParam('token', ParamType.String)),
         ),
         FFRoute(
           name: HomePage.routeName,

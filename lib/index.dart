@@ -1,6 +1,5 @@
 // Export pages
 export 'package:gw_community/ui/auth/change_password_page/change_password_page.dart' show ChangePasswordPage;
-export 'package:gw_community/ui/auth/create_account_page/create_account_page.dart' show CreateAccountPage;
 export 'package:gw_community/ui/auth/forgot_password_page/forgot_password_page.dart' show ForgotPasswordPage;
 export 'package:gw_community/ui/auth/login_page/login_page.dart' show LoginPage;
 export 'package:gw_community/ui/auth/on_boarding_page/on_boarding_page.dart' show OnBoardingPage;

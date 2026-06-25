@@ -2,9 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:gw_community/data/services/auth/auth_service.dart';
-import 'package:gw_community/data/services/auth/providers/apple_auth_provider.dart';
 import 'package:gw_community/data/services/auth/providers/email_auth_provider.dart';
-import 'package:gw_community/data/services/auth/providers/google_auth_provider.dart';
 import 'package:gw_community/data/services/auth/supabase_auth_user_provider.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/domain/models/app_auth_user.dart';
@@ -72,28 +70,6 @@ class SupabaseAuthService implements AuthService {
       context,
       () => emailSignInFunc(email, password),
     );
-  }
-
-  @override
-  Future<UserEntity?> createAccountWithEmail(
-    BuildContext context,
-    String email,
-    String password,
-  ) async {
-    return _signInOrCreateAccount(
-      context,
-      () => emailCreateAccountFunc(email, password),
-    );
-  }
-
-  @override
-  Future<UserEntity?> signInWithGoogle(BuildContext context) async {
-    return _signInOrCreateAccount(context, googleSignInFunc);
-  }
-
-  @override
-  Future<UserEntity?> signInWithApple(BuildContext context) async {
-    return _signInOrCreateAccount(context, appleSignInFunc);
   }
 
   @override

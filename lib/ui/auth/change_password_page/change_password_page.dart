@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/routing/router.dart';
 import 'package:gw_community/ui/auth/change_password_page/view_model/change_password_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
+import 'package:gw_community/ui/home/home_page/home_page.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
 
@@ -45,7 +47,11 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
             automaticallyImplyLeading: false,
             leading: InkWell(
               onTap: () async {
-                context.pop();
+                if (context.canPop()) {
+                  context.pop();
+                } else {
+                  context.go(HomePage.routePath);
+                }
               },
               child: const Icon(
                 Icons.arrow_back_rounded,
@@ -282,9 +288,11 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                                 if (_formKey.currentState!.validate()) {
                                   try {
                                     await viewModel.updatePassword(
+                                      context,
                                       _passwordController.text,
                                     );
                                     if (context.mounted) {
+                                      AppStateNotifier.instance.pendingPasswordRecovery = false;
                                       ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
                                           content: Text(
@@ -296,7 +304,11 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                                           backgroundColor: AppTheme.of(context).secondary,
                                         ),
                                       );
-                                      context.pop();
+                                      if (context.canPop()) {
+                                        context.pop();
+                                      } else {
+                                        context.go(HomePage.routePath);
+                                      }
                                     }
                                   } catch (e) {
                                     if (context.mounted) {

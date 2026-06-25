@@ -12,7 +12,6 @@ import 'package:gw_community/ui/home/home_page/home_page.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
-import 'package:rive/rive.dart' hide LinearGradient;
 import 'package:smooth_page_indicator/smooth_page_indicator.dart' as smooth_page_indicator;
 
 class OnBoardingPage extends StatefulWidget {
@@ -338,9 +337,9 @@ class _OnBoardingPageState extends State<OnBoardingPage> with TickerProviderStat
           },
           child: Scaffold(
             key: scaffoldKey,
-            backgroundColor: AppTheme.of(context).alternate,
+            backgroundColor: Colors.white,
             appBar: AppBar(
-              backgroundColor: AppTheme.of(context).alternate,
+              backgroundColor: Colors.white,
               iconTheme: IconThemeData(color: AppTheme.of(context).secondary),
               automaticallyImplyLeading: true,
               actions: const [],
@@ -600,7 +599,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> with TickerProviderStat
                               width: 100.0,
                               height: 100.0,
                               decoration: BoxDecoration(
-                                color: AppTheme.of(context).alternate,
+                                color: Colors.white,
                                 image: const DecorationImage(
                                   fit: BoxFit.cover,
                                   image: NetworkImage(
@@ -618,7 +617,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> with TickerProviderStat
                                     width: 100.0,
                                     height: 100.0,
                                     decoration: BoxDecoration(
-                                      color: AppTheme.of(context).alternate,
+                                      color: Colors.white,
                                     ),
                                     child: Padding(
                                       padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 100.0),
@@ -636,15 +635,9 @@ class _OnBoardingPageState extends State<OnBoardingPage> with TickerProviderStat
                                                 decoration: const BoxDecoration(
                                                   shape: BoxShape.circle,
                                                 ),
-                                                child: SizedBox(
+                                                child: const SizedBox(
                                                   width: 150.0,
                                                   height: 130.0,
-                                                  child: RiveAnimation.asset(
-                                                    'assets/rive_animations/animation_GW_01.riv',
-                                                    artboard: 'GoodWishes_RGB_OUT_2.svg',
-                                                    fit: BoxFit.contain,
-                                                    controllers: viewModel.riveAnimationControllers,
-                                                  ),
                                                 ),
                                               ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation2']!),
                                             ),

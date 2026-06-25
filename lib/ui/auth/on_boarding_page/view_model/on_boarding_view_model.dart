@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gw_community/app_state.dart';
-import 'package:rive/rive.dart';
 
 class OnBoardingViewModel extends ChangeNotifier {
   final FFAppState _appState;
@@ -8,8 +7,6 @@ class OnBoardingViewModel extends ChangeNotifier {
   OnBoardingViewModel({required FFAppState appState}) : _appState = appState;
 
   final PageController pageController = PageController(initialPage: 0);
-
-  // We can expose the current page index if needed, but PageController handles it mostly.
 
   void nextPage() {
     pageController.nextPage(
@@ -26,9 +23,6 @@ class OnBoardingViewModel extends ChangeNotifier {
     );
   }
 
-  // Rive controllers
-  final List<RiveAnimationController> riveAnimationControllers = [];
-
   Future<void> completeOnboarding(BuildContext context) async {
     _appState.onboardingDone = true;
     notifyListeners();
@@ -37,9 +31,6 @@ class OnBoardingViewModel extends ChangeNotifier {
   @override
   void dispose() {
     pageController.dispose();
-    for (var controller in riveAnimationControllers) {
-      controller.dispose();
-    }
     super.dispose();
   }
 }

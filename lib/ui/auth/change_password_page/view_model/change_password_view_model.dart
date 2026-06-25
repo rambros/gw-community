@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gw_community/data/repositories/auth_repository.dart';
+import 'package:gw_community/data/repositories/auth_repository_impl.dart';
 
 class ChangePasswordViewModel extends ChangeNotifier {
-  final AuthRepository _repository;
+  final AuthRepositoryImpl _repository;
 
-  ChangePasswordViewModel({required AuthRepository authRepository}) : _repository = authRepository;
+  ChangePasswordViewModel({required AuthRepository authRepository}) : _repository = authRepository as AuthRepositoryImpl;
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
@@ -25,12 +26,12 @@ class ChangePasswordViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updatePassword(String newPassword) async {
+  Future<void> updatePassword(BuildContext context, String newPassword) async {
     _isLoading = true;
     notifyListeners();
 
     try {
-      await _repository.updatePassword(newPassword);
+      await _repository.updatePasswordContext(context, newPassword);
     } catch (e) {
       rethrow;
     } finally {

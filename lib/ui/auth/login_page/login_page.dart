@@ -1,12 +1,6 @@
-import 'package:app_links/app_links.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:gw_community/ui/auth/invite_accept_page/pending_invite.dart';
 import 'package:gw_community/ui/auth/login_page/view_model/login_view_model.dart';
-import 'package:gw_community/ui/auth/widgets/login_apple_button.dart';
-import 'package:gw_community/ui/auth/widgets/login_google_button.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
 import 'package:gw_community/ui/home/home_page/home_page.dart';
@@ -33,34 +27,6 @@ class _LoginPageState extends State<LoginPage> {
   final _magicEmailFocusNode = FocusNode();
   final _formKey = GlobalKey<FormState>();
   final _magicFormKey = GlobalKey<FormState>();
-
-  @override
-  void initState() {
-    super.initState();
-    // Fallback: if a deep-link invite arrived but direct navigation failed,
-    // redirect now that LoginPage is visible. Also checks getInitialLink()
-    // as a last resort for cold-start URLs not yet processed by main.dart.
-    SchedulerBinding.instance.addPostFrameCallback((_) async {
-      if (!mounted) return;
-      final token = PendingInvite.token;
-      if (token != null) {
-        PendingInvite.token = null;
-        context.go('/invite?token=$token');
-        return;
-      }
-      try {
-        final uri = await AppLinks().getInitialLink();
-        if (!mounted) return;
-        if (uri != null && uri.scheme == 'gw' && uri.host == 'invite') {
-          final linkToken = uri.queryParameters['token'];
-          if (linkToken != null && linkToken.isNotEmpty) {
-            debugPrint('🔗 [login-last-resort] found invite link: $uri');
-            context.go('/invite?token=$linkToken');
-          }
-        }
-      } catch (_) {}
-    });
-  }
 
   @override
   void dispose() {
@@ -452,7 +418,9 @@ class _LoginPageState extends State<LoginPage> {
                 if (_formKey.currentState!.validate()) {
                   try {
                     final user = await viewModel.signIn(context, _emailController.text, _passwordController.text);
-                    if (user != null && context.mounted) context.pushNamed(HomePage.routeName);
+                    if (user != null && context.mounted) {
+                      context.pushNamed(HomePage.routeName);
+                    }
                   } catch (e) {
                     if (context.mounted) _showAuthError(e);
                   }
@@ -497,44 +465,6 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                 ),
               ),
-            ),
-          ),
-          // Google / Apple — code preserved, visually hidden
-          Visibility(
-            visible: false,
-            maintainState: false,
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(4.0, 0.0, 4.0, 12.0),
-                  child: LoginGoogleButton(
-                    isLoading: viewModel.isGoogleLoading,
-                    onPressed: () async {
-                      try {
-                        final user = await viewModel.signInWithGoogle(context);
-                        if (user != null && context.mounted) context.pushNamed(HomePage.routeName);
-                      } catch (e) {
-                        if (context.mounted) _showAuthError(e);
-                      }
-                    },
-                  ),
-                ),
-                if (!kIsWeb && (defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.macOS))
-                  Padding(
-                    padding: const EdgeInsetsDirectional.fromSTEB(4.0, 0.0, 4.0, 24.0),
-                    child: LoginAppleButton(
-                      isLoading: viewModel.isAppleLoading,
-                      onPressed: () async {
-                        try {
-                          final user = await viewModel.signInWithApple(context);
-                          if (user != null && context.mounted) context.pushNamed(HomePage.routeName);
-                        } catch (e) {
-                          if (context.mounted) _showAuthError(e);
-                        }
-                      },
-                    ),
-                  ),
-              ],
             ),
           ),
           const SizedBox(height: 16.0),
