@@ -183,6 +183,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
               padding: const EdgeInsetsDirectional.fromSTEB(0.0, 24.0, 0.0, 0.0),
               child: Text(
                 'Welcome to GoodWishes',
+                textAlign: TextAlign.center,
                 style: AppTheme.of(context).displaySmall.override(
                       font: GoogleFonts.lexendDeca(
                         fontWeight: FontWeight.bold,
@@ -195,7 +196,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
             Padding(
               padding: const EdgeInsetsDirectional.fromSTEB(0.0, 12.0, 0.0, 120.0),
               child: Text(
-                'Community of well wishers \nfor a new world',
+                'A community of well wishers\nfor a new world',
                 textAlign: TextAlign.center,
                 style: AppTheme.of(context).headlineSmall.override(
                       font: GoogleFonts.lexendDeca(

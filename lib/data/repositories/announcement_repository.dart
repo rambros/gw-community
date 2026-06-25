@@ -16,6 +16,7 @@ class AnnouncementRepository {
     required String userId,
     int? groupId,
     String visibility = 'group_only',
+    String? recipientUserId,
   }) async {
     await CcSharingsTable().insert({
       'title': title,
@@ -26,6 +27,7 @@ class AnnouncementRepository {
       'updated_at': supaSerialize<DateTime>(getCurrentTimestamp),
       'visibility': visibility,
       'type': ExperienceType.notification.name,
+      if (recipientUserId != null) 'recipient_user_id': recipientUserId,
     });
   }
 
@@ -107,19 +109,44 @@ class AnnouncementRepository {
     }
   }
 
-  /// Busca os IDs de anúncios lidas pelo usuário atual no grupo
+  /// Busca a data de entrada do usuário no grupo.
+  /// Retorna null se o usuário não for membro.
+  Future<DateTime?> _getMemberJoinDate(int groupId, String userId) async {
+    try {
+      final rows = await CcGroupMembersTable().queryRows(
+        queryFn: (q) => q.eq('group_id', groupId).eq('user_id', userId),
+      );
+      return rows.isNotEmpty ? rows.first.createdAt : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// Busca os IDs de anúncios lidos pelo usuário no grupo.
+  /// Apenas anúncios publicados APÓS a entrada do usuário no grupo são considerados.
+  /// Mensagens privadas só são consideradas se forem para o usuário ou enviadas por ele.
   Future<Set<int>> getReadAnnouncementIds(int groupId, String userId) async {
     try {
-      final notifications = await CcViewNotificationsUsersTable().queryRows(queryFn: (q) => q.eq('group_id', groupId));
+      final joinDate = await _getMemberJoinDate(groupId, userId);
 
-      final notificationIds = notifications.map((n) => n.id!).toList();
+      final notifications = await CcViewNotificationsUsersTable().queryRows(
+        queryFn: (q) => q.eq('group_id', groupId),
+      );
 
-      if (notificationIds.isEmpty) {
-        return {};
-      }
+      final relevantIds = notifications
+          .where((n) =>
+              n.id != null &&
+              // Só mensagens após a entrada do membro
+              (joinDate == null || (n.updatedAt != null && n.updatedAt!.isAfter(joinDate))) &&
+              // Broadcast ou privado endereçado a / enviado por este usuário
+              (n.recipientUserId == null || n.recipientUserId == userId || n.userId == userId))
+          .map((n) => n.id!)
+          .toList();
+
+      if (relevantIds.isEmpty) return {};
 
       final reads = await CcSharingReadsTable().queryRows(
-        queryFn: (q) => q.eq('user_id', userId).inFilter('sharing_id', notificationIds),
+        queryFn: (q) => q.eq('user_id', userId).inFilter('sharing_id', relevantIds),
       );
 
       return reads.map((r) => r.experienceId).toSet();
@@ -129,26 +156,97 @@ class AnnouncementRepository {
     }
   }
 
-  /// Conta quantos anúncios não lidos existem no grupo para o usuário
+  /// Conta quantos anúncios não lidos existem no grupo para o usuário.
+  /// Apenas mensagens publicadas APÓS a entrada do usuário no grupo contam.
+  /// Mensagens privadas só contam se forem para o usuário ou enviadas por ele.
   Future<int> getUnreadAnnouncementCount(int groupId, String userId) async {
     try {
-      final notifications = await CcViewNotificationsUsersTable().queryRows(queryFn: (q) => q.eq('group_id', groupId));
+      final joinDate = await _getMemberJoinDate(groupId, userId);
 
-      final notificationIds = notifications.map((n) => n.id!).toList();
+      final notifications = await CcViewNotificationsUsersTable().queryRows(
+        queryFn: (q) => q.eq('group_id', groupId),
+      );
 
-      if (notificationIds.isEmpty) {
-        return 0;
-      }
+      final relevant = notifications.where((n) =>
+          n.id != null &&
+          (joinDate == null || (n.updatedAt != null && n.updatedAt!.isAfter(joinDate))) &&
+          (n.recipientUserId == null || n.recipientUserId == userId || n.userId == userId));
+
+      final relevantIds = relevant.map((n) => n.id!).toList();
+      if (relevantIds.isEmpty) return 0;
 
       final reads = await CcSharingReadsTable().queryRows(
-        queryFn: (q) => q.eq('user_id', userId).inFilter('sharing_id', notificationIds),
+        queryFn: (q) => q.eq('user_id', userId).inFilter('sharing_id', relevantIds),
       );
 
       final readIds = reads.map((r) => r.experienceId).toSet();
-      return notificationIds.where((id) => !readIds.contains(id)).length;
+      return relevantIds.where((id) => !readIds.contains(id)).length;
     } catch (e) {
-      debugPrint('Error fetching unread notification count: $e');
+      debugPrint('Error fetching unread announcement count: $e');
       return 0;
+    }
+  }
+
+  /// Total de anúncios não lidos em todos os grupos do usuário (para o badge da notification bell).
+  /// Só conta mensagens publicadas APÓS a entrada do usuário em cada grupo.
+  Future<int> getTotalUnreadForUser(String userId) async {
+    try {
+      final memberships = await CcGroupMembersTable().queryRows(
+        queryFn: (q) => q.eq('user_id', userId),
+      );
+      if (memberships.isEmpty) return 0;
+
+      int total = 0;
+
+      for (final membership in memberships) {
+        final groupId = membership.groupId;
+        if (groupId == null) continue;
+
+        final joinDate = membership.createdAt;
+
+        final notifications = await CcViewNotificationsUsersTable().queryRows(
+          queryFn: (q) => q.eq('group_id', groupId),
+        );
+
+        // Só mensagens após a entrada do membro, broadcast ou privadas para/por este usuário
+        final relevant = notifications.where((n) =>
+            n.id != null &&
+            n.updatedAt != null &&
+            n.updatedAt!.isAfter(joinDate) &&
+            (n.recipientUserId == null || n.recipientUserId == userId || n.userId == userId));
+
+        final relevantIds = relevant.map((n) => n.id!).toList();
+        if (relevantIds.isEmpty) continue;
+
+        final reads = await CcSharingReadsTable().queryRows(
+          queryFn: (q) => q.eq('user_id', userId).inFilter('sharing_id', relevantIds),
+        );
+        final readIds = reads.map((r) => r.experienceId).toSet();
+
+        total += relevantIds.where((id) => !readIds.contains(id)).length;
+      }
+
+      return total;
+    } catch (e) {
+      debugPrint('Error fetching total unread announcements: $e');
+      return 0;
+    }
+  }
+
+  /// Returns the [createdAt] of the most recent post (sharing) in the group,
+  /// or null if no posts exist yet.
+  Future<DateTime?> getLatestPostDate(int groupId) async {
+    try {
+      final rows = await CcSharingsTable().queryRows(
+        queryFn: (q) => q
+            .eq('group_id', groupId)
+            .order('created_at', ascending: false)
+            .limit(1),
+      );
+      return rows.isNotEmpty ? rows.first.createdAt : null;
+    } catch (e) {
+      debugPrint('Error fetching latest post date: $e');
+      return null;
     }
   }
 

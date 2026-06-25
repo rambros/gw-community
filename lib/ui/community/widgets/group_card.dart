@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/models/enums/enums.dart';
+import 'package:gw_community/data/repositories/announcement_repository.dart';
 import 'package:gw_community/data/repositories/group_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/ui/community/group_edit_page/group_edit_page.dart';
@@ -11,7 +12,7 @@ import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
 
-class GroupCard extends StatelessWidget {
+class GroupCard extends StatefulWidget {
   const GroupCard({
     super.key,
     required this.groupRow,
@@ -22,10 +23,52 @@ class GroupCard extends StatelessWidget {
   final VoidCallback? onUpdate;
 
   @override
+  State<GroupCard> createState() => _GroupCardState();
+}
+
+class _GroupCardState extends State<GroupCard> {
+  final _announcementRepo = AnnouncementRepository();
+  int _unreadCount = 0;
+  DateTime? _lastPostDate;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUnread();
+    _loadLastPostDate();
+  }
+
+  Future<void> _loadUnread() async {
+    final userId = SupaFlow.client.auth.currentUser?.id;
+    if (userId == null) return;
+    final count = await _announcementRepo.getUnreadAnnouncementCount(
+      widget.groupRow.id,
+      userId,
+    );
+    if (mounted) setState(() => _unreadCount = count);
+  }
+
+  Future<void> _loadLastPostDate() async {
+    final date = await _announcementRepo.getLatestPostDate(widget.groupRow.id);
+    if (mounted) setState(() => _lastPostDate = date);
+  }
+
+  String _relativeLastPost(BuildContext context) {
+    if (_lastPostDate == null) return 'No posts yet';
+    final now = DateTime.now();
+    final diff = now.difference(_lastPostDate!);
+    if (diff.inMinutes < 1) return 'Last post just now';
+    if (diff.inMinutes < 60) return 'Last post ${diff.inMinutes} min ago';
+    if (diff.inHours < 24) return 'Last post ${diff.inHours} h ago';
+    if (diff.inDays < 7) return 'Last post ${diff.inDays} ${diff.inDays == 1 ? 'day' : 'days'} ago';
+    final locale = FFLocalizations.of(context).languageCode;
+    return 'Last post ${dateTimeFormat('MMMd', _lastPostDate, locale: locale)}';
+  }
+
+  @override
   Widget build(BuildContext context) {
     final groupRepository = context.read<GroupRepository>();
-    // We can access FFAppState if needed, but try to minimize dependency
-    // final appState = FFAppState();
+    final groupRow = widget.groupRow;
 
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 10.0),
@@ -55,17 +98,45 @@ class GroupCard extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8.0),
-                    child: CachedNetworkImage(
-                      fadeInDuration: const Duration(milliseconds: 500),
-                      fadeOutDuration: const Duration(milliseconds: 500),
-                      imageUrl: groupRow.groupImageUrl ?? '',
-                      width: 74.0,
-                      height: 74.0,
-                      fit: BoxFit.cover,
-                      errorWidget: (context, url, error) => const Icon(Icons.error),
-                    ),
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8.0),
+                        child: CachedNetworkImage(
+                          fadeInDuration: const Duration(milliseconds: 500),
+                          fadeOutDuration: const Duration(milliseconds: 500),
+                          imageUrl: groupRow.groupImageUrl ?? '',
+                          width: 74.0,
+                          height: 74.0,
+                          fit: BoxFit.cover,
+                          errorWidget: (context, url, error) => const Icon(Icons.error),
+                        ),
+                      ),
+                      if (_unreadCount > 0)
+                        Positioned(
+                          top: -4,
+                          right: -4,
+                          child: Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: AppTheme.of(context).error,
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.white, width: 1.5),
+                            ),
+                            constraints: const BoxConstraints(minWidth: 20, minHeight: 20),
+                            child: Text(
+                              _unreadCount > 9 ? '9+' : _unreadCount.toString(),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
               ],
@@ -98,7 +169,7 @@ class GroupCard extends StatelessWidget {
                           ),
                           const SizedBox(height: 4.0),
                           Text(
-                            'Last post 3 days ago', // Placeholder as in original
+                            _relativeLastPost(context),
                             style: AppTheme.of(context).bodySmall.override(
                                   font: GoogleFonts.lexendDeca(
                                     fontWeight: FontWeight.normal,
@@ -200,7 +271,7 @@ class GroupCard extends StatelessWidget {
                                       backgroundColor: AppTheme.of(context).secondary,
                                     ),
                                   );
-                                  onUpdate?.call();
+                                  widget.onUpdate?.call();
                                 }
                               }
                             },

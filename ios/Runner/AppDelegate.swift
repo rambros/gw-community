@@ -25,11 +25,15 @@ import app_links
   }
 
   // Warm-start custom URL scheme delivery (app already running).
+  // Explicitly propagate to AppLinks so uriLinkStream fires on real devices.
+  // Calling super alone is not sufficient — the FlutterPlugin delegate chain
+  // does not reliably invoke AppLinks.shared.handleLink on iOS warm starts.
   override func application(
     _ app: UIApplication,
     open url: URL,
     options: [UIApplication.OpenURLOptionsKey: Any] = [:]
   ) -> Bool {
+    AppLinks.shared.handleLink(url: url)
     return super.application(app, open: url, options: options)
   }
 

@@ -163,4 +163,9 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<void> refreshUser() {
     return _authService.refreshUser();
   }
+
+  @override
+  Future<void> sendMagicLink(String email) {
+    return _authService.sendMagicLink(email);
+  }
 }

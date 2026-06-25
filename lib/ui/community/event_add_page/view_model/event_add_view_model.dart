@@ -24,6 +24,7 @@ class EventAddViewModel extends ChangeNotifier {
   final facilitatorController = TextEditingController();
   final descriptionController = TextEditingController();
   final dateController = TextEditingController();
+  final endDateController = TextEditingController();
   final timeController = TextEditingController();
   final durationController = TextEditingController();
   final urlRegistrationController = TextEditingController();
@@ -32,6 +33,7 @@ class EventAddViewModel extends ChangeNotifier {
   final facilitatorFocus = FocusNode();
   final descriptionFocus = FocusNode();
   final dateFocus = FocusNode();
+  final endDateFocus = FocusNode();
   final timeFocus = FocusNode();
   final durationFocus = FocusNode();
   final urlFocus = FocusNode();
@@ -43,6 +45,9 @@ class EventAddViewModel extends ChangeNotifier {
   DateTime? _eventDate;
   DateTime? get eventDate => _eventDate;
 
+  DateTime? _endDate;
+  DateTime? get endDate => _endDate;
+
   DateTime? _eventTime;
   DateTime? get eventTime => _eventTime;
 
@@ -51,6 +56,9 @@ class EventAddViewModel extends ChangeNotifier {
 
   String _status = 'scheduled';
   String get status => _status;
+
+  String _eventType = 'single_day';
+  String get eventType => _eventType;
 
   bool _isSaving = false;
   bool get isSaving => _isSaving;
@@ -61,6 +69,7 @@ class EventAddViewModel extends ChangeNotifier {
   void _initializeDefaults() {
     final now = DateTime.now();
     setEventDate(now);
+    setEndDate(now);
     setEventTime(now);
   }
 
@@ -76,9 +85,25 @@ class EventAddViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setEventType(String? value) {
+    if (value == null) return;
+    _eventType = value;
+    notifyListeners();
+  }
+
   void setEventDate(DateTime date, {String? locale}) {
     _eventDate = date;
     dateController.text = dateTimeFormat(
+      'd/M/y',
+      date,
+      locale: locale,
+    );
+    notifyListeners();
+  }
+
+  void setEndDate(DateTime date, {String? locale}) {
+    _endDate = date;
+    endDateController.text = dateTimeFormat(
       'd/M/y',
       date,
       locale: locale,
@@ -111,15 +136,38 @@ class EventAddViewModel extends ChangeNotifier {
       return false;
     }
 
-    if (_eventDate == null || _eventTime == null) {
-      _setError('Please select date and time for the event.');
+    if (_eventDate == null) {
+      _setError('Please select date for the event.');
       return false;
     }
 
-    final duration = int.tryParse(durationController.text.trim());
-    if (duration == null) {
-      _setError('Invalid duration value.');
-      return false;
+    DateTime? finalEventTime = _eventTime;
+    int? duration;
+    DateTime? finalEndDate = _endDate;
+
+    if (_eventType == 'single_day') {
+      if (_eventTime == null) {
+        _setError('Please select time for the event.');
+        return false;
+      }
+      duration = int.tryParse(durationController.text.trim());
+      if (duration == null) {
+        _setError('Invalid duration value.');
+        return false;
+      }
+      finalEndDate = null;
+    } else {
+      // multi_day
+      if (_endDate == null) {
+        _setError('Please select end date for the event.');
+        return false;
+      }
+      if (_endDate!.isBefore(_eventDate!)) {
+        _setError('End date cannot be before start date.');
+        return false;
+      }
+      finalEventTime = null;
+      duration = null;
     }
 
     _setSaving(true);
@@ -132,7 +180,7 @@ class EventAddViewModel extends ChangeNotifier {
         facilitatorName: facilitatorController.text.trim(),
         facilitatorId: currentUserUid,
         eventDate: _eventDate!,
-        eventTime: _eventTime!,
+        eventTime: finalEventTime,
         durationMinutes: duration,
         status: _status,
         visibility: _visibility,
@@ -140,6 +188,8 @@ class EventAddViewModel extends ChangeNotifier {
             ? null
             : urlRegistrationController.text.trim(),
         groupId: groupId,
+        endDate: finalEndDate,
+        eventType: _eventType,
       );
       return true;
     } catch (e) {
@@ -170,6 +220,7 @@ class EventAddViewModel extends ChangeNotifier {
     facilitatorController.dispose();
     descriptionController.dispose();
     dateController.dispose();
+    endDateController.dispose();
     timeController.dispose();
     durationController.dispose();
     urlRegistrationController.dispose();
@@ -178,6 +229,7 @@ class EventAddViewModel extends ChangeNotifier {
     facilitatorFocus.dispose();
     descriptionFocus.dispose();
     dateFocus.dispose();
+    endDateFocus.dispose();
     timeFocus.dispose();
     durationFocus.dispose();
     urlFocus.dispose();

@@ -146,7 +146,15 @@ class _ExperienceAddPageContent extends StatelessWidget {
   }
 
   Widget _buildHeader(BuildContext context, ExperienceAddViewModel viewModel) {
-    final user = viewModel.currentUser;
+    final loginUser = FFAppState().loginUser;
+    final displayName = loginUser.displayName.isNotEmpty
+        ? loginUser.displayName
+        : loginUser.firstName.isNotEmpty
+            ? loginUser.firstName
+            : viewModel.currentUser?.displayName;
+    final photoUrl = loginUser.photoUrl.isNotEmpty
+        ? loginUser.photoUrl
+        : viewModel.currentUser?.photoUrl;
 
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(16.0, 24.0, 16.0, 24.0),
@@ -154,8 +162,8 @@ class _ExperienceAddPageContent extends StatelessWidget {
         mainAxisSize: MainAxisSize.max,
         children: [
           UserAvatar(
-            imageUrl: user?.photoUrl,
-            fullName: user?.displayName,
+            imageUrl: photoUrl,
+            fullName: displayName,
           ),
           Expanded(
             child: Padding(
@@ -166,7 +174,7 @@ class _ExperienceAddPageContent extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    valueOrDefault<String>(user?.displayName, 'name'),
+                    valueOrDefault<String>(displayName, ''),
                     style: AppTheme.of(context).bodyLarge.override(
                           font: GoogleFonts.inter(fontWeight: FontWeight.normal),
                           color: AppTheme.of(context).secondary,

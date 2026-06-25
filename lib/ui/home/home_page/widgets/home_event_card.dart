@@ -16,6 +16,20 @@ class HomeEventCard extends StatelessWidget {
   final CcEventsRow eventRow;
   final String? groupName;
 
+  String _displayDateTime(BuildContext context) {
+    final locale = FFLocalizations.of(context).languageCode;
+    if (eventRow.eventType == 'multi_day') {
+      final startStr = eventRow.eventDate != null ? dateTimeFormat('MMMd', eventRow.eventDate, locale: locale) : '';
+      final endStr = eventRow.endDate != null ? dateTimeFormat('MMMd', eventRow.endDate, locale: locale) : '';
+      if (startStr.isNotEmpty && endStr.isNotEmpty) return '$startStr – $endStr';
+      if (startStr.isNotEmpty) return startStr;
+      return '';
+    }
+    final dateStr = eventRow.eventDate != null ? dateTimeFormat('MMMEd', eventRow.eventDate, locale: locale) : '';
+    final timeStr = eventRow.eventTime != null ? eventRow.eventTime.toString().substring(0, 5) : '';
+    return timeStr.isNotEmpty ? '$dateStr, $timeStr' : dateStr;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -119,11 +133,7 @@ class HomeEventCard extends StatelessWidget {
                                 Padding(
                                   padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 12.0),
                                   child: Text(
-                                    dateTimeFormat(
-                                      "MMMEd",
-                                      eventRow.eventDate,
-                                      locale: FFLocalizations.of(context).languageCode,
-                                    ),
+                                    _displayDateTime(context),
                                     style: AppTheme.of(context).bodySmall.override(
                                       color: AppTheme.of(context).secondary,
                                       fontSize: 12.0,

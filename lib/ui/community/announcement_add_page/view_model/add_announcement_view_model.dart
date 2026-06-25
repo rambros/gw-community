@@ -10,6 +10,7 @@ class AddAnnouncementViewModel extends ChangeNotifier {
     this.groupId,
     this.groupName,
     required this.privacy,
+    this.groupMembers = const [],
   }) : _repository = repository {
     _loadCurrentUser();
   }
@@ -19,6 +20,7 @@ class AddAnnouncementViewModel extends ChangeNotifier {
   final int? groupId;
   final String? groupName;
   final String privacy;
+  final List<CcMembersRow> groupMembers;
 
   final titleController = TextEditingController();
   final experienceController = TextEditingController();
@@ -27,6 +29,14 @@ class AddAnnouncementViewModel extends ChangeNotifier {
 
   String _visibility = 'group_only';
   String get visibility => _visibility;
+
+  CcMembersRow? _recipientMember;
+  CcMembersRow? get recipientMember => _recipientMember;
+
+  void setRecipient(CcMembersRow? member) {
+    _recipientMember = member;
+    notifyListeners();
+  }
 
   CcMembersRow? _currentUser;
   CcMembersRow? get currentUser => _currentUser;
@@ -81,6 +91,7 @@ class AddAnnouncementViewModel extends ChangeNotifier {
         userId: currentUserUid,
         groupId: groupId,
         visibility: visibility,
+        recipientUserId: _recipientMember?.authUserId,
       );
       return true;
     } catch (e) {

@@ -1,3 +1,4 @@
+import 'package:app_links/app_links.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -26,22 +27,38 @@ class _LoginPageState extends State<LoginPage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _magicEmailController = TextEditingController();
   final _emailFocusNode = FocusNode();
   final _passwordFocusNode = FocusNode();
+  final _magicEmailFocusNode = FocusNode();
   final _formKey = GlobalKey<FormState>();
+  final _magicFormKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
-    // Fallback: if a deep-link invite arrived but direct navigation failed
-    // (e.g. GoRouter not yet ready), redirect now that LoginPage is visible.
-    SchedulerBinding.instance.addPostFrameCallback((_) {
+    // Fallback: if a deep-link invite arrived but direct navigation failed,
+    // redirect now that LoginPage is visible. Also checks getInitialLink()
+    // as a last resort for cold-start URLs not yet processed by main.dart.
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
       if (!mounted) return;
       final token = PendingInvite.token;
       if (token != null) {
         PendingInvite.token = null;
         context.go('/invite?token=$token');
+        return;
       }
+      try {
+        final uri = await AppLinks().getInitialLink();
+        if (!mounted) return;
+        if (uri != null && uri.scheme == 'gw' && uri.host == 'invite') {
+          final linkToken = uri.queryParameters['token'];
+          if (linkToken != null && linkToken.isNotEmpty) {
+            debugPrint('🔗 [login-last-resort] found invite link: $uri');
+            context.go('/invite?token=$linkToken');
+          }
+        }
+      } catch (_) {}
     });
   }
 
@@ -49,8 +66,10 @@ class _LoginPageState extends State<LoginPage> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _magicEmailController.dispose();
     _emailFocusNode.dispose();
     _passwordFocusNode.dispose();
+    _magicEmailFocusNode.dispose();
     super.dispose();
   }
 
@@ -59,13 +78,65 @@ class _LoginPageState extends State<LoginPage> {
       SnackBar(
         content: Text(
           error.toString(),
-          style: TextStyle(
-            color: AppTheme.of(context).primaryText,
-          ),
+          style: TextStyle(color: AppTheme.of(context).primaryText),
         ),
         backgroundColor: AppTheme.of(context).secondary,
       ),
     );
+  }
+
+  InputDecoration _inputDecoration(BuildContext context, String label, {String? hint}) {
+    return InputDecoration(
+      labelText: label,
+      labelStyle: AppTheme.of(context).labelLarge.override(
+            font: GoogleFonts.poppins(
+              fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+              fontStyle: AppTheme.of(context).labelLarge.fontStyle,
+            ),
+            color: AppTheme.of(context).primary,
+            fontSize: 16.0,
+            letterSpacing: 0.0,
+          ),
+      hintText: hint,
+      hintStyle: AppTheme.of(context).bodySmall.override(
+            font: GoogleFonts.lexendDeca(
+              fontWeight: AppTheme.of(context).bodySmall.fontWeight,
+              fontStyle: AppTheme.of(context).bodySmall.fontStyle,
+            ),
+            color: AppTheme.of(context).alternate,
+            letterSpacing: 0.0,
+          ),
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: AppTheme.of(context).alternate, width: 1.0),
+        borderRadius: BorderRadius.circular(16.0),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: AppTheme.of(context).alternate, width: 1.0),
+        borderRadius: BorderRadius.circular(16.0),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderSide: const BorderSide(color: Color(0x00000000), width: 1.0),
+        borderRadius: BorderRadius.circular(16.0),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderSide: const BorderSide(color: Color(0x00000000), width: 1.0),
+        borderRadius: BorderRadius.circular(16.0),
+      ),
+      filled: true,
+      fillColor: const Color(0xFFF9FAFB),
+    );
+  }
+
+  TextStyle _inputStyle(BuildContext context) {
+    return AppTheme.of(context).bodyMedium.override(
+          font: GoogleFonts.lexendDeca(
+            fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+            fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
+          ),
+          color: AppTheme.of(context).secondary,
+          fontSize: 14.0,
+          letterSpacing: 0.0,
+        );
   }
 
   @override
@@ -78,9 +149,7 @@ class _LoginPageState extends State<LoginPage> {
           body: Container(
             width: double.infinity,
             height: double.infinity,
-            decoration: BoxDecoration(
-              color: AppTheme.of(context).primaryBackground,
-            ),
+            decoration: BoxDecoration(color: AppTheme.of(context).primaryBackground),
             alignment: const AlignmentDirectional(0.0, 0.0),
             child: SingleChildScrollView(
               child: Column(
@@ -90,7 +159,6 @@ class _LoginPageState extends State<LoginPage> {
                   Padding(
                     padding: const EdgeInsetsDirectional.fromSTEB(0.0, 36.0, 0.0, 0.0),
                     child: Row(
-                      mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Image.asset(
@@ -104,352 +172,9 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsetsDirectional.fromSTEB(24.0, 24.0, 24.0, 0.0),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 36.0, 0.0, 0.0),
-                                  child: Text(
-                                    'Welcome,',
-                                    style: AppTheme.of(context).displaySmall.override(
-                                          font: GoogleFonts.lexendDeca(
-                                            fontWeight: AppTheme.of(context).displaySmall.fontWeight,
-                                            fontStyle: AppTheme.of(context).displaySmall.fontStyle,
-                                          ),
-                                          color: AppTheme.of(context).secondary,
-                                          fontSize: 24.0,
-                                          letterSpacing: 0.0,
-                                        ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 0.0, 0.0),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 16.0, 12.0),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      Text(
-                                        'Access your account below ',
-                                        textAlign: TextAlign.start,
-                                        style: AppTheme.of(context).bodyMedium.override(
-                                              font: GoogleFonts.lexendDeca(
-                                                fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                                                fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                                              ),
-                                              letterSpacing: 0.0,
-                                            ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsetsDirectional.fromSTEB(4.0, 4.0, 4.0, 8.0),
-                            child: TextFormField(
-                              controller: _emailController,
-                              focusNode: _emailFocusNode,
-                              autofocus: false,
-                              obscureText: false,
-                              decoration: InputDecoration(
-                                labelText: 'Email',
-                                labelStyle: AppTheme.of(context).labelLarge.override(
-                                      font: GoogleFonts.poppins(
-                                        fontWeight: AppTheme.of(context).labelLarge.fontWeight,
-                                        fontStyle: AppTheme.of(context).labelLarge.fontStyle,
-                                      ),
-                                      color: AppTheme.of(context).primary,
-                                      fontSize: 16.0,
-                                      letterSpacing: 0.0,
-                                    ),
-                                hintText: 'Your email',
-                                hintStyle: AppTheme.of(context).bodySmall.override(
-                                      font: GoogleFonts.lexendDeca(
-                                        fontWeight: AppTheme.of(context).bodySmall.fontWeight,
-                                        fontStyle: AppTheme.of(context).bodySmall.fontStyle,
-                                      ),
-                                      color: AppTheme.of(context).alternate,
-                                      letterSpacing: 0.0,
-                                    ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: AppTheme.of(context).alternate,
-                                    width: 1.0,
-                                  ),
-                                  borderRadius: BorderRadius.circular(16.0),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: AppTheme.of(context).alternate,
-                                    width: 1.0,
-                                  ),
-                                  borderRadius: BorderRadius.circular(16.0),
-                                ),
-                                errorBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                    color: Color(0x00000000),
-                                    width: 1.0,
-                                  ),
-                                  borderRadius: BorderRadius.circular(16.0),
-                                ),
-                                focusedErrorBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                    color: Color(0x00000000),
-                                    width: 1.0,
-                                  ),
-                                  borderRadius: BorderRadius.circular(16.0),
-                                ),
-                                filled: true,
-                                fillColor: const Color(0xFFF9FAFB),
-                              ),
-                              style: AppTheme.of(context).bodyMedium.override(
-                                    font: GoogleFonts.lexendDeca(
-                                      fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                                      fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                                    ),
-                                    color: AppTheme.of(context).secondary,
-                                    fontSize: 14.0,
-                                    letterSpacing: 0.0,
-                                  ),
-                              validator: (val) {
-                                if (val == null || val.isEmpty) {
-                                  return 'Field is required';
-                                }
-                                return null;
-                              },
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsetsDirectional.fromSTEB(4.0, 4.0, 4.0, 8.0),
-                            child: TextFormField(
-                              controller: _passwordController,
-                              focusNode: _passwordFocusNode,
-                              autofocus: false,
-                              obscureText: !viewModel.passwordVisibility,
-                              decoration: InputDecoration(
-                                labelText: 'Password',
-                                labelStyle: AppTheme.of(context).labelLarge.override(
-                                      font: GoogleFonts.poppins(
-                                        fontWeight: AppTheme.of(context).labelLarge.fontWeight,
-                                        fontStyle: AppTheme.of(context).labelLarge.fontStyle,
-                                      ),
-                                      color: AppTheme.of(context).primary,
-                                      fontSize: 16.0,
-                                      letterSpacing: 0.0,
-                                    ),
-                                hintText: 'Your password',
-                                hintStyle: AppTheme.of(context).bodySmall.override(
-                                      font: GoogleFonts.lexendDeca(
-                                        fontWeight: AppTheme.of(context).bodySmall.fontWeight,
-                                        fontStyle: AppTheme.of(context).bodySmall.fontStyle,
-                                      ),
-                                      color: AppTheme.of(context).alternate,
-                                      letterSpacing: 0.0,
-                                    ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: AppTheme.of(context).alternate,
-                                    width: 1.0,
-                                  ),
-                                  borderRadius: BorderRadius.circular(16.0),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: AppTheme.of(context).alternate,
-                                    width: 1.0,
-                                  ),
-                                  borderRadius: BorderRadius.circular(16.0),
-                                ),
-                                errorBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                    color: Color(0x00000000),
-                                    width: 1.0,
-                                  ),
-                                  borderRadius: BorderRadius.circular(16.0),
-                                ),
-                                focusedErrorBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                    color: Color(0x00000000),
-                                    width: 1.0,
-                                  ),
-                                  borderRadius: BorderRadius.circular(16.0),
-                                ),
-                                filled: true,
-                                fillColor: const Color(0xFFF9FAFB),
-                                suffixIcon: InkWell(
-                                  onTap: () => viewModel.togglePasswordVisibility(),
-                                  focusNode: FocusNode(skipTraversal: true),
-                                  child: Icon(
-                                    viewModel.passwordVisibility
-                                        ? Icons.visibility_outlined
-                                        : Icons.visibility_off_outlined,
-                                    color: AppTheme.of(context).secondaryText,
-                                    size: 24.0,
-                                  ),
-                                ),
-                              ),
-                              style: AppTheme.of(context).bodyMedium.override(
-                                    font: GoogleFonts.lexendDeca(
-                                      fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                                      fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                                    ),
-                                    color: AppTheme.of(context).secondary,
-                                    fontSize: 14.0,
-                                    letterSpacing: 0.0,
-                                  ),
-                              validator: (val) {
-                                if (val == null || val.isEmpty) {
-                                  return 'Field is required';
-                                }
-                                return null;
-                              },
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsetsDirectional.fromSTEB(4.0, 24.0, 4.0, 0.0),
-                            child: FFButtonWidget(
-                              onPressed: () async {
-                                if (_formKey.currentState!.validate()) {
-                                  try {
-                                    final user = await viewModel.signIn(
-                                      context,
-                                      _emailController.text,
-                                      _passwordController.text,
-                                    );
-                                    if (user != null && context.mounted) {
-                                      context.pushNamed(HomePage.routeName);
-                                    }
-                                  } catch (e) {
-                                    if (context.mounted) {
-                                      _showAuthError(e);
-                                    }
-                                  }
-                                }
-                              },
-                              text: 'Login',
-                              options: FFButtonOptions(
-                                width: double.infinity,
-                                height: 50.0,
-                                padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                                iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                                color: AppTheme.of(context).primary,
-                                textStyle: AppTheme.of(context).titleSmall.override(
-                                      font: GoogleFonts.lexendDeca(
-                                        fontWeight: AppTheme.of(context).titleSmall.fontWeight,
-                                        fontStyle: AppTheme.of(context).titleSmall.fontStyle,
-                                      ),
-                                      color: Colors.white,
-                                      fontSize: 16.0,
-                                      letterSpacing: 0.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                elevation: 3.0,
-                                borderSide: const BorderSide(
-                                  color: Colors.transparent,
-                                  width: 1.0,
-                                ),
-                                borderRadius: BorderRadius.circular(12.0),
-                              ),
-                              showLoadingIndicator: viewModel.isEmailLoading,
-                            ),
-                          ),
-                          // Forgot password link
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: Padding(
-                              padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 4.0, 8.0),
-                              child: GestureDetector(
-                                onTap: () => context.pushNamed('forgotPassword'),
-                                child: Text(
-                                  'Forgot password?',
-                                  style: AppTheme.of(context).bodySmall.override(
-                                        font: GoogleFonts.lexendDeca(),
-                                        color: AppTheme.of(context).primary,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          // OR divider
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 12.0),
-                            child: Row(
-                              children: [
-                                Expanded(child: Divider(color: AppTheme.of(context).alternate)),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                                  child: Text(
-                                    'or',
-                                    style: AppTheme.of(context).bodySmall.override(
-                                          font: GoogleFonts.lexendDeca(),
-                                          color: AppTheme.of(context).secondaryText,
-                                        ),
-                                  ),
-                                ),
-                                Expanded(child: Divider(color: AppTheme.of(context).alternate)),
-                              ],
-                            ),
-                          ),
-                          // Google Sign In
-                          Padding(
-                            padding: const EdgeInsetsDirectional.fromSTEB(4.0, 0.0, 4.0, 12.0),
-                            child: LoginGoogleButton(
-                              isLoading: viewModel.isGoogleLoading,
-                              onPressed: () async {
-                                try {
-                                  final user = await viewModel.signInWithGoogle(context);
-                                  if (user != null && context.mounted) {
-                                    context.pushNamed(HomePage.routeName);
-                                  }
-                                } catch (e) {
-                                  if (context.mounted) _showAuthError(e);
-                                }
-                              },
-                            ),
-                          ),
-                          // Apple Sign In (iOS / macOS only)
-                          if (!kIsWeb &&
-                              (defaultTargetPlatform == TargetPlatform.iOS ||
-                                  defaultTargetPlatform == TargetPlatform.macOS))
-                            Padding(
-                              padding: const EdgeInsetsDirectional.fromSTEB(4.0, 0.0, 4.0, 24.0),
-                              child: LoginAppleButton(
-                                isLoading: viewModel.isAppleLoading,
-                                onPressed: () async {
-                                  try {
-                                    final user = await viewModel.signInWithApple(context);
-                                    if (user != null && context.mounted) {
-                                      context.pushNamed(HomePage.routeName);
-                                    }
-                                  } catch (e) {
-                                    if (context.mounted) _showAuthError(e);
-                                  }
-                                },
-                              ),
-                            )
-                          else
-                            const SizedBox(height: 24.0),
-                        ],
-                      ),
-                    ),
+                    child: viewModel.isMagicLinkMode
+                        ? _buildMagicLinkSection(context, viewModel)
+                        : _buildPasswordSection(context, viewModel),
                   ),
                 ],
               ),
@@ -457,6 +182,395 @@ class _LoginPageState extends State<LoginPage> {
           ),
         );
       },
+    );
+  }
+
+  // ─── Magic Link mode ───────────────────────────────────────────────────────
+
+  Widget _buildMagicLinkSection(BuildContext context, LoginViewModel viewModel) {
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Padding(
+          padding: const EdgeInsetsDirectional.fromSTEB(24.0, 36.0, 24.0, 0.0),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              'Welcome,',
+              style: AppTheme.of(context).displaySmall.override(
+                    font: GoogleFonts.lexendDeca(
+                      fontWeight: AppTheme.of(context).displaySmall.fontWeight,
+                      fontStyle: AppTheme.of(context).displaySmall.fontStyle,
+                    ),
+                    color: AppTheme.of(context).secondary,
+                    fontSize: 24.0,
+                    letterSpacing: 0.0,
+                  ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsetsDirectional.fromSTEB(24.0, 8.0, 24.0, 24.0),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              'Enter your email to receive a secure access link.',
+              style: AppTheme.of(context).bodyMedium.override(
+                    font: GoogleFonts.lexendDeca(
+                      fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                      fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
+                    ),
+                    letterSpacing: 0.0,
+                  ),
+            ),
+          ),
+        ),
+        if (viewModel.magicLinkSent)
+          _buildMagicLinkSentCard(context, viewModel)
+        else
+          _buildMagicLinkForm(context, viewModel),
+        const SizedBox(height: 24.0),
+        _buildModeToggle(context, viewModel, toPassword: true),
+        const SizedBox(height: 24.0),
+      ],
+    );
+  }
+
+  Widget _buildMagicLinkForm(BuildContext context, LoginViewModel viewModel) {
+    return Form(
+      key: _magicFormKey,
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(4.0, 4.0, 4.0, 8.0),
+            child: TextFormField(
+              controller: _magicEmailController,
+              focusNode: _magicEmailFocusNode,
+              autofocus: true,
+              keyboardType: TextInputType.emailAddress,
+              decoration: _inputDecoration(context, 'Email', hint: 'Your email'),
+              style: _inputStyle(context),
+              validator: (val) {
+                if (val == null || val.isEmpty) return 'Email is required';
+                if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(val)) return 'Enter a valid email';
+                return null;
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(4.0, 16.0, 4.0, 0.0),
+            child: FFButtonWidget(
+              onPressed: viewModel.isMagicLinkLoading
+                  ? null
+                  : () async {
+                      if (!_magicFormKey.currentState!.validate()) return;
+                      final messenger = ScaffoldMessenger.of(context);
+                      final theme = AppTheme.of(context);
+                      final result = await viewModel.sendMagicLink(_magicEmailController.text);
+                      if (!mounted) return;
+                      if (result == SendMagicLinkResult.notRegistered) {
+                        messenger.showSnackBar(SnackBar(
+                          content: Text(
+                            'Email not registered. Contact your administrator.',
+                            style: TextStyle(color: theme.primaryText),
+                          ),
+                          backgroundColor: theme.secondary,
+                        ));
+                      } else if (result == SendMagicLinkResult.error) {
+                        messenger.showSnackBar(SnackBar(
+                          content: Text(
+                            'Error sending link. Please try again.',
+                            style: TextStyle(color: theme.primaryText),
+                          ),
+                          backgroundColor: theme.secondary,
+                        ));
+                      }
+                    },
+              text: 'Send Access Link',
+              options: FFButtonOptions(
+                width: double.infinity,
+                height: 50.0,
+                padding: EdgeInsetsDirectional.zero,
+                iconPadding: EdgeInsetsDirectional.zero,
+                color: AppTheme.of(context).primary,
+                textStyle: AppTheme.of(context).titleSmall.override(
+                      font: GoogleFonts.lexendDeca(
+                        fontWeight: AppTheme.of(context).titleSmall.fontWeight,
+                        fontStyle: AppTheme.of(context).titleSmall.fontStyle,
+                      ),
+                      color: Colors.white,
+                      fontSize: 16.0,
+                      letterSpacing: 0.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                elevation: 3.0,
+                borderSide: const BorderSide(color: Colors.transparent, width: 1.0),
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              showLoadingIndicator: viewModel.isMagicLinkLoading,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMagicLinkSentCard(BuildContext context, LoginViewModel viewModel) {
+    return Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(4.0, 4.0, 4.0, 0.0),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(20.0),
+        decoration: BoxDecoration(
+          color: AppTheme.of(context).primary.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(16.0),
+          border: Border.all(color: AppTheme.of(context).primary.withValues(alpha: 0.3)),
+        ),
+        child: Column(
+          children: [
+            Icon(Icons.mark_email_read_outlined, size: 48, color: AppTheme.of(context).primary),
+            const SizedBox(height: 12),
+            Text(
+              'Check your email!',
+              style: AppTheme.of(context).titleMedium.override(
+                    font: GoogleFonts.lexendDeca(),
+                    color: AppTheme.of(context).secondary,
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'We sent an access link to ${_magicEmailController.text}. Tap it to sign in.',
+              textAlign: TextAlign.center,
+              style: AppTheme.of(context).bodyMedium.override(
+                    font: GoogleFonts.lexendDeca(),
+                    color: AppTheme.of(context).secondaryText,
+                  ),
+            ),
+            const SizedBox(height: 16),
+            GestureDetector(
+              onTap: () {
+                viewModel.resetMagicLinkState();
+              },
+              child: Text(
+                'Resend link',
+                style: AppTheme.of(context).bodySmall.override(
+                      font: GoogleFonts.lexendDeca(),
+                      color: AppTheme.of(context).primary,
+                      fontWeight: FontWeight.w500,
+                    ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ─── Password mode ─────────────────────────────────────────────────────────
+
+  Widget _buildPasswordSection(BuildContext context, LoginViewModel viewModel) {
+    return Form(
+      key: _formKey,
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(24.0, 36.0, 24.0, 0.0),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Welcome,',
+                style: AppTheme.of(context).displaySmall.override(
+                      font: GoogleFonts.lexendDeca(
+                        fontWeight: AppTheme.of(context).displaySmall.fontWeight,
+                        fontStyle: AppTheme.of(context).displaySmall.fontStyle,
+                      ),
+                      color: AppTheme.of(context).secondary,
+                      fontSize: 24.0,
+                      letterSpacing: 0.0,
+                    ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(24.0, 8.0, 24.0, 12.0),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Access your account below.',
+                style: AppTheme.of(context).bodyMedium.override(
+                      font: GoogleFonts.lexendDeca(
+                        fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                        fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
+                      ),
+                      letterSpacing: 0.0,
+                    ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(4.0, 4.0, 4.0, 8.0),
+            child: TextFormField(
+              controller: _emailController,
+              focusNode: _emailFocusNode,
+              autofocus: false,
+              keyboardType: TextInputType.emailAddress,
+              decoration: _inputDecoration(context, 'Email', hint: 'Your email'),
+              style: _inputStyle(context),
+              validator: (val) => (val == null || val.isEmpty) ? 'Field is required' : null,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(4.0, 4.0, 4.0, 8.0),
+            child: TextFormField(
+              controller: _passwordController,
+              focusNode: _passwordFocusNode,
+              autofocus: false,
+              obscureText: !viewModel.passwordVisibility,
+              decoration: _inputDecoration(context, 'Password', hint: 'Your password').copyWith(
+                suffixIcon: InkWell(
+                  onTap: viewModel.togglePasswordVisibility,
+                  focusNode: FocusNode(skipTraversal: true),
+                  child: Icon(
+                    viewModel.passwordVisibility
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined,
+                    color: AppTheme.of(context).secondaryText,
+                    size: 24.0,
+                  ),
+                ),
+              ),
+              style: _inputStyle(context),
+              validator: (val) => (val == null || val.isEmpty) ? 'Field is required' : null,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(4.0, 24.0, 4.0, 0.0),
+            child: FFButtonWidget(
+              onPressed: () async {
+                if (_formKey.currentState!.validate()) {
+                  try {
+                    final user = await viewModel.signIn(context, _emailController.text, _passwordController.text);
+                    if (user != null && context.mounted) context.pushNamed(HomePage.routeName);
+                  } catch (e) {
+                    if (context.mounted) _showAuthError(e);
+                  }
+                }
+              },
+              text: 'Login',
+              options: FFButtonOptions(
+                width: double.infinity,
+                height: 50.0,
+                padding: EdgeInsetsDirectional.zero,
+                iconPadding: EdgeInsetsDirectional.zero,
+                color: AppTheme.of(context).primary,
+                textStyle: AppTheme.of(context).titleSmall.override(
+                      font: GoogleFonts.lexendDeca(
+                        fontWeight: AppTheme.of(context).titleSmall.fontWeight,
+                        fontStyle: AppTheme.of(context).titleSmall.fontStyle,
+                      ),
+                      color: Colors.white,
+                      fontSize: 16.0,
+                      letterSpacing: 0.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                elevation: 3.0,
+                borderSide: const BorderSide(color: Colors.transparent, width: 1.0),
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              showLoadingIndicator: viewModel.isEmailLoading,
+            ),
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 4.0, 8.0),
+              child: GestureDetector(
+                onTap: () => context.pushNamed('forgotPassword'),
+                child: Text(
+                  'Forgot password?',
+                  style: AppTheme.of(context).bodySmall.override(
+                        font: GoogleFonts.lexendDeca(),
+                        color: AppTheme.of(context).primary,
+                        fontWeight: FontWeight.w500,
+                      ),
+                ),
+              ),
+            ),
+          ),
+          // Google / Apple — code preserved, visually hidden
+          Visibility(
+            visible: false,
+            maintainState: false,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(4.0, 0.0, 4.0, 12.0),
+                  child: LoginGoogleButton(
+                    isLoading: viewModel.isGoogleLoading,
+                    onPressed: () async {
+                      try {
+                        final user = await viewModel.signInWithGoogle(context);
+                        if (user != null && context.mounted) context.pushNamed(HomePage.routeName);
+                      } catch (e) {
+                        if (context.mounted) _showAuthError(e);
+                      }
+                    },
+                  ),
+                ),
+                if (!kIsWeb && (defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.macOS))
+                  Padding(
+                    padding: const EdgeInsetsDirectional.fromSTEB(4.0, 0.0, 4.0, 24.0),
+                    child: LoginAppleButton(
+                      isLoading: viewModel.isAppleLoading,
+                      onPressed: () async {
+                        try {
+                          final user = await viewModel.signInWithApple(context);
+                          if (user != null && context.mounted) context.pushNamed(HomePage.routeName);
+                        } catch (e) {
+                          if (context.mounted) _showAuthError(e);
+                        }
+                      },
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16.0),
+          _buildModeToggle(context, viewModel, toPassword: false),
+          const SizedBox(height: 24.0),
+        ],
+      ),
+    );
+  }
+
+  // ─── Shared toggle ──────────────────────────────────────────────────────────
+
+  Widget _buildModeToggle(BuildContext context, LoginViewModel viewModel, {required bool toPassword}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12.0),
+          child: Row(
+            children: [
+              Divider(color: AppTheme.of(context).alternate, endIndent: 12),
+              GestureDetector(
+                onTap: viewModel.toggleLoginMode,
+                child: Text(
+                  toPassword ? 'Sign in with password →' : '← Sign in without password',
+                  style: AppTheme.of(context).bodySmall.override(
+                        font: GoogleFonts.lexendDeca(),
+                        color: AppTheme.of(context).primary,
+                        fontWeight: FontWeight.w500,
+                      ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

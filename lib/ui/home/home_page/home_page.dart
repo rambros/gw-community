@@ -211,7 +211,7 @@ class _HomePageState extends State<HomePage> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          'We are a community of well-wishers\ncreating a new world together',
+          'A community of well-wishers\ncreating a new world together',
           textAlign: TextAlign.center,
           style: AppTheme.of(context).bodyMedium.override(
                 color: Colors.black,

@@ -77,6 +77,7 @@ class ExperienceEditViewModel extends ChangeNotifier {
         text: textController.text.trim(),
         visibility: saveVisibility,
         privacy: originalExperience.privacy ?? 'public',
+        groupId: originalExperience.groupId,
         keepAsDraft: keepAsDraft,
       );
 

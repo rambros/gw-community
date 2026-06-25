@@ -55,12 +55,14 @@ class EventRepository {
     required String facilitatorName,
     required String facilitatorId,
     required DateTime eventDate,
-    required DateTime eventTime,
-    required int durationMinutes,
+    DateTime? eventTime,
+    int? durationMinutes,
     required String status,
     required String visibility,
     String? registrationUrl,
     int? groupId,
+    DateTime? endDate,
+    String? eventType,
   }) async {
     await CcEventsTable().insert({
       'title': title,
@@ -71,10 +73,12 @@ class EventRepository {
       'event_page_url': registrationUrl,
       'event_status': status,
       'date_created': supaSerialize<DateTime>(getCurrentTimestamp),
-      'event_time': supaSerialize<PostgresTime>(PostgresTime(eventTime)),
+      'event_time': eventTime != null ? supaSerialize<PostgresTime>(PostgresTime(eventTime)) : null,
       'facilitator_name': facilitatorName,
       'facilitator_id': facilitatorId,
       'visibility': visibility,
+      'end_date': supaSerialize<DateTime>(endDate),
+      'event_type': eventType,
     });
   }
 
@@ -85,12 +89,14 @@ class EventRepository {
     required String facilitatorName,
     required String facilitatorId,
     required DateTime eventDate,
-    required DateTime eventTime,
-    required int durationMinutes,
+    DateTime? eventTime,
+    int? durationMinutes,
     required String status,
     required String visibility,
     String? registrationUrl,
     String? imageUrl,
+    DateTime? endDate,
+    String? eventType,
   }) async {
     final data = {
       'title': title,
@@ -99,10 +105,12 @@ class EventRepository {
       'duration': durationMinutes,
       'event_page_url': registrationUrl,
       'event_status': status,
-      'event_time': supaSerialize<PostgresTime>(PostgresTime(eventTime)),
+      'event_time': eventTime != null ? supaSerialize<PostgresTime>(PostgresTime(eventTime)) : null,
       'facilitator_name': facilitatorName,
       'facilitator_id': facilitatorId,
       'visibility': visibility,
+      'end_date': supaSerialize<DateTime>(endDate),
+      'event_type': eventType,
     };
 
     // Only add imageUrl if it's provided (null means don't update)

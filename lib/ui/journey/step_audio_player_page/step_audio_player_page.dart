@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gw_community/data/repositories/favorites_repository.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
-import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
 import 'package:gw_community/ui/core/widgets/audio_player_widget.dart';
 import 'package:gw_community/ui/core/widgets/favorite_button.dart';
 import 'package:gw_community/ui/journey/themes/journey_theme_extension.dart';
@@ -115,42 +114,6 @@ class StepAudioPlayerPage extends StatelessWidget {
                     ),
                   ),
                 ),
-              ),
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
-                    child: FFButtonWidget(
-                      onPressed: () {
-                        // Audio transcript functionality
-                      },
-                      text: 'Audio Transcript',
-                      icon: const Icon(
-                        Icons.text_snippet,
-                        size: 16.0,
-                      ),
-                      options: FFButtonOptions(
-                        height: 40.0,
-                        padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-                        iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                        iconColor: AppTheme.of(context).primaryBackground,
-                        color: AppTheme.of(context).secondaryText,
-                        textStyle: AppTheme.of(context).journey.buttonText.override(
-                              color: AppTheme.of(context).primaryText,
-                            ),
-                        elevation: 1.0,
-                        borderSide: BorderSide(
-                          color: AppTheme.of(context).primary,
-                          width: 0.5,
-                        ),
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      showLoadingIndicator: false,
-                    ),
-                  ),
-                ],
               ),
             ],
           ),

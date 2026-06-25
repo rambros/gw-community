@@ -214,7 +214,7 @@ class _EventsTabWidgetState extends State<EventsTabWidget> {
           children: [
             if (FFAppState().typeSelectedEvent == 'upcoming')
               Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(12.0, 12.0, 12.0, 12.0),
+                padding: const EdgeInsets.only(top: 12.0),
                 child: Builder(
                   builder: (context) {
                     final now = DateTime.now();
@@ -262,27 +262,43 @@ class _EventsTabWidgetState extends State<EventsTabWidget> {
                       child: ListView.separated(
                         shrinkWrap: true,
                         physics: const AlwaysScrollableScrollPhysics(),
-                        padding: EdgeInsets.zero,
+                        padding: const EdgeInsets.only(bottom: 80.0),
                         scrollDirection: Axis.vertical,
                         itemCount: listUpcomingEvents.length,
                         separatorBuilder: (_, __) => const SizedBox(height: 8.0),
                         itemBuilder: (context, listUpcomingEventsIndex) {
                           final listUpcomingEventsItem = listUpcomingEvents[listUpcomingEventsIndex];
+                          final isMultiDay = listUpcomingEventsItem.eventType == 'multi_day';
+                          final formattedDate = isMultiDay
+                              ? '${dateTimeFormat(
+                                  "yMMMd",
+                                  listUpcomingEventsItem.eventDate!,
+                                  locale: FFLocalizations.of(context).languageCode,
+                                )} - ${dateTimeFormat(
+                                  "yMMMd",
+                                  listUpcomingEventsItem.endDate ?? listUpcomingEventsItem.eventDate!,
+                                  locale: FFLocalizations.of(context).languageCode,
+                                )}'
+                              : dateTimeFormat(
+                                  "yMMMd",
+                                  listUpcomingEventsItem.eventDate!,
+                                  locale: FFLocalizations.of(context).languageCode,
+                                );
+                          final formattedTime = !isMultiDay && listUpcomingEventsItem.eventTime?.time != null
+                              ? dateTimeFormat(
+                                  "jm",
+                                  listUpcomingEventsItem.eventTime!.time,
+                                  locale: FFLocalizations.of(context).languageCode,
+                                )
+                              : '';
+
                           return EventCardWidget(
                             key: Key('Keyr2h_${listUpcomingEventsIndex}_of_${listUpcomingEvents.length}'),
                             userRegistered: listUpcomingEventsItem.userRegistered,
                             eventName: listUpcomingEventsItem.title,
                             facilitator: listUpcomingEventsItem.facilitatorName,
-                            date: dateTimeFormat(
-                              "yMMMd",
-                              listUpcomingEventsItem.eventDate!,
-                              locale: FFLocalizations.of(context).languageCode,
-                            ),
-                            time: dateTimeFormat(
-                              "jm",
-                              listUpcomingEventsItem.eventTime!.time,
-                              locale: FFLocalizations.of(context).languageCode,
-                            ),
+                            date: formattedDate,
+                            time: formattedTime,
                             event: listUpcomingEventsItem,
                             groupId: listUpcomingEventsItem.groupId,
                           );
@@ -294,7 +310,7 @@ class _EventsTabWidgetState extends State<EventsTabWidget> {
               ),
             if (FFAppState().typeSelectedEvent == 'recorded')
               Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(12.0, 12.0, 12.0, 12.0),
+                padding: const EdgeInsets.only(top: 12.0),
                 child: Builder(
                   builder: (context) {
                     final listRecordedEvents =
@@ -319,7 +335,7 @@ class _EventsTabWidgetState extends State<EventsTabWidget> {
                         safeSetState(() {});
                       },
                       child: ListView.separated(
-                        padding: const EdgeInsets.symmetric(vertical: 12.0),
+                        padding: const EdgeInsets.only(bottom: 80.0),
                         shrinkWrap: true,
                         physics: const AlwaysScrollableScrollPhysics(),
                         scrollDirection: Axis.vertical,
@@ -327,6 +343,30 @@ class _EventsTabWidgetState extends State<EventsTabWidget> {
                         separatorBuilder: (_, __) => const SizedBox(height: 8.0),
                         itemBuilder: (context, listRecordedEventsIndex) {
                           final listRecordedEventsItem = listRecordedEvents[listRecordedEventsIndex];
+                          final isMultiDay = listRecordedEventsItem.eventType == 'multi_day';
+                          final formattedDate = isMultiDay
+                              ? '${dateTimeFormat(
+                                  "yMMMd",
+                                  listRecordedEventsItem.eventDate!,
+                                  locale: FFLocalizations.of(context).languageCode,
+                                )} - ${dateTimeFormat(
+                                  "yMMMd",
+                                  listRecordedEventsItem.endDate ?? listRecordedEventsItem.eventDate!,
+                                  locale: FFLocalizations.of(context).languageCode,
+                                )}'
+                              : dateTimeFormat(
+                                  "yMMMd",
+                                  listRecordedEventsItem.eventDate!,
+                                  locale: FFLocalizations.of(context).languageCode,
+                                );
+                          final formattedTime = !isMultiDay && listRecordedEventsItem.eventTime?.time != null
+                              ? dateTimeFormat(
+                                  "Hm",
+                                  listRecordedEventsItem.eventTime!.time,
+                                  locale: FFLocalizations.of(context).languageCode,
+                                )
+                              : '';
+
                           return EventCardWidget(
                             key: Key('Keyi64_${listRecordedEventsIndex}_of_${listRecordedEvents.length}'),
                             userRegistered: listRecordedEventsItem.userRegistered,
@@ -335,16 +375,8 @@ class _EventsTabWidgetState extends State<EventsTabWidget> {
                               'title',
                             ),
                             facilitator: listRecordedEventsItem.facilitatorName,
-                            date: dateTimeFormat(
-                              "yMMMd",
-                              listRecordedEventsItem.eventDate!,
-                              locale: FFLocalizations.of(context).languageCode,
-                            ),
-                            time: dateTimeFormat(
-                              "Hm",
-                              listRecordedEventsItem.eventTime!.time,
-                              locale: FFLocalizations.of(context).languageCode,
-                            ),
+                            date: formattedDate,
+                            time: formattedTime,
                             event: listRecordedEventsItem,
                             groupId: listRecordedEventsItem.groupId,
                           );

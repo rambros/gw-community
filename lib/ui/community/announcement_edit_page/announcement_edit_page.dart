@@ -74,7 +74,7 @@ class _AnnouncementEditPageState extends State<AnnouncementEditPage> {
                   onPressed: () => context.pop(),
                 ),
                 title: Text(
-                  'Edit Announcement',
+                  'Edit Message',
                   style: AppTheme.of(context).titleLarge.override(
                         font: GoogleFonts.poppins(
                           fontWeight: AppTheme.of(context).titleLarge.fontWeight,
@@ -284,7 +284,7 @@ class _AnnouncementEditPageState extends State<AnnouncementEditPage> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
-                          'Announcement updated with success',
+                          'Message updated with success',
                           style: TextStyle(
                             color: AppTheme.of(context).primaryText,
                           ),
@@ -298,7 +298,7 @@ class _AnnouncementEditPageState extends State<AnnouncementEditPage> {
                       context.pop(true);
                     }
                   },
-            text: viewModel.isSaving ? 'Saving...' : 'Save Announcement',
+            text: viewModel.isSaving ? 'Saving...' : 'Save Message',
             options: FFButtonOptions(
               height: 40.0,
               padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),

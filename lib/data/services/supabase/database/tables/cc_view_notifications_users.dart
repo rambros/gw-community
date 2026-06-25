@@ -57,4 +57,7 @@ class CcViewNotificationsUsersRow extends SupabaseDataRow {
 
   int? get comments => getField<int>('comments');
   set comments(int? value) => setField<int>('comments', value);
+
+  String? get recipientUserId => getField<String>('recipient_user_id');
+  set recipientUserId(String? value) => setField<String>('recipient_user_id', value);
 }

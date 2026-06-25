@@ -61,7 +61,13 @@ class GroupDetailsViewModel extends ChangeNotifier {
   }
 
   Stream<List<CcViewNotificationsUsersRow>> get notificationsStream {
-    return _announcementRepository.getAnnouncementsStream(group.id);
+    return _announcementRepository.getAnnouncementsStream(group.id).map((list) {
+      // Filtra mensagens privadas: exibe broadcast + privadas para/do usuário atual
+      return list.where((n) =>
+          n.recipientUserId == null ||
+          n.recipientUserId == currentUserId ||
+          n.userId == currentUserId).toList();
+    });
   }
 
   // Contador de notificações não lidas
@@ -329,7 +335,12 @@ class GroupDetailsViewModel extends ChangeNotifier {
   }
 
   void _updateUnreadCount(List<CcViewNotificationsUsersRow> notifications, {bool forceNotify = false}) {
-    final ids = notifications.map((n) => n.id!).toSet();
+    // Só conta broadcast + privadas para/do usuário atual
+    final visible = notifications.where((n) =>
+        n.recipientUserId == null ||
+        n.recipientUserId == currentUserId ||
+        n.userId == currentUserId);
+    final ids = visible.map((n) => n.id!).toSet();
     final unreadCount = ids.where((id) => !_readNotificationIds.contains(id)).length;
 
     if (_unreadNotificationCount != unreadCount || forceNotify) {

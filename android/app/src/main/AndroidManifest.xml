@@ -41,12 +41,19 @@
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="gwcommunity" android:host="gwcommunity.com"/>
       </intent-filter>
-      <!-- Deep link for invitations -->
+      <!-- Deep link for invitations (custom scheme) -->
       <intent-filter>
         <action android:name="android.intent.action.VIEW"/>
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="gw"/>
+      </intent-filter>
+      <!-- App Links for invitations (HTTPS universal link via Firebase) -->
+      <intent-filter android:autoVerify="true">
+        <action android:name="android.intent.action.VIEW"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
+        <data android:scheme="https" android:host="gw-invite.web.app"/>
       </intent-filter>
     </activity>
     <activity android:name="com.yalantis.ucrop.UCropActivity" android:screenOrientation="portrait" android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>

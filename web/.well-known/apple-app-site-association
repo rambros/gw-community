@@ -1,0 +1,11 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "VMJP66D94A.org.callofthetime.gw",
+        "paths": ["/invite", "/*"]
+      }
+    ]
+  }
+}

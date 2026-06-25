@@ -93,16 +93,11 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                     size: 30.0,
                   ),
                   onPressed: () async {
-                    context.goNamed(
-                      CommunityPage.routeName,
-                      extra: <String, dynamic>{
-                        kTransitionInfoKey: const TransitionInfo(
-                          hasTransition: true,
-                          transitionType: PageTransitionType.fade,
-                          duration: Duration(milliseconds: 0),
-                        ),
-                      },
-                    );
+                    if (context.canPop()) {
+                      context.pop();
+                    } else {
+                      context.goNamed(CommunityPage.routeName);
+                    }
                   },
                 ),
                 title: Text(
@@ -241,15 +236,25 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                 ),
                 Expanded(
                   child: Text(
-                    '${dateTimeFormat(
-                      'MMMMEEEEd',
-                      event.eventDate,
-                      locale: FFLocalizations.of(context).languageCode,
-                    )},  ${dateTimeFormat(
-                      'jm',
-                      event.eventTime?.time,
-                      locale: FFLocalizations.of(context).languageCode,
-                    )}',
+                    event.eventType == 'multi_day'
+                        ? '${dateTimeFormat(
+                            'yMMMd',
+                            event.eventDate,
+                            locale: FFLocalizations.of(context).languageCode,
+                          )} - ${dateTimeFormat(
+                            'yMMMd',
+                            event.endDate ?? event.eventDate,
+                            locale: FFLocalizations.of(context).languageCode,
+                          )}'
+                        : '${dateTimeFormat(
+                            'MMMMEEEEd',
+                            event.eventDate,
+                            locale: FFLocalizations.of(context).languageCode,
+                          )},  ${dateTimeFormat(
+                            'jm',
+                            event.eventTime?.time,
+                            locale: FFLocalizations.of(context).languageCode,
+                          )}',
                     style: AppTheme.of(context).bodyMedium.override(
                           font: GoogleFonts.lexendDeca(
                             fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
@@ -263,30 +268,31 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                 ),
               ],
             ),
-            Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 12.0, 0.0),
-                  child: FaIcon(
-                    FontAwesomeIcons.clock,
-                    color: AppTheme.of(context).secondary,
-                    size: 32.0,
+            if (event.eventType != 'multi_day')
+              Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 12.0, 0.0),
+                    child: FaIcon(
+                      FontAwesomeIcons.clock,
+                      color: AppTheme.of(context).secondary,
+                      size: 32.0,
+                    ),
                   ),
-                ),
-                Text(
-                  '${event.duration ?? 0} min',
-                  style: AppTheme.of(context).bodyMedium.override(
-                        font: GoogleFonts.lexendDeca(
-                          fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                          fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
+                  Text(
+                    '${event.duration ?? 0} min',
+                    style: AppTheme.of(context).bodyMedium.override(
+                          font: GoogleFonts.lexendDeca(
+                            fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                            fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
+                          ),
+                          color: AppTheme.of(context).secondary,
+                          fontSize: 16.0,
+                          letterSpacing: 0.0,
                         ),
-                        color: AppTheme.of(context).secondary,
-                        fontSize: 16.0,
-                        letterSpacing: 0.0,
-                      ),
-                ),
-              ],
-            ),
+                  ),
+                ],
+              ),
             Padding(
               padding: const EdgeInsetsDirectional.fromSTEB(0.0, 12.0, 0.0, 0.0),
               child: Text(
@@ -427,6 +433,8 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
 
   Widget _buildRegistrationSection(BuildContext context, EventDetailsViewModel viewModel) {
     final isRegistered = viewModel.isUserRegistered;
+    final eventDate = viewModel.event?.eventDate;
+    final isPast = eventDate != null && eventDate.isBefore(DateTime.now());
 
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(12.0, 12.0, 12.0, 0.0),
@@ -438,7 +446,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (!isRegistered)
+            if (!isRegistered && !isPast)
               Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
                 child: FFButtonWidget(
@@ -596,7 +604,11 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                         backgroundColor: AppTheme.of(context).secondary,
                       ),
                     );
-                    context.goNamed(CommunityPage.routeName);
+                    if (context.canPop()) {
+                      context.pop();
+                    } else {
+                      context.goNamed(CommunityPage.routeName);
+                    }
                   },
                   text: 'Delete',
                   options: FFButtonOptions(
@@ -624,10 +636,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
               padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
               child: FFButtonWidget(
                 onPressed: () async {
-                  if (Navigator.of(context).canPop()) {
-                    context.pop();
-                  }
-                  context.pushNamed(
+                  await context.pushNamed(
                     EventEditPage.routeName,
                     queryParameters: {
                       'eventRow': serializeParam(
@@ -647,6 +656,10 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                       ),
                     },
                   );
+                  // Reload when Edit page pops back here
+                  if (mounted && viewModel.event?.id != null) {
+                    _viewModel.initialize(viewModel.event!.id);
+                  }
                 },
                 text: 'Edit',
                 options: FFButtonOptions(

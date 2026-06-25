@@ -142,18 +142,8 @@ class InviteAcceptViewModel extends ChangeNotifier {
       if (response.status == 200 && response.data != null) {
         final data = response.data as Map<String, dynamic>;
         if (data['success'] == true) {
-          // Auto-sign in so the user lands on home without typing credentials again
           if (_inviteEmail != null) {
-            try {
-              await SupaFlow.client.auth.signInWithPassword(
-                email: _inviteEmail!,
-                password: passwordController.text.trim(),
-              );
-              debugPrint('✅ Auto-login successful for: $_inviteEmail');
-            } catch (e) {
-              // Auto-login failed — account was created; caller will redirect to login
-              debugPrint('⚠️ Auto-login failed (account still created): $e');
-            }
+            await _autoLogin(_inviteEmail!, passwordController.text.trim());
           }
           _isLoading = false;
           notifyListeners();
@@ -175,6 +165,25 @@ class InviteAcceptViewModel extends ChangeNotifier {
       notifyListeners();
       return false;
     }
+  }
+
+  Future<void> _autoLogin(String email, String password) async {
+    for (int attempt = 0; attempt < 3; attempt++) {
+      if (attempt > 0) await Future.delayed(Duration(milliseconds: 600 * attempt));
+      try {
+        final res = await SupaFlow.client.auth.signInWithPassword(
+          email: email,
+          password: password,
+        );
+        if (res.user != null) {
+          debugPrint('✅ Auto-login successful for: $email (attempt ${attempt + 1})');
+          return;
+        }
+      } catch (e) {
+        debugPrint('⚠️ Auto-login attempt ${attempt + 1} failed: $e');
+      }
+    }
+    debugPrint('⚠️ Auto-login failed after 3 attempts — user redirected to login');
   }
 
   // ========== OAUTH ==========

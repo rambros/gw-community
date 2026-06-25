@@ -33,7 +33,10 @@ class _InviteAcceptPageState extends State<InviteAcceptPage> {
   void initState() {
     super.initState();
     _viewModel = InviteAcceptViewModel(token: widget.token ?? '');
-    // Initialize (validate token)
+    // Clear the pending invite fallback now that we've reached this page.
+    // This prevents LoginPage from re-triggering the invite flow if the
+    // token turns out to be invalid and the user navigates to login.
+    PendingInvite.token = null;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _viewModel.init();
     });

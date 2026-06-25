@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/announcement_repository.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/index.dart';
 import 'package:gw_community/ui/community/announcement_add_page/view_model/add_announcement_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
@@ -19,11 +20,13 @@ class AnnouncementAddPage extends StatefulWidget {
     this.groupId,
     this.groupName,
     String? privacy,
+    this.groupMembers = const [],
   }) : privacy = privacy ?? 'public';
 
   final int? groupId;
   final String? groupName;
   final String privacy;
+  final List<CcMembersRow> groupMembers;
 
   static String routeName = 'announcementAddPage';
   static String routePath = '/announcementAddPage';
@@ -46,6 +49,7 @@ class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
       groupId: widget.groupId,
       groupName: widget.groupName,
       privacy: widget.privacy,
+      groupMembers: widget.groupMembers,
     );
   }
 
@@ -85,7 +89,7 @@ class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
                   onPressed: () => context.pop(),
                 ),
                 title: Text(
-                  'New Announcement',
+                  'New Message',
                   style: AppTheme.of(context).titleLarge.override(
                         font: GoogleFonts.poppins(
                           fontWeight: AppTheme.of(context).titleLarge.fontWeight,
@@ -221,6 +225,37 @@ class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
             maxLines: 14,
           ),
         ),
+        if (viewModel.groupMembers.isNotEmpty && widget.groupId != null)
+          Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(8.0, 8.0, 8.0, 0.0),
+            child: DropdownButtonFormField<CcMembersRow?>(
+              value: viewModel.recipientMember,
+              decoration: _inputDecoration(context, 'Send to'),
+              items: [
+                DropdownMenuItem<CcMembersRow?>(
+                  value: null,
+                  child: Text(
+                    'All members (broadcast)',
+                    style: AppTheme.of(context).bodyMedium.override(
+                          font: GoogleFonts.lexendDeca(),
+                          color: AppTheme.of(context).secondary,
+                        ),
+                  ),
+                ),
+                ...viewModel.groupMembers.map((member) => DropdownMenuItem<CcMembersRow?>(
+                      value: member,
+                      child: Text(
+                        member.displayName ?? member.firstName ?? member.email ?? 'Member',
+                        style: AppTheme.of(context).bodyMedium.override(
+                              font: GoogleFonts.lexendDeca(),
+                              color: AppTheme.of(context).secondary,
+                            ),
+                      ),
+                    )),
+              ],
+              onChanged: viewModel.setRecipient,
+            ),
+          ),
         if (viewModel.errorMessage != null)
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(8.0, 8.0, 8.0, 0.0),
@@ -315,7 +350,7 @@ class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
-                          'Announcement created with success',
+                          'Message created with success',
                           style: TextStyle(
                             color: AppTheme.of(context).primaryText,
                           ),
@@ -325,7 +360,7 @@ class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
                     );
                     context.pop();
                   },
-            text: viewModel.isSaving ? 'Saving...' : 'Add Announcement',
+            text: viewModel.isSaving ? 'Saving...' : 'Add Message',
             options: FFButtonOptions(
               height: 40.0,
               padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),

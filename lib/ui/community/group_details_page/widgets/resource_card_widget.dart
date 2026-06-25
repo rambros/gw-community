@@ -33,26 +33,48 @@ class ResourceCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 10),
-      elevation: 1,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: Colors.grey.withValues(alpha: 0.15)),
-      ),
-      child: InkWell(
-        onTap: () => _openResource(context),
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(14),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildIcon(context),
-              const SizedBox(width: 14),
-              Expanded(child: _buildContent(context)),
-              if (isAdminOrManager) _buildMenu(context),
-            ],
+    return Align(
+      alignment: const AlignmentDirectional(0.0, 0.0),
+      child: Padding(
+        padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 16.0),
+        child: InkWell(
+          splashColor: Colors.transparent,
+          focusColor: Colors.transparent,
+          hoverColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          onTap: () => _openResource(context),
+          borderRadius: BorderRadius.circular(12),
+          child: Container(
+            width: double.infinity,
+            constraints: const BoxConstraints(maxWidth: 530.0),
+            decoration: BoxDecoration(
+              color: AppTheme.of(context).primaryBackground,
+              boxShadow: const [
+                BoxShadow(
+                  blurRadius: 15.0,
+                  color: Color(0x1A000000),
+                  offset: Offset(0.0, 7.0),
+                  spreadRadius: 3.0,
+                ),
+              ],
+              borderRadius: BorderRadius.circular(12.0),
+              border: Border.all(
+                color: AppTheme.of(context).primaryBackground,
+                width: 1.0,
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 8.0, 16.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildIcon(context),
+                  const SizedBox(width: 16.0),
+                  Expanded(child: _buildContent(context)),
+                  if (isAdminOrManager) _buildMenu(context),
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -81,11 +103,12 @@ class ResourceCardWidget extends StatelessWidget {
             Expanded(
               child: Text(
                 resource.title,
-                style: GoogleFonts.lexendDeca(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFF1E2429),
-                ),
+                style: AppTheme.of(context).bodyMedium.override(
+                      font: GoogleFonts.lexendDeca(),
+                      color: AppTheme.of(context).secondary,
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w600,
+                    ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -100,10 +123,11 @@ class ResourceCardWidget extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             resource.description!,
-            style: GoogleFonts.lexendDeca(
-              fontSize: 12,
-              color: const Color(0xFF57636C),
-            ),
+            style: AppTheme.of(context).bodyMedium.override(
+                  font: GoogleFonts.inter(),
+                  color: AppTheme.of(context).secondary,
+                  fontSize: 14.0,
+                ),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
@@ -111,23 +135,31 @@ class ResourceCardWidget extends StatelessWidget {
         const SizedBox(height: 6),
         Row(
           children: [
-            Icon(_typeIcon(), size: 12, color: const Color(0xFF57636C)),
+            Icon(_typeIcon(), size: 12, color: AppTheme.of(context).secondary),
             const SizedBox(width: 4),
             Text(
               _typeLabel(),
-              style: const TextStyle(fontSize: 11, color: Color(0xFF57636C)),
+              style: AppTheme.of(context).bodySmall.override(
+                    font: GoogleFonts.lexendDeca(),
+                    color: AppTheme.of(context).secondary,
+                    fontSize: 12.0,
+                  ),
             ),
             const SizedBox(width: 10),
-            const Icon(Icons.calendar_today_outlined,
-                size: 12, color: Color(0xFF57636C)),
+            Icon(Icons.calendar_today_outlined,
+                size: 12, color: AppTheme.of(context).secondary),
             const SizedBox(width: 4),
             Text(
               _formatDate(resource.createdAt),
-              style: const TextStyle(fontSize: 11, color: Color(0xFF57636C)),
+              style: AppTheme.of(context).bodySmall.override(
+                    font: GoogleFonts.lexendDeca(),
+                    color: AppTheme.of(context).secondary,
+                    fontSize: 12.0,
+                  ),
             ),
             if (resource.portalItemId != null) ...[
               const SizedBox(width: 10),
-              const Icon(Icons.link, size: 12, color: Color(0xFF57636C)),
+              Icon(Icons.link, size: 12, color: AppTheme.of(context).secondary),
             ],
           ],
         ),
@@ -157,7 +189,9 @@ class ResourceCardWidget extends StatelessWidget {
 
   Widget _buildMenu(BuildContext context) {
     return PopupMenuButton<String>(
-      icon: const Icon(Icons.more_vert, size: 20, color: Color(0xFF57636C)),
+      icon: Icon(Icons.more_vert, size: 20, color: AppTheme.of(context).secondary),
+      padding: EdgeInsets.zero,
+      constraints: const BoxConstraints(),
       onSelected: (value) {
         switch (value) {
           case 'view':
@@ -203,7 +237,8 @@ class ResourceCardWidget extends StatelessWidget {
             Text(resource.status == 'published' ? 'Unpublish' : 'Publish'),
           ]),
         ),
-        if (onUnlink != null)
+        // Portal-linked resource: show Unlink, hide Delete
+        if (resource.portalItemId != null && onUnlink != null)
           PopupMenuItem(
             value: 'unlink',
             child: Row(children: [
@@ -213,14 +248,16 @@ class ResourceCardWidget extends StatelessWidget {
                   style: TextStyle(color: Colors.orange.shade700)),
             ]),
           ),
-        PopupMenuItem(
-          value: 'delete',
-          child: Row(children: [
-            Icon(Icons.delete_outline, size: 18, color: Colors.red.shade700),
-            const SizedBox(width: 10),
-            Text('Delete', style: TextStyle(color: Colors.red.shade700)),
-          ]),
-        ),
+        // Local resource only: show Delete, hide Unlink
+        if (resource.portalItemId == null)
+          PopupMenuItem(
+            value: 'delete',
+            child: Row(children: [
+              Icon(Icons.delete_outline, size: 18, color: Colors.red.shade700),
+              const SizedBox(width: 10),
+              Text('Delete', style: TextStyle(color: Colors.red.shade700)),
+            ]),
+          ),
       ],
     );
   }
@@ -321,6 +358,8 @@ class ResourceCardWidget extends StatelessWidget {
         return Icons.audiotrack_outlined;
       case 'video':
         return Icons.videocam_outlined;
+      case 'text':
+        return Icons.article_outlined;
       default:
         return Icons.insert_drive_file_outlined;
     }
@@ -334,6 +373,8 @@ class ResourceCardWidget extends StatelessWidget {
         return Colors.purple;
       case 'video':
         return Colors.blue;
+      case 'text':
+        return Colors.teal;
       default:
         return Colors.grey;
     }
@@ -347,6 +388,8 @@ class ResourceCardWidget extends StatelessWidget {
         return 'Audio';
       case 'video':
         return 'Video';
+      case 'text':
+        return 'Text';
       default:
         return resource.type;
     }

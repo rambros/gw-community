@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
+import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 
 /// Repository responsável por todas as operações de dados relacionadas a Experiences e Comentários
@@ -87,17 +88,34 @@ class ExperienceRepository {
 
   /// Atualiza um experience existente
   ///
-  /// Atualiza título, texto, visibilidade e privacy de um experience.
   /// Se [keepAsDraft] for true, mantém como draft.
-  /// Caso contrário, resets moderation_status to 'pending' for re-review.
+  /// Se o grupo tiver auto_moderation_enabled = true, publica como 'approved' diretamente.
+  /// Caso contrário, envia para 'awaiting_approval'.
   Future<void> updateExperience({
     required int id,
     required String title,
     required String text,
     required String visibility,
     required String privacy,
+    int? groupId,
     bool keepAsDraft = false,
   }) async {
+    String moderationStatus;
+    String? moderatedAt;
+
+    if (keepAsDraft) {
+      moderationStatus = 'draft';
+    } else if (groupId != null) {
+      final groupRows = await CcGroupsTable().queryRows(
+        queryFn: (q) => q.eq('id', groupId),
+      );
+      final autoMod = groupRows.isNotEmpty && groupRows.first.autoModerationEnabled;
+      moderationStatus = autoMod ? 'approved' : 'awaiting_approval';
+      if (autoMod) moderatedAt = supaSerialize<DateTime>(DateTime.now());
+    } else {
+      moderationStatus = 'awaiting_approval';
+    }
+
     await CcSharingsTable().update(
       data: {
         'title': title,
@@ -105,11 +123,10 @@ class ExperienceRepository {
         'updated_at': supaSerialize<DateTime>(DateTime.now()),
         'privacy': privacy,
         'visibility': visibility,
-        // Keep as draft or reset for re-review
-        'moderation_status': keepAsDraft ? 'draft' : 'awaiting_approval',
+        'moderation_status': moderationStatus,
         'moderation_reason': null,
-        'moderated_by': null,
-        'moderated_at': null,
+        'moderated_by': moderatedAt != null ? 'auto' : null,
+        'moderated_at': moderatedAt,
       },
       matchingRows: (rows) => rows.eqOrNull('id', id),
     );
@@ -165,8 +182,12 @@ class ExperienceRepository {
       queryFn: (q) => q.eqOrNull('group_id', groupId).order('updated_at', ascending: false),
     );
 
-    // Filtra: approved OU do próprio usuário OU sem status (legado)
+    // Filtra: apenas experiences (exclui notifications/mensagens), e
+    // só mostra approved OU do próprio usuário OU sem status (legado).
     final filtered = result.where((item) {
+      // Excluir mensagens/announcements — elas ficam só no tab Messages.
+      if (item.type == ExperienceType.notification.name) return false;
+
       final status = item.moderationStatus;
       final ownerId = item.userId;
 

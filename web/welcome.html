@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Good Wishes - Accept Invitation</title>
+        <title>Good Wishes - Welcome</title>
         <link rel="preload" href="assets/images/logo.png" as="image" />
         <style>
             * {
@@ -63,7 +63,8 @@
             }
 
             .status {
-                background: #f7fafc;
+                background: #f0fff4;
+                border: 1px solid #9ae6b4;
                 border-radius: 12px;
                 padding: 20px;
                 margin-bottom: 30px;
@@ -75,8 +76,9 @@
             }
 
             .status-text {
-                color: #4a5568;
+                color: #276749;
                 font-size: 14px;
+                font-weight: 500;
             }
 
             .buttons {
@@ -105,6 +107,11 @@
                 box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
             }
 
+            .btn-primary {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+            }
+
             .btn-ios {
                 background: #340964;
                 color: white;
@@ -112,11 +119,6 @@
 
             .btn-android {
                 background: #7C52A0;
-                color: white;
-            }
-
-            .btn-primary {
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                 color: white;
             }
 
@@ -132,46 +134,10 @@
                 background: rgba(124, 82, 160, 0.08);
             }
 
-            .spinner {
-                border: 3px solid #f3f3f3;
-                border-top: 3px solid #667eea;
-                border-radius: 50%;
-                width: 40px;
-                height: 40px;
-                animation: spin 1s linear infinite;
-                margin: 20px auto;
-            }
-
-            @keyframes spin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
-            }
-
-            .hidden {
-                display: none;
-            }
-
-            .safari-banner {
-                background: #fff3cd;
-                border: 1px solid #ffc107;
-                border-radius: 10px;
-                padding: 14px 16px;
-                margin-bottom: 20px;
-                font-size: 14px;
-                color: #856404;
-                text-align: left;
-            }
-
-            .safari-banner strong {
-                display: block;
-                margin-bottom: 4px;
-                font-size: 15px;
-            }
-
-            .opening-hint {
+            .hint {
                 font-size: 13px;
                 color: #a0aec0;
-                margin-top: 12px;
+                margin-top: 16px;
                 margin-bottom: 0;
             }
 
@@ -187,7 +153,6 @@
                 .logo {
                     width: 100px;
                     height: 100px;
-                    font-size: 40px;
                 }
             }
         </style>
@@ -196,47 +161,45 @@
         <div class="container">
             <img src="assets/images/logo.png" alt="Good Wishes Logo" class="logo" />
 
-            <!-- Mobile: app options -->
-            <div id="mobile" class="hidden">
+            <!-- Mobile view -->
+            <div id="mobile" style="display:none">
                 <h1>Welcome to Good Wishes!</h1>
-                <p>You've been invited to join our community.</p>
+                <p>Your account is ready. Open the app and log in with the credentials from your email.</p>
 
-                <div id="safari-warning" class="safari-banner hidden">
-                    <strong>⚠️ Open in Safari</strong>
-                    Tap the <strong>⋯</strong> or share button and choose <strong>Open in Safari</strong> to continue.
+                <div class="status">
+                    <div class="status-icon">✅</div>
+                    <div class="status-text">Account created — ready to log in</div>
                 </div>
 
                 <div class="buttons">
-                    <button onclick="openDeepLink()" class="btn btn-primary" id="open-app-btn">
+                    <button onclick="openApp()" class="btn btn-primary" id="open-app-btn">
                         Open the app
                     </button>
-                    <a href="#" id="ios-link" class="btn btn-ios hidden">
+                    <a href="#" id="ios-link" style="display:none" class="btn btn-ios">
                         <span>📱</span>
                         <span>Download on App Store</span>
                     </a>
-                    <a href="#" id="android-link" class="btn btn-android hidden">
+                    <a href="#" id="android-link" style="display:none" class="btn btn-android">
                         <span>📲</span>
                         <span>Get it on Google Play</span>
                     </a>
                 </div>
 
-                <p class="opening-hint" id="opening-hint">
-                    Trying to open the app…
-                </p>
+                <p class="hint" id="opening-hint">Trying to open the app…</p>
             </div>
 
-            <!-- Desktop State -->
-            <div id="desktop" class="hidden">
+            <!-- Desktop view -->
+            <div id="desktop" style="display:none">
                 <h1>Open on your phone</h1>
                 <p>
-                    This invitation is for the Good Wishes app.<br>
-                    Open this link on your iPhone or Android to continue.
+                    Your Good Wishes account is ready.<br>
+                    Open this link on your iPhone or Android to log in.
                 </p>
 
                 <div class="status">
                     <div class="status-icon">💻</div>
                     <div class="status-text">
-                        Invitation link detected on a computer.
+                        Please open this link on your mobile device.
                     </div>
                 </div>
 
@@ -252,27 +215,16 @@
                 </div>
 
                 <p style="margin-top: 20px; font-size: 14px; color: #a0aec0">
-                    After installing, open the invitation link again on your phone.
-                </p>
-            </div>
-
-            <!-- Error State -->
-            <div id="error" class="hidden">
-                <h1>Invalid Invitation</h1>
-                <p>
-                    This invitation link appears to be invalid or has expired.
-                    Please contact support for assistance.
+                    After installing, open the app and log in with the credentials from your email.
                 </p>
             </div>
         </div>
 
         <script>
-            const urlParams = new URLSearchParams(window.location.search);
-            const token = urlParams.get("token");
-
             const IOS_APP_STORE_URL = "https://apps.apple.com/app/id6758221292";
             const ANDROID_PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=org.callofthetime.gw";
-            const DEEP_LINK_SCHEME = "gw://invite?token=";
+            // Opens the app to its default screen (login, since user is not yet logged in)
+            const APP_OPEN_SCHEME = "gw://open";
 
             function getMobileOS() {
                 const ua = navigator.userAgent;
@@ -281,78 +233,53 @@
                 return "Desktop";
             }
 
-            // Detect if running inside an in-app browser (Gmail, Outlook, Facebook, etc.)
-            // CriOS (Chrome iOS) and OPiOS (Opera iOS) are real browsers — not in-app — so excluded
-            function isInAppBrowser() {
-                const ua = navigator.userAgent;
-                return /FBAN|FBAV|Instagram|Twitter|LinkedIn|GSA|mercury|MicroMessenger/.test(ua)
-                    || (/iPhone|iPad/.test(ua) && !/Safari/.test(ua) && !/CriOS/.test(ua) && !/OPiOS/.test(ua));
-            }
-
-            // Triggers the deep link.
-            // window.location.href works on both iOS 12+ and Android for custom URL schemes.
-            // The iframe trick was needed for older iOS (8-9) to avoid "server not responding"
-            // errors, but modern iOS Safari silently ignores iframe custom-scheme navigation,
-            // so window.location.href is now the correct approach on all platforms.
-            function openDeepLink() {
-                if (!token) return;
-                const deepLink = DEEP_LINK_SCHEME + encodeURIComponent(token);
-                window.location.href = deepLink;
-            }
-
             function showStoreButtons(platform) {
                 document.getElementById("ios-link").href = IOS_APP_STORE_URL;
                 document.getElementById("android-link").href = ANDROID_PLAY_STORE_URL;
                 if (platform === "iOS") {
-                    document.getElementById("ios-link").classList.remove("hidden");
+                    document.getElementById("ios-link").style.display = "flex";
                 } else {
-                    document.getElementById("android-link").classList.remove("hidden");
+                    document.getElementById("android-link").style.display = "flex";
                 }
                 document.getElementById("opening-hint").textContent =
                     "Already have the app? Tap Open the app.";
             }
 
-            function start() {
-                if (!token) {
-                    document.getElementById("error").classList.remove("hidden");
-                    return;
-                }
+            function openApp() {
+                window.location.href = APP_OPEN_SCHEME;
+            }
 
+            function start() {
                 const platform = getMobileOS();
 
                 if (platform === "Desktop") {
-                    document.getElementById("desktop").classList.remove("hidden");
+                    document.getElementById("desktop").style.display = "block";
                     return;
                 }
 
-                // Mobile (iOS or Android)
-                document.getElementById("mobile").classList.remove("hidden");
+                document.getElementById("mobile").style.display = "block";
 
-                if (isInAppBrowser()) {
-                    document.getElementById("safari-warning").classList.remove("hidden");
-                    document.getElementById("opening-hint").classList.add("hidden");
-                    showStoreButtons(platform);
-                    return;
-                }
+                // Show store download button immediately (user may not have the app)
+                showStoreButtons(platform);
 
-                // Attempt to open the app immediately on page load
-                openDeepLink();
+                // Attempt to open the app
+                openApp();
 
-                // After 1.2s, assume the app isn't installed and show store buttons
+                // After 1.2s, update the hint if user is still on this page
                 setTimeout(() => {
                     if (document.visibilityState === "visible") {
-                        showStoreButtons(platform);
+                        document.getElementById("opening-hint").textContent =
+                            "App not installed? Download it above.";
                     }
                 }, 1200);
             }
 
             start();
 
-            // If user returns to the page (app wasn't installed — Android)
             document.addEventListener("visibilitychange", () => {
                 if (document.visibilityState === "visible") {
                     const platform = getMobileOS();
-                    if (platform === "Android") showStoreButtons(platform);
+                    if (platform !== "Desktop") showStoreButtons(platform);
                 }
             });
         </script>

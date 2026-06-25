@@ -130,6 +130,7 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
   Widget build(BuildContext context) {
     final vm = context.watch<EventAddViewModel>();
     final statusController = FormFieldController<String>(vm.status);
+    final eventTypeController = FormFieldController<String>(vm.eventType);
 
     return Container(
       width: double.infinity,
@@ -143,6 +144,23 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
           child: SingleChildScrollView(
             child: Column(
               children: [
+                Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(4.0, 8.0, 4.0, 8.0),
+                  child: FlutterFlowDropDown<String>(
+                    controller: eventTypeController,
+                    options: const ['single_day', 'multi_day'],
+                    optionLabels: const ['Single Day', 'Multi-day'],
+                    onChanged: vm.setEventType,
+                    textStyle: AppTheme.of(context).bodyMedium,
+                    hintText: 'Event Type',
+                    fillColor: AppTheme.of(context).primaryBackground,
+                    elevation: 2.0,
+                    borderColor: AppTheme.of(context).alternate,
+                    borderWidth: 1.0,
+                    borderRadius: 16.0,
+                    margin: const EdgeInsetsDirectional.fromSTEB(12.0, 4.0, 12.0, 4.0),
+                  ),
+                ),
                 _buildTextField(
                   context: context,
                   controller: vm.titleController,
@@ -165,16 +183,21 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
                   maxLines: 6,
                   validator: _requiredValidator,
                 ),
-                _buildDateField(context, vm),
-                _buildTimeField(context, vm),
-                _buildTextField(
-                  context: context,
-                  controller: vm.durationController,
-                  focusNode: vm.durationFocus,
-                  label: 'Duration (minutes)',
-                  keyboardType: TextInputType.number,
-                  validator: _requiredValidator,
-                ),
+                if (vm.eventType == 'single_day') ...[
+                  _buildDateField(context, vm),
+                  _buildTimeField(context, vm),
+                  _buildTextField(
+                    context: context,
+                    controller: vm.durationController,
+                    focusNode: vm.durationFocus,
+                    label: 'Duration (minutes)',
+                    keyboardType: TextInputType.number,
+                    validator: _requiredValidator,
+                  ),
+                ] else ...[
+                  _buildDateField(context, vm, label: 'Start Date'),
+                  _buildEndDateField(context, vm),
+                ],
                 _buildTextField(
                   context: context,
                   controller: vm.urlRegistrationController,
@@ -274,7 +297,7 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
     );
   }
 
-  Widget _buildDateField(BuildContext context, EventAddViewModel vm) {
+  Widget _buildDateField(BuildContext context, EventAddViewModel vm, {String label = 'Date'}) {
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(4.0, 8.0, 4.0, 8.0),
       child: Row(
@@ -284,7 +307,7 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
               controller: vm.dateController,
               focusNode: vm.dateFocus,
               readOnly: true,
-              decoration: _dateTimeDecoration(context, 'Date'),
+              decoration: _dateTimeDecoration(context, label),
               validator: _requiredValidator,
             ),
           ),
@@ -300,6 +323,45 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
               );
               if (picked != null) {
                 vm.setEventDate(
+                  DateTime(picked.year, picked.month, picked.day),
+                  locale: locale,
+                );
+              }
+            },
+            text: 'Select date',
+            options: _pickerButtonOptions(context),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEndDateField(BuildContext context, EventAddViewModel vm) {
+    return Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(4.0, 8.0, 4.0, 8.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextFormField(
+              controller: vm.endDateController,
+              focusNode: vm.endDateFocus,
+              readOnly: true,
+              decoration: _dateTimeDecoration(context, 'End Date'),
+              validator: _requiredValidator,
+            ),
+          ),
+          const SizedBox(width: 8.0),
+          FFButtonWidget(
+            onPressed: () async {
+              final locale = FFLocalizations.of(context).languageCode;
+              final picked = await showDatePicker(
+                context: context,
+                initialDate: vm.endDate ?? getCurrentTimestamp,
+                firstDate: DateTime(1900),
+                lastDate: DateTime(2050),
+              );
+              if (picked != null) {
+                vm.setEndDate(
                   DateTime(picked.year, picked.month, picked.day),
                   locale: locale,
                 );
@@ -400,9 +462,14 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
   }
 
   Widget _buildCancelButton(BuildContext context) {
+    final vm = context.read<EventAddViewModel>();
     return FFButtonWidget(
       onPressed: () async {
-        context.pushNamed(CommunityPage.routeName);
+        if (vm.groupId != null) {
+          context.pop();
+        } else {
+          context.pushNamed(CommunityPage.routeName);
+        }
       },
       text: 'Cancel',
       options: FFButtonOptions(
@@ -442,7 +509,11 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
                   backgroundColor: AppTheme.of(context).secondary,
                 ),
               );
-              context.pushNamed(CommunityPage.routeName);
+              if (vm.groupId != null) {
+                context.pop();
+              } else {
+                context.pushNamed(CommunityPage.routeName);
+              }
             },
       text: vm.isSaving ? 'Saving...' : 'Save Event',
       options: FFButtonOptions(

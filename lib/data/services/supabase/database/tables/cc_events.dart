@@ -69,4 +69,10 @@ class CcEventsRow extends SupabaseDataRow {
 
   String? get visibility => getField<String>('visibility');
   set visibility(String? value) => setField<String>('visibility', value);
+
+  DateTime? get endDate => getField<DateTime>('end_date');
+  set endDate(DateTime? value) => setField<DateTime>('end_date', value);
+
+  String? get eventType => getField<String>('event_type');
+  set eventType(String? value) => setField<String>('event_type', value);
 }

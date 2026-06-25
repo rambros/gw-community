@@ -84,4 +84,8 @@ abstract class AuthService {
 
   /// Refreshes the current user's data.
   Future<void> refreshUser();
+
+  /// Sends a magic link (OTP) to the given email.
+  /// Throws [AuthException] if the user does not exist.
+  Future<void> sendMagicLink(String email);
 }

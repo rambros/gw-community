@@ -51,7 +51,6 @@ import 'package:gw_community/ui/utility/unsplash_page/view_model/unsplash_view_m
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:gw_community/utils/internationalization.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -165,15 +164,69 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   final _appLinks = AppLinks();
   StreamSubscription<Uri>? _linkSubscription;
+
+  // Tracks the last URI string we dispatched to avoid reprocessing the same
+  // link on every app resume (iOS stores the latest link persistently).
+  String? _lastHandledUriStr;
+
+  // Timestamp of the last link delivered by uriLinkStream. Used to suppress
+  // _checkLinkOnResume() on Android, where getInitialLink() returns the
+  // first-ever link for the process (stale after warm starts) instead of
+  // the latest one — unlike iOS which always returns the most recent link.
+  DateTime? _lastStreamLinkAt;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _initDeepLinks();
   }
+
+  // ── Lifecycle ──────────────────────────────────────────────────────────────
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // On iOS, application(_:open:url:options:) fires AFTER
+      // applicationDidBecomeActive (which triggers `resumed`). We wait a
+      // short time so the native AppDelegate has stored the URL via
+      // AppLinks.shared.handleLink before we read it back via getInitialLink.
+      Future.delayed(const Duration(milliseconds: 600), _checkLinkOnResume);
+    }
+  }
+
+  /// Fallback for warm-start deep links when uriLinkStream doesn't fire.
+  /// AppLinks.shared.handleLink (called in AppDelegate) always updates the
+  /// stored initial-link, so getInitialLink returns the latest URL even for
+  /// warm starts — as long as we call it after the 600 ms window above.
+  Future<void> _checkLinkOnResume() async {
+    if (!mounted) return;
+    // On Android, getInitialLink() returns the link from when this process was
+    // first created — it never updates for subsequent warm-start intents.
+    // If the stream already delivered a link in the last 3 seconds, skip to
+    // avoid reprocessing a stale link from a previous session.
+    final lastStream = _lastStreamLinkAt;
+    if (lastStream != null &&
+        DateTime.now().difference(lastStream).inSeconds < 3) {
+      return;
+    }
+    try {
+      final uri = await _appLinks.getInitialLink();
+      if (uri == null) return;
+      final uriStr = uri.toString();
+      if (uriStr == _lastHandledUriStr) return; // already handled
+      debugPrint('🔗 [resume-check] found link: $uri');
+      _lastHandledUriStr = uriStr;
+      _handleDeepLink(uri);
+    } catch (e) {
+      debugPrint('🔗 [resume-check] error: $e');
+    }
+  }
+
+  // ── Deep-link initialisation ───────────────────────────────────────────────
 
   Future<void> _initDeepLinks() async {
     // Track whether the stream already handled a link so getInitialLink()
@@ -185,6 +238,8 @@ class _MyAppState extends State<MyApp> {
     _linkSubscription = _appLinks.uriLinkStream.listen(
       (uri) {
         handledViaStream = true;
+        _lastHandledUriStr = uri.toString();
+        _lastStreamLinkAt = DateTime.now();
         _handleDeepLink(uri);
       },
       onError: (err) {
@@ -197,63 +252,130 @@ class _MyAppState extends State<MyApp> {
     try {
       final initialUri = await _appLinks.getInitialLink();
       if (initialUri != null && !handledViaStream) {
+        _lastHandledUriStr = initialUri.toString();
         _handleDeepLink(initialUri);
       }
     } catch (e) {
       debugPrint('Failed to get initial link: $e');
     }
+
+    // Cold-start fallback: didChangeAppLifecycleState.resumed is NOT fired
+    // on cold start (app starts already in resumed state — no transition).
+    // iOS may also deliver the URL via application:open:url:options: AFTER
+    // didFinishLaunchingWithOptions, meaning getInitialLink() above could
+    // return null if it runs before that callback. Two retries cover the
+    // race window. _checkLinkOnResume's _lastHandledUriStr guard prevents
+    // double-processing if the URL is found on the first retry.
+    Future.delayed(const Duration(milliseconds: 800), () {
+      if (mounted) _checkLinkOnResume();
+    });
+    Future.delayed(const Duration(milliseconds: 2500), () {
+      if (mounted) _checkLinkOnResume();
+    });
   }
+
+  // ── Deep-link handling ─────────────────────────────────────────────────────
 
   Future<void> _handleDeepLink(Uri uri) async {
     debugPrint('🔗 Deep link received: $uri');
-    if (uri.scheme == 'gw' && uri.host == 'invite') {
-      final token = uri.queryParameters['token'];
-      debugPrint('🔗 Token: $token');
-      if (token != null && token.isNotEmpty) {
-        // On Android, getInitialLink() caches the very first deep link the process
-        // ever received and returns it again on hot restart — even if that token is
-        // already used/expired.  Persist the last-navigated token so we can skip it
-        // on subsequent starts when no new link has actually been tapped.
-        final prefs = await SharedPreferences.getInstance();
-        final lastToken = prefs.getString('_gw_last_invite_token');
-        if (token == lastToken) {
-          debugPrint('🔗 Skipping stale cached invite token: $token');
-          return;
-        }
-        await prefs.setString('_gw_last_invite_token', token);
-        // Store as fallback: if navigation fails on first attempt, LoginPage picks this up.
-        PendingInvite.token = token;
-        _navigateToInvite('/invite?token=$token');
+
+    // Magic link callback — let supabase_flutter handle auth, but show errors
+    if (uri.scheme == 'gw' && uri.host == 'login-callback') {
+      final errorCode = uri.queryParameters['error_code'];
+      if (errorCode != null) {
+        _showMagicLinkError(errorCode);
       }
+      return;
+    }
+
+    final isCustomScheme = uri.scheme == 'gw' && uri.host == 'invite';
+    final isUniversalLink = (uri.scheme == 'https' || uri.scheme == 'http') &&
+        uri.host == 'gw-invite.web.app';
+    if (!isCustomScheme && !isUniversalLink) return;
+
+    final token = uri.queryParameters['token'];
+    debugPrint('🔗 Token: $token');
+    if (token == null || token.isEmpty) return;
+
+    // Store the token — single source of truth for all navigation layers:
+    //   1. Direct ctx.go()       ← primary (works when context is ready)
+    //   2. Router redirect        ← backup (fires on any AppStateNotifier change)
+    //   3. SplashViewModel check  ← cold-start backup (after 4s delay)
+    //   4. LoginPage check        ← last resort
+    // Token is cleared ONLY in InviteAcceptPage.initState().
+    PendingInvite.token = token;
+
+    // Layer 1: direct navigation — most reliable when context is ready.
+    // Retries until context is available (handles cold-start timing).
+    _directNavigateToInvite(token);
+
+    // Layer 2: trigger router redirect — fires when AppStateNotifier notifies.
+    // On cold start loading=true so redirect ignores it now, but re-fires
+    // when SplashViewModel calls stopShowingSplashImage() at the 4s mark.
+    AppStateNotifier.instance.notifyPendingInvite();
+  }
+
+  /// Navigates directly to /invite. Retries every 300ms (up to 3s) if the
+  /// navigator context is not yet available (cold-start timing window).
+  /// The token stays in PendingInvite so SplashViewModel / LoginPage act as
+  /// further backstops even if all retries here are exhausted.
+  void _directNavigateToInvite(String token, [int attempt = 0]) {
+    final ctx = appNavigatorKey.currentContext;
+    if (ctx != null) {
+      debugPrint('🔗 Direct nav → /invite (attempt $attempt)');
+      try {
+        ctx.go('/invite?token=$token');
+      } catch (e) {
+        debugPrint('🔗 Direct nav error: $e');
+      }
+    } else if (attempt < 10) {
+      Future.delayed(const Duration(milliseconds: 300), () {
+        _directNavigateToInvite(token, attempt + 1);
+      });
+    } else {
+      debugPrint('🔗 Direct nav exhausted — relying on SplashViewModel/redirect');
     }
   }
 
-  // Navigates to the invite page using the GoRouter's navigator key.
-  // Retries if the context is not yet ready (e.g. cold start).
-  void _navigateToInvite(String targetUrl, [int attempt = 0]) {
+  void _showMagicLinkError(String errorCode) {
+    final message = errorCode == 'otp_expired'
+        ? 'The access link has expired. Please request a new one.'
+        : 'Authentication failed. Please try again.';
+
+    // Retry until the context is inside the router tree (handles cold-start)
+    _showMagicLinkErrorWithRetry(message);
+  }
+
+  void _showMagicLinkErrorWithRetry(String message, [int attempt = 0]) {
     final ctx = appNavigatorKey.currentContext;
-    if (ctx != null) {
-      debugPrint('🔗 Navigating to: $targetUrl (attempt $attempt)');
-      ctx.go(targetUrl);
-      // Navigation succeeded — the token is now in the URL, so clear the
-      // PendingInvite fallback.  Leaving it set would cause LoginPage.initState()
-      // to redirect back to /invite if the token turns out to be invalid, creating
-      // an infinite loop between "Invitation Invalid" and the login screen.
-      PendingInvite.token = null;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        AppStateNotifier.instance.stopShowingSplashImage();
-      });
-    } else if (attempt < 5) {
-      Future.delayed(Duration(milliseconds: 100 * (attempt + 1)), () {
-        _navigateToInvite(targetUrl, attempt + 1);
-      });
-    } else {
-      debugPrint('🔗 Failed to navigate to $targetUrl after $attempt attempts');
+    if (ctx == null || !ctx.mounted) {
+      if (attempt < 10) {
+        Future.delayed(const Duration(milliseconds: 300), () {
+          _showMagicLinkErrorWithRetry(message, attempt + 1);
+        });
+      }
+      return;
+    }
+
+    try {
+      ctx.go('/login');
+      ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red.shade700,
+        duration: const Duration(seconds: 5),
+      ));
+    } catch (_) {
+      if (attempt < 10) {
+        Future.delayed(const Duration(milliseconds: 300), () {
+          _showMagicLinkErrorWithRetry(message, attempt + 1);
+        });
+      }
     }
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _linkSubscription?.cancel();
     super.dispose();
   }

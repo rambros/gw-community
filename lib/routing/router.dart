@@ -6,6 +6,7 @@ import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/domain/models/app_auth_user.dart';
 import 'package:gw_community/index.dart';
 import 'package:gw_community/ui/auth/invite_accept_page/invite_accept_page.dart';
+import 'package:gw_community/ui/auth/invite_accept_page/pending_invite.dart';
 import 'package:gw_community/ui/community/community_guidelines_edit_page/community_guidelines_edit_page.dart';
 import 'package:gw_community/ui/community/community_guidelines_page/community_guidelines_page.dart';
 import 'package:gw_community/ui/community/group_details_page/member_management_page/member_management_page.dart';
@@ -73,6 +74,10 @@ class AppStateNotifier extends ChangeNotifier {
     showSplashImage = false;
     notifyListeners();
   }
+
+  /// Called when a deep-link invite arrives while the app is already running.
+  /// Triggers the router redirect so it can route to the invite page immediately.
+  void notifyPendingInvite() => notifyListeners();
 }
 
 GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
@@ -85,6 +90,15 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         if (appStateNotifier.loading) {
           return null;
         }
+
+        // Highest priority: a deep-link invite is waiting.
+        // Route to the invite page regardless of auth state.
+        // The token is cleared by InviteAcceptPage.initState() once the page loads.
+        final pendingToken = PendingInvite.token;
+        if (pendingToken != null && state.uri.path != InviteAcceptPage.routePath) {
+          return '${InviteAcceptPage.routePath}?token=$pendingToken';
+        }
+
         final loggedIn = appStateNotifier.loggedIn;
         final publicRoutes = [
           '/',
@@ -102,9 +116,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           return LoginPage.routePath;
         }
 
-        if (loggedIn && (state.uri.path == LoginPage.routePath || state.uri.path == CreateAccountPage.routePath)) {
-          debugPrint('ROUTER: User logged in and on auth page. Redirecting to Home.');
-          return '/';
+        if (loggedIn && isPublicRoute && state.uri.path != InviteAcceptPage.routePath) {
+          debugPrint('ROUTER: User logged in and on public route ${state.uri.path}. Redirecting to Home.');
+          return HomePage.routePath;
         }
 
         return null;
@@ -318,6 +332,10 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
             groupId: params.getParam('groupId', ParamType.int),
             groupName: params.getParam('groupName', ParamType.String),
             privacy: params.getParam('privacy', ParamType.String),
+            groupMembers: params.getParam<CcMembersRow>(
+                  'groupMembers', ParamType.SupabaseRow,
+                  isList: true) ??
+                [],
           ),
         ),
         FFRoute(

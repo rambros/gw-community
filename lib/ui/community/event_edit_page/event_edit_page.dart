@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/event_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
-import 'package:gw_community/index.dart';
 import 'package:gw_community/ui/community/event_edit_page/view_model/event_edit_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_drop_down.dart';
@@ -218,6 +217,7 @@ class _EventEditFormState extends State<_EventEditForm> {
     final vm = context.watch<EventEditViewModel>();
     final visibilityController = FormFieldController<String>(vm.visibility);
     final statusController = FormFieldController<String>(vm.status);
+    final eventTypeController = FormFieldController<String>(vm.eventType);
 
     return Container(
       width: double.infinity,
@@ -231,6 +231,23 @@ class _EventEditFormState extends State<_EventEditForm> {
             child: Column(
               children: [
                 _buildImageSection(context, vm),
+                Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(4.0, 8.0, 4.0, 8.0),
+                  child: FlutterFlowDropDown<String>(
+                    controller: eventTypeController,
+                    options: const ['single_day', 'multi_day'],
+                    optionLabels: const ['Single Day', 'Multi-day'],
+                    onChanged: vm.setEventType,
+                    textStyle: AppTheme.of(context).bodyMedium.override(color: Colors.black),
+                    hintText: 'Event Type',
+                    fillColor: AppTheme.of(context).primaryBackground,
+                    elevation: 2.0,
+                    borderColor: AppTheme.of(context).alternate,
+                    borderWidth: 1.0,
+                    borderRadius: 16.0,
+                    margin: const EdgeInsetsDirectional.fromSTEB(12.0, 4.0, 12.0, 4.0),
+                  ),
+                ),
                 _buildTextField(context, vm.titleController, vm.titleFocus, 'Title'),
                 _buildTextField(context, vm.facilitatorController, vm.facilitatorFocus, 'Facilitator'),
                 _buildTextField(
@@ -240,20 +257,26 @@ class _EventEditFormState extends State<_EventEditForm> {
                   'Description',
                   maxLines: 6,
                 ),
-                _buildDateField(context, vm),
-                _buildTimeField(context, vm),
-                _buildTextField(
-                  context,
-                  vm.durationController,
-                  vm.durationFocus,
-                  'Duration (minutes)',
-                  keyboardType: TextInputType.number,
-                ),
+                if (vm.eventType == 'single_day') ...[
+                  _buildDateField(context, vm),
+                  _buildTimeField(context, vm),
+                  _buildTextField(
+                    context,
+                    vm.durationController,
+                    vm.durationFocus,
+                    'Duration (minutes)',
+                    keyboardType: TextInputType.number,
+                  ),
+                ] else ...[
+                  _buildDateField(context, vm, label: 'Start Date'),
+                  _buildEndDateField(context, vm),
+                ],
                 _buildTextField(
                   context,
                   vm.urlRegistrationController,
                   vm.urlFocus,
                   'Registration URL (optional)',
+                  optional: true,
                 ),
                 Padding(
                   padding: const EdgeInsetsDirectional.fromSTEB(4.0, 8.0, 4.0, 8.0),
@@ -262,7 +285,7 @@ class _EventEditFormState extends State<_EventEditForm> {
                     options: const ['group_only', 'everyone'],
                     optionLabels: const ['Only this group', 'Everyone'],
                     onChanged: vm.setVisibility,
-                    textStyle: AppTheme.of(context).bodyMedium,
+                    textStyle: AppTheme.of(context).bodyMedium.override(color: Colors.black),
                     fillColor: AppTheme.of(context).primaryBackground,
                     elevation: 2.0,
                     borderColor: AppTheme.of(context).alternate,
@@ -278,7 +301,7 @@ class _EventEditFormState extends State<_EventEditForm> {
                     options: const ['scheduled', 'recorded'],
                     optionLabels: const ['Scheduled', 'Recorded'],
                     onChanged: vm.setStatus,
-                    textStyle: AppTheme.of(context).bodyMedium,
+                    textStyle: AppTheme.of(context).bodyMedium.override(color: Colors.black),
                     fillColor: AppTheme.of(context).primaryBackground,
                     elevation: 2.0,
                     borderColor: AppTheme.of(context).alternate,
@@ -323,6 +346,7 @@ class _EventEditFormState extends State<_EventEditForm> {
     String label, {
     TextInputType? keyboardType,
     int maxLines = 1,
+    bool optional = false,
   }) {
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(4.0, 8.0, 4.0, 8.0),
@@ -331,7 +355,7 @@ class _EventEditFormState extends State<_EventEditForm> {
         focusNode: focusNode,
         keyboardType: keyboardType,
         maxLines: maxLines,
-        validator: _requiredValidator,
+        validator: optional ? null : _requiredValidator,
         decoration: InputDecoration(
           labelText: label,
           labelStyle: AppTheme.of(context).labelLarge.override(
@@ -356,12 +380,12 @@ class _EventEditFormState extends State<_EventEditForm> {
             borderRadius: BorderRadius.circular(16.0),
           ),
         ),
-        style: AppTheme.of(context).bodyMedium,
+        style: AppTheme.of(context).bodyMedium.override(color: Colors.black),
       ),
     );
   }
 
-  Widget _buildDateField(BuildContext context, EventEditViewModel vm) {
+  Widget _buildDateField(BuildContext context, EventEditViewModel vm, {String label = 'Date'}) {
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(4.0, 8.0, 4.0, 8.0),
       child: Row(
@@ -372,7 +396,8 @@ class _EventEditFormState extends State<_EventEditForm> {
               focusNode: vm.dateFocus,
               readOnly: true,
               validator: _requiredValidator,
-              decoration: _dateTimeDecoration(context, 'Date'),
+              decoration: _dateTimeDecoration(context, label),
+              style: AppTheme.of(context).bodyMedium.override(color: Colors.black),
             ),
           ),
           const SizedBox(width: 8.0),
@@ -400,6 +425,46 @@ class _EventEditFormState extends State<_EventEditForm> {
     );
   }
 
+  Widget _buildEndDateField(BuildContext context, EventEditViewModel vm) {
+    return Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(4.0, 8.0, 4.0, 8.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextFormField(
+              controller: vm.endDateController,
+              focusNode: vm.endDateFocus,
+              readOnly: true,
+              validator: _requiredValidator,
+              decoration: _dateTimeDecoration(context, 'End Date'),
+              style: AppTheme.of(context).bodyMedium.override(color: Colors.black),
+            ),
+          ),
+          const SizedBox(width: 8.0),
+          FFButtonWidget(
+            onPressed: () async {
+              final locale = FFLocalizations.of(context).languageCode;
+              final picked = await showDatePicker(
+                context: context,
+                initialDate: vm.endDate ?? getCurrentTimestamp,
+                firstDate: DateTime(1900),
+                lastDate: DateTime(2050),
+              );
+              if (picked != null) {
+                vm.setEndDate(
+                  DateTime(picked.year, picked.month, picked.day),
+                  locale: locale,
+                );
+              }
+            },
+            text: 'Select date',
+            options: _pickerButtonOptions(context),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildTimeField(BuildContext context, EventEditViewModel vm) {
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(4.0, 8.0, 4.0, 8.0),
@@ -412,6 +477,7 @@ class _EventEditFormState extends State<_EventEditForm> {
               readOnly: true,
               validator: _requiredValidator,
               decoration: _dateTimeDecoration(context, 'Time'),
+              style: AppTheme.of(context).bodyMedium.override(color: Colors.black),
             ),
           ),
           const SizedBox(width: 8.0),
@@ -530,19 +596,7 @@ class _EventEditFormState extends State<_EventEditForm> {
                   backgroundColor: AppTheme.of(context).secondary,
                 ),
               );
-              context.pushNamed(
-                EventDetailsPage.routeName,
-                queryParameters: {
-                  'eventRow': serializeParam(
-                    vm.event,
-                    ParamType.SupabaseRow,
-                  ),
-                  'groupId': serializeParam(
-                    vm.event.groupId,
-                    ParamType.int,
-                  ),
-                }.withoutNulls,
-              );
+              context.pop();
             },
       text: vm.isSaving ? 'Saving...' : 'Save Event',
       options: FFButtonOptions(

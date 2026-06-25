@@ -76,18 +76,15 @@ class GroupEventsTab extends StatelessWidget {
                       itemCount: eventsList.length,
                       itemBuilder: (context, index) {
                         final event = eventsList[index];
-                        return Padding(
-                          padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 16.0),
-                          child: EventCardWidget(
-                            eventName: event.title,
-                            facilitator: event.facilitatorName,
-                            date: dateTimeFormat('d/M/y', event.eventDate),
-                            time: event.eventTime != null ? event.eventTime.toString().substring(0, 5) : '',
-                            event: event,
-                            groupId: group.id,
-                            userRegistered:
-                                false, // Logic for registration status needs to be handled if available in row
-                          ),
+                        return EventCardWidget(
+                          eventName: event.title,
+                          facilitator: event.facilitatorName,
+                          date: dateTimeFormat('d/M/y', event.eventDate),
+                          time: event.eventTime != null ? event.eventTime.toString().substring(0, 5) : '',
+                          event: event,
+                          groupId: group.id,
+                          userRegistered:
+                              false, // Logic for registration status needs to be handled if available in row
                         );
                       },
                     );

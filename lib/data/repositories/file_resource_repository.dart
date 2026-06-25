@@ -130,6 +130,18 @@ class FileResourceRepository {
         );
         if (existing.isNotEmpty) {
           resourceId = existing.first.id;
+          // Update description/title in case content changed since last link
+          if (description != null && description.isNotEmpty) {
+            final now = DateTime.now().toUtc().toIso8601String();
+            await CcFileResourcesTable().update(
+              data: {
+                'title': title,
+                'description': description,
+                'updated_at': now,
+              },
+              matchingRows: (q) => q.eq('id', resourceId!),
+            );
+          }
         } else {
           final now = DateTime.now().toUtc().toIso8601String();
           final row = await CcFileResourcesTable().insert({
@@ -204,8 +216,8 @@ class FileResourceRepository {
       }
 
       return true;
-    } catch (e) {
-      debugPrint('FileResourceRepository.linkPortalItemToGroups: $e');
+    } catch (e, st) {
+      debugPrint('FileResourceRepository.linkPortalItemToGroups: $e\n$st');
       return false;
     }
   }

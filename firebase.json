@@ -40,10 +40,17 @@
       "public": "web",
       "ignore": [
         "firebase.json",
-        "**/.*",
         "**/node_modules/**"
       ],
       "rewrites": [
+        {
+          "source": "/welcome",
+          "destination": "/welcome.html"
+        },
+        {
+          "source": "/welcome.html",
+          "destination": "/welcome.html"
+        },
         {
           "source": "**",
           "destination": "/invite.html"
@@ -55,7 +62,16 @@
           "headers": [
             {
               "key": "Cache-Control",
-              "value": "no-cache, no-store, must-revalidate"
+              "value": "public, max-age=60, s-maxage=300"
+            }
+          ]
+        },
+        {
+          "source": "/.well-known/apple-app-site-association",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
             }
           ]
         }

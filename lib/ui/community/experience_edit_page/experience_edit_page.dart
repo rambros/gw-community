@@ -300,7 +300,7 @@ class _ExperienceEditPageContent extends StatelessWidget {
 
   Widget _buildActions(BuildContext context, ExperienceEditViewModel viewModel) {
     // Texto do botão principal
-    final publishButtonText = viewModel.isDraft ? 'Submit' : 'Update';
+    final publishButtonText = viewModel.isDraft ? 'Publish' : 'Update';
 
     return Padding(
       padding: const EdgeInsets.all(4.0),

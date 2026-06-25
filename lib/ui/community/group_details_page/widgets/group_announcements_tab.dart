@@ -260,6 +260,7 @@ class GroupAnnouncementsTab extends StatelessWidget {
                     ),
                   }.withoutNulls,
                   extra: <String, dynamic>{
+                    'groupMembers': viewModel.members,
                     kTransitionInfoKey: const TransitionInfo(
                       hasTransition: true,
                       transitionType: PageTransitionType.fade,
@@ -283,6 +284,44 @@ class GroupAnnouncementsTab extends StatelessWidget {
               ),
             ),
           ),
+      ],
+    );
+  }
+
+  Widget _buildPrivateBadge(
+    BuildContext context,
+    GroupDetailsViewModel viewModel,
+    CcViewNotificationsUsersRow notification,
+  ) {
+    final isRecipient = notification.recipientUserId == viewModel.currentUserId;
+    final isSender = notification.userId == viewModel.currentUserId;
+
+    String label;
+    if (isSender && !isRecipient) {
+      final recipient = viewModel.members.firstWhere(
+        (m) => m.authUserId == notification.recipientUserId,
+        orElse: () => CcMembersRow({}),
+      );
+      final name = recipient.displayName ?? recipient.firstName ?? 'Member';
+      label = 'Private → $name';
+    } else {
+      label = 'Private message';
+    }
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(Icons.lock_outline, size: 12.0, color: AppTheme.of(context).primary),
+        const SizedBox(width: 4.0),
+        Text(
+          label,
+          style: AppTheme.of(context).labelSmall.override(
+                font: GoogleFonts.lexendDeca(),
+                color: AppTheme.of(context).primary,
+                fontSize: 11.0,
+                fontWeight: FontWeight.w600,
+              ),
+        ),
       ],
     );
   }
@@ -324,6 +363,7 @@ class GroupAnnouncementsTab extends StatelessWidget {
           },
           child: Container(
             width: double.infinity,
+            constraints: const BoxConstraints(maxWidth: 530.0),
             decoration: BoxDecoration(
               color: isRead
                   ? AppTheme.of(context).primaryBackground
@@ -340,10 +380,8 @@ class GroupAnnouncementsTab extends StatelessWidget {
               ],
               borderRadius: BorderRadius.circular(12.0),
               border: Border.all(
-                color: isRead
-                    ? AppTheme.of(context).primaryBackground
-                    : AppTheme.of(context).primary.withValues(alpha: 0.3),
-                width: isRead ? 1.0 : 2.0,
+                color: AppTheme.of(context).primaryBackground,
+                width: 1.0,
               ),
             ),
             child: Padding(
@@ -381,10 +419,10 @@ class GroupAnnouncementsTab extends StatelessWidget {
                           child: Text(
                             notification.title!,
                             style: AppTheme.of(context).titleMedium.override(
-                                  font: GoogleFonts.inter(
+                                  font: GoogleFonts.lexendDeca(
                                     fontWeight: isRead
                                         ? FontWeight.normal
-                                        : FontWeight.bold,
+                                        : FontWeight.w600,
                                   ),
                                   color: AppTheme.of(context).secondary,
                                   fontSize: 16.0,
@@ -406,6 +444,12 @@ class GroupAnnouncementsTab extends StatelessWidget {
                       ],
                     ),
                   ),
+                  if (notification.recipientUserId != null)
+                    Padding(
+                      padding: const EdgeInsetsDirectional.fromSTEB(
+                          16.0, 0.0, 16.0, 6.0),
+                      child: _buildPrivateBadge(context, viewModel, notification),
+                    ),
                   Padding(
                     padding: const EdgeInsetsDirectional.fromSTEB(
                         16.0, 0.0, 16.0, 12.0),

@@ -46,11 +46,16 @@ class _GroupLinkSheetState extends State<GroupLinkSheet> {
     final t = (widget.contentRow.midiaType ?? '').toLowerCase();
     if (t.contains('audio') || t.contains('áudio')) return 'audio';
     if (t.contains('video') || t.contains('vídeo')) return 'video';
+    if (t.contains('text') || t.contains('texto')) return 'text';
     return (widget.contentRow.audioUrl?.isNotEmpty == true) ? 'audio' : 'pdf';
   }
 
   String get _resourceUrl {
     if (_resourceType == 'audio') return widget.contentRow.audioUrl ?? '';
+    // Text content has no file URL. Store a non-empty sentinel so the DB
+    // NOT NULL / CHECK constraint on the url column is satisfied.
+    // The actual content is stored in the description field.
+    if (_resourceType == 'text') return 'text';
     return widget.contentRow.midiaFileUrl ?? '';
   }
 
@@ -100,7 +105,9 @@ class _GroupLinkSheetState extends State<GroupLinkSheet> {
     final ok = await _repo.linkPortalItemToGroups(
       portalItemId: contentId,
       title: widget.contentRow.title ?? '',
-      description: widget.contentRow.description,
+      description: _resourceType == 'text'
+          ? widget.contentRow.text
+          : widget.contentRow.description,
       url: _resourceUrl,
       type: _resourceType,
       isPublished: widget.contentRow.isPublished ?? false,
@@ -326,10 +333,16 @@ Future<bool> showGroupLinkSheet(
   final appState = Provider.of<FFAppState>(context, listen: false);
   if (!appState.loginUser.roles.hasAdminOrGroupManager) return false;
 
-  final url = (contentRow.midiaType ?? '').toLowerCase().contains('audio')
+  final midiaTypeLower = (contentRow.midiaType ?? '').toLowerCase();
+  final isText = midiaTypeLower.contains('text') || midiaTypeLower.contains('texto');
+  final url = (midiaTypeLower.contains('audio') || midiaTypeLower.contains('áudio'))
       ? (contentRow.audioUrl ?? '')
       : (contentRow.midiaFileUrl ?? '');
-  if (url.isEmpty || contentRow.contentId == null) return false;
+
+  if (contentRow.contentId == null) return false;
+  // Text type has no file URL — allow regardless of url/text emptiness.
+  // Non-text types require a file/audio URL to be linkable.
+  if (!isText && url.isEmpty) return false;
 
   final userId = SupaFlow.client.auth.currentUser?.id ?? '';
   if (userId.isEmpty) return false;

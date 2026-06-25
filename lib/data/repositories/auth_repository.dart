@@ -65,4 +65,8 @@ abstract class AuthRepository {
 
   /// Refreshes the current user's data.
   Future<void> refreshUser();
+
+  /// Sends a magic link (passwordless OTP) to the given email.
+  /// Throws [AuthException] with code 422 if user not found.
+  Future<void> sendMagicLink(String email);
 }

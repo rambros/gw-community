@@ -86,7 +86,7 @@ class GroupResourcesTab extends StatelessWidget {
     return RefreshIndicator(
       onRefresh: viewModel.loadFileResources,
       child: ListView.builder(
-        padding: EdgeInsets.fromLTRB(16, 16, 16, canManage ? 80 : 16),
+        padding: EdgeInsets.only(top: 16.0, bottom: canManage ? 80.0 : 16.0),
         itemCount: resources.length,
         itemBuilder: (context, index) {
           final resource = resources[index];

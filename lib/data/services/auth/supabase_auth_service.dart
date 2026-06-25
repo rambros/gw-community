@@ -224,6 +224,15 @@ class SupabaseAuthService implements AuthService {
     }
   }
 
+  @override
+  Future<void> sendMagicLink(String email) async {
+    await SupaFlow.client.auth.signInWithOtp(
+      email: email,
+      emailRedirectTo: 'gw://login-callback',
+      shouldCreateUser: false,
+    );
+  }
+
   /// Helper method to sign in or create an account.
   Future<UserEntity?> _signInOrCreateAccount(
     BuildContext context,

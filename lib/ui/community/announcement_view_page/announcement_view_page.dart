@@ -87,7 +87,7 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
                 onPressed: () => context.pop(),
               ),
               title: Text(
-                'Announcement',
+                'Message',
                 style: AppTheme.of(context).titleLarge.override(
                       font: GoogleFonts.poppins(
                         fontWeight: AppTheme.of(context).titleLarge.fontWeight,
@@ -123,7 +123,7 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
     if (announcement == null) {
       return Center(
         child: Text(
-          viewModel.errorMessage ?? 'Announcement not found.',
+          viewModel.errorMessage ?? 'Message not found.',
           style: AppTheme.of(context).labelLarge,
         ),
       );
@@ -181,24 +181,21 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
             ),
           ),
           Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(8.0, 4.0, 8.0, 4.0),
+            padding: const EdgeInsetsDirectional.fromSTEB(8.0, 2.0, 8.0, 4.0),
             child: Row(
               children: [
                 Expanded(
-                  child: Padding(
-                    padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 0.0),
-                    child: Text(
-                      '${dateTimeFormat('MMM d', announcement.updatedAt)} - From ${valueOrDefault<String>(announcement.displayName, 'name')} - Facilitator',
-                      style: AppTheme.of(context).bodyMedium.override(
-                            font: GoogleFonts.lexendDeca(
-                              fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                              fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
-                            ),
-                            color: AppTheme.of(context).secondary,
-                            fontSize: 13.0,
-                            letterSpacing: 0.0,
+                  child: Text(
+                    '${dateTimeFormat('MMM d', announcement.updatedAt)} - From ${valueOrDefault<String>(announcement.displayName, 'name')} - Facilitator',
+                    style: AppTheme.of(context).bodyMedium.override(
+                          font: GoogleFonts.lexendDeca(
+                            fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                            fontStyle: FontStyle.italic,
                           ),
-                    ),
+                          color: AppTheme.of(context).secondaryText,
+                          fontSize: 13.0,
+                          letterSpacing: 0.0,
+                        ),
                   ),
                 ),
               ],
@@ -222,6 +219,7 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
         borderRadius: BorderRadius.circular(8.0),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 8.0, 8.0),
@@ -233,6 +231,7 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
                 }
               },
               styleSheet: MarkdownStyleSheet(
+                textAlign: WrapAlignment.start,
                 p: GoogleFonts.lexendDeca(
                   color: AppTheme.of(context).secondary,
                   fontSize: 14.0,
@@ -305,8 +304,8 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
                         : () async {
                             final confirm = await _showConfirmationDialog(
                               context,
-                              title: 'Deletion of Notification',
-                              message: 'Confirm deletion of this notification?',
+                              title: 'Deletion of Message',
+                              message: 'Confirm deletion of this message?',
                             );
                             if (!confirm || !context.mounted) return;
                             final success = await viewModel.deleteAnnouncement();
@@ -314,7 +313,7 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(
-                                  'Notification deleted successfully',
+                                  'Message deleted successfully',
                                   style: TextStyle(
                                     color: AppTheme.of(context).primaryText,
                                   ),

@@ -26,6 +26,7 @@ class EventEditViewModel extends ChangeNotifier {
   final facilitatorController = TextEditingController();
   final descriptionController = TextEditingController();
   final dateController = TextEditingController();
+  final endDateController = TextEditingController();
   final timeController = TextEditingController();
   final durationController = TextEditingController();
   final urlRegistrationController = TextEditingController();
@@ -34,12 +35,16 @@ class EventEditViewModel extends ChangeNotifier {
   final facilitatorFocus = FocusNode();
   final descriptionFocus = FocusNode();
   final dateFocus = FocusNode();
+  final endDateFocus = FocusNode();
   final timeFocus = FocusNode();
   final durationFocus = FocusNode();
   final urlFocus = FocusNode();
 
   DateTime? _eventDate;
   DateTime? get eventDate => _eventDate;
+
+  DateTime? _endDate;
+  DateTime? get endDate => _endDate;
 
   DateTime? _eventTime;
   DateTime? get eventTime => _eventTime;
@@ -49,6 +54,9 @@ class EventEditViewModel extends ChangeNotifier {
 
   String _status = 'scheduled';
   String get status => _status;
+
+  String _eventType = 'single_day';
+  String get eventType => _eventType;
 
   bool _isSaving = false;
   bool get isSaving => _isSaving;
@@ -70,9 +78,15 @@ class EventEditViewModel extends ChangeNotifier {
     urlRegistrationController.text = eventRow.eventPageUrl ?? '';
     _visibility = eventRow.visibility ?? 'group_only';
     _status = eventRow.eventStatus ?? 'scheduled';
+    _eventType = eventRow.eventType ?? 'single_day';
 
     if (eventRow.eventDate != null) {
       setEventDate(eventRow.eventDate!);
+    }
+    if (eventRow.endDate != null) {
+      setEndDate(eventRow.endDate!);
+    } else if (eventRow.eventDate != null) {
+      setEndDate(eventRow.eventDate!);
     }
     if (eventRow.eventTime?.time != null) {
       setEventTime(eventRow.eventTime!.time!);
@@ -87,6 +101,16 @@ class EventEditViewModel extends ChangeNotifier {
   void setEventDate(DateTime date, {String? locale}) {
     _eventDate = date;
     dateController.text = dateTimeFormat(
+      'd/M/y',
+      date,
+      locale: locale,
+    );
+    notifyListeners();
+  }
+
+  void setEndDate(DateTime date, {String? locale}) {
+    _endDate = date;
+    endDateController.text = dateTimeFormat(
       'd/M/y',
       date,
       locale: locale,
@@ -113,6 +137,12 @@ class EventEditViewModel extends ChangeNotifier {
   void setStatus(String? value) {
     if (value == null) return;
     _status = value;
+    notifyListeners();
+  }
+
+  void setEventType(String? value) {
+    if (value == null) return;
+    _eventType = value;
     notifyListeners();
   }
 
@@ -164,14 +194,38 @@ class EventEditViewModel extends ChangeNotifier {
 
   Future<bool> saveEvent() async {
     if (!validateForm()) return false;
-    if (_eventDate == null || _eventTime == null) {
-      _setError('Please select date and time for the event.');
+    if (_eventDate == null) {
+      _setError('Please select date for the event.');
       return false;
     }
-    final duration = int.tryParse(durationController.text.trim());
-    if (duration == null) {
-      _setError('Invalid duration value.');
-      return false;
+
+    DateTime? finalEventTime = _eventTime;
+    int? duration;
+    DateTime? finalEndDate = _endDate;
+
+    if (_eventType == 'single_day') {
+      if (_eventTime == null) {
+        _setError('Please select time for the event.');
+        return false;
+      }
+      duration = int.tryParse(durationController.text.trim());
+      if (duration == null) {
+        _setError('Invalid duration value.');
+        return false;
+      }
+      finalEndDate = null;
+    } else {
+      // multi_day
+      if (_endDate == null) {
+        _setError('Please select end date for the event.');
+        return false;
+      }
+      if (_endDate!.isBefore(_eventDate!)) {
+        _setError('End date cannot be before start date.');
+        return false;
+      }
+      finalEventTime = null;
+      duration = null;
     }
 
     _setSaving(true);
@@ -185,7 +239,7 @@ class EventEditViewModel extends ChangeNotifier {
         facilitatorName: facilitatorController.text.trim(),
         facilitatorId: currentUserUid,
         eventDate: _eventDate!,
-        eventTime: _eventTime!,
+        eventTime: finalEventTime,
         durationMinutes: duration,
         status: _status,
         visibility: _visibility,
@@ -193,6 +247,8 @@ class EventEditViewModel extends ChangeNotifier {
             ? null
             : urlRegistrationController.text.trim(),
         imageUrl: _uploadedImageUrl, // Only pass if new image uploaded, null otherwise
+        endDate: finalEndDate,
+        eventType: _eventType,
       );
 
       final updated = await _repository.getEventById(_event.id);
@@ -229,6 +285,7 @@ class EventEditViewModel extends ChangeNotifier {
     facilitatorController.dispose();
     descriptionController.dispose();
     dateController.dispose();
+    endDateController.dispose();
     timeController.dispose();
     durationController.dispose();
     urlRegistrationController.dispose();
@@ -237,6 +294,7 @@ class EventEditViewModel extends ChangeNotifier {
     facilitatorFocus.dispose();
     descriptionFocus.dispose();
     dateFocus.dispose();
+    endDateFocus.dispose();
     timeFocus.dispose();
     durationFocus.dispose();
     urlFocus.dispose();
