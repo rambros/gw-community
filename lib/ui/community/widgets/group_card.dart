@@ -73,21 +73,21 @@ class _GroupCardState extends State<GroupCard> {
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 10.0),
       child: Container(
-        width: MediaQuery.sizeOf(context).width * 1.0,
+        width: MediaQuery.sizeOf(context).width * 0.925,
         constraints: const BoxConstraints(minHeight: 96.0),
         decoration: BoxDecoration(
           color: AppTheme.of(context).primaryBackground,
           boxShadow: const [
             BoxShadow(
               blurRadius: 15.0,
-              color: Color(0x33000000),
+              color: Color(0x26000000),
               offset: Offset(0.0, 7.0),
               spreadRadius: 3.0,
             )
           ],
           borderRadius: BorderRadius.circular(12.0),
           border: Border.all(
-            color: AppTheme.of(context).primaryBackground,
+            color: Color(0xFFF5FBFB),
           ),
         ),
         child: Row(

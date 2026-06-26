@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/models/enums/enums.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/index.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
@@ -33,6 +34,31 @@ class _UserProfilePageState extends State<UserProfilePage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<UserProfileViewModel>().loadUserProfile();
     });
+  }
+
+  String _getUserDisplayName(CcMembersRow? profile) {
+    if (profile == null) return 'Name';
+
+    final displayName = profile.displayName?.trim();
+    if (displayName != null && displayName.isNotEmpty) {
+      return displayName;
+    }
+
+    final firstName = profile.firstName?.trim() ?? '';
+    final lastName = profile.lastName?.trim() ?? '';
+    if (firstName.isNotEmpty || lastName.isNotEmpty) {
+      return '$firstName $lastName'.trim();
+    }
+
+    final email = profile.email?.trim() ?? '';
+    if (email.isNotEmpty) {
+      final parts = email.split('@');
+      if (parts.isNotEmpty && parts[0].isNotEmpty) {
+        return parts[0];
+      }
+    }
+
+    return 'Name';
   }
 
   @override
@@ -115,10 +141,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          valueOrDefault<String>(
-                            userProfile?.displayName,
-                            'Name',
-                          ),
+                          _getUserDisplayName(userProfile),
                           style: AppTheme.of(context).headlineSmall.override(
                                 font: GoogleFonts.lexendDeca(
                                   fontWeight: AppTheme.of(context)

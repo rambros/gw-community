@@ -68,14 +68,14 @@ class HomeEventCard extends StatelessWidget {
                 );
               },
               child: Container(
-                width: MediaQuery.sizeOf(context).width * 0.9,
+                width: MediaQuery.sizeOf(context).width * 0.925,
                 height: 110.0,
                 decoration: BoxDecoration(
                   color: AppTheme.of(context).primaryBackground,
                   boxShadow: const [
                     BoxShadow(
                       blurRadius: 15.0,
-                      color: Color(0x1A000000),
+                      color: Color(0x26000000),
                       offset: Offset(0.0, 7.0),
                       spreadRadius: 3.0,
                     )

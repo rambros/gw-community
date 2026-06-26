@@ -31,7 +31,7 @@ class JourneyAboutDialog extends StatelessWidget {
             maxHeight: 700.0,
           ),
           decoration: BoxDecoration(
-            color: theme.alternate,
+            color: Colors.white,
             borderRadius: BorderRadius.circular(0.0),
             border: Border.all(
               color: theme.secondary,

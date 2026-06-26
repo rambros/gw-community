@@ -4,6 +4,7 @@ import 'package:gw_community/data/repositories/community_repository.dart';
 import 'package:gw_community/ui/community/community_page/view_model/community_view_model.dart';
 import 'package:gw_community/ui/community/community_page/widgets/groups_tab_widget.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
+import 'package:gw_community/ui/core/widgets/screen_hint.dart';
 import 'package:gw_community/utils/context_extensions.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
@@ -91,9 +92,15 @@ class _CommunityPageState extends State<CommunityPage> with RouteAware {
               centerTitle: true,
               elevation: 4.0,
             ),
-            body: const SafeArea(
-              top: true,
-              child: GroupsTabWidget(),
+            body: ScreenHint(
+              hintKey: 'hint_community',
+              title: 'The power of collective good wishes',
+              message: 'Join a community of well-wishers supporting one another through heartfelt thoughts that bring hope, strength, and encouragement.',
+              pointerFraction: 0.7, // Community: 4th of 5 nav items
+              child: const SafeArea(
+                top: true,
+                child: GroupsTabWidget(),
+              ),
             ),
           );
         },

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
+import 'package:gw_community/ui/core/widgets/screen_hint.dart';
 import 'package:gw_community/ui/journey/journey_page/journey_page.dart';
 import 'package:gw_community/ui/journey/journeys_list_page/view_model/journeys_list_view_model.dart';
 import 'package:gw_community/ui/journey/journeys_list_page/widgets/journey_card_widget.dart';
@@ -61,7 +62,11 @@ class _JourneysListPageState extends State<JourneysListPage> with TickerProvider
         centerTitle: true,
         elevation: 4.0,
       ),
-      body: SafeArea(
+      body: ScreenHint(
+        hintKey: 'hint_journey',
+        title: 'Welcome to a wonderful journey!',
+        message: 'Learn, create, and share good wishes that make a real impact. Discover inspiration, meditations, and daily practices for personal and world transformation.',
+        child: SafeArea(
         top: true,
         child: Column(
           mainAxisSize: MainAxisSize.max,
@@ -98,6 +103,7 @@ class _JourneysListPageState extends State<JourneysListPage> with TickerProvider
               ),
             ),
           ],
+        ),
         ),
       ),
     );

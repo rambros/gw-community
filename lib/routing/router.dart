@@ -11,6 +11,7 @@ import 'package:gw_community/ui/community/group_details_page/member_management_p
 import 'package:gw_community/ui/community/group_moderation_page/group_moderation_page.dart';
 import 'package:gw_community/ui/core/nav_bar/nav_bar_page.dart';
 import 'package:gw_community/ui/journey/journey_list_page/journey_list_page.dart';
+import 'package:gw_community/ui/notifications/set_notifications_page/set_notifications_page.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
 
@@ -365,6 +366,11 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: InAppNotificationsPage.routeName,
           path: InAppNotificationsPage.routePath,
           builder: (context, params) => const InAppNotificationsPage(),
+        ),
+        FFRoute(
+          name: SetNotificationsPage.routeName,
+          path: SetNotificationsPage.routePath,
+          builder: (context, params) => const SetNotificationsPage(),
         ),
         FFRoute(
           name: MyExperiencesPage.routeName,

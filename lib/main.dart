@@ -2,14 +2,16 @@ import 'dart:async';
 
 import 'package:app_links/app_links.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
-import 'package:provider/provider.dart';
 import 'package:gw_community/config/audio/audio_service.dart';
 import 'package:gw_community/config/firebase/firebase_config.dart';
+import 'package:gw_community/data/services/push/push_notification_service.dart';
+import 'package:provider/provider.dart';
 import 'package:gw_community/data/repositories/announcement_repository.dart';
 import 'package:gw_community/data/repositories/auth_repository.dart';
 import 'package:gw_community/data/repositories/auth_repository_impl.dart';
@@ -55,6 +57,10 @@ void main() async {
   GoRouter.optionURLReflectsImperativeAPIs = true;
   usePathUrlStrategy();
 
+  if (!kIsWeb) {
+    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+  }
+
   await initFirebase();
 
   await SupaFlow.initialize();
@@ -69,6 +75,10 @@ void main() async {
   // Start final custom actions code
   await initAudioService();
   // End final custom actions code
+
+  if (!kIsWeb) {
+    await PushNotificationService.instance.initialize();
+  }
 
   runApp(
     MultiProvider(

@@ -3,6 +3,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
+import 'package:gw_community/ui/core/widgets/screen_hint.dart';
 import 'package:gw_community/ui/learn/learn_list_page/view_model/learn_list_view_model.dart';
 import 'package:gw_community/ui/learn/widgets/content_card.dart';
 import 'package:gw_community/ui/learn/widgets/content_filter.dart';
@@ -100,10 +101,15 @@ class _LearnListPageState extends State<LearnListPage> {
           centerTitle: true,
           elevation: 2.0,
         ),
-        body: SafeArea(
-          top: true,
-          child: Consumer<LearnListViewModel>(
-            builder: (context, viewModel, child) {
+        body: ScreenHint(
+          hintKey: 'hint_library',
+          title: 'Explore and grow',
+          message: 'Access a growing collection of meditations, reflections, and resources to deepen your practice and support your growth.',
+          pointerFraction: 0.3, // Library: 2nd of 5 nav items
+          child: SafeArea(
+            top: true,
+            child: Consumer<LearnListViewModel>(
+              builder: (context, viewModel, child) {
               return Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -427,6 +433,7 @@ class _LearnListPageState extends State<LearnListPage> {
           ),
         ),
       ),
-    );
+    ),
+  );
   }
 }

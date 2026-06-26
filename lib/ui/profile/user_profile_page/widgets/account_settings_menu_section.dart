@@ -3,8 +3,10 @@ import 'package:gw_community/data/models/enums/user_role.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/index.dart';
 import 'package:gw_community/ui/community/community_guidelines_edit_page/community_guidelines_edit_page.dart';
+import 'package:gw_community/ui/core/widgets/screen_hint.dart';
 import 'package:gw_community/ui/profile/user_profile_page/widgets/profile_menu_item_widget.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AccountSettingsMenuSection extends StatelessWidget {
   const AccountSettingsMenuSection({
@@ -47,7 +49,7 @@ class AccountSettingsMenuSection extends StatelessWidget {
           child: ProfileMenuItemWidget(
             text: 'Set Notifications',
             onTap: () async {
-              // No action in original code
+              context.pushNamed('setNotificationsPage');
             },
           ),
         ),
@@ -58,6 +60,25 @@ class AccountSettingsMenuSection extends StatelessWidget {
               text: 'Edit Guidelines',
               onTap: () async {
                 context.pushNamed(CommunityGuidelinesEditPage.routeName);
+              },
+            ),
+          ),
+        if (isAdmin)
+          Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
+            child: ProfileMenuItemWidget(
+              text: 'Reset Tips',
+              onTap: () async {
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.remove('hint_journey');
+                await prefs.remove('hint_community');
+                await prefs.remove('hint_library');
+                HintResetNotifier.instance.resetAll();
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Tips reset — switching tabs will show them again.')),
+                  );
+                }
               },
             ),
           ),
