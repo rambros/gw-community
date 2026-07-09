@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gw_community/data/models/enums/enums.dart';
-import 'package:provider/provider.dart';
 import 'package:gw_community/data/repositories/favorites_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
@@ -10,6 +9,7 @@ import 'package:gw_community/ui/learn/themes/learn_theme_extension.dart';
 import 'package:gw_community/ui/learn/widgets/group_link_sheet.dart';
 import 'package:gw_community/utils/context_extensions.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
+import 'package:provider/provider.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
 
 class ContentCard extends StatefulWidget {

@@ -17,6 +17,7 @@ class StepAudioPlayerPage extends StatelessWidget {
     required this.audioArt,
     required this.typeStep,
     this.activityId,
+    this.transcript,
   });
 
   final String? stepAudioUrl;
@@ -25,6 +26,7 @@ class StepAudioPlayerPage extends StatelessWidget {
   final String? audioArt;
   final String? typeStep;
   final int? activityId;
+  final String? transcript;
 
   static String routeName = 'stepAudioPlayerPage';
   static String routePath = '/stepAudioPlayerPage';
@@ -60,6 +62,12 @@ class StepAudioPlayerPage extends StatelessWidget {
             style: AppTheme.of(context).journey.pageTitle,
           ),
           actions: [
+            if (transcript != null && transcript!.isNotEmpty)
+              IconButton(
+                icon: const Icon(Icons.text_snippet_outlined, color: Colors.white, size: 26.0),
+                tooltip: 'Transcript',
+                onPressed: () => _showTranscriptDialog(context),
+              ),
             if (context.currentUserIdOrEmpty.isNotEmpty && activityId != null)
               Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 12.0, 0.0),
@@ -112,6 +120,86 @@ class StepAudioPlayerPage extends StatelessWidget {
                       audioArt: audioArt!,
                       colorButton: AppTheme.of(context).primary,
                     ),
+                  ),
+                ),
+              ),
+              if (transcript != null && transcript!.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(24.0, 4.0, 24.0, 0.0),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      onPressed: () => _showTranscriptDialog(context),
+                      icon: const Icon(Icons.text_snippet_outlined, size: 20.0),
+                      label: const Text('Transcript'),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        side: const BorderSide(color: Colors.white54, width: 1.0),
+                        padding: const EdgeInsets.symmetric(vertical: 12.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showTranscriptDialog(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => DraggableScrollableSheet(
+        initialChildSize: 0.65,
+        minChildSize: 0.4,
+        maxChildSize: 0.95,
+        expand: false,
+        builder: (_, scrollController) => Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+          ),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 12.0),
+                child: Container(
+                  width: 40.0,
+                  height: 4.0,
+                  decoration: BoxDecoration(
+                    color: Colors.black12,
+                    borderRadius: BorderRadius.circular(2.0),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(20.0, 16.0, 20.0, 8.0),
+                child: Text(
+                  audioTitle ?? 'Transcript',
+                  style: AppTheme.of(context).journey.stepTitle.copyWith(
+                        fontSize: 16.0,
+                        color: Colors.black87,
+                      ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              const Divider(color: Colors.black12),
+              Expanded(
+                child: SingleChildScrollView(
+                  controller: scrollController,
+                  padding: const EdgeInsetsDirectional.fromSTEB(20.0, 8.0, 20.0, 32.0),
+                  child: Text(
+                    transcript!,
+                    style: AppTheme.of(context).bodyMedium.copyWith(
+                          height: 1.7,
+                          color: Colors.black87,
+                        ),
                   ),
                 ),
               ),

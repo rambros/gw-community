@@ -6,6 +6,7 @@ import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/widgets/favorite_button.dart';
 import 'package:gw_community/ui/journey/step_audio_player_page/step_audio_player_page.dart';
 import 'package:gw_community/ui/journey/step_text_view_page/step_text_view_page.dart';
+import 'package:gw_community/ui/journey/step_video_player_page/step_video_player_page.dart';
 import 'package:gw_community/ui/learn/content_view/content_view.dart';
 import 'package:gw_community/ui/learn/themes/learn_theme_extension.dart';
 import 'package:gw_community/utils/context_extensions.dart';
@@ -114,6 +115,7 @@ class _UnifiedFavoriteCardState extends State<UnifiedFavoriteCard> {
           ),
           'typeStep': serializeParam(activity.activityLabel, ParamType.String),
           'activityId': serializeParam(activity.id, ParamType.int),
+          'transcript': serializeParam(activity.transcript, ParamType.String),
         }.withoutNulls,
       );
     } else if (activity.activityType == 'text') {
@@ -122,6 +124,16 @@ class _UnifiedFavoriteCardState extends State<UnifiedFavoriteCard> {
         queryParameters: {
           'stepTextTitle': serializeParam(activity.activityPrompt, ParamType.String),
           'stepTextContent': serializeParam(activity.text, ParamType.String),
+          'activityId': serializeParam(activity.id, ParamType.int),
+        }.withoutNulls,
+      );
+    } else if (activity.activityType == 'video') {
+      context.pushNamed(
+        StepVideoPlayerPage.routeName,
+        queryParameters: {
+          'videoUrl': serializeParam(activity.videoUrl, ParamType.String),
+          'videoTitle': serializeParam(activity.activityPrompt, ParamType.String),
+          'typeStep': serializeParam(activity.activityLabel, ParamType.String),
           'activityId': serializeParam(activity.id, ParamType.int),
         }.withoutNulls,
       );

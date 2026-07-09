@@ -10,8 +10,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:gw_community/config/audio/audio_service.dart';
 import 'package:gw_community/config/firebase/firebase_config.dart';
-import 'package:gw_community/data/services/push/push_notification_service.dart';
-import 'package:provider/provider.dart';
 import 'package:gw_community/data/repositories/announcement_repository.dart';
 import 'package:gw_community/data/repositories/auth_repository.dart';
 import 'package:gw_community/data/repositories/auth_repository_impl.dart';
@@ -29,6 +27,7 @@ import 'package:gw_community/data/repositories/unsplash_repository.dart';
 import 'package:gw_community/data/repositories/user_profile_repository.dart';
 import 'package:gw_community/data/services/auth/auth_service.dart';
 import 'package:gw_community/data/services/auth/supabase_auth_service.dart';
+import 'package:gw_community/data/services/push/push_notification_service.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/ui/auth/change_password_page/view_model/change_password_view_model.dart';
 import 'package:gw_community/ui/auth/forgot_password_page/view_model/forgot_password_view_model.dart';
@@ -51,6 +50,7 @@ import 'package:gw_community/ui/profile/user_profile_page/view_model/user_profil
 import 'package:gw_community/ui/utility/unsplash_page/view_model/unsplash_view_model.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:gw_community/utils/internationalization.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -88,7 +88,9 @@ void main() async {
 
         // ========== REPOSITORIES ==========
         Provider<AuthService>(create: (_) => SupabaseAuthService()),
-        Provider<AuthRepository>(create: (context) => AuthRepositoryImpl(authService: context.read<AuthService>())),
+        Provider<AuthRepository>(
+            create: (context) =>
+                AuthRepositoryImpl(authService: context.read<AuthService>())),
         Provider(create: (_) => ExperienceRepository()),
         Provider(create: (_) => EventRepository()),
         Provider(create: (_) => CommunityRepository()),
@@ -103,18 +105,26 @@ void main() async {
         Provider(create: (_) => JournalRepository()),
         Provider(create: (_) => FavoritesRepository()),
 
-        ChangeNotifierProvider(create: (context) => AppViewModel(authRepository: context.read<AuthRepository>())),
+        ChangeNotifierProvider(
+            create: (context) =>
+                AppViewModel(authRepository: context.read<AuthRepository>())),
 
         // ========== VIEW MODELS ==========
         ChangeNotifierProvider(create: (_) => LearnListViewModel()),
-        ChangeNotifierProvider(create: (context) => LoginViewModel(authRepository: context.read<AuthRepository>())),
         ChangeNotifierProvider(
-          create: (context) => ForgotPasswordViewModel(authRepository: context.read<AuthRepository>()),
+            create: (context) =>
+                LoginViewModel(authRepository: context.read<AuthRepository>())),
+        ChangeNotifierProvider(
+          create: (context) => ForgotPasswordViewModel(
+              authRepository: context.read<AuthRepository>()),
         ),
         ChangeNotifierProvider(
-          create: (context) => ChangePasswordViewModel(authRepository: context.read<AuthRepository>()),
+          create: (context) => ChangePasswordViewModel(
+              authRepository: context.read<AuthRepository>()),
         ),
-        ChangeNotifierProvider(create: (context) => OnBoardingViewModel(appState: context.read<FFAppState>())),
+        ChangeNotifierProvider(
+            create: (context) =>
+                OnBoardingViewModel(appState: context.read<FFAppState>())),
         ChangeNotifierProvider(
           create: (context) => ExperienceViewViewModel(
             repository: context.read<ExperienceRepository>(),
@@ -122,34 +132,47 @@ void main() async {
           ),
         ),
         ChangeNotifierProvider(
-          create: (context) => UserProfileViewModel(repository: context.read<UserProfileRepository>()),
+          create: (context) => UserProfileViewModel(
+              repository: context.read<UserProfileRepository>()),
         ),
         ChangeNotifierProvider(
-          create: (context) => UserEditProfileViewModel(repository: context.read<UserProfileRepository>()),
+          create: (context) => UserEditProfileViewModel(
+              repository: context.read<UserProfileRepository>()),
         ),
         ChangeNotifierProvider(
-          create: (context) => UserCreateProfileViewModel(repository: context.read<UserProfileRepository>()),
+          create: (context) => UserCreateProfileViewModel(
+              repository: context.read<UserProfileRepository>()),
         ),
         ChangeNotifierProvider(
-          create: (context) => UserJournalListViewModel(repository: context.read<UserProfileRepository>()),
+          create: (context) => UserJournalListViewModel(
+              repository: context.read<UserProfileRepository>()),
         ),
         ChangeNotifierProvider(
-          create: (context) => UserJournalViewModel(repository: context.read<UserProfileRepository>()),
+          create: (context) => UserJournalViewModel(
+              repository: context.read<UserProfileRepository>()),
         ),
         ChangeNotifierProvider(
-          create: (context) => UserJournalEditViewModel(repository: context.read<UserProfileRepository>()),
+          create: (context) => UserJournalEditViewModel(
+              repository: context.read<UserProfileRepository>()),
         ),
         ChangeNotifierProvider(
-          create: (context) => UserJournalOptionsViewModel(repository: context.read<UserProfileRepository>()),
+          create: (context) => UserJournalOptionsViewModel(
+              repository: context.read<UserProfileRepository>()),
         ),
         ChangeNotifierProvider(
-          create: (context) => UserJourneysViewModel(repository: context.read<UserProfileRepository>()),
+          create: (context) => UserJourneysViewModel(
+              repository: context.read<UserProfileRepository>()),
         ),
-        ChangeNotifierProvider(create: (context) => HomeViewModel(repository: context.read<HomeRepository>())),
+        ChangeNotifierProvider(
+            create: (context) =>
+                HomeViewModel(repository: context.read<HomeRepository>())),
         ChangeNotifierProvider(create: (context) => SplashViewModel()),
-        ChangeNotifierProvider(create: (context) => UnsplashViewModel(repository: context.read<UnsplashRepository>())),
         ChangeNotifierProvider(
-          create: (context) => JourneysListViewModel(repository: context.read<JourneysRepository>()),
+            create: (context) => UnsplashViewModel(
+                repository: context.read<UnsplashRepository>())),
+        ChangeNotifierProvider(
+          create: (context) => JourneysListViewModel(
+              repository: context.read<JourneysRepository>()),
         ),
       ],
       child: const MyApp(),
@@ -159,7 +182,8 @@ void main() async {
 
 class MyAppScrollBehavior extends MaterialScrollBehavior {
   @override
-  Set<PointerDeviceKind> get dragDevices => {PointerDeviceKind.touch, PointerDeviceKind.mouse};
+  Set<PointerDeviceKind> get dragDevices =>
+      {PointerDeviceKind.touch, PointerDeviceKind.mouse};
 }
 
 class MyApp extends StatefulWidget {

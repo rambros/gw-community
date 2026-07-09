@@ -120,6 +120,12 @@ class ActivityItemWidget extends StatelessWidget {
         color: iconColor,
         size: 36.0,
       );
+    } else if (activity.activityType == 'video') {
+      return Icon(
+        Icons.videocam_outlined,
+        color: iconColor,
+        size: 36.0,
+      );
     } else {
       return FaIcon(
         FontAwesomeIcons.solidPenToSquare,

@@ -91,6 +91,9 @@ class _FlutterFlowDropDownState<T> extends State<FlutterFlowDropDown<T>> {
   FormFieldController<T?> get controller => widget.controller!;
   FormFieldController<List<T>?> get multiSelectController => widget.multiSelectController!;
 
+  // Dummy notifier for multiselect — selection is managed via custom item builders.
+  late final ValueNotifier<T?> _multiDummyNotifier;
+
   T? get currentValue {
     final value = isMultiSelect ? multiSelectController.value?.firstOrNull : controller.value;
     return widget.options.contains(value) ? value : null;
@@ -125,6 +128,7 @@ class _FlutterFlowDropDownState<T> extends State<FlutterFlowDropDown<T>> {
   @override
   void initState() {
     super.initState();
+    _multiDummyNotifier = ValueNotifier<T?>(null);
     if (isMultiSelect) {
       _listener = () => widget.onMultiSelectChanged!(multiSelectController.value);
       multiSelectController.addListener(_listener);
@@ -136,6 +140,7 @@ class _FlutterFlowDropDownState<T> extends State<FlutterFlowDropDown<T>> {
 
   @override
   void dispose() {
+    _multiDummyNotifier.dispose();
     if (isMultiSelect) {
       multiSelectController.removeListener(_listener);
     } else {
@@ -217,13 +222,31 @@ class _FlutterFlowDropDownState<T> extends State<FlutterFlowDropDown<T>> {
       )
       .toList();
 
-  List<DropdownMenuItem<T>> _createMultiselectMenuItems() => widget.options
+  List<DropdownItem<T>> _createDropdown2Items() => widget.options
       .map(
-        (item) => DropdownMenuItem<T>(
+        (option) => DropdownItem<T>(
+            key: widget.optionsHasValueKeys ? _getItemKey(option) : null,
+            value: option,
+            child: Builder(builder: (_) {
+              final child = Padding(
+                padding: horizontalMargin,
+                child: Text(optionLabels[option] ?? '', style: widget.textStyle),
+              );
+              if (kIsWeb) {
+                return WebViewAware(child: child);
+              }
+              return child;
+            })),
+      )
+      .toList();
+
+  List<DropdownItem<T>> _createMultiselectDropdown2Items() => widget.options
+      .map(
+        (item) => DropdownItem<T>(
           key: widget.optionsHasValueKeys ? _getItemKey(item) : null,
           value: item,
-          // Disable default onTap to avoid closing menu when selecting an item
           enabled: false,
+          closeOnTap: false,
           child: StatefulBuilder(
             builder: (context, menuSetState) {
               final isSelected = multiSelectController.value?.contains(item) ?? false;
@@ -231,9 +254,7 @@ class _FlutterFlowDropDownState<T> extends State<FlutterFlowDropDown<T>> {
                 multiSelectController.value ??= [];
                 isSelected ? multiSelectController.value!.remove(item) : multiSelectController.value!.add(item);
                 multiSelectController.update();
-                // This rebuilds the StatefulWidget to update the button's text.
                 setState(() {});
-                // This rebuilds the dropdownMenu Widget to update the check mark.
                 menuSetState(() {});
               }, child: Builder(builder: (_) {
                 final child = Container(
@@ -271,9 +292,9 @@ class _FlutterFlowDropDownState<T> extends State<FlutterFlowDropDown<T>> {
         (states) => states.contains(WidgetState.focused) ? Colors.transparent : null);
     final iconStyleData = widget.icon != null ? IconStyleData(icon: widget.icon!) : const IconStyleData();
     return DropdownButton2<T>(
-      value: currentValue,
+      valueListenable: isMultiSelect ? _multiDummyNotifier : controller,
       hint: _createHintText(),
-      items: isMultiSelect ? _createMultiselectMenuItems() : _createMenuItems(),
+      items: isMultiSelect ? _createMultiselectDropdown2Items() : _createDropdown2Items(),
       iconStyleData: iconStyleData,
       buttonStyleData: ButtonStyleData(
         elevation: widget.elevation.toInt(),
@@ -319,8 +340,8 @@ class _FlutterFlowDropDownState<T> extends State<FlutterFlowDropDown<T>> {
       dropdownSearchData: widget.isSearchable
           ? DropdownSearchData<T>(
               searchController: _textEditingController,
-              searchInnerWidgetHeight: 50,
-              searchInnerWidget: Container(
+              searchBarWidgetHeight: 50,
+              searchBarWidget: Container(
                 height: 50,
                 padding: const EdgeInsets.only(
                   top: 8,

@@ -30,7 +30,6 @@ import 'package:gw_community/utils/flutter_flow_util.dart' show routeObserver;
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 const kYoutubeAspectRatio = 16 / 9;
-final _youtubeFullScreenControllerMap = <String, YoutubePlayerController>{};
 
 class FlutterFlowYoutubePlayer extends StatefulWidget {
   const FlutterFlowYoutubePlayer({
@@ -64,28 +63,18 @@ class FlutterFlowYoutubePlayer extends StatefulWidget {
 
 class _FlutterFlowYoutubePlayerState extends State<FlutterFlowYoutubePlayer> with RouteAware {
   YoutubePlayerController? _controller;
-  String? _videoId;
-  YoutubeFullScreenWrapperState? _youtubeWrapper;
   bool _subscribedRoute = false;
-
-  bool get handleFullScreen => !kIsWeb && widget.showFullScreen && _youtubeWrapper != null;
 
   @override
   void initState() {
     super.initState();
-    initializePlayer();
+    _initializePlayer();
   }
 
   @override
   void dispose() {
-    if (!handleFullScreen || _youtubeWrapper?._controller == null) {
-      if (_subscribedRoute) {
-        routeObserver.unsubscribe(this);
-      }
-      _controller?.close();
-      _youtubeFullScreenControllerMap[_videoId]?.close();
-      _youtubeFullScreenControllerMap.remove(_videoId);
-    }
+    if (_subscribedRoute) routeObserver.unsubscribe(this);
+    _controller?.close();
     super.dispose();
   }
 
@@ -100,123 +89,59 @@ class _FlutterFlowYoutubePlayerState extends State<FlutterFlowYoutubePlayer> wit
 
   @override
   void didPushNext() {
-    if (widget.pauseOnNavigate) {
-      _controller?.pauseVideo();
-    }
+    if (widget.pauseOnNavigate) _controller?.pauseVideo();
   }
 
-  double get width =>
+  double get _width =>
       widget.width == null || widget.width! >= double.infinity ? MediaQuery.sizeOf(context).width : widget.width!;
 
-  double get height =>
-      widget.height == null || widget.height! >= double.infinity ? width / kYoutubeAspectRatio : widget.height!;
+  double get _height =>
+      widget.height == null || widget.height! >= double.infinity ? _width / kYoutubeAspectRatio : widget.height!;
 
-  void initializePlayer() {
-    if (!mounted) {
-      return;
-    }
+  void _initializePlayer() {
+    if (!mounted) return;
     final videoId = _convertUrlToId(widget.url);
-    if (videoId == null) {
-      return;
-    }
-    _videoId = videoId;
-    _youtubeWrapper = YoutubeFullScreenWrapper.of(context);
+    if (videoId == null) return;
 
-    if (handleFullScreen && _youtubeFullScreenControllerMap.containsKey(_videoId)) {
-      _controller = _youtubeFullScreenControllerMap[_videoId]!;
-      _youtubeFullScreenControllerMap.clear();
-    } else {
-      _controller = YoutubePlayerController.fromVideoId(
-        videoId: videoId,
-        autoPlay: widget.autoPlay,
-        params: YoutubePlayerParams(
-          origin: 'https://www.youtube-nocookie.com',
-          mute: widget.mute,
-          loop: widget.looping,
-          showControls: widget.showControls,
-          showFullscreenButton: widget.showFullScreen,
-          strictRelatedVideos: widget.strictRelatedVideos,
-        ),
-      );
-    }
-    if (handleFullScreen) {
-      _controller!.setFullScreenListener((fullScreen) {
-        if (fullScreen) {
-          _youtubeFullScreenControllerMap[_videoId!] = _controller!;
-          _youtubeWrapper!.updateYoutubePlayer(_controller, _videoId);
-        } else {
-          _youtubeWrapper!.updateYoutubePlayer();
-        }
-      });
-    }
+    _controller = YoutubePlayerController.fromVideoId(
+      videoId: videoId,
+      autoPlay: widget.autoPlay,
+      params: YoutubePlayerParams(
+        origin: 'https://www.youtube-nocookie.com',
+        mute: widget.mute,
+        loop: widget.looping,
+        showControls: widget.showControls,
+        showFullscreenButton: widget.showFullScreen,
+        strictRelatedVideos: widget.strictRelatedVideos,
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) => FittedBox(
         fit: BoxFit.cover,
         child: SizedBox(
-          height: height,
-          width: width,
+          height: _height,
+          width: _width,
           child: _controller != null
-              ? handleFullScreen
-                  ? YoutubePlayerScaffold(
-                      controller: _controller!,
-                      builder: (_, player) => player,
-                      autoFullScreen: false,
-                      gestureRecognizers: const <Factory<TapGestureRecognizer>>{},
-                      enableFullScreenOnVerticalDrag: false,
-                    )
-                  : YoutubePlayer(
-                      controller: _controller!,
-                      gestureRecognizers: const <Factory<TapGestureRecognizer>>{},
-                      enableFullScreenOnVerticalDrag: false,
-                    )
+              ? YoutubePlayer(
+                  controller: _controller!,
+                  gestureRecognizers: const <Factory<TapGestureRecognizer>>{},
+                  enableFullScreenOnVerticalDrag: false,
+                )
               : Container(color: Colors.transparent),
         ),
       );
 }
 
-/// Wraps the page in order to properly show the YouTube video when fullscreen.
-class YoutubeFullScreenWrapper extends StatefulWidget {
+/// Kept for API compatibility — fullscreen is handled internally by [YoutubePlayer] in v6+.
+class YoutubeFullScreenWrapper extends StatelessWidget {
   const YoutubeFullScreenWrapper({super.key, required this.child});
 
   final Widget child;
 
-  static YoutubeFullScreenWrapperState? of(BuildContext context) =>
-      context.findAncestorStateOfType<YoutubeFullScreenWrapperState>();
-
   @override
-  State<YoutubeFullScreenWrapper> createState() => YoutubeFullScreenWrapperState();
-}
-
-class YoutubeFullScreenWrapperState extends State<YoutubeFullScreenWrapper> {
-  YoutubePlayerController? _controller;
-  String? _videoId;
-
-  void updateYoutubePlayer([
-    YoutubePlayerController? controller,
-    String? videoId,
-  ]) =>
-      setState(() {
-        _controller = controller;
-        _videoId = videoId;
-      });
-
-  @override
-  void dispose() {
-    _controller?.close();
-    _youtubeFullScreenControllerMap.remove(_videoId);
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) => _controller != null
-      ? YoutubePlayerScaffold(
-          controller: _controller!,
-          builder: (_, player) => player,
-          enableFullScreenOnVerticalDrag: false,
-        )
-      : widget.child;
+  Widget build(BuildContext context) => child;
 }
 
 String? _convertUrlToId(String url, {bool trimWhitespaces = true}) {

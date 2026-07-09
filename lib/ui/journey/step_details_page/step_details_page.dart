@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/step_activities_repository.dart';
@@ -11,6 +11,7 @@ import 'package:gw_community/ui/journey/step_details_page/view_model/step_detail
 import 'package:gw_community/ui/journey/step_details_page/widgets/activity_item_widget.dart';
 import 'package:gw_community/ui/journey/step_journal_page/step_journal_page.dart';
 import 'package:gw_community/ui/journey/step_text_view_page/step_text_view_page.dart';
+import 'package:gw_community/ui/journey/step_video_player_page/step_video_player_page.dart';
 import 'package:gw_community/ui/journey/themes/journey_theme_extension.dart';
 import 'package:gw_community/utils/context_extensions.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
@@ -254,6 +255,7 @@ class _StepDetailsPageState extends State<StepDetailsPage> {
               'audioArt': serializeParam(params['audioArt'], ParamType.String),
               'typeStep': serializeParam(params['typeStep'], ParamType.String),
               'activityId': serializeParam(params['activityId'], ParamType.int),
+              'transcript': serializeParam(params['transcript'], ParamType.String),
             }.withoutNulls,
             extra: <String, dynamic>{
               kTransitionInfoKey: const TransitionInfo(
@@ -269,6 +271,23 @@ class _StepDetailsPageState extends State<StepDetailsPage> {
             queryParameters: {
               'stepTextTitle': serializeParam(params['stepTextTitle'], ParamType.String),
               'stepTextContent': serializeParam(params['stepTextContent'], ParamType.String),
+              'activityId': serializeParam(params['activityId'], ParamType.int),
+            }.withoutNulls,
+            extra: <String, dynamic>{
+              kTransitionInfoKey: const TransitionInfo(
+                hasTransition: true,
+                transitionType: PageTransitionType.fade,
+                duration: Duration(milliseconds: 0),
+              ),
+            },
+          );
+        } else if (routeName == 'stepVideoPlayerPage') {
+          router.pushNamed(
+            StepVideoPlayerPage.routeName,
+            queryParameters: {
+              'videoUrl': serializeParam(params['videoUrl'], ParamType.String),
+              'videoTitle': serializeParam(params['videoTitle'], ParamType.String),
+              'typeStep': serializeParam(params['typeStep'], ParamType.String),
               'activityId': serializeParam(params['activityId'], ParamType.int),
             }.withoutNulls,
             extra: <String, dynamic>{

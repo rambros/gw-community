@@ -62,4 +62,10 @@ class CcViewUserActivitiesRow extends SupabaseDataRow {
 
   int? get stepActivityId => getField<int>('step_activity_id');
   set stepActivityId(int? value) => setField<int>('step_activity_id', value);
+
+  String? get transcript => getField<String>('transcript');
+  set transcript(String? value) => setField<String>('transcript', value);
+
+  String? get videoUrl => getField<String>('video_url');
+  set videoUrl(String? value) => setField<String>('video_url', value);
 }

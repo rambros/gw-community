@@ -154,11 +154,20 @@ class StepDetailsViewModel extends ChangeNotifier {
             'https://firebasestorage.googleapis.com/v0/b/good-wishes-project.appspot.com/o/images%2Fic_goodwishes.png?alt=media&token=e441f239-c823-468b-bff7-c16be921c7be',
         'typeStep': activity.activityLabel,
         'activityId': activity.stepActivityId,
+        if (activity.transcript != null && activity.transcript!.isNotEmpty)
+          'transcript': activity.transcript,
       });
     } else if (activity.activityType == 'text') {
       navigateToActivity('stepTextViewPage', {
         'stepTextTitle': activity.activityPrompt,
         'stepTextContent': activity.text,
+        'activityId': activity.stepActivityId,
+      });
+    } else if (activity.activityType == 'video') {
+      navigateToActivity('stepVideoPlayerPage', {
+        'videoUrl': activity.videoUrl,
+        'videoTitle': activity.activityPrompt,
+        'typeStep': activity.activityLabel,
         'activityId': activity.stepActivityId,
       });
     } else {

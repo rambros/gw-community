@@ -27,6 +27,7 @@ export 'package:gw_community/ui/journey/step_audio_player_page/step_audio_player
 export 'package:gw_community/ui/journey/step_details_page/step_details_page.dart' show StepDetailsPage;
 export 'package:gw_community/ui/journey/step_journal_page/step_journal_page.dart' show StepJournalPage;
 export 'package:gw_community/ui/journey/step_text_view_page/step_text_view_page.dart' show StepTextViewPage;
+export 'package:gw_community/ui/journey/step_video_player_page/step_video_player_page.dart' show StepVideoPlayerPage;
 export 'package:gw_community/ui/learn/learn_list_page/learn_list_page.dart' show LearnListPage;
 export 'package:gw_community/ui/notifications/in_app_notifications_page/in_app_notifications_page.dart'
     show InAppNotificationsPage;

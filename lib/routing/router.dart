@@ -273,6 +273,17 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
             audioArt: params.getParam('audioArt', ParamType.String),
             typeStep: params.getParam('typeStep', ParamType.String),
             activityId: params.getParam('activityId', ParamType.int),
+            transcript: params.getParam('transcript', ParamType.String),
+          ),
+        ),
+        FFRoute(
+          name: StepVideoPlayerPage.routeName,
+          path: StepVideoPlayerPage.routePath,
+          builder: (context, params) => StepVideoPlayerPage(
+            videoUrl: params.getParam('videoUrl', ParamType.String),
+            videoTitle: params.getParam('videoTitle', ParamType.String),
+            typeStep: params.getParam('typeStep', ParamType.String),
+            activityId: params.getParam('activityId', ParamType.int),
           ),
         ),
         FFRoute(

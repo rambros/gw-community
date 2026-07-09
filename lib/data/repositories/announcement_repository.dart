@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
@@ -77,14 +79,41 @@ class AnnouncementRepository {
     await CcCommentsTable().delete(matchingRows: (rows) => rows.eqOrNull('id', commentId));
   }
 
+  // Supabase Realtime does not support views — subscribe to the underlying
+  // table (cc_sharings) and re-query the view on every change.
   Stream<List<CcViewNotificationsUsersRow>> getAnnouncementsStream(int groupId) {
-    return SupaFlow.client
-        .from("cc_view_notifications_users")
+    final controller = StreamController<List<CcViewNotificationsUsersRow>>();
+
+    Future<List<CcViewNotificationsUsersRow>> fetchFromView() =>
+        CcViewNotificationsUsersTable().queryRows(
+          queryFn: (q) => q.eq('group_id', groupId).order('updated_at', ascending: false),
+        );
+
+    fetchFromView().then((data) {
+      if (!controller.isClosed) controller.add(data);
+    });
+
+    final subscription = SupaFlow.client
+        .from('cc_sharings')
         .stream(primaryKey: ['id'])
         .eq('group_id', groupId)
-        .order('updated_at')
-        .map((list) => list.map((item) => CcViewNotificationsUsersRow(item)).toList())
-        .asBroadcastStream();
+        .listen(
+          (_) async {
+            final data = await fetchFromView();
+            if (!controller.isClosed) controller.add(data);
+          },
+          onError: (Object error) {
+            debugPrint('ℹ️ cc_sharings (notifications) realtime closed: $error');
+          },
+          cancelOnError: false,
+        );
+
+    controller.onCancel = () {
+      subscription.cancel();
+      if (!controller.isClosed) controller.close();
+    };
+
+    return controller.stream.asBroadcastStream();
   }
 
   /// Marca um anúncio como lido para o usuário atual

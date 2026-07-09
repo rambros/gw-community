@@ -34,12 +34,11 @@ class UnifiedNotificationItem {
 
   UnifiedNotificationItem.fromAnnouncement(
     CcViewNotificationsUsersRow a, {
-    required bool isRead,
+    required this.isRead,
   })  : source = 'announcement',
         id = a.id!,
         title = a.title ?? 'Message',
         message = a.text,
-        isRead = isRead,
         createdAt = a.updatedAt ?? DateTime.now(),
         systemNotification = null,
         announcement = a,
@@ -49,7 +48,8 @@ class UnifiedNotificationItem {
 
 class InAppNotificationsViewModel extends ChangeNotifier {
   final InAppNotificationRepository _repository = InAppNotificationRepository();
-  final AnnouncementRepository _announcementRepository = AnnouncementRepository();
+  final AnnouncementRepository _announcementRepository =
+      AnnouncementRepository();
 
   List<UnifiedNotificationItem> _items = [];
   List<UnifiedNotificationItem> get items => _items;
@@ -65,8 +65,10 @@ class InAppNotificationsViewModel extends ChangeNotifier {
   bool get hasUnread => _items.any((n) => !n.isRead);
   int get unreadCount => _items.where((n) => !n.isRead).length;
 
-  List<UnifiedNotificationItem> get unreadItems => _items.where((n) => !n.isRead).toList();
-  List<UnifiedNotificationItem> get readItems => _items.where((n) => n.isRead).toList();
+  List<UnifiedNotificationItem> get unreadItems =>
+      _items.where((n) => !n.isRead).toList();
+  List<UnifiedNotificationItem> get readItems =>
+      _items.where((n) => n.isRead).toList();
 
   Future<void> loadNotifications() async {
     _isLoading = true;
@@ -86,7 +88,8 @@ class InAppNotificationsViewModel extends ChangeNotifier {
         final memberships = await CcGroupMembersTable().queryRows(
           queryFn: (q) => q.eq('user_id', userId),
         );
-        final groupIds = memberships.map((m) => m.groupId).whereType<int>().toList();
+        final groupIds =
+            memberships.map((m) => m.groupId).whereType<int>().toList();
 
         if (groupIds.isNotEmpty) {
           final announcements = await CcViewNotificationsUsersTable().queryRows(
@@ -95,10 +98,12 @@ class InAppNotificationsViewModel extends ChangeNotifier {
 
           if (announcements.isNotEmpty) {
             // Filtra mensagens privadas: broadcast + privadas para/do usuário atual
-            final visible = announcements.where((a) =>
-                a.recipientUserId == null ||
-                a.recipientUserId == userId ||
-                a.userId == userId).toList();
+            final visible = announcements
+                .where((a) =>
+                    a.recipientUserId == null ||
+                    a.recipientUserId == userId ||
+                    a.userId == userId)
+                .toList();
 
             if (visible.isNotEmpty) {
               final visibleIds = visible.map((a) => a.id!).toList();
@@ -155,7 +160,8 @@ class InAppNotificationsViewModel extends ChangeNotifier {
     final userId = SupaFlow.client.auth.currentUser?.id;
     await _repository.markAllAsRead();
     if (userId != null) {
-      for (final item in _items.where((i) => !i.isRead && i.source == 'announcement')) {
+      for (final item
+          in _items.where((i) => !i.isRead && i.source == 'announcement')) {
         await _announcementRepository.markAnnouncementAsRead(item.id, userId);
       }
     }

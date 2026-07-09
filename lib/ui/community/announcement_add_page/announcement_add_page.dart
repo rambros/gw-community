@@ -42,7 +42,8 @@ class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
   @override
   void initState() {
     super.initState();
-    logFirebaseEvent('screen_view', parameters: {'screen_name': 'announcementAddPage'});
+    logFirebaseEvent('screen_view',
+        parameters: {'screen_name': 'announcementAddPage'});
     _viewModel = AddAnnouncementViewModel(
       repository: context.read<AnnouncementRepository>(),
       currentUserUid: context.currentUserIdOrEmpty,
@@ -92,7 +93,8 @@ class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
                   'New Message',
                   style: AppTheme.of(context).titleLarge.override(
                         font: GoogleFonts.poppins(
-                          fontWeight: AppTheme.of(context).titleLarge.fontWeight,
+                          fontWeight:
+                              AppTheme.of(context).titleLarge.fontWeight,
                           fontStyle: AppTheme.of(context).titleLarge.fontStyle,
                         ),
                         fontSize: 20.0,
@@ -107,7 +109,8 @@ class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
                 child: viewModel.isLoadingUser && viewModel.currentUser == null
                     ? _buildLoadingIndicator(context)
                     : Padding(
-                        padding: const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 8.0, 8.0),
+                        padding: const EdgeInsetsDirectional.fromSTEB(
+                            8.0, 0.0, 8.0, 8.0),
                         child: SingleChildScrollView(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -141,7 +144,8 @@ class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
     );
   }
 
-  Widget _buildHeader(BuildContext context, AddAnnouncementViewModel viewModel) {
+  Widget _buildHeader(
+      BuildContext context, AddAnnouncementViewModel viewModel) {
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(16.0, 24.0, 16.0, 24.0),
       child: Row(
@@ -152,12 +156,14 @@ class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
           ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 0.0, 0.0),
+              padding:
+                  const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 0.0, 0.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    valueOrDefault<String>(viewModel.currentUser?.displayName, 'name'),
+                    valueOrDefault<String>(
+                        viewModel.currentUser?.displayName, 'name'),
                     style: AppTheme.of(context).bodyLarge.override(
                           font: GoogleFonts.inter(
                             fontWeight: FontWeight.normal,
@@ -173,8 +179,10 @@ class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
                       'From group ${widget.groupName}',
                       style: AppTheme.of(context).bodyMedium.override(
                             font: GoogleFonts.lexendDeca(
-                              fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                              fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
+                              fontWeight:
+                                  AppTheme.of(context).bodyMedium.fontWeight,
+                              fontStyle:
+                                  AppTheme.of(context).bodyMedium.fontStyle,
                             ),
                             color: AppTheme.of(context).secondary,
                             letterSpacing: 0.0,
@@ -229,7 +237,7 @@ class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(8.0, 8.0, 8.0, 0.0),
             child: DropdownButtonFormField<CcMembersRow?>(
-              value: viewModel.recipientMember,
+              initialValue: viewModel.recipientMember,
               decoration: _inputDecoration(context, 'Send to'),
               items: [
                 DropdownMenuItem<CcMembersRow?>(
@@ -242,16 +250,20 @@ class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
                         ),
                   ),
                 ),
-                ...viewModel.groupMembers.map((member) => DropdownMenuItem<CcMembersRow?>(
-                      value: member,
-                      child: Text(
-                        member.displayName ?? member.firstName ?? member.email ?? 'Member',
-                        style: AppTheme.of(context).bodyMedium.override(
-                              font: GoogleFonts.lexendDeca(),
-                              color: AppTheme.of(context).secondary,
-                            ),
-                      ),
-                    )),
+                ...viewModel.groupMembers
+                    .map((member) => DropdownMenuItem<CcMembersRow?>(
+                          value: member,
+                          child: Text(
+                            member.displayName ??
+                                member.firstName ??
+                                member.email ??
+                                'Member',
+                            style: AppTheme.of(context).bodyMedium.override(
+                                  font: GoogleFonts.lexendDeca(),
+                                  color: AppTheme.of(context).secondary,
+                                ),
+                          ),
+                        )),
               ],
               onChanged: viewModel.setRecipient,
             ),
@@ -309,7 +321,8 @@ class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
     );
   }
 
-  Widget _buildActions(BuildContext context, AddAnnouncementViewModel viewModel) {
+  Widget _buildActions(
+      BuildContext context, AddAnnouncementViewModel viewModel) {
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(16.0, 32.0, 16.0, 16.0),
       child: Row(
@@ -322,7 +335,8 @@ class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
               text: 'Cancel',
               options: FFButtonOptions(
                 height: 40.0,
-                padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
+                padding:
+                    const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
                 color: AppTheme.of(context).primaryBackground,
                 textStyle: AppTheme.of(context).labelLarge.override(
                       font: GoogleFonts.poppins(
@@ -363,7 +377,8 @@ class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
             text: viewModel.isSaving ? 'Saving...' : 'Add Message',
             options: FFButtonOptions(
               height: 40.0,
-              padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
+              padding:
+                  const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
               color: AppTheme.of(context).primary,
               textStyle: AppTheme.of(context).labelLarge.override(
                     font: GoogleFonts.poppins(
