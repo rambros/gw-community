@@ -417,6 +417,7 @@ class _RequestChatPageContent extends StatelessWidget {
                 Expanded(
                   child: TextField(
                     controller: viewModel.messageController,
+                    textCapitalization: TextCapitalization.sentences,
                     maxLines: 4,
                     minLines: 1,
                     decoration: InputDecoration(

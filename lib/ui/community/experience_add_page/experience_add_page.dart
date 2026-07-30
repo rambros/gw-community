@@ -209,6 +209,7 @@ class _ExperienceAddPageContent extends StatelessWidget {
         focusNode: viewModel.textFocusNode,
         autofocus: true,
         obscureText: false,
+        textCapitalization: TextCapitalization.sentences,
         decoration: InputDecoration(
           labelText: 'Share your experience',
           labelStyle: AppTheme.of(context).labelLarge.override(

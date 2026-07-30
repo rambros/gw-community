@@ -108,7 +108,6 @@ class _UnifiedFavoriteCardState extends State<UnifiedFavoriteCard> {
         queryParameters: {
           'stepAudioUrl': serializeParam(activity.audioUrl, ParamType.String),
           'audioTitle': serializeParam(activity.activityPrompt, ParamType.String),
-          'typeAnimation': serializeParam('IN', ParamType.String),
           'audioArt': serializeParam(
             'https://firebasestorage.googleapis.com/v0/b/good-wishes-project.appspot.com/o/images%2Fic_goodwishes.png?alt=media&token=e441f239-c823-468b-bff7-c16be921c7be',
             ParamType.String,
@@ -116,6 +115,8 @@ class _UnifiedFavoriteCardState extends State<UnifiedFavoriteCard> {
           'typeStep': serializeParam(activity.activityLabel, ParamType.String),
           'activityId': serializeParam(activity.id, ParamType.int),
           'transcript': serializeParam(activity.transcript, ParamType.String),
+          'animationUrl': serializeParam(activity.animationUrl, ParamType.String),
+          'animationMediaType': serializeParam(activity.animationMediaType, ParamType.String),
         }.withoutNulls,
       );
     } else if (activity.activityType == 'text') {

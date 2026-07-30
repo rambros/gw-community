@@ -205,6 +205,7 @@ class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
           child: TextFormField(
             controller: viewModel.titleController,
             focusNode: viewModel.titleFocusNode,
+            textCapitalization: TextCapitalization.sentences,
             decoration: _inputDecoration(context, 'Title'),
             style: AppTheme.of(context).bodyMedium.override(
                   font: GoogleFonts.lexendDeca(
@@ -221,6 +222,7 @@ class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
           child: TextFormField(
             controller: viewModel.experienceController,
             focusNode: viewModel.experienceFocusNode,
+            textCapitalization: TextCapitalization.sentences,
             decoration: _inputDecoration(context, 'Message'),
             style: AppTheme.of(context).bodyMedium.override(
                   font: GoogleFonts.lexendDeca(

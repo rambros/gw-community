@@ -269,11 +269,12 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           builder: (context, params) => StepAudioPlayerPage(
             stepAudioUrl: params.getParam('stepAudioUrl', ParamType.String),
             audioTitle: params.getParam('audioTitle', ParamType.String),
-            typeAnimation: params.getParam('typeAnimation', ParamType.String),
             audioArt: params.getParam('audioArt', ParamType.String),
             typeStep: params.getParam('typeStep', ParamType.String),
             activityId: params.getParam('activityId', ParamType.int),
             transcript: params.getParam('transcript', ParamType.String),
+            animationUrl: params.getParam('animationUrl', ParamType.String),
+            animationMediaType: params.getParam('animationMediaType', ParamType.String),
           ),
         ),
         FFRoute(

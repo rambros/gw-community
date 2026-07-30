@@ -477,7 +477,7 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
     await showModalBottomSheet(
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      enableDrag: false,
+      enableDrag: true,
       context: context,
       builder: (context) {
         return WebViewAware(
@@ -488,14 +488,11 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
             },
             child: Padding(
               padding: MediaQuery.viewInsetsOf(context),
-              child: SizedBox(
-                height: 200.0,
-                child: AddCommentWidget(
-                  experienceId: widget.announcementId!,
-                  parentId: parentId,
-                  photoUrl: FFAppState().loginUser.photoUrl,
-                  fullName: FFAppState().loginUser.fullName,
-                ),
+              child: AddCommentWidget(
+                experienceId: widget.announcementId!,
+                parentId: parentId,
+                photoUrl: FFAppState().loginUser.photoUrl,
+                fullName: FFAppState().loginUser.fullName,
               ),
             ),
           ),

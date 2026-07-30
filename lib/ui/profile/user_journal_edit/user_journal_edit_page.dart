@@ -190,6 +190,7 @@ class _UserJournalEditPageState extends State<UserJournalEditPage> {
                             autofocus: true,
                             enabled: !viewModel.isLoading,
                             obscureText: false,
+                            textCapitalization: TextCapitalization.sentences,
                             decoration: InputDecoration(
                               isDense: true,
                               labelStyle: AppTheme.of(context).labelMedium.override(

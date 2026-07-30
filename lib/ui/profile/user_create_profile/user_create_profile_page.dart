@@ -139,6 +139,7 @@ class _UserCreateProfilePageState extends State<UserCreateProfilePage> {
                                   controller: viewModel.firstNameController,
                                   autofocus: false,
                                   obscureText: false,
+                                  textCapitalization: TextCapitalization.words,
                                   decoration: InputDecoration(
                                     labelText: 'First Name',
                                     labelStyle: AppTheme.of(context).labelLarge.override(
@@ -215,6 +216,7 @@ class _UserCreateProfilePageState extends State<UserCreateProfilePage> {
                                   controller: viewModel.lastNameController,
                                   autofocus: false,
                                   obscureText: false,
+                                  textCapitalization: TextCapitalization.words,
                                   decoration: InputDecoration(
                                     labelText: 'Last Name',
                                     labelStyle: AppTheme.of(context).labelLarge.override(

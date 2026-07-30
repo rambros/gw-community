@@ -167,6 +167,7 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
                   focusNode: vm.titleFocus,
                   label: 'Title',
                   validator: _requiredValidator,
+                  textCapitalization: TextCapitalization.words,
                 ),
                 _buildTextField(
                   context: context,
@@ -174,6 +175,7 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
                   focusNode: vm.facilitatorFocus,
                   label: 'Facilitator',
                   validator: _requiredValidator,
+                  textCapitalization: TextCapitalization.words,
                 ),
                 _buildTextField(
                   context: context,
@@ -182,6 +184,7 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
                   label: 'Description',
                   maxLines: 6,
                   validator: _requiredValidator,
+                  textCapitalization: TextCapitalization.sentences,
                 ),
                 if (vm.eventType == 'single_day') ...[
                   _buildDateField(context, vm),
@@ -258,6 +261,7 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
     String? Function(String?)? validator,
     TextInputType? keyboardType,
     int maxLines = 1,
+    TextCapitalization textCapitalization = TextCapitalization.none,
   }) {
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(4.0, 8.0, 4.0, 8.0),
@@ -267,6 +271,7 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
         validator: validator,
         keyboardType: keyboardType,
         maxLines: maxLines,
+        textCapitalization: textCapitalization,
         decoration: InputDecoration(
           labelText: label,
           labelStyle: AppTheme.of(context).labelLarge.override(

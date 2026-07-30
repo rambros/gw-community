@@ -90,6 +90,7 @@ class _NewRequestPageContent extends StatelessWidget {
                 TextFormField(
                   controller: viewModel.titleController,
                   validator: viewModel.validateTitle,
+                  textCapitalization: TextCapitalization.sentences,
                   maxLength: 255,
                   decoration: _buildInputDecoration(
                     context,
@@ -108,6 +109,7 @@ class _NewRequestPageContent extends StatelessWidget {
                 TextFormField(
                   controller: viewModel.descriptionController,
                   validator: viewModel.validateDescription,
+                  textCapitalization: TextCapitalization.sentences,
                   maxLines: 6,
                   maxLength: 2000,
                   decoration: _buildInputDecoration(

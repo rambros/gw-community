@@ -176,6 +176,7 @@ class _StepJournalPageState extends State<StepJournalPage> {
                               focusNode: _focusNode,
                               autofocus: true,
                               obscureText: false,
+                              textCapitalization: TextCapitalization.sentences,
                               decoration: InputDecoration(
                                 labelStyle: AppTheme.of(context).journey.bodyText,
                                 hintStyle: AppTheme.of(context).journey.bodyText,

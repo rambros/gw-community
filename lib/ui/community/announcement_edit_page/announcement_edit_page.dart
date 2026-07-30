@@ -172,6 +172,7 @@ class _AnnouncementEditPageState extends State<AnnouncementEditPage> {
           child: TextFormField(
             controller: viewModel.titleController,
             focusNode: viewModel.titleFocusNode,
+            textCapitalization: TextCapitalization.sentences,
             decoration: _inputDecoration(context, 'Title'),
             style: AppTheme.of(context).bodyMedium.override(
                   font: GoogleFonts.lexendDeca(
@@ -188,6 +189,7 @@ class _AnnouncementEditPageState extends State<AnnouncementEditPage> {
           child: TextFormField(
             controller: viewModel.descriptionController,
             focusNode: viewModel.descriptionFocusNode,
+            textCapitalization: TextCapitalization.sentences,
             decoration: _inputDecoration(context, 'Details'),
             style: AppTheme.of(context).bodyMedium.override(
                   font: GoogleFonts.lexendDeca(

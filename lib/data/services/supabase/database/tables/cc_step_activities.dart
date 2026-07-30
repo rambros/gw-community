@@ -54,4 +54,11 @@ class CcStepActivitiesRow extends SupabaseDataRow {
 
   String? get journal => getField<String>('journal');
   set journal(String? value) => setField<String>('journal', value);
+
+  String? get animationUrl => getField<String>('animation_url');
+  set animationUrl(String? value) => setField<String>('animation_url', value);
+
+  String? get animationMediaType => getField<String>('animation_media_type');
+  set animationMediaType(String? value) =>
+      setField<String>('animation_media_type', value);
 }

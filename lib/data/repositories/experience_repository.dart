@@ -82,7 +82,6 @@ class ExperienceRepository {
       'content': content,
       'sharing_id': experienceId,
       'created_at': supaSerialize<DateTime>(DateTime.now()),
-      'updated_at': supaSerialize<DateTime>(DateTime.now()),
     });
   }
 
@@ -207,7 +206,7 @@ class ExperienceRepository {
   /// Se [isDraft] for true, cria com moderation_status = 'draft'.
   /// Se o grupo tiver auto_moderation_enabled = true, cria como 'approved' diretamente.
   /// Caso contrário, cria como 'awaiting_approval' para moderação manual.
-  Future<void> createExperience({
+  Future<int> createExperience({
     required String title,
     required String text,
     required String privacy,
@@ -234,7 +233,7 @@ class ExperienceRepository {
       moderationStatus = 'awaiting_approval';
     }
 
-    await CcSharingsTable().insert({
+    final row = await CcSharingsTable().insert({
       'title': title,
       'privacy': privacy,
       'user_id': userId,
@@ -249,6 +248,8 @@ class ExperienceRepository {
       if (moderatedAt != null) 'moderated_at': moderatedAt,
       if (moderatedAt != null) 'moderated_by': 'auto',
     });
+
+    return row.id;
   }
 
   /// Busca informações do usuário por auth user ID

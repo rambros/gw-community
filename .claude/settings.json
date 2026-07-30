@@ -1,7 +1,17 @@
 {
   "permissions": {
     "allow": [
-      "Bash(pkill:*)"
+      "Bash(pkill:*)",
+      "Bash(base64 -i assets/images/GoodWishes_RGB_Logo_Stacked_600.png -o /private/tmp/claude-501/-Users-rodrigoambros-Documents-Desenv-0-Clientes-Agencia-ProjGW-codigo-g-w-community/371c0a0d-e1c2-4bdd-b9d0-0fe983907f15/scratchpad/logo_b64.txt)",
+      "Bash(base64 -i assets/images/gw_launcher_icon.png -o /private/tmp/claude-501/-Users-rodrigoambros-Documents-Desenv-0-Clientes-Agencia-ProjGW-codigo-g-w-community/371c0a0d-e1c2-4bdd-b9d0-0fe983907f15/scratchpad/icon_b64.txt)",
+      "Bash(curl -s -m 5 -o /dev/null -w \"%{http_code}\\\\n\" https://fonts.gstatic.com)",
+      "Bash(awk '/\\\\/\\\\* latin \\\\*\\\\//{getline; getline; getline; print}' fonts.css)",
+      "Bash(python3 -)",
+      "Bash(curl -s -o lexend400.woff2 \"https://fonts.gstatic.com/s/lexenddeca/v25/K2F1fZFYk-dHSE0UPPuwQ5qnJy_YZ2ON.woff2\")",
+      "Bash(curl -s -o poppins500.woff2 \"https://fonts.gstatic.com/s/poppins/v24/pxiByp8kv8JHgFVrLGT9Z1xlFd2JQEk.woff2\")",
+      "Bash(curl -s -o poppins600.woff2 \"https://fonts.gstatic.com/s/poppins/v24/pxiByp8kv8JHgFVrLEj6Z1xlFd2JQEk.woff2\")",
+      "Bash(curl -s -o poppins700.woff2 \"https://fonts.gstatic.com/s/poppins/v24/pxiByp8kv8JHgFVrLCz7Z1xlFd2JQEk.woff2\")",
+      "Bash(base64 -i lexend400.woff2 -o lexend400.b64)"
     ]
   }
 }

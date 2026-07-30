@@ -69,6 +69,7 @@ class _ModerationActionDialogState extends State<ModerationActionDialog> {
         key: _formKey,
         child: TextFormField(
           controller: _controller,
+          textCapitalization: TextCapitalization.sentences,
           decoration: InputDecoration(
             hintText: widget.hint,
             hintStyle: AppTheme.of(context).bodySmall,

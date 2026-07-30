@@ -277,7 +277,7 @@ class _ExperienceViewPageState extends State<ExperienceViewPage> {
     await showModalBottomSheet(
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      enableDrag: false,
+      enableDrag: true,
       context: context,
       builder: (context) {
         return WebViewAware(
@@ -288,14 +288,11 @@ class _ExperienceViewPageState extends State<ExperienceViewPage> {
             },
             child: Padding(
               padding: MediaQuery.viewInsetsOf(context),
-              child: SizedBox(
-                height: 200.0,
-                child: AddCommentWidget(
-                  experienceId: experienceId,
-                  parentId: parentId,
-                  photoUrl: context.read<FFAppState>().loginUser.photoUrl,
-                  fullName: context.read<FFAppState>().loginUser.fullName,
-                ),
+              child: AddCommentWidget(
+                experienceId: experienceId,
+                parentId: parentId,
+                photoUrl: context.read<FFAppState>().loginUser.photoUrl,
+                fullName: context.read<FFAppState>().loginUser.fullName,
               ),
             ),
           ),

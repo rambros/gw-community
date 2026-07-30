@@ -60,6 +60,10 @@ class ExperienceAddViewModel extends ChangeNotifier {
   bool _commentsEnabled = true;
   bool get commentsEnabled => _commentsEnabled;
 
+  // Id of the experience once it has been saved for the first time (draft or
+  // published). Subsequent saves update this row instead of inserting a new one.
+  int? _savedExperienceId;
+
   // ========== COMPUTED PROPERTIES ==========
 
   /// Verifica se tem grupo associado
@@ -151,17 +155,32 @@ class ExperienceAddViewModel extends ChangeNotifier {
       final text = textController.text.trim();
       final autoTitle = text.length > 50 ? '${text.substring(0, 50)}...' : text;
 
-      await _repository.createExperience(
-        title: autoTitle,
-        text: text,
-        privacy: privacy,
-        userId: currentUserUid,
-        visibility: _visibility,
-        type: 'sharing',
-        groupId: groupId,
-        isDraft: isDraft,
-        locked: !_commentsEnabled, // locked = true quando comments estão desabilitados
-      );
+      final existingId = _savedExperienceId;
+      if (existingId == null) {
+        _savedExperienceId = await _repository.createExperience(
+          title: autoTitle,
+          text: text,
+          privacy: privacy,
+          userId: currentUserUid,
+          visibility: _visibility,
+          type: 'sharing',
+          groupId: groupId,
+          isDraft: isDraft,
+          locked: !_commentsEnabled, // locked = true quando comments estão desabilitados
+        );
+      } else {
+        // Already saved once (e.g. as a draft) - update that same row instead
+        // of inserting a new one.
+        await _repository.updateExperience(
+          id: existingId,
+          title: autoTitle,
+          text: text,
+          visibility: _visibility,
+          privacy: privacy,
+          groupId: groupId,
+          keepAsDraft: isDraft,
+        );
+      }
 
       _setSuccess(isDraft ? 'Reflection saved' : 'Experience created with success');
 

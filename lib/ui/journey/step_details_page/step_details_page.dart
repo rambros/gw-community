@@ -251,11 +251,12 @@ class _StepDetailsPageState extends State<StepDetailsPage> {
             queryParameters: {
               'stepAudioUrl': serializeParam(params['stepAudioUrl'], ParamType.String),
               'audioTitle': serializeParam(params['audioTitle'], ParamType.String),
-              'typeAnimation': serializeParam(params['typeAnimation'], ParamType.String),
               'audioArt': serializeParam(params['audioArt'], ParamType.String),
               'typeStep': serializeParam(params['typeStep'], ParamType.String),
               'activityId': serializeParam(params['activityId'], ParamType.int),
               'transcript': serializeParam(params['transcript'], ParamType.String),
+              'animationUrl': serializeParam(params['animationUrl'], ParamType.String),
+              'animationMediaType': serializeParam(params['animationMediaType'], ParamType.String),
             }.withoutNulls,
             extra: <String, dynamic>{
               kTransitionInfoKey: const TransitionInfo(

@@ -41,7 +41,6 @@ class _FavoriteActivityCardState extends State<FavoriteActivityCard> {
               queryParameters: {
                 'stepAudioUrl': serializeParam(widget.activity.audioUrl, ParamType.String),
                 'audioTitle': serializeParam(widget.activity.activityPrompt, ParamType.String),
-                'typeAnimation': serializeParam('IN', ParamType.String),
                 'audioArt': serializeParam(
                   'https://firebasestorage.googleapis.com/v0/b/good-wishes-project.appspot.com/o/images%2Fic_goodwishes.png?alt=media&token=e441f239-c823-468b-bff7-c16be921c7be',
                   ParamType.String,
@@ -49,6 +48,8 @@ class _FavoriteActivityCardState extends State<FavoriteActivityCard> {
                 'typeStep': serializeParam(widget.activity.activityLabel, ParamType.String),
                 'activityId': serializeParam(widget.activity.id, ParamType.int),
                 'transcript': serializeParam(widget.activity.transcript, ParamType.String),
+                'animationUrl': serializeParam(widget.activity.animationUrl, ParamType.String),
+                'animationMediaType': serializeParam(widget.activity.animationMediaType, ParamType.String),
               }.withoutNulls,
             );
           } else if (widget.activity.activityType == 'text') {

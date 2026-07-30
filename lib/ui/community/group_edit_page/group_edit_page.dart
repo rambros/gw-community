@@ -106,6 +106,7 @@ class GroupEditPageView extends StatelessWidget {
                               padding: const EdgeInsetsDirectional.fromSTEB(4.0, 4.0, 4.0, 8.0),
                               child: TextFormField(
                                 controller: viewModel.nameController,
+                                textCapitalization: TextCapitalization.words,
                                 decoration: InputDecoration(
                                   labelText: 'Name',
                                   labelStyle: AppTheme.of(context).labelLarge.override(
@@ -146,6 +147,7 @@ class GroupEditPageView extends StatelessWidget {
                               padding: const EdgeInsetsDirectional.fromSTEB(4.0, 8.0, 4.0, 8.0),
                               child: TextFormField(
                                 controller: viewModel.descriptionController,
+                                textCapitalization: TextCapitalization.sentences,
                                 decoration: InputDecoration(
                                   labelText: 'Description',
                                   labelStyle: AppTheme.of(context).labelLarge.override(
@@ -187,6 +189,7 @@ class GroupEditPageView extends StatelessWidget {
                               padding: const EdgeInsetsDirectional.fromSTEB(4.0, 8.0, 4.0, 8.0),
                               child: TextFormField(
                                 controller: viewModel.moreInformationController,
+                                textCapitalization: TextCapitalization.sentences,
                                 decoration: InputDecoration(
                                   labelText: 'More information',
                                   labelStyle: AppTheme.of(context).labelLarge.override(

@@ -157,40 +157,43 @@ class _LoginPageState extends State<LoginPage> {
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: [
-        Padding(
-          padding: const EdgeInsetsDirectional.fromSTEB(24.0, 36.0, 24.0, 0.0),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              'Welcome,',
-              style: AppTheme.of(context).displaySmall.override(
-                    font: GoogleFonts.lexendDeca(
-                      fontWeight: AppTheme.of(context).displaySmall.fontWeight,
-                      fontStyle: AppTheme.of(context).displaySmall.fontStyle,
+        if (!viewModel.magicLinkSent) ...[
+          Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(24.0, 36.0, 24.0, 0.0),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Welcome,',
+                style: AppTheme.of(context).displaySmall.override(
+                      font: GoogleFonts.lexendDeca(
+                        fontWeight: AppTheme.of(context).displaySmall.fontWeight,
+                        fontStyle: AppTheme.of(context).displaySmall.fontStyle,
+                      ),
+                      color: AppTheme.of(context).secondary,
+                      fontSize: 24.0,
+                      letterSpacing: 0.0,
                     ),
-                    color: AppTheme.of(context).secondary,
-                    fontSize: 24.0,
-                    letterSpacing: 0.0,
-                  ),
+              ),
             ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsetsDirectional.fromSTEB(24.0, 8.0, 24.0, 24.0),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              'Enter your email to receive a secure access link.',
-              style: AppTheme.of(context).bodyMedium.override(
-                    font: GoogleFonts.lexendDeca(
-                      fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                      fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
+          Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(24.0, 8.0, 24.0, 24.0),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Enter your email to receive a secure access link.',
+                style: AppTheme.of(context).bodyMedium.override(
+                      font: GoogleFonts.lexendDeca(
+                        fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                        fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
+                      ),
+                      letterSpacing: 0.0,
                     ),
-                    letterSpacing: 0.0,
-                  ),
+              ),
             ),
           ),
-        ),
+        ] else
+          const SizedBox(height: 36.0),
         if (viewModel.magicLinkSent)
           _buildMagicLinkSentCard(context, viewModel)
         else

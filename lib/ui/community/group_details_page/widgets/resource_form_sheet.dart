@@ -186,6 +186,7 @@ class _ResourceFormSheetState extends State<ResourceFormSheet> {
           const SizedBox(height: 6),
           TextField(
             controller: _titleController,
+            textCapitalization: TextCapitalization.sentences,
             decoration: _inputDecoration('Resource title'),
           ),
           const SizedBox(height: 14),
@@ -195,6 +196,7 @@ class _ResourceFormSheetState extends State<ResourceFormSheet> {
           TextField(
             controller: _descriptionController,
             maxLines: 2,
+            textCapitalization: TextCapitalization.sentences,
             decoration: _inputDecoration('Optional description'),
           ),
           const SizedBox(height: 14),

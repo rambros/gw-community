@@ -7,26 +7,29 @@ import 'package:gw_community/ui/core/widgets/favorite_button.dart';
 import 'package:gw_community/ui/journey/themes/journey_theme_extension.dart';
 import 'package:gw_community/utils/context_extensions.dart';
 import 'package:lottie/lottie.dart';
+import 'package:rive/rive.dart' hide Image;
 
 class StepAudioPlayerPage extends StatelessWidget {
   const StepAudioPlayerPage({
     super.key,
     this.stepAudioUrl,
     required this.audioTitle,
-    required this.typeAnimation,
     required this.audioArt,
     required this.typeStep,
     this.activityId,
     this.transcript,
+    this.animationUrl,
+    this.animationMediaType,
   });
 
   final String? stepAudioUrl;
   final String? audioTitle;
-  final String? typeAnimation;
   final String? audioArt;
   final String? typeStep;
   final int? activityId;
   final String? transcript;
+  final String? animationUrl;
+  final String? animationMediaType;
 
   static String routeName = 'stepAudioPlayerPage';
   static String routePath = '/stepAudioPlayerPage';
@@ -211,30 +214,45 @@ class StepAudioPlayerPage extends StatelessWidget {
   }
 
   Widget _buildAnimation(BuildContext context) {
-    if (typeAnimation == 'IN') {
-      return Lottie.asset(
-        'assets/jsons/logo_in.json',
-        width: MediaQuery.sizeOf(context).width * 0.9,
-        height: MediaQuery.sizeOf(context).height * 0.43,
-        fit: BoxFit.contain,
-        animate: true,
-      );
-    } else if (typeAnimation == 'UP') {
-      return Lottie.asset(
-        'assets/jsons/logo_up.json',
-        width: MediaQuery.sizeOf(context).width * 0.9,
-        height: MediaQuery.sizeOf(context).height * 0.43,
-        fit: BoxFit.contain,
-        animate: true,
-      );
-    } else {
-      return Lottie.asset(
-        'assets/jsons/logo_out.json',
-        width: MediaQuery.sizeOf(context).width * 0.9,
-        height: MediaQuery.sizeOf(context).height * 0.43,
-        fit: BoxFit.contain,
-        animate: true,
-      );
+    final width = MediaQuery.sizeOf(context).width * 0.9;
+    final height = MediaQuery.sizeOf(context).height * 0.43;
+
+    if (animationUrl == null || animationUrl!.isEmpty) {
+      return SizedBox(width: width, height: height);
+    }
+
+    switch (animationMediaType) {
+      case 'lottie':
+        return Lottie.network(
+          animationUrl!,
+          width: width,
+          height: height,
+          fit: BoxFit.contain,
+          animate: true,
+          errorBuilder: (context, error, stackTrace) =>
+              SizedBox(width: width, height: height),
+        );
+      case 'rive':
+        return SizedBox(
+          width: width,
+          height: height,
+          child: RiveAnimation.network(
+            animationUrl!,
+            fit: BoxFit.contain,
+            onInit: (_) {},
+          ),
+        );
+      case 'image':
+        return Image.network(
+          animationUrl!,
+          width: width,
+          height: height,
+          fit: BoxFit.contain,
+          errorBuilder: (context, error, stackTrace) =>
+              SizedBox(width: width, height: height),
+        );
+      default:
+        return SizedBox(width: width, height: height);
     }
   }
 }

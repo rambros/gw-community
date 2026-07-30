@@ -248,14 +248,27 @@ class _EventEditFormState extends State<_EventEditForm> {
                     margin: const EdgeInsetsDirectional.fromSTEB(12.0, 4.0, 12.0, 4.0),
                   ),
                 ),
-                _buildTextField(context, vm.titleController, vm.titleFocus, 'Title'),
-                _buildTextField(context, vm.facilitatorController, vm.facilitatorFocus, 'Facilitator'),
+                _buildTextField(
+                  context,
+                  vm.titleController,
+                  vm.titleFocus,
+                  'Title',
+                  textCapitalization: TextCapitalization.words,
+                ),
+                _buildTextField(
+                  context,
+                  vm.facilitatorController,
+                  vm.facilitatorFocus,
+                  'Facilitator',
+                  textCapitalization: TextCapitalization.words,
+                ),
                 _buildTextField(
                   context,
                   vm.descriptionController,
                   vm.descriptionFocus,
                   'Description',
                   maxLines: 6,
+                  textCapitalization: TextCapitalization.sentences,
                 ),
                 if (vm.eventType == 'single_day') ...[
                   _buildDateField(context, vm),
@@ -347,6 +360,7 @@ class _EventEditFormState extends State<_EventEditForm> {
     TextInputType? keyboardType,
     int maxLines = 1,
     bool optional = false,
+    TextCapitalization textCapitalization = TextCapitalization.none,
   }) {
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(4.0, 8.0, 4.0, 8.0),
@@ -355,6 +369,7 @@ class _EventEditFormState extends State<_EventEditForm> {
         focusNode: focusNode,
         keyboardType: keyboardType,
         maxLines: maxLines,
+        textCapitalization: textCapitalization,
         validator: optional ? null : _requiredValidator,
         decoration: InputDecoration(
           labelText: label,

@@ -8,11 +8,11 @@ import 'package:gw_community/ui/community/event_details_page/view_model/event_de
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
+import 'package:gw_community/ui/core/widgets/in_app_web_view_page.dart';
 import 'package:gw_community/ui/core/widgets/user_avatar.dart';
 import 'package:gw_community/utils/context_extensions.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
 
 class EventDetailsPage extends StatefulWidget {
@@ -312,11 +312,15 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
               Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(0.0, 12.0, 0.0, 0.0),
                 child: InkWell(
-                  onTap: () async {
-                    final url = Uri.tryParse(event.eventPageUrl!);
-                    if (url != null && await canLaunchUrl(url)) {
-                      await launchUrl(url, mode: LaunchMode.externalApplication);
-                    }
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => InAppWebViewPage(
+                          url: event.eventPageUrl!,
+                          title: event.title,
+                        ),
+                      ),
+                    );
                   },
                   child: Row(
                     children: [

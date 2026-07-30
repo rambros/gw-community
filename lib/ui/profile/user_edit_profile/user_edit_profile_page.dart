@@ -111,6 +111,7 @@ class _UserEditProfilePageState extends State<UserEditProfilePage> {
                                     onChanged: viewModel.updateFirstName,
                                     autofocus: false,
                                     obscureText: false,
+                                    textCapitalization: TextCapitalization.words,
                                     decoration: InputDecoration(
                                       labelText: 'First Name',
                                       labelStyle: AppTheme.of(context).labelLarge.override(
@@ -188,6 +189,7 @@ class _UserEditProfilePageState extends State<UserEditProfilePage> {
                                     onChanged: viewModel.updateLastName,
                                     autofocus: false,
                                     obscureText: false,
+                                    textCapitalization: TextCapitalization.words,
                                     decoration: InputDecoration(
                                       labelText: 'Last Name',
                                       labelStyle: AppTheme.of(context).labelLarge.override(

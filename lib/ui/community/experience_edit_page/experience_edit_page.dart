@@ -220,6 +220,7 @@ class _ExperienceEditPageContent extends StatelessWidget {
         focusNode: viewModel.textFocusNode,
         autofocus: false,
         obscureText: false,
+        textCapitalization: TextCapitalization.sentences,
         decoration: InputDecoration(
           labelText: 'Experience',
           labelStyle: AppTheme.of(context).labelLarge.override(

@@ -139,6 +139,7 @@ class CommunityGuidelinesEditPageView extends StatelessWidget {
                         controller: viewModel.contentController,
                         maxLines: null,
                         expands: true,
+                        textCapitalization: TextCapitalization.sentences,
                         textAlignVertical: TextAlignVertical.top,
                         decoration: InputDecoration(
                           hintText: 'Enter community guidelines here...',

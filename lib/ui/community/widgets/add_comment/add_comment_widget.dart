@@ -2,13 +2,11 @@ import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/experience_repository.dart';
-import 'package:gw_community/index.dart';
 import 'package:gw_community/ui/community/widgets/add_comment/view_model/add_comment_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
 import 'package:gw_community/ui/core/widgets/user_avatar.dart';
 import 'package:gw_community/utils/context_extensions.dart';
-import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
 
 class AddCommentWidget extends StatelessWidget {
@@ -74,7 +72,7 @@ class _AddCommentView extends StatelessWidget {
           borderRadius: BorderRadius.circular(8.0),
         ),
         child: Column(
-          mainAxisSize: MainAxisSize.max,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
               padding: const EdgeInsetsDirectional.fromSTEB(12.0, 12.0, 12.0, 0.0),
@@ -97,6 +95,7 @@ class _AddCommentView extends StatelessWidget {
                           () => viewModel.onTextChanged(value),
                         ),
                         autofocus: true,
+                        textCapitalization: TextCapitalization.sentences,
                         decoration: InputDecoration(
                           hintText: 'Write something...',
                           hintStyle: AppTheme.of(context).labelSmall.override(
@@ -155,6 +154,15 @@ class _AddCommentView extends StatelessWidget {
                       ),
                     ),
                   ),
+                  IconButton(
+                    icon: Icon(
+                      Icons.close,
+                      color: AppTheme.of(context).secondaryText,
+                      size: 20.0,
+                    ),
+                    tooltip: 'Close',
+                    onPressed: () => Navigator.of(context).maybePop(),
+                  ),
                 ],
               ),
             ),
@@ -191,12 +199,6 @@ class _AddCommentView extends StatelessWidget {
 
                             if (context.mounted) {
                               Navigator.pop(context, true);
-                              context.pushNamed(
-                                ExperienceViewPage.routeName,
-                                queryParameters: {
-                                  'experienceId': serializeParam(experienceId, ParamType.int),
-                                }.withoutNulls,
-                              );
                             }
                           }
                         : null,
