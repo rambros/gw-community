@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:gw_community/utils/flutter_flow_util.dart';
-import 'package:internet_file/internet_file.dart';
-import 'package:pdfx/pdfx.dart';
+import 'dart:math';
+import 'dart:typed_data';
 
-class FlutterFlowPdfViewer extends StatefulWidget {
+import 'package:flutter/material.dart';
+import 'package:pdfrx/pdfrx.dart';
+
+class FlutterFlowPdfViewer extends StatelessWidget {
   const FlutterFlowPdfViewer({
     super.key,
     this.networkPath,
@@ -23,68 +24,37 @@ class FlutterFlowPdfViewer extends StatefulWidget {
   final bool horizontalScroll;
 
   @override
-  State<FlutterFlowPdfViewer> createState() => _FlutterFlowPdfViewerState();
-}
+  Widget build(BuildContext context) {
+    final params = PdfViewerParams(
+      layoutPages: horizontalScroll ? _horizontalLayout : null,
+      loadingBannerBuilder: (context, bytesDownloaded, totalBytes) =>
+          const Center(child: CircularProgressIndicator()),
+      errorBannerBuilder: (context, error, stackTrace, documentRef) => Container(),
+    );
 
-class _FlutterFlowPdfViewerState extends State<FlutterFlowPdfViewer> {
-  PdfController? controller;
-  bool _isLoading = true;
-  String get networkPath => widget.networkPath ?? '';
-  String get assetPath => widget.assetPath ?? '';
-  Uint8List get fileBytes => widget.fileBytes ?? Uint8List.fromList([]);
+    final viewer = networkPath != null && networkPath!.isNotEmpty
+        ? PdfViewer.uri(Uri.parse(networkPath!), params: params)
+        : assetPath != null && assetPath!.isNotEmpty
+            ? PdfViewer.asset(assetPath!, params: params)
+            : fileBytes != null && fileBytes!.isNotEmpty
+                ? PdfViewer.data(fileBytes!, sourceName: networkPath ?? assetPath ?? 'fileBytes', params: params)
+                : null;
 
-  Future<void> _initializeController() async {
-    safeSetState(() => _isLoading = true);
-    final pdfDocument =
-        networkPath.isNotEmpty || assetPath.isNotEmpty || fileBytes.isNotEmpty
-            ? assetPath.isNotEmpty
-                ? await PdfDocument.openAsset(assetPath)
-                : networkPath.isNotEmpty
-                    ? await PdfDocument.openData(InternetFile.get(networkPath))
-                    : await PdfDocument.openData(Uint8List.fromList(fileBytes))
-            : null;
-    controller = pdfDocument != null
-        ? PdfController(document: Future.value(pdfDocument))
-        : null;
-    safeSetState(() => _isLoading = false);
+    return SizedBox(
+      width: width,
+      height: height,
+      child: viewer ?? const SizedBox(),
+    );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _initializeController();
-  }
-
-  @override
-  void didUpdateWidget(FlutterFlowPdfViewer oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.networkPath != widget.networkPath ||
-        oldWidget.fileBytes != widget.fileBytes) {
-      _initializeController();
+  static PdfPageLayout _horizontalLayout(List<PdfPage> pages, PdfViewerParams params) {
+    final height = pages.fold(0.0, (prev, page) => max(prev, page.height)) + params.margin * 2;
+    final pageLayouts = <Rect>[];
+    double x = params.margin;
+    for (final page in pages) {
+      pageLayouts.add(Rect.fromLTWH(x, (height - page.height) / 2, page.width, page.height));
+      x += page.width + params.margin;
     }
+    return PdfPageLayout(pageLayouts: pageLayouts, documentSize: Size(x, height));
   }
-
-  @override
-  Widget build(BuildContext context) => SizedBox(
-        width: widget.width,
-        height: widget.height,
-        child: _isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : controller != null
-                ? PdfView(
-                    controller: controller!,
-                    scrollDirection: widget.horizontalScroll
-                        ? Axis.horizontal
-                        : Axis.vertical,
-                    builders: PdfViewBuilders<DefaultBuilderOptions>(
-                      options: const DefaultBuilderOptions(),
-                      documentLoaderBuilder: (_) =>
-                          const Center(child: CircularProgressIndicator()),
-                      pageLoaderBuilder: (_) =>
-                          const Center(child: CircularProgressIndicator()),
-                      errorBuilder: (_, __) => Container(),
-                    ),
-                  )
-                : const SizedBox(),
-      );
 }

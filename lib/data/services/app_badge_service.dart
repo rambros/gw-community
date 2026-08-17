@@ -1,5 +1,5 @@
+import 'package:app_badge_plus/app_badge_plus.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_app_badger/flutter_app_badger.dart';
 
 /// Service to manage app icon badge count for unread notifications
 class AppBadgeService {
@@ -15,7 +15,7 @@ class AppBadgeService {
     if (_initialized) return;
 
     try {
-      _isSupported = await FlutterAppBadger.isAppBadgeSupported();
+      _isSupported = await AppBadgePlus.isSupported();
       _initialized = true;
       debugPrint('AppBadgeService: Badge supported = $_isSupported');
     } catch (e) {
@@ -31,11 +31,10 @@ class AppBadgeService {
     if (!_isSupported) return;
 
     try {
+      await AppBadgePlus.updateBadge(count);
       if (count > 0) {
-        await FlutterAppBadger.updateBadgeCount(count);
         debugPrint('AppBadgeService: Badge updated to $count');
       } else {
-        await FlutterAppBadger.removeBadge();
         debugPrint('AppBadgeService: Badge removed');
       }
     } catch (e) {
@@ -49,7 +48,7 @@ class AppBadgeService {
     if (!_isSupported) return;
 
     try {
-      await FlutterAppBadger.removeBadge();
+      await AppBadgePlus.updateBadge(0);
       debugPrint('AppBadgeService: Badge removed');
     } catch (e) {
       debugPrint('AppBadgeService: Error removing badge: $e');
