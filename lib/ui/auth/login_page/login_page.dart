@@ -318,14 +318,48 @@ class _LoginPageState extends State<LoginPage> {
             ),
             const SizedBox(height: 16),
             GestureDetector(
-              onTap: () {
-                viewModel.resetMagicLinkState();
-              },
+              onTap: viewModel.isMagicLinkLoading
+                  ? null
+                  : () async {
+                      final messenger = ScaffoldMessenger.of(context);
+                      final theme = AppTheme.of(context);
+                      final result = await viewModel.sendMagicLink(_magicEmailController.text);
+                      if (!mounted) return;
+                      if (result == SendMagicLinkResult.sent) {
+                        messenger.showSnackBar(SnackBar(
+                          content: Text(
+                            'Link sent again. Check your inbox.',
+                            style: TextStyle(color: theme.primaryText),
+                          ),
+                          backgroundColor: theme.secondary,
+                        ));
+                      } else if (result == SendMagicLinkResult.error) {
+                        messenger.showSnackBar(SnackBar(
+                          content: Text(
+                            'Error sending link. Please try again.',
+                            style: TextStyle(color: theme.primaryText),
+                          ),
+                          backgroundColor: theme.secondary,
+                        ));
+                      }
+                    },
               child: Text(
                 'Resend link',
                 style: AppTheme.of(context).bodySmall.override(
                       font: GoogleFonts.lexendDeca(),
                       color: AppTheme.of(context).primary,
+                      fontWeight: FontWeight.w500,
+                    ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            GestureDetector(
+              onTap: viewModel.resetMagicLinkState,
+              child: Text(
+                '← Change email',
+                style: AppTheme.of(context).bodySmall.override(
+                      font: GoogleFonts.lexendDeca(),
+                      color: AppTheme.of(context).secondaryText,
                       fontWeight: FontWeight.w500,
                     ),
               ),

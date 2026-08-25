@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gw_community/data/repositories/auth_repository.dart';
+import 'package:gw_community/data/services/auth/supabase_auth_service.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 
 class ForgotPasswordViewModel extends ChangeNotifier {
@@ -37,7 +38,10 @@ class ForgotPasswordViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await _repository.resetPassword(email, redirectTo: 'gw://login-callback');
+      await _repository.resetPassword(
+        email,
+        redirectTo: SupabaseAuthService.authCallbackUrl,
+      );
     } catch (e) {
       rethrow;
     } finally {

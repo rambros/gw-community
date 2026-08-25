@@ -52,6 +52,22 @@
           "destination": "/welcome.html"
         },
         {
+          "source": "/login-callback",
+          "destination": "/login-callback.html"
+        },
+        {
+          "source": "/login-callback.html",
+          "destination": "/login-callback.html"
+        },
+        {
+          "source": "/access-link",
+          "destination": "/access-link.html"
+        },
+        {
+          "source": "/access-link.html",
+          "destination": "/access-link.html"
+        },
+        {
           "source": "**",
           "destination": "/invite.html"
         }

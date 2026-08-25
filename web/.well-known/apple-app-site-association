@@ -4,7 +4,14 @@
     "details": [
       {
         "appID": "VMJP66D94A.org.callofthetime.gw",
-        "paths": ["/invite", "/*"]
+        "paths": [
+          "/invite",
+          "/invite/*",
+          "/login-callback",
+          "/login-callback/*",
+          "/welcome",
+          "/welcome/*"
+        ]
       }
     ]
   }

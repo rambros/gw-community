@@ -98,6 +98,12 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         ];
         final isPublicRoute = publicRoutes.contains(state.uri.path);
 
+        // Auth landing URLs are handled in main.dart, not as in-app routes.
+        if (state.uri.path.startsWith('/access-link') ||
+            state.uri.path.startsWith('/login-callback')) {
+          return LoginPage.routePath;
+        }
+
         if (!loggedIn && !isPublicRoute) {
           debugPrint('ROUTER: User not logged in and on protected page ${state.uri.path}. Redirecting to Login.');
           return LoginPage.routePath;

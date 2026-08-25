@@ -201,10 +201,14 @@ class SupabaseAuthService implements AuthService {
   }
 
   @override
+  static const String authCallbackUrl =
+      'https://gw-invite.web.app/login-callback';
+
+  @override
   Future<void> sendMagicLink(String email) async {
     await SupaFlow.client.auth.signInWithOtp(
       email: email,
-      emailRedirectTo: 'gw://login-callback',
+      emailRedirectTo: authCallbackUrl,
       shouldCreateUser: false,
     );
   }

@@ -29,6 +29,7 @@ import 'package:gw_community/data/services/auth/auth_service.dart';
 import 'package:gw_community/data/services/auth/supabase_auth_service.dart';
 import 'package:gw_community/data/services/push/push_notification_service.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/ui/home/home_page/home_page.dart';
 import 'package:gw_community/ui/auth/change_password_page/view_model/change_password_view_model.dart';
 import 'package:gw_community/ui/auth/forgot_password_page/view_model/forgot_password_view_model.dart';
 import 'package:gw_community/ui/auth/login_page/view_model/login_view_model.dart';
@@ -305,16 +306,107 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   // ── Deep-link handling ─────────────────────────────────────────────────────
 
+  bool _isInviteHost(Uri uri) =>
+      uri.host == 'gw-invite.web.app';
+
+  bool _isAccessLinkUri(Uri uri) =>
+      _isInviteHost(uri) && uri.path.startsWith('/access-link');
+
+  bool _isLoginCallbackUri(Uri uri) {
+    if (uri.scheme == 'gw' && uri.host == 'login-callback') return true;
+    return uri.scheme == 'https' &&
+        _isInviteHost(uri) &&
+        uri.path.startsWith('/login-callback');
+  }
+
+  OtpType _otpTypeFromParam(String? type) {
+    switch (type) {
+      case 'recovery':
+        return OtpType.recovery;
+      case 'signup':
+        return OtpType.signup;
+      case 'invite':
+        return OtpType.invite;
+      case 'email_change':
+        return OtpType.emailChange;
+      case 'email':
+        return OtpType.email;
+      default:
+        return OtpType.magiclink;
+    }
+  }
+
   Future<void> _handleDeepLink(Uri uri) async {
     debugPrint('🔗 Deep link received: $uri');
 
-    // Magic link callback — let supabase_flutter handle auth, but show errors
-    if (uri.scheme == 'gw' && uri.host == 'login-callback') {
-      final errorCode = uri.queryParameters['error_code'];
-      if (errorCode != null) {
-        _showMagicLinkError(errorCode);
-      }
+    if (_isAccessLinkUri(uri)) {
+      await _completeAccessLinkAuth(uri);
+      return;
     }
+
+    if (_isLoginCallbackUri(uri)) {
+      await _completeLoginCallbackAuth(uri);
+    }
+  }
+
+  /// Universal links open /access-link in the app before the web page can run.
+  /// Verify the token here so the session is established in-app.
+  Future<void> _completeAccessLinkAuth(Uri uri) async {
+    final tokenHash = uri.queryParameters['token_hash'];
+    if (tokenHash == null || tokenHash.isEmpty) {
+      _showMagicLinkError('otp_expired');
+      return;
+    }
+
+    try {
+      debugPrint('🔗 Verifying access-link token_hash');
+      await SupaFlow.client.auth.verifyOTP(
+        type: _otpTypeFromParam(uri.queryParameters['type']),
+        tokenHash: tokenHash,
+      );
+      _waitForAuthAndNavigate();
+    } on AuthException catch (e) {
+      debugPrint('🔗 access-link verifyOTP failed: ${e.message}');
+      _showMagicLinkError(
+        e.message.toLowerCase().contains('expired') ? 'otp_expired' : 'auth_failed',
+      );
+    } catch (e, stackTrace) {
+      debugPrint('🔗 access-link unexpected error: $e\n$stackTrace');
+      _showMagicLinkError('auth_failed');
+    }
+  }
+
+  Future<void> _completeLoginCallbackAuth(Uri uri) async {
+    final errorCode = uri.queryParameters['error_code'];
+    if (errorCode != null) {
+      _showMagicLinkError(errorCode);
+      return;
+    }
+
+    // supabase_flutter already calls getSessionFromUrl for `code` callbacks.
+    // Poll briefly for the session, then navigate to home.
+    _waitForAuthAndNavigate();
+  }
+
+  void _waitForAuthAndNavigate([int attempt = 0]) {
+    if (AppStateNotifier.instance.loggedIn) {
+      _navigateAfterAuthSuccess();
+      return;
+    }
+    if (attempt >= 20) return;
+    Future.delayed(const Duration(milliseconds: 300), () {
+      _waitForAuthAndNavigate(attempt + 1);
+    });
+  }
+
+  void _navigateAfterAuthSuccess() {
+    Future.delayed(const Duration(milliseconds: 300), () {
+      final ctx = appNavigatorKey.currentContext;
+      if (ctx == null || !ctx.mounted) return;
+      if (AppStateNotifier.instance.loggedIn) {
+        ctx.go(HomePage.routePath);
+      }
+    });
   }
 
   void _showMagicLinkError(String errorCode) {
