@@ -10,6 +10,15 @@ class HomeRepository {
     return rows.isNotEmpty ? rows.first : null;
   }
 
+  /// Records app open / session resume for admin Members "Last Access".
+  Future<void> touchLastAccess() async {
+    try {
+      await SupaFlow.client.rpc('touch_member_last_access');
+    } catch (e) {
+      debugPrint('touch_member_last_access failed: $e');
+    }
+  }
+
   /// Fetches user journeys
   Future<List<CcUserJourneysRow>> getUserJourneys(String userId) async {
     // Filter user journeys by ensuring the related journey has status='published'

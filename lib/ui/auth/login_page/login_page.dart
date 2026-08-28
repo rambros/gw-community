@@ -309,7 +309,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             const SizedBox(height: 8),
             Text(
-              'We sent an access link to ${_magicEmailController.text}. Tap it to sign in.',
+              'We sent an access link to ${viewModel.magicLinkEmail ?? _magicEmailController.text}. Tap it to sign in.',
               textAlign: TextAlign.center,
               style: AppTheme.of(context).bodyMedium.override(
                     font: GoogleFonts.lexendDeca(),
@@ -323,7 +323,8 @@ class _LoginPageState extends State<LoginPage> {
                   : () async {
                       final messenger = ScaffoldMessenger.of(context);
                       final theme = AppTheme.of(context);
-                      final result = await viewModel.sendMagicLink(_magicEmailController.text);
+                      final email = viewModel.magicLinkEmail ?? _magicEmailController.text;
+                      final result = await viewModel.sendMagicLink(email);
                       if (!mounted) return;
                       if (result == SendMagicLinkResult.sent) {
                         messenger.showSnackBar(SnackBar(

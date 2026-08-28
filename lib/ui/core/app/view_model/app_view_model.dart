@@ -62,9 +62,10 @@ class AppViewModel extends ChangeNotifier with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       authRepository.refreshUser();
-      // Refresh module flags on resume so changes made in the admin portal
-      // are reflected without requiring a log-out/log-in cycle.
       if (appStateNotifier.loggedIn) {
+        HomeRepository().touchLastAccess();
+        // Refresh module flags on resume so changes made in the admin portal
+        // are reflected without requiring a log-out/log-in cycle.
         FFAppState().loadGroupModuleConfig(HomeRepository());
       }
     }

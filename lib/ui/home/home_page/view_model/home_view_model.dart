@@ -48,6 +48,7 @@ class HomeViewModel extends ChangeNotifier {
     _clearError();
 
     try {
+      await _repository.touchLastAccess();
       await Future.wait([
         _loadUserProfile(),
         _loadUserJourneys(),

@@ -29,13 +29,13 @@ import 'package:gw_community/data/services/auth/auth_service.dart';
 import 'package:gw_community/data/services/auth/supabase_auth_service.dart';
 import 'package:gw_community/data/services/push/push_notification_service.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
-import 'package:gw_community/ui/home/home_page/home_page.dart';
 import 'package:gw_community/ui/auth/change_password_page/view_model/change_password_view_model.dart';
 import 'package:gw_community/ui/auth/forgot_password_page/view_model/forgot_password_view_model.dart';
 import 'package:gw_community/ui/auth/login_page/view_model/login_view_model.dart';
 import 'package:gw_community/ui/auth/on_boarding_page/view_model/on_boarding_view_model.dart';
 import 'package:gw_community/ui/community/experience_view_page/view_model/experience_view_view_model.dart';
 import 'package:gw_community/ui/core/app/view_model/app_view_model.dart';
+import 'package:gw_community/ui/home/home_page/home_page.dart';
 import 'package:gw_community/ui/home/home_page/view_model/home_view_model.dart';
 import 'package:gw_community/ui/journey/journeys_list_page/view_model/journeys_list_view_model.dart';
 import 'package:gw_community/ui/learn/learn_list_page/view_model/learn_list_view_model.dart';
@@ -52,6 +52,7 @@ import 'package:gw_community/ui/utility/unsplash_page/view_model/unsplash_view_m
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:gw_community/utils/internationalization.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -195,6 +196,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  static const _consumedAuthTokensKey = 'consumed_auth_token_hashes';
+
   final _appLinks = AppLinks();
   StreamSubscription<Uri>? _linkSubscription;
 
@@ -207,6 +210,14 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   // first-ever link for the process (stale after warm starts) instead of
   // the latest one — unlike iOS which always returns the most recent link.
   DateTime? _lastStreamLinkAt;
+
+  // Magic-link tokens already consumed (persisted). iOS re-delivers the last
+  // Universal Link on cold start, so used tokens must not be verified again.
+  final Set<String> _consumedAuthTokens = {};
+
+  bool get _hasActiveSession =>
+      AppStateNotifier.instance.loggedIn ||
+      SupaFlow.client.auth.currentSession != null;
 
   @override
   void initState() {
@@ -248,6 +259,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       if (uri == null) return;
       final uriStr = uri.toString();
       if (uriStr == _lastHandledUriStr) return; // already handled
+      // getInitialLink can return a stale URL from a previous session while a
+      // newer link was already handled via the stream this launch.
+      if (_lastHandledUriStr != null && _isAuthCallbackUri(uri)) {
+        debugPrint('🔗 [resume-check] ignoring stale auth link: $uri');
+        return;
+      }
       debugPrint('🔗 [resume-check] found link: $uri');
       _lastHandledUriStr = uriStr;
       _handleDeepLink(uri);
@@ -259,6 +276,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   // ── Deep-link initialisation ───────────────────────────────────────────────
 
   Future<void> _initDeepLinks() async {
+    await _loadConsumedAuthTokens();
+
     // Track whether the stream already handled a link so getInitialLink()
     // does not override it with a stale cached URL (Android caches the very
     // first link the process ever saw, causing old used-tokens to fire again).
@@ -306,8 +325,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   // ── Deep-link handling ─────────────────────────────────────────────────────
 
-  bool _isInviteHost(Uri uri) =>
-      uri.host == 'gw-invite.web.app';
+  bool _isInviteHost(Uri uri) => uri.host == 'gw-invite.web.app';
 
   bool _isAccessLinkUri(Uri uri) =>
       _isInviteHost(uri) && uri.path.startsWith('/access-link');
@@ -317,6 +335,35 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     return uri.scheme == 'https' &&
         _isInviteHost(uri) &&
         uri.path.startsWith('/login-callback');
+  }
+
+  bool _isAuthCallbackUri(Uri uri) =>
+      _isAccessLinkUri(uri) || _isLoginCallbackUri(uri);
+
+  Future<void> _loadConsumedAuthTokens() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      _consumedAuthTokens
+        ..clear()
+        ..addAll(prefs.getStringList(_consumedAuthTokensKey) ?? const []);
+    } catch (e) {
+      debugPrint('🔗 Failed to load consumed auth tokens: $e');
+    }
+  }
+
+  Future<void> _markAuthTokenConsumed(String tokenKey) async {
+    if (tokenKey.isEmpty || _consumedAuthTokens.contains(tokenKey)) return;
+    _consumedAuthTokens.add(tokenKey);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final tokens = _consumedAuthTokens.toList();
+      if (tokens.length > 20) {
+        tokens.removeRange(0, tokens.length - 20);
+      }
+      await prefs.setStringList(_consumedAuthTokensKey, tokens);
+    } catch (e) {
+      debugPrint('🔗 Failed to persist consumed auth token: $e');
+    }
   }
 
   OtpType _otpTypeFromParam(String? type) {
@@ -354,7 +401,19 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   Future<void> _completeAccessLinkAuth(Uri uri) async {
     final tokenHash = uri.queryParameters['token_hash'];
     if (tokenHash == null || tokenHash.isEmpty) {
-      _showMagicLinkError('otp_expired');
+      if (!_hasActiveSession) _showMagicLinkError('otp_expired');
+      return;
+    }
+
+    if (_hasActiveSession) {
+      debugPrint('🔗 Skipping access-link: already signed in');
+      await _markAuthTokenConsumed(tokenHash);
+      return;
+    }
+
+    if (_consumedAuthTokens.contains(tokenHash)) {
+      debugPrint('🔗 Skipping access-link: token already consumed');
+      _showMagicLinkError('otp_already_used');
       return;
     }
 
@@ -364,22 +423,32 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         type: _otpTypeFromParam(uri.queryParameters['type']),
         tokenHash: tokenHash,
       );
+      await _markAuthTokenConsumed(tokenHash);
       _waitForAuthAndNavigate();
     } on AuthException catch (e) {
       debugPrint('🔗 access-link verifyOTP failed: ${e.message}');
+      await _markAuthTokenConsumed(tokenHash);
+      if (_hasActiveSession) return;
       _showMagicLinkError(
-        e.message.toLowerCase().contains('expired') ? 'otp_expired' : 'auth_failed',
+        e.message.toLowerCase().contains('expired')
+            ? 'otp_expired'
+            : 'auth_failed',
       );
     } catch (e, stackTrace) {
       debugPrint('🔗 access-link unexpected error: $e\n$stackTrace');
-      _showMagicLinkError('auth_failed');
+      if (!_hasActiveSession) _showMagicLinkError('auth_failed');
     }
   }
 
   Future<void> _completeLoginCallbackAuth(Uri uri) async {
     final errorCode = uri.queryParameters['error_code'];
     if (errorCode != null) {
-      _showMagicLinkError(errorCode);
+      if (!_hasActiveSession) _showMagicLinkError(errorCode);
+      return;
+    }
+
+    if (_hasActiveSession) {
+      debugPrint('🔗 Skipping login-callback: already signed in');
       return;
     }
 
@@ -410,15 +479,21 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   void _showMagicLinkError(String errorCode) {
-    final message = errorCode == 'otp_expired'
-        ? 'The access link has expired. Please request a new one.'
-        : 'Authentication failed. Please try again.';
+    final message = switch (errorCode) {
+      'otp_already_used' =>
+        'This access link was already used. Open the app and request a new one.',
+      'otp_expired' =>
+        'The access link has expired. Please request a new one.',
+      _ => 'Authentication failed. Please try again.',
+    };
 
     // Retry until the context is inside the router tree (handles cold-start)
     _showMagicLinkErrorWithRetry(message);
   }
 
   void _showMagicLinkErrorWithRetry(String message, [int attempt = 0]) {
+    if (_hasActiveSession) return;
+
     final ctx = appNavigatorKey.currentContext;
     if (ctx == null || !ctx.mounted) {
       if (attempt < 10) {
