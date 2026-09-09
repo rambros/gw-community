@@ -9,7 +9,7 @@ const corsHeaders = {
 
 const MAGIC_LINK_REDIRECT_URL =
   Deno.env.get("MAGIC_LINK_REDIRECT_URL") ??
-  "https://gw-invite.web.app/login-callback";
+  "https://invite.callofthetime.org/login-callback";
 
 function resolveGroupIds(group_id: unknown, group_ids: unknown): number[] {
   const ids = new Set<number>();
@@ -198,7 +198,7 @@ serve(async (req) => {
     const EMAIL_FROM_NAME = settingsMap.email_from_name || "Good Wishes";
     const DOWNLOAD_LINK =
       settingsMap.invite_with_password_link ||
-      "https://gw-invite.web.app/welcome";
+      "https://invite.callofthetime.org/welcome";
 
     if (!RESEND_API_KEY) {
       throw new Error("Server configuration error: Missing email provider key");

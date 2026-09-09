@@ -10,6 +10,7 @@
 	<string>production</string>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
+		<string>applinks:invite.callofthetime.org</string>
 		<string>applinks:gw-invite.web.app</string>
 	</array>
 </dict>

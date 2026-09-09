@@ -1,7 +1,7 @@
 name: gw_community
 description: The Good Wishes App
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
-version: 0.9.45+115
+version: 0.9.50+116
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -38,7 +38,7 @@ dependencies:
   http: 1.6.0
   image: ^4.9.1
   image_picker: ^1.2.1
-  intl: 0.20.2
+  intl: ^0.20.3
   json_path: ^0.9.0
   just_audio:
   just_audio_background:

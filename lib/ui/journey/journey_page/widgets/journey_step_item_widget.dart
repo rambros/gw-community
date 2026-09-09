@@ -13,6 +13,7 @@ class JourneyStepItemWidget extends StatelessWidget {
     required this.onTap,
     this.enableDateControl = true,
     this.daysToWait = 1,
+    this.displayNumber,
   });
 
   final CcViewUserStepsRow stepRow;
@@ -21,6 +22,9 @@ class JourneyStepItemWidget extends StatelessWidget {
   final VoidCallback onTap;
   final bool enableDateControl;
   final int daysToWait;
+  final int? displayNumber;
+
+  int get _number => displayNumber ?? stepRow.stepNumber ?? 0;
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +108,7 @@ class JourneyStepItemWidget extends StatelessWidget {
         ),
         alignment: const AlignmentDirectional(0.0, 0.0),
         child: Text(
-          stepRow.stepNumber?.toString() ?? '0',
+          _number.toString(),
           textAlign: TextAlign.center,
           style: AppTheme.of(context).journey.stepNumber.override(
                 color: AppTheme.of(context).primaryBackground,
@@ -114,7 +118,7 @@ class JourneyStepItemWidget extends StatelessWidget {
     } else if (stepRow.stepStatus == 'open') {
       // Check if enough time has passed
       bool timeConditionMet = true;
-      if (enableDateControl && stepRow.stepNumber != 1 && stepRow.dateStarted != null) {
+      if (enableDateControl && _number != 1 && stepRow.dateStarted != null) {
         final now = DateTime.now();
         // Remove time component for date comparison
         final today = DateTime(now.year, now.month, now.day);
@@ -143,7 +147,7 @@ class JourneyStepItemWidget extends StatelessWidget {
           ),
           alignment: const AlignmentDirectional(0.0, 0.0),
           child: Text(
-            stepRow.stepNumber?.toString() ?? '0',
+            _number.toString(),
             textAlign: TextAlign.center,
             style: AppTheme.of(context).journey.stepNumber.override(
                   color: AppTheme.of(context).secondary,

@@ -7,6 +7,8 @@
         "paths": [
           "/invite",
           "/invite/*",
+          "/access-link",
+          "/access-link/*",
           "/login-callback",
           "/login-callback/*",
           "/welcome",

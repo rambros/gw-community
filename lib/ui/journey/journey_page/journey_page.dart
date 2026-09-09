@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:gw_community/data/repositories/journeys_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/domain/models/journey_step_group.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/ui/journey/journey_page/view_model/journey_view_model.dart';
@@ -256,14 +257,12 @@ class _JourneyPageState extends State<JourneyPage> {
     return Container(
       width: double.infinity,
       height: MediaQuery.sizeOf(context).height * 0.9,
-      decoration: BoxDecoration(
-        color: AppTheme.of(context).secondary,
-      ),
+      color: AppTheme.of(context).secondary,
       child: Padding(
         padding: const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 8.0, 0.0),
         child: JourneyIntroWidget(
           journey: viewModel.journey!,
-          journeySteps: viewModel.journeySteps,
+          groupedSteps: viewModel.groupedJourneySteps,
           onStart: () => _handleStartJourney(context, viewModel),
           isJourneyStarted: viewModel.isJourneyStarted,
         ),
@@ -275,9 +274,7 @@ class _JourneyPageState extends State<JourneyPage> {
     return Container(
       width: double.infinity,
       height: MediaQuery.sizeOf(context).height * 0.9,
-      decoration: BoxDecoration(
-        color: AppTheme.of(context).secondary,
-      ),
+      color: AppTheme.of(context).secondary,
       child: Padding(
         padding: const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 8.0, 0.0),
         child: ListView(
@@ -315,27 +312,7 @@ class _JourneyPageState extends State<JourneyPage> {
                       (s) => s.stepStatus == 'open',
                     );
 
-                    return ListView.builder(
-                      padding: EdgeInsets.zero,
-                      primary: false,
-                      shrinkWrap: true,
-                      scrollDirection: Axis.vertical,
-                      itemCount: viewModel.userSteps.length,
-                      itemBuilder: (context, index) {
-                        final step = viewModel.userSteps[index];
-                        final isLastStep = index == viewModel.userSteps.length - 1;
-                        final isCurrentStep = index == currentStepIndex;
-
-                        return JourneyStepItemWidget(
-                          stepRow: step,
-                          isLastStep: isLastStep,
-                          isCurrentStep: isCurrentStep,
-                          onTap: () => _handleStepTap(context, viewModel, step),
-                          enableDateControl: viewModel.userJourney?.enableDateControl ?? true,
-                          daysToWait: viewModel.userJourney?.daysToWaitBetweenSteps ?? 1,
-                        );
-                      },
-                    );
+                    return _buildProgressSteps(context, viewModel, currentStepIndex);
                   },
                 ),
               ),
@@ -343,6 +320,102 @@ class _JourneyPageState extends State<JourneyPage> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildProgressSteps(
+    BuildContext context,
+    JourneyViewModel viewModel,
+    int currentStepIndex,
+  ) {
+    Widget stepItem(
+      CcViewUserStepsRow step, {
+      required bool isLastStep,
+      required int displayNumber,
+    }) {
+      return JourneyStepItemWidget(
+        stepRow: step,
+        isLastStep: isLastStep,
+        isCurrentStep: viewModel.userSteps.indexOf(step) == currentStepIndex,
+        onTap: () => _handleStepTap(context, viewModel, step),
+        enableDateControl: viewModel.userJourney?.enableDateControl ?? true,
+        daysToWait: viewModel.userJourney?.daysToWaitBetweenSteps ?? 1,
+        displayNumber: displayNumber,
+      );
+    }
+
+    if (!viewModel.hasSectionHeaders) {
+      return ListView.builder(
+        padding: EdgeInsets.zero,
+        primary: false,
+        shrinkWrap: true,
+        scrollDirection: Axis.vertical,
+        itemCount: viewModel.userSteps.length,
+        itemBuilder: (context, index) {
+          final step = viewModel.userSteps[index];
+          return stepItem(
+            step,
+            isLastStep: index == viewModel.userSteps.length - 1,
+            displayNumber: index + 1,
+          );
+        },
+      );
+    }
+
+    final groups = viewModel.groupedUserSteps;
+    return ListView.builder(
+      padding: EdgeInsets.zero,
+      primary: false,
+      shrinkWrap: true,
+      itemCount: groups.length,
+      itemBuilder: (context, groupIndex) {
+        final group = groups[groupIndex];
+        final firstNumber = firstNumberOfGroup(groups, groupIndex);
+        if (!group.hasHeader) {
+          return Column(
+            children: [
+              for (var i = 0; i < group.steps.length; i++)
+                stepItem(
+                  group.steps[i],
+                  isLastStep: i == group.steps.length - 1,
+                  displayNumber: firstNumber + i,
+                ),
+            ],
+          );
+        }
+
+        final containsCurrent = group.steps.any(
+          (step) => viewModel.userSteps.indexOf(step) == currentStepIndex,
+        );
+        return Theme(
+          data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+          child: Material(
+            color: Colors.transparent,
+            child: ExpansionTile(
+              initiallyExpanded: containsCurrent || groupIndex == 0,
+              tilePadding: const EdgeInsets.symmetric(horizontal: 8.0),
+              title: Text(
+                group.title!,
+                style: AppTheme.of(context).journey.bodyText.override(
+                      color: AppTheme.of(context).tertiary,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16.0,
+                    ),
+              ),
+              iconColor: AppTheme.of(context).primary,
+              collapsedIconColor: AppTheme.of(context).tertiary,
+              children: [
+                for (var i = 0; i < group.steps.length; i++)
+                  stepItem(
+                    group.steps[i],
+                    isLastStep: i == group.steps.length - 1,
+                    displayNumber: firstNumber + i,
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 

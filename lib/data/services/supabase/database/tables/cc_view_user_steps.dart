@@ -48,4 +48,13 @@ class CcViewUserStepsRow extends SupabaseDataRow {
 
   int? get journeyStepId => getField<int>('journey_step_id');
   set journeyStepId(int? value) => setField<int>('journey_step_id', value);
+
+  int? get sectionId => getField<int>('section_id');
+  set sectionId(int? value) => setField<int>('section_id', value);
+
+  String? get sectionTitle => getField<String>('section_title');
+  set sectionTitle(String? value) => setField<String>('section_title', value);
+
+  int? get sectionOrder => getField<int>('section_order');
+  set sectionOrder(int? value) => setField<int>('section_order', value);
 }

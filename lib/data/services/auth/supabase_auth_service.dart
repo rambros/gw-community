@@ -202,7 +202,7 @@ class SupabaseAuthService implements AuthService {
 
   @override
   static const String authCallbackUrl =
-      'https://gw-invite.web.app/login-callback';
+      'https://invite.callofthetime.org/login-callback';
 
   @override
   Future<void> sendMagicLink(String email) async {

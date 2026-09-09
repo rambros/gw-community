@@ -18,6 +18,7 @@ export 'tables/cc_file_resource_groups.dart';
 export 'tables/cc_file_resources.dart';
 export 'tables/cc_group_members.dart';
 export 'tables/cc_groups.dart';
+export 'tables/cc_journey_sections.dart';
 export 'tables/cc_journey_steps.dart';
 export 'tables/cc_journeys.dart';
 export 'tables/cc_members.dart';

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gw_community/data/repositories/journeys_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/domain/models/journey_step_group.dart';
 
 class JourneyViewModel extends ChangeNotifier {
   final JourneysRepository _repository;
@@ -38,6 +39,38 @@ class JourneyViewModel extends ChangeNotifier {
   List<CcJourneyStepsRow> _journeySteps = [];
   List<CcJourneyStepsRow> get journeySteps => _journeySteps;
 
+  List<CcJourneySectionsRow> _sections = [];
+  List<CcJourneySectionsRow> get sections => _sections;
+
+  bool get hasSectionHeaders => _sections.isNotEmpty;
+
+  List<({int id, String title, int sectionOrder})> get _sectionTuples =>
+      _sections
+          .map(
+            (s) => (
+              id: s.id,
+              title: s.title,
+              sectionOrder: s.sectionOrder,
+            ),
+          )
+          .toList();
+
+  List<JourneyStepGroup<CcViewUserStepsRow>> get groupedUserSteps =>
+      groupJourneySteps<CcViewUserStepsRow>(
+        steps: _userSteps,
+        sections: _sectionTuples,
+        sectionIdOf: (step) => step.sectionId,
+        stepNumberOf: (step) => step.stepNumber ?? 0,
+      );
+
+  List<JourneyStepGroup<CcJourneyStepsRow>> get groupedJourneySteps =>
+      groupJourneySteps<CcJourneyStepsRow>(
+        steps: _journeySteps,
+        sections: _sectionTuples,
+        sectionIdOf: (step) => step.sectionId,
+        stepNumberOf: (step) => step.stepNumber,
+      );
+
   bool get isJourneyStarted => _userJourney != null || _startedJourneys.contains(journeyId);
 
   // ========== COMMANDS ==========
@@ -49,6 +82,7 @@ class JourneyViewModel extends ChangeNotifier {
     try {
       // Always load base journey info (static content like title, description)
       _journey = await _repository.getJourneyById(journeyId);
+      _sections = await _repository.getJourneySections(journeyId);
 
       // Always check if user has started this journey (from database, not just app state)
       _userJourney = await _repository.getUserJourney(currentUserUid, journeyId);
@@ -183,8 +217,8 @@ class JourneyViewModel extends ChangeNotifier {
       // Só o step atual (primeiro open) pode ser acessado
       if (stepIndex != currentStepIndex) return false;
 
-      // First step is always accessible
-      if (step.stepNumber == 1) return true;
+      // First step in journey order is always accessible
+      if (stepIndex == 0) return true;
 
       // Get configuration from user journey (comes from cc_journeys via VIEW)
       final enableDateControl = _userJourney?.enableDateControl ?? true;

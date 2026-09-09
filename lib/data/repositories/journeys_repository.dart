@@ -106,6 +106,12 @@ class JourneysRepository {
     return result;
   }
 
+  Future<List<CcJourneySectionsRow>> getJourneySections(int journeyId) async {
+    return await CcJourneySectionsTable().queryRows(
+      queryFn: (q) => q.eq('journey_id', journeyId).order('section_order', ascending: true),
+    );
+  }
+
   Future<void> updateUserStartedJourneys(String authUserId, List<int> startedJourneys) async {
     await CcMembersTable().update(
       data: {

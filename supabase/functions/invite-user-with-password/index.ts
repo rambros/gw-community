@@ -137,7 +137,7 @@ serve(async (req) => {
     const EMAIL_FROM_NAME = settingsMap.email_from_name || "Good Wishes";
     const DOWNLOAD_LINK =
       settingsMap.invite_with_password_link ||
-      "https://gw-invite.web.app/welcome";
+      "https://invite.callofthetime.org/welcome";
 
     // 5. Build email HTML
     if (!RESEND_API_KEY) {

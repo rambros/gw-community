@@ -7,6 +7,19 @@ Padrões detalhados (ler só quando for gerar código): `flutter_standards.md`, 
 
 ---
 
+## Repos do produto Good Wishes / COTT
+
+Mudanças podem afetar os dois códigos. Tratar como um produto com duas superfícies:
+
+| Superfície | Repo | Plataforma |
+|---|---|---|
+| App do participante (este repo) | `/Users/rodrigoambros/Documents/Desenv/0.Clientes/Agencia/ProjGW/codigo/g-w-community` | Flutter iOS/Android |
+| Admin | `/Users/rodrigoambros/Documents/Desenv/0.Clientes/Agencia/ProjGW/codigo/cott-portal-admin` | Flutter Web |
+
+Antes de alterar contrato de dados, rotas, jornadas, membros ou convites: verificar o impacto no outro repo. Não assumir que uma mudança no mobile vale sozinha no admin, nem o contrário.
+
+---
+
 ## Estrutura
 
 ```

@@ -3,6 +3,7 @@ import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/domain/models/journey_step_group.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
 import 'package:gw_community/ui/journey/themes/journey_theme_extension.dart';
@@ -12,13 +13,13 @@ class JourneyIntroWidget extends StatefulWidget {
   const JourneyIntroWidget({
     super.key,
     required this.journey,
-    required this.journeySteps,
+    required this.groupedSteps,
     required this.onStart,
     this.isJourneyStarted = false,
   });
 
   final CcJourneysRow journey;
-  final List<CcJourneyStepsRow> journeySteps;
+  final List<JourneyStepGroup<CcJourneyStepsRow>> groupedSteps;
   final VoidCallback onStart;
   final bool isJourneyStarted;
 
@@ -104,7 +105,7 @@ class _JourneyIntroWidgetState extends State<JourneyIntroWidget> {
           ),
         ),
         // Steps Section
-        if (widget.journeySteps.isNotEmpty)
+        if (widget.groupedSteps.any((group) => group.steps.isNotEmpty))
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(16.0, 24.0, 16.0, 16.0),
             child: Column(
@@ -125,66 +126,7 @@ class _JourneyIntroWidgetState extends State<JourneyIntroWidget> {
                     ],
                   ),
                 ),
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  padding: EdgeInsets.zero,
-                  itemCount: widget.journeySteps.length,
-                  separatorBuilder: (context, index) => const SizedBox(height: 16.0),
-                  itemBuilder: (context, index) {
-                    final step = widget.journeySteps[index];
-                    return Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: 28.0,
-                          height: 28.0,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Center(
-                            child: Text(
-                              '${step.stepNumber}',
-                              style: AppTheme.of(context).bodySmall.override(
-                                    color: AppTheme.of(context).secondary,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 13.0,
-                                  ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12.0),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                step.title ?? 'Step ${step.stepNumber}',
-                                style: AppTheme.of(context).bodyMedium.override(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 15.0,
-                                    ),
-                              ),
-                              if (step.description != null && step.description!.isNotEmpty)
-                                Padding(
-                                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 0.0),
-                                  child: Text(
-                                    step.description!,
-                                    style: AppTheme.of(context).bodySmall.override(
-                                          color: Colors.white.withValues(alpha: 0.7),
-                                          fontSize: 14.0,
-                                        ),
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
+                ..._buildGroupedSteps(context),
               ],
             ),
           ),
@@ -223,6 +165,113 @@ class _JourneyIntroWidgetState extends State<JourneyIntroWidget> {
           ),
         ),
       ],
+    );
+  }
+
+  List<Widget> _buildGroupedSteps(BuildContext context) {
+    return [
+      for (var groupIndex = 0; groupIndex < widget.groupedSteps.length; groupIndex++)
+        if (!widget.groupedSteps[groupIndex].hasHeader)
+          _buildFlatStepList(
+            context,
+            widget.groupedSteps[groupIndex].steps,
+            firstNumberOfGroup(widget.groupedSteps, groupIndex),
+          )
+        else
+          Theme(
+            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+            child: Material(
+              color: Colors.transparent,
+              child: ExpansionTile(
+                initiallyExpanded: groupIndex == 0,
+                tilePadding: EdgeInsets.zero,
+                title: Text(
+                  widget.groupedSteps[groupIndex].title!,
+                  style: AppTheme.of(context).bodyMedium.override(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15.0,
+                      ),
+                ),
+                iconColor: AppTheme.of(context).primary,
+                collapsedIconColor: Colors.white,
+                children: [
+                  _buildFlatStepList(
+                    context,
+                    widget.groupedSteps[groupIndex].steps,
+                    firstNumberOfGroup(widget.groupedSteps, groupIndex),
+                  ),
+                ],
+              ),
+            ),
+          ),
+    ];
+  }
+
+  Widget _buildFlatStepList(
+    BuildContext context,
+    List<CcJourneyStepsRow> steps,
+    int firstNumber,
+  ) {
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      padding: const EdgeInsets.only(bottom: 8.0),
+      itemCount: steps.length,
+      separatorBuilder: (context, index) => const SizedBox(height: 16.0),
+      itemBuilder: (context, index) {
+        final step = steps[index];
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 28.0,
+              height: 28.0,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+              ),
+              child: Center(
+                child: Text(
+                  '${firstNumber + index}',
+                  style: AppTheme.of(context).bodySmall.override(
+                        color: AppTheme.of(context).secondary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13.0,
+                      ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 12.0),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    step.title ?? 'Step ${firstNumber + index}',
+                    style: AppTheme.of(context).bodyMedium.override(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 15.0,
+                        ),
+                  ),
+                  if (step.description != null && step.description!.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 0.0),
+                      child: Text(
+                        step.description!,
+                        style: AppTheme.of(context).bodySmall.override(
+                              color: Colors.white.withValues(alpha: 0.7),
+                              fontSize: 14.0,
+                            ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

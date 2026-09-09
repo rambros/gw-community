@@ -325,7 +325,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   // ── Deep-link handling ─────────────────────────────────────────────────────
 
-  bool _isInviteHost(Uri uri) => uri.host == 'gw-invite.web.app';
+  bool _isInviteHost(Uri uri) =>
+      uri.host == 'invite.callofthetime.org' ||
+      uri.host == 'gw-invite.web.app';
 
   bool _isAccessLinkUri(Uri uri) =>
       _isInviteHost(uri) && uri.path.startsWith('/access-link');

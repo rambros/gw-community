@@ -1,0 +1,14 @@
+---
+description: Relação entre o app mobile e o admin web COTT Portal
+alwaysApply: true
+---
+
+# Repos irmãos — Good Wishes / COTT
+
+Este workspace é o **app mobile Flutter** do participante (`g-w-community`).
+
+O **painel admin web** fica em:
+
+`/Users/rodrigoambros/Documents/Desenv/0.Clientes/Agencia/ProjGW/codigo/cott-portal-admin`
+
+Trabalhos neste produto costumam tocar os dois códigos. Ao mudar dados, jornadas, membros, convites ou contratos compartilhados, conferir o impacto no outro repo.

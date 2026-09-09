@@ -33,6 +33,9 @@ class CcJourneyStepsRow extends SupabaseDataRow {
   int get stepNumber => getField<int>('step_number')!;
   set stepNumber(int value) => setField<int>('step_number', value);
 
+  int? get sectionId => getField<int>('section_id');
+  set sectionId(int? value) => setField<int>('section_id', value);
+
   DateTime get createdAt => getField<DateTime>('created_at')!;
   set createdAt(DateTime value) => setField<DateTime>('created_at', value);
 }
