@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/community_repository.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/community_page/view_model/community_view_model.dart';
 import 'package:gw_community/ui/community/community_page/widgets/groups_tab_widget.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
@@ -75,7 +76,7 @@ class _CommunityPageState extends State<CommunityPage> with RouteAware {
               backgroundColor: AppTheme.of(context).primary,
               automaticallyImplyLeading: false,
               title: Text(
-                'Community',
+                context.l10n.community,
                 style: AppTheme.of(context).bodyMedium.override(
                       font: GoogleFonts.lexendDeca(
                         fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
@@ -94,8 +95,8 @@ class _CommunityPageState extends State<CommunityPage> with RouteAware {
             ),
             body: ScreenHint(
               hintKey: 'hint_community',
-              title: 'The power of collective good wishes',
-              message: 'Join a community of well-wishers supporting one another through heartfelt thoughts that bring hope, strength, and encouragement.',
+              title: context.l10n.communityHintTitle,
+              message: context.l10n.communityHintMessage,
               pointerFraction: 0.7, // Community: 4th of 5 nav items
               child: const SafeArea(
                 top: true,

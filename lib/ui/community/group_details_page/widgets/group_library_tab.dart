@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/group_details_page/view_model/group_details_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/learn/learn_list_page/view_model/learn_list_view_model.dart';
@@ -94,7 +95,7 @@ class _LibraryContentState extends State<_LibraryContent> {
                     Padding(
                       padding: const EdgeInsetsDirectional.fromSTEB(24.0, 1.0, 12.0, 4.0),
                       child: Text(
-                        'List of Contents',
+                        context.l10n.listOfContents,
                         style: AppTheme.of(context).labelLarge.override(
                               fontWeight: FontWeight.w600,
                               color: AppTheme.of(context).primary,
@@ -114,7 +115,7 @@ class _LibraryContentState extends State<_LibraryContent> {
           child: SizedBox(
             width: double.infinity,
             child: Text(
-              viewModel.filterDescription,
+              viewModel.localizedFilterDescription(context.l10n),
               textAlign: TextAlign.start,
               maxLines: 2,
               style: AppTheme.of(context).labelLarge.override(
@@ -172,7 +173,7 @@ class _LibraryContentState extends State<_LibraryContent> {
             ),
             const SizedBox(height: 16),
             Text(
-              'No content found in resources.',
+              context.l10n.noContentFoundInResources,
               textAlign: TextAlign.center,
               style: AppTheme.of(context).bodyMedium.override(
                     color: AppTheme.of(context).secondaryText,

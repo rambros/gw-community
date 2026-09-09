@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
 
@@ -51,7 +52,7 @@ class JourneyCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 4.0),
               child: Text(
-                journeyRow.title ?? 'Untitled Journey',
+                journeyRow.title ?? context.l10n.untitledJourney,
                 style: AppTheme.of(context).titleMedium.override(
                       color: AppTheme.of(context).secondary,
                       fontSize: 18.0,
@@ -77,10 +78,13 @@ class JourneyCard extends StatelessWidget {
                           // Steps progress
                           Text(
                             isStarted
-                                ? (journeyStatus == 'completed'
-                                    ? 'Completed ${journeyRow.stepsTotal ?? 0} of ${journeyRow.stepsTotal ?? 0} steps'
-                                    : 'Completed ${stepsCompleted ?? 0} of ${journeyRow.stepsTotal ?? 0} steps')
-                                : '${journeyRow.stepsTotal ?? 0} steps',
+                                ? context.l10n.stepsProgress(
+                                    journeyStatus == 'completed'
+                                        ? (journeyRow.stepsTotal ?? 0)
+                                        : (stepsCompleted ?? 0),
+                                    journeyRow.stepsTotal ?? 0,
+                                  )
+                                : context.l10n.stepsCount(journeyRow.stepsTotal ?? 0),
                             style: AppTheme.of(context).bodySmall.override(
                                   color: AppTheme.of(context).secondary,
                                   fontSize: 12.0,
@@ -98,7 +102,9 @@ class JourneyCard extends StatelessWidget {
                               child: Padding(
                                 padding: const EdgeInsetsDirectional.fromSTEB(8.0, 2.0, 8.0, 2.0),
                                 child: Text(
-                                  journeyRow.isPublic ? 'public' : 'private',
+                                  journeyRow.isPublic
+                                      ? context.l10n.publicLabel
+                                      : context.l10n.privateLabel,
                                   style: AppTheme.of(context).bodyMedium.override(
                                         color: AppTheme.of(context).secondary,
                                         fontSize: 10.0,
@@ -111,7 +117,7 @@ class JourneyCard extends StatelessWidget {
                           // Action button
                           Builder(
                             builder: (context) {
-                              String buttonText = 'START';
+                              String buttonText = context.l10n.startUpper;
                               Color buttonColor = AppTheme.of(context).secondary;
                               if (isStarted) {
                                 bool isCompleted = journeyStatus == 'completed' ||
@@ -120,10 +126,10 @@ class JourneyCard extends StatelessWidget {
                                         stepsCompleted! >= journeyRow.stepsTotal!);
 
                                 if (isCompleted) {
-                                  buttonText = 'COMPLETED';
+                                  buttonText = context.l10n.completedUpper;
                                   buttonColor = AppTheme.of(context).tertiary;
                                 } else {
-                                  buttonText = 'RESUME';
+                                  buttonText = context.l10n.resumeUpper;
                                   buttonColor = AppTheme.of(context).primary;
                                 }
                               }

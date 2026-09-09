@@ -38,6 +38,8 @@ T valueOrDefault<T>(T? value, T defaultValue) =>
 void _setTimeagoLocales() {
   timeago.setLocaleMessages('en', timeago.EnMessages());
   timeago.setLocaleMessages('en_short', timeago.EnShortMessages());
+  timeago.setLocaleMessages('pt', timeago.PtBrMessages());
+  timeago.setLocaleMessages('pt_BR', timeago.PtBrMessages());
 }
 
 String dateTimeFormat(String format, DateTime? dateTime, {String? locale}) {
@@ -401,7 +403,8 @@ extension IterableExt<T> on Iterable<T> {
       toList().asMap().map((index, value) => MapEntry(index, func(index, value))).values.toList();
 }
 
-void setAppLanguage(BuildContext context, String language) => context.read<AppViewModel>().setLocale(language);
+void setAppLanguage(BuildContext context, String language) =>
+    context.read<AppViewModel>().setLocaleAndPersist(language);
 
 void setDarkModeSetting(BuildContext context, ThemeMode themeMode) =>
     context.read<AppViewModel>().setThemeMode(themeMode);

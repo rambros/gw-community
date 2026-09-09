@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/event_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/event_edit_page/view_model/event_edit_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_drop_down.dart';
@@ -85,7 +86,7 @@ class _EventEditPageState extends State<EventEditPage> {
                   onPressed: () => context.pop(),
                 ),
                 title: Text(
-                  'Edit Event',
+                  context.l10n.editEvent,
                   style: AppTheme.of(context).titleLarge.override(
                         font: GoogleFonts.poppins(
                           fontWeight: AppTheme.of(context).titleLarge.fontWeight,
@@ -125,7 +126,7 @@ class _EventEditForm extends StatefulWidget {
 class _EventEditFormState extends State<_EventEditForm> {
   String? _requiredValidator(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return 'Required';
+      return context.l10n.required;
     }
     return null;
   }
@@ -140,7 +141,7 @@ class _EventEditFormState extends State<_EventEditForm> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Event Header Image',
+            context.l10n.eventHeaderImage,
             style: AppTheme.of(context).labelLarge.override(
                   font: GoogleFonts.poppins(
                     fontWeight: AppTheme.of(context).labelLarge.fontWeight,
@@ -182,7 +183,7 @@ class _EventEditFormState extends State<_EventEditForm> {
           const SizedBox(height: 8.0),
           FFButtonWidget(
             onPressed: vm.isSaving ? null : () => vm.uploadImage(context),
-            text: hasImage ? 'Change Image' : 'Upload Image',
+            text: hasImage ? context.l10n.changeImage : context.l10n.uploadImage,
             icon: Icon(
               hasImage ? Icons.edit : Icons.upload,
               size: 20.0,
@@ -236,10 +237,10 @@ class _EventEditFormState extends State<_EventEditForm> {
                   child: FlutterFlowDropDown<String>(
                     controller: eventTypeController,
                     options: const ['single_day', 'multi_day'],
-                    optionLabels: const ['Single Day', 'Multi-day'],
+                    optionLabels: [context.l10n.singleDay, context.l10n.multiDay],
                     onChanged: vm.setEventType,
                     textStyle: AppTheme.of(context).bodyMedium.override(color: Colors.black),
-                    hintText: 'Event Type',
+                    hintText: context.l10n.eventType,
                     fillColor: AppTheme.of(context).primaryBackground,
                     elevation: 2.0,
                     borderColor: AppTheme.of(context).alternate,
@@ -252,21 +253,21 @@ class _EventEditFormState extends State<_EventEditForm> {
                   context,
                   vm.titleController,
                   vm.titleFocus,
-                  'Title',
+                  context.l10n.title,
                   textCapitalization: TextCapitalization.words,
                 ),
                 _buildTextField(
                   context,
                   vm.facilitatorController,
                   vm.facilitatorFocus,
-                  'Facilitator',
+                  context.l10n.facilitator,
                   textCapitalization: TextCapitalization.words,
                 ),
                 _buildTextField(
                   context,
                   vm.descriptionController,
                   vm.descriptionFocus,
-                  'Description',
+                  context.l10n.description,
                   maxLines: 6,
                   textCapitalization: TextCapitalization.sentences,
                 ),
@@ -277,18 +278,18 @@ class _EventEditFormState extends State<_EventEditForm> {
                     context,
                     vm.durationController,
                     vm.durationFocus,
-                    'Duration (minutes)',
+                    context.l10n.durationMinutes,
                     keyboardType: TextInputType.number,
                   ),
                 ] else ...[
-                  _buildDateField(context, vm, label: 'Start Date'),
+                  _buildDateField(context, vm, label: context.l10n.startDate),
                   _buildEndDateField(context, vm),
                 ],
                 _buildTextField(
                   context,
                   vm.urlRegistrationController,
                   vm.urlFocus,
-                  'Registration URL (optional)',
+                  context.l10n.registrationUrlOptional,
                   optional: true,
                 ),
                 Padding(
@@ -296,7 +297,7 @@ class _EventEditFormState extends State<_EventEditForm> {
                   child: FlutterFlowDropDown<String>(
                     controller: visibilityController,
                     options: const ['group_only', 'everyone'],
-                    optionLabels: const ['Only this group', 'Everyone'],
+                    optionLabels: [context.l10n.onlyThisGroup, context.l10n.everyone],
                     onChanged: vm.setVisibility,
                     textStyle: AppTheme.of(context).bodyMedium.override(color: Colors.black),
                     fillColor: AppTheme.of(context).primaryBackground,
@@ -312,7 +313,7 @@ class _EventEditFormState extends State<_EventEditForm> {
                   child: FlutterFlowDropDown<String>(
                     controller: statusController,
                     options: const ['scheduled', 'recorded'],
-                    optionLabels: const ['Scheduled', 'Recorded'],
+                    optionLabels: [context.l10n.scheduled, context.l10n.recorded],
                     onChanged: vm.setStatus,
                     textStyle: AppTheme.of(context).bodyMedium.override(color: Colors.black),
                     fillColor: AppTheme.of(context).primaryBackground,
@@ -400,7 +401,7 @@ class _EventEditFormState extends State<_EventEditForm> {
     );
   }
 
-  Widget _buildDateField(BuildContext context, EventEditViewModel vm, {String label = 'Date'}) {
+  Widget _buildDateField(BuildContext context, EventEditViewModel vm, {String? label}) {
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(4.0, 8.0, 4.0, 8.0),
       child: Row(
@@ -411,7 +412,7 @@ class _EventEditFormState extends State<_EventEditForm> {
               focusNode: vm.dateFocus,
               readOnly: true,
               validator: _requiredValidator,
-              decoration: _dateTimeDecoration(context, label),
+              decoration: _dateTimeDecoration(context, label ?? context.l10n.date),
               style: AppTheme.of(context).bodyMedium.override(color: Colors.black),
             ),
           ),
@@ -432,7 +433,7 @@ class _EventEditFormState extends State<_EventEditForm> {
                 );
               }
             },
-            text: 'Select date',
+            text: context.l10n.selectDate,
             options: _pickerButtonOptions(context),
           ),
         ],
@@ -451,7 +452,7 @@ class _EventEditFormState extends State<_EventEditForm> {
               focusNode: vm.endDateFocus,
               readOnly: true,
               validator: _requiredValidator,
-              decoration: _dateTimeDecoration(context, 'End Date'),
+              decoration: _dateTimeDecoration(context, context.l10n.endDate),
               style: AppTheme.of(context).bodyMedium.override(color: Colors.black),
             ),
           ),
@@ -472,7 +473,7 @@ class _EventEditFormState extends State<_EventEditForm> {
                 );
               }
             },
-            text: 'Select date',
+            text: context.l10n.selectDate,
             options: _pickerButtonOptions(context),
           ),
         ],
@@ -491,7 +492,7 @@ class _EventEditFormState extends State<_EventEditForm> {
               focusNode: vm.timeFocus,
               readOnly: true,
               validator: _requiredValidator,
-              decoration: _dateTimeDecoration(context, 'Time'),
+              decoration: _dateTimeDecoration(context, context.l10n.time),
               style: AppTheme.of(context).bodyMedium.override(color: Colors.black),
             ),
           ),
@@ -511,7 +512,7 @@ class _EventEditFormState extends State<_EventEditForm> {
                 );
               }
             },
-            text: 'Select time',
+            text: context.l10n.selectTime,
             options: _pickerButtonOptions(context),
           ),
         ],
@@ -573,7 +574,7 @@ class _EventEditFormState extends State<_EventEditForm> {
         vm.resetForm();
         context.safePop();
       },
-      text: 'Cancel',
+      text: context.l10n.cancel,
       options: FFButtonOptions(
         height: 40.0,
         padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
@@ -605,7 +606,7 @@ class _EventEditFormState extends State<_EventEditForm> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
-                    'Event updated with success',
+                    context.l10n.eventUpdatedSuccessfully,
                     style: TextStyle(color: AppTheme.of(context).primaryText),
                   ),
                   backgroundColor: AppTheme.of(context).secondary,
@@ -613,7 +614,7 @@ class _EventEditFormState extends State<_EventEditForm> {
               );
               context.pop();
             },
-      text: vm.isSaving ? 'Saving...' : 'Save Event',
+      text: vm.isSaving ? context.l10n.saving : context.l10n.saveEvent,
       options: FFButtonOptions(
         height: 40.0,
         padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),

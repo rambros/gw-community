@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gw_community/data/repositories/community_repository.dart';
+import 'package:gw_community/l10n/l10n.dart';
 
 class CommunityGuidelinesEditViewModel extends ChangeNotifier {
   final CommunityRepository _communityRepository;
@@ -39,7 +40,7 @@ class CommunityGuidelinesEditViewModel extends ChangeNotifier {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('Guidelines saved successfully!'),
+            content: Text(context.l10n.guidelinesSaved),
             backgroundColor: Colors.green,
           ),
         );
@@ -50,7 +51,7 @@ class CommunityGuidelinesEditViewModel extends ChangeNotifier {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to save guidelines: $e'),
+            content: Text(context.l10n.failedToSaveGuidelines('$e')),
             backgroundColor: Colors.red,
           ),
         );

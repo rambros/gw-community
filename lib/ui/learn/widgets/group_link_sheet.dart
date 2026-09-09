@@ -4,6 +4,7 @@ import 'package:gw_community/app_state.dart';
 import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:gw_community/data/repositories/file_resource_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:provider/provider.dart';
 
@@ -123,7 +124,7 @@ class _GroupLinkSheetState extends State<GroupLinkSheet> {
     Navigator.pop(context);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(ok ? 'Group links updated.' : 'Failed to update links.'),
+        content: Text(ok ? context.l10n.groupLinksUpdated : context.l10n.failedToUpdateLinks),
         backgroundColor: ok ? Colors.green.shade700 : Colors.red.shade700,
       ),
     );
@@ -167,8 +168,8 @@ class _GroupLinkSheetState extends State<GroupLinkSheet> {
                           padding: const EdgeInsets.all(40),
                           child: Text(
                             _search.isEmpty
-                                ? 'No groups available.'
-                                : 'No groups match "$_search".',
+                                ? context.l10n.noGroupsAvailable
+                                : context.l10n.noGroupsMatch(_search),
                             style: GoogleFonts.lexendDeca(
                               color: Colors.grey.shade500,
                             ),
@@ -206,7 +207,7 @@ class _GroupLinkSheetState extends State<GroupLinkSheet> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Link to Groups',
+              context.l10n.linkToGroups,
               style: GoogleFonts.lexendDeca(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
@@ -231,7 +232,7 @@ class _GroupLinkSheetState extends State<GroupLinkSheet> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         child: TextField(
           decoration: InputDecoration(
-            hintText: 'Search groups…',
+            hintText: context.l10n.searchGroups,
             prefixIcon: const Icon(Icons.search, size: 20),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -269,12 +270,12 @@ class _GroupLinkSheetState extends State<GroupLinkSheet> {
       ),
       subtitle: wasLinked && !selected
           ? Text(
-              'Will be unlinked',
+              context.l10n.willBeUnlinked,
               style: TextStyle(fontSize: 11, color: Colors.red.shade400),
             )
           : !wasLinked && selected
               ? Text(
-                  'Will be linked',
+                  context.l10n.willBeLinked,
                   style: TextStyle(fontSize: 11, color: Colors.green.shade600),
                 )
               : null,
@@ -295,7 +296,7 @@ class _GroupLinkSheetState extends State<GroupLinkSheet> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12)),
                 ),
-                child: const Text('Cancel'),
+                child: Text(context.l10n.cancel),
               ),
             ),
             const SizedBox(width: 12),
@@ -316,7 +317,7 @@ class _GroupLinkSheetState extends State<GroupLinkSheet> {
                         child: CircularProgressIndicator(
                             strokeWidth: 2, color: Colors.white),
                       )
-                    : const Text('Save'),
+                    : Text(context.l10n.save),
               ),
             ),
           ],

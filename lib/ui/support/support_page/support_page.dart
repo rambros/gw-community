@@ -3,6 +3,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/support_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/ui/support/new_request_page/new_request_page.dart';
@@ -105,7 +106,7 @@ class _SupportPageContentState extends State<_SupportPageContent> with RouteAwar
           onPressed: () => context.pop(),
         ),
         title: Text(
-          'My Questions',
+          context.l10n.myQuestions,
           style: AppTheme.of(context).bodyMedium.override(
                 font: GoogleFonts.lexendDeca(),
                 color: Colors.white,
@@ -120,7 +121,7 @@ class _SupportPageContentState extends State<_SupportPageContent> with RouteAwar
         backgroundColor: AppTheme.of(context).primary,
         icon: const Icon(Icons.add, color: Colors.white),
         label: Text(
-          'Ask a Question',
+          context.l10n.askAQuestion,
           style: GoogleFonts.lexendDeca(
             color: Colors.white,
             fontWeight: FontWeight.w500,
@@ -147,19 +148,19 @@ class _SupportPageContentState extends State<_SupportPageContent> with RouteAwar
       child: Row(
         children: [
           _FilterChip(
-            label: 'All',
+            label: context.l10n.supportFilterAll,
             isSelected: viewModel.currentFilter == SupportFilter.all,
             onTap: () => viewModel.setFilter(SupportFilter.all),
           ),
           const SizedBox(width: 8),
           _FilterChip(
-            label: 'Open',
+            label: context.l10n.supportFilterOpen,
             isSelected: viewModel.currentFilter == SupportFilter.open,
             onTap: () => viewModel.setFilter(SupportFilter.open),
           ),
           const SizedBox(width: 8),
           _FilterChip(
-            label: 'Completed',
+            label: context.l10n.supportFilterCompleted,
             isSelected: viewModel.currentFilter == SupportFilter.resolved,
             onTap: () => viewModel.setFilter(SupportFilter.resolved),
           ),
@@ -195,7 +196,7 @@ class _SupportPageContentState extends State<_SupportPageContent> with RouteAwar
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Failed to load questions',
+                    context.l10n.failedToLoadQuestions,
                     textAlign: TextAlign.center,
                     style: AppTheme.of(context).bodyMedium.override(
                           font: GoogleFonts.lexendDeca(),
@@ -205,7 +206,7 @@ class _SupportPageContentState extends State<_SupportPageContent> with RouteAwar
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () => viewModel.refresh(),
-                    child: const Text('Try Again'),
+                    child: Text(context.l10n.tryAgain),
                   ),
                 ],
               ),
@@ -254,7 +255,7 @@ class _SupportPageContentState extends State<_SupportPageContent> with RouteAwar
             ),
             const SizedBox(height: 16),
             Text(
-              isEmptyAll ? 'No questions yet' : 'No questions found',
+              isEmptyAll ? context.l10n.noQuestionsYet : context.l10n.noQuestionsFound,
               style: AppTheme.of(context).bodyMedium.override(
                     font: GoogleFonts.lexendDeca(),
                     color: AppTheme.of(context).cadetGrey,
@@ -263,7 +264,7 @@ class _SupportPageContentState extends State<_SupportPageContent> with RouteAwar
             ),
             const SizedBox(height: 8),
             Text(
-              isEmptyAll ? 'Have a question? We\'re here to help!' : 'Try changing your filter',
+              isEmptyAll ? context.l10n.haveAQuestionHelp : context.l10n.tryChangingFilter,
               textAlign: TextAlign.center,
               style: AppTheme.of(context).bodySmall.override(
                     font: GoogleFonts.lexendDeca(),
@@ -305,23 +306,23 @@ class _SupportPageContentState extends State<_SupportPageContent> with RouteAwar
       context: context,
       builder: (context) => WebViewAware(
         child: AlertDialog(
-          title: const Text('Delete Question'),
-          content: const Text(
-            'Are you sure you want to delete this question? This action cannot be undone.',
+          title: Text(context.l10n.deleteQuestion),
+          content: Text(
+            context.l10n.confirmDeleteQuestion,
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
               child: Text(
-                'Cancel',
+                context.l10n.cancel,
                 style: TextStyle(color: AppTheme.of(context).secondary),
               ),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
-              child: const Text(
-                'Delete',
-                style: TextStyle(color: Colors.red),
+              child: Text(
+                context.l10n.delete,
+                style: const TextStyle(color: Colors.red),
               ),
             ),
           ],
@@ -334,7 +335,7 @@ class _SupportPageContentState extends State<_SupportPageContent> with RouteAwar
       if (success && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('Question deleted successfully'),
+            content: Text(context.l10n.questionDeleted),
             backgroundColor: AppTheme.of(context).success,
           ),
         );

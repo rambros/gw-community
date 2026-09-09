@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/index.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/group_details_page/view_model/group_details_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
@@ -31,7 +32,7 @@ class GroupAnnouncementsTab extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        'Messages shared by the facilitator.',
+                        context.l10n.messagesByFacilitator,
                         style: AppTheme.of(context).bodySmall.override(
                               font: GoogleFonts.lexendDeca(),
                               color: AppTheme.of(context).secondary,
@@ -68,7 +69,7 @@ class GroupAnnouncementsTab extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: Text(
-                            'No messages yet.',
+                            context.l10n.noMessagesYet,
                             style: AppTheme.of(context).bodyMedium,
                           ),
                         ),
@@ -276,7 +277,7 @@ class GroupAnnouncementsTab extends StatelessWidget {
                 color: AppTheme.of(context).primaryBackground,
               ),
               label: Text(
-                'New message',
+                context.l10n.newMessage,
                 style: AppTheme.of(context).labelLarge.override(
                       font: GoogleFonts.poppins(),
                       color: AppTheme.of(context).primaryBackground,
@@ -302,7 +303,7 @@ class GroupAnnouncementsTab extends StatelessWidget {
         (m) => m.authUserId == notification.recipientUserId,
         orElse: () => CcMembersRow({}),
       );
-      final name = recipient.displayName ?? recipient.firstName ?? 'Member';
+      final name = recipient.displayName ?? recipient.firstName ?? context.l10n.member;
       label = 'Private → $name';
     } else {
       label = 'Private message';
@@ -454,7 +455,7 @@ class GroupAnnouncementsTab extends StatelessWidget {
                     padding: const EdgeInsetsDirectional.fromSTEB(
                         16.0, 0.0, 16.0, 12.0),
                     child: Text(
-                      '${dateTimeFormat('MMM d', notification.updatedAt)} - From ${notification.displayName ?? 'User'} - Facilitator',
+                      '${dateTimeFormat('MMM d', notification.updatedAt)} - From ${notification.displayName ?? context.l10n.userFallback} - ${context.l10n.facilitator}',
                       style: AppTheme.of(context).labelSmall.override(
                             font: GoogleFonts.lexendDeca(),
                             color: AppTheme.of(context).secondary,

@@ -2,6 +2,7 @@ import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/experience_repository.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/widgets/add_comment/view_model/add_comment_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
@@ -97,7 +98,7 @@ class _AddCommentView extends StatelessWidget {
                         autofocus: true,
                         textCapitalization: TextCapitalization.sentences,
                         decoration: InputDecoration(
-                          hintText: 'Write something...',
+                          hintText: context.l10n.writeSomething,
                           hintStyle: AppTheme.of(context).labelSmall.override(
                                 font: GoogleFonts.poppins(
                                   fontWeight: AppTheme.of(context).labelSmall.fontWeight,
@@ -160,7 +161,7 @@ class _AddCommentView extends StatelessWidget {
                       color: AppTheme.of(context).secondaryText,
                       size: 20.0,
                     ),
-                    tooltip: 'Close',
+                    tooltip: context.l10n.close,
                     onPressed: () => Navigator.of(context).maybePop(),
                   ),
                 ],
@@ -202,7 +203,7 @@ class _AddCommentView extends StatelessWidget {
                             }
                           }
                         : null,
-                    text: viewModel.isSubmitting ? 'Posting...' : 'Post',
+                    text: viewModel.isSubmitting ? context.l10n.posting : context.l10n.post,
                     options: FFButtonOptions(
                       width: 90.0,
                       height: 40.0,

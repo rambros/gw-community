@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 import 'package:gw_community/data/repositories/learn_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/app_localizations.dart';
+import 'package:gw_community/l10n/l10n_format.dart';
 
 class LearnListViewModel extends ChangeNotifier {
   final LearnRepository _repository = LearnRepository();
@@ -41,8 +43,6 @@ class LearnListViewModel extends ChangeNotifier {
   int _filterByGroupId = 0;
   int get filterByGroupId => _filterByGroupId;
 
-  String _filterDescription = 'No filter';
-  String get filterDescription => _filterDescription;
 
   // Filter Options
   List<AuthorWithContentRow> _authors = [];
@@ -226,7 +226,6 @@ class LearnListViewModel extends ChangeNotifier {
     _searchQuery = query;
     _isSearchActive = true;
     _isFilterActive = false; // Search overrides filter display logic in original code
-    _filterDescription = 'Filtered by Search Field -> $query';
 
     // Reset pagination
     _page = 0;
@@ -343,7 +342,6 @@ class LearnListViewModel extends ChangeNotifier {
     _filterByJourneyId = 0;
     _filterByGroupId = 0;
     _isFilterActive = false;
-    _filterDescription = 'No filter';
 
     if (_isSearchActive) {
       searchContent(_searchQuery);
@@ -352,39 +350,40 @@ class LearnListViewModel extends ChangeNotifier {
     }
   }
 
+  String localizedFilterDescription(AppLocalizations l10n) {
+    if (_isSearchActive && _searchQuery.isNotEmpty) {
+      return l10n.filteredBySearch(_searchQuery);
+    }
+    return libraryActiveFiltersDescription(
+      l10n: l10n,
+      author: _filterByAuthorId == 0
+          ? null
+          : (_authors.firstWhereOrNull((author) => author.id == _filterByAuthorId)?.name ??
+              '$_filterByAuthorId'),
+      event: _filterByEventId == 0
+          ? null
+          : (_events.firstWhereOrNull((event) => event.eventId == _filterByEventId)?.eventName ??
+              '$_filterByEventId'),
+      year: _filterByYear.trim().isEmpty ? null : _filterByYear,
+      journey: _filterByJourneyId == 0
+          ? null
+          : (_journeys.firstWhereOrNull((journey) => journey.id == _filterByJourneyId)?.title ??
+              '$_filterByJourneyId'),
+      group: _filterByGroupId == 0
+          ? null
+          : (_groups.firstWhereOrNull((group) => group.id == _filterByGroupId)?.name ??
+              '$_filterByGroupId'),
+      topics: _filterByTopics,
+    );
+  }
+
   void _updateFilterDescription() {
-    final activeFilters = <String>[];
-
-    if (_filterByAuthorId != 0) {
-      final authorName = _authors.firstWhereOrNull((author) => author.id == _filterByAuthorId)?.name;
-      activeFilters.add('Author: ${authorName ?? _filterByAuthorId}');
-    }
-    if (_filterByEventId != 0) {
-      final eventName = _events.firstWhereOrNull((event) => event.eventId == _filterByEventId)?.eventName;
-      activeFilters.add('Event: ${eventName ?? _filterByEventId}');
-    }
-    if (_filterByYear.trim().isNotEmpty) {
-      activeFilters.add('Year: $_filterByYear');
-    }
-    if (_filterByJourneyId != 0) {
-      final journeyTitle = _journeys.firstWhereOrNull((journey) => journey.id == _filterByJourneyId)?.title;
-      activeFilters.add('Journey: ${journeyTitle ?? _filterByJourneyId}');
-    }
-    if (_filterByGroupId != 0) {
-      final groupName = _groups.firstWhereOrNull((group) => group.id == _filterByGroupId)?.name;
-      activeFilters.add('Group: ${groupName ?? _filterByGroupId}');
-    }
-    if (_filterByTopics.isNotEmpty) {
-      activeFilters.add('Topics: ${_filterByTopics.join(', ')}');
-    }
-
-    if (activeFilters.isEmpty) {
-      _filterDescription = 'No filter';
-      _isFilterActive = false;
-    } else {
-      _filterDescription = 'Filters \u2192 ${activeFilters.join(' | ')}';
-      _isFilterActive = true;
-    }
+    _isFilterActive = _filterByAuthorId != 0 ||
+        _filterByEventId != 0 ||
+        _filterByYear.trim().isNotEmpty ||
+        _filterByJourneyId != 0 ||
+        _filterByGroupId != 0 ||
+        _filterByTopics.isNotEmpty;
   }
 
   void _setLoading(bool value) {

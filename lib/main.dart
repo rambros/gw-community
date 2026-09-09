@@ -29,6 +29,7 @@ import 'package:gw_community/data/services/auth/auth_service.dart';
 import 'package:gw_community/data/services/auth/supabase_auth_service.dart';
 import 'package:gw_community/data/services/push/push_notification_service.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/app_localizations.dart';
 import 'package:gw_community/ui/auth/change_password_page/view_model/change_password_view_model.dart';
 import 'package:gw_community/ui/auth/forgot_password_page/view_model/forgot_password_view_model.dart';
 import 'package:gw_community/ui/auth/login_page/view_model/login_view_model.dart';
@@ -69,6 +70,7 @@ void main() async {
 
   final appState = FFAppState(); // Initialize FFAppState
   await appState.initializePersistedState();
+  await FFLocalizations.initialize();
 
   if (!kIsWeb) {
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
@@ -108,8 +110,10 @@ void main() async {
         Provider(create: (_) => FavoritesRepository()),
 
         ChangeNotifierProvider(
-            create: (context) =>
-                AppViewModel(authRepository: context.read<AuthRepository>())),
+            create: (context) => AppViewModel(
+                  authRepository: context.read<AuthRepository>(),
+                  userProfileRepository: context.read<UserProfileRepository>(),
+                )),
 
         // ========== VIEW MODELS ==========
         ChangeNotifierProvider(create: (_) => LearnListViewModel()),
@@ -538,6 +542,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       title: 'GW-Community',
       scrollBehavior: MyAppScrollBehavior(),
       localizationsDelegates: const [
+        AppLocalizations.delegate,
         FFLocalizationsDelegate(),
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
@@ -546,7 +551,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         FallbackCupertinoLocalizationDelegate(),
       ],
       locale: appViewModel.locale,
-      supportedLocales: const [Locale('en')],
+      supportedLocales: AppLocalizations.supportedLocales,
       theme: ThemeData(brightness: Brightness.light, useMaterial3: false),
       themeMode: appViewModel.themeMode,
       routerConfig: appViewModel.router,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
@@ -46,7 +47,7 @@ class _UserCreateProfilePageState extends State<UserCreateProfilePage> {
           },
         ),
         title: Text(
-          'Sign Up',
+          context.l10n.signUp,
           textAlign: TextAlign.center,
           style: AppTheme.of(context).bodyMedium.override(
                 font: GoogleFonts.lexendDeca(
@@ -141,7 +142,7 @@ class _UserCreateProfilePageState extends State<UserCreateProfilePage> {
                                   obscureText: false,
                                   textCapitalization: TextCapitalization.words,
                                   decoration: InputDecoration(
-                                    labelText: 'First Name',
+                                    labelText: context.l10n.firstName,
                                     labelStyle: AppTheme.of(context).labelLarge.override(
                                           font: GoogleFonts.poppins(
                                             fontWeight: AppTheme.of(context).labelLarge.fontWeight,
@@ -153,7 +154,7 @@ class _UserCreateProfilePageState extends State<UserCreateProfilePage> {
                                           fontWeight: AppTheme.of(context).labelLarge.fontWeight,
                                           fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                                         ),
-                                    hintText: 'FirstName',
+                                    hintText: context.l10n.firstName,
                                     hintStyle: AppTheme.of(context).bodySmall.override(
                                           font: GoogleFonts.lexendDeca(
                                             fontWeight: AppTheme.of(context).bodySmall.fontWeight,
@@ -218,7 +219,7 @@ class _UserCreateProfilePageState extends State<UserCreateProfilePage> {
                                   obscureText: false,
                                   textCapitalization: TextCapitalization.words,
                                   decoration: InputDecoration(
-                                    labelText: 'Last Name',
+                                    labelText: context.l10n.lastName,
                                     labelStyle: AppTheme.of(context).labelLarge.override(
                                           font: GoogleFonts.poppins(
                                             fontWeight: AppTheme.of(context).labelLarge.fontWeight,
@@ -230,7 +231,7 @@ class _UserCreateProfilePageState extends State<UserCreateProfilePage> {
                                           fontWeight: AppTheme.of(context).labelLarge.fontWeight,
                                           fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                                         ),
-                                    hintText: 'Last Name',
+                                    hintText: context.l10n.lastName,
                                     hintStyle: AppTheme.of(context).bodySmall.override(
                                           font: GoogleFonts.lexendDeca(
                                             fontWeight: AppTheme.of(context).bodySmall.fontWeight,
@@ -298,7 +299,7 @@ class _UserCreateProfilePageState extends State<UserCreateProfilePage> {
                               child: Padding(
                                 padding: const EdgeInsetsDirectional.fromSTEB(4.0, 8.0, 4.0, 0.0),
                                 child: Text(
-                                  'You can hide your Last Name in your Profile if you like.',
+                                  context.l10n.hideLastNameHint,
                                   textAlign: TextAlign.center,
                                   style: AppTheme.of(context).bodyMedium.override(
                                         font: GoogleFonts.lexendDeca(
@@ -340,23 +341,23 @@ class _UserCreateProfilePageState extends State<UserCreateProfilePage> {
                               textScaler: MediaQuery.of(context).textScaler,
                               text: TextSpan(
                                 children: [
-                                  const TextSpan(
-                                    text: 'By creating an account, you are agreeing to our ',
-                                    style: TextStyle(),
+                                  TextSpan(
+                                    text: context.l10n.agreeToTermsPrefix,
+                                    style: const TextStyle(),
                                   ),
                                   TextSpan(
-                                    text: 'Terms & Conditions ',
+                                    text: context.l10n.termsAndConditions,
                                     style: TextStyle(
                                       color: AppTheme.of(context).secondary,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  const TextSpan(
-                                    text: 'and  ',
-                                    style: TextStyle(),
+                                  TextSpan(
+                                    text: context.l10n.andWord,
+                                    style: const TextStyle(),
                                   ),
                                   TextSpan(
-                                    text: 'Privacy Policy.',
+                                    text: context.l10n.privacyPolicy,
                                     style: TextStyle(
                                       color: AppTheme.of(context).secondary,
                                       fontWeight: FontWeight.bold,
@@ -389,7 +390,7 @@ class _UserCreateProfilePageState extends State<UserCreateProfilePage> {
                             onPressed: () async {
                               await viewModel.completeSetupCommand(context);
                             },
-                            text: 'Complete Setup',
+                            text: context.l10n.completeSetup,
                             options: FFButtonOptions(
                               width: 230.0,
                               height: 50.0,

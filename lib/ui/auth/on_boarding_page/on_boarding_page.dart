@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/auth/on_boarding_page/view_model/on_boarding_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_animations.dart';
@@ -380,7 +381,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> with TickerProviderStat
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       Text(
-                                        'Journey',
+                                        context.l10n.onboardingJourneyTitle,
                                         style: AppTheme.of(context).headlineMedium.override(
                                               font: GoogleFonts.lexendDeca(
                                                 fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
@@ -395,7 +396,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> with TickerProviderStat
                                       Padding(
                                         padding: const EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
                                         child: Text(
-                                          'Welcome to a wonderful journey! A journey to learn, create and share good wishes that have an impact. Good wishes are a way for self-transformation and world transformation. You will find inspirations, meditations, daily practices and companionship…',
+                                          context.l10n.onboardingJourneyBody,
                                           textAlign: TextAlign.center,
                                           style: AppTheme.of(context).labelMedium.override(
                                                 font: GoogleFonts.poppins(
@@ -458,7 +459,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> with TickerProviderStat
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       Text(
-                                        'Learn',
+                                        context.l10n.onboardingLearnTitle,
                                         style: AppTheme.of(context).headlineMedium.override(
                                               font: GoogleFonts.lexendDeca(
                                                 fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
@@ -473,7 +474,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> with TickerProviderStat
                                       Padding(
                                         padding: const EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
                                         child: Text(
-                                          'When you feel that you would like to learn more, clarify or deepen your understanding and experience, new content and references are available to help you with your practice and personal progress…',
+                                          context.l10n.onboardingLearnBody,
                                           textAlign: TextAlign.center,
                                           style: AppTheme.of(context).labelMedium.override(
                                                 font: GoogleFonts.poppins(
@@ -536,7 +537,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> with TickerProviderStat
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       Text(
-                                        'Community',
+                                        context.l10n.onboardingCommunityTitle,
                                         style: AppTheme.of(context).headlineMedium.override(
                                               font: GoogleFonts.lexendDeca(
                                                 fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
@@ -551,7 +552,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> with TickerProviderStat
                                       Padding(
                                         padding: const EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
                                         child: Text(
-                                          'Collective good wishes are powerful. As you move along you will be part of a community of good wishers, available to help one another through the exchange of a heart-felt feelings that gives hope, strength and support… the basis for a new world.',
+                                          context.l10n.onboardingCommunityBody,
                                           textAlign: TextAlign.center,
                                           style: AppTheme.of(context).labelMedium.override(
                                                 font: GoogleFonts.poppins(
@@ -643,7 +644,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> with TickerProviderStat
                                             ),
                                           ),
                                           Text(
-                                            'Your Journey Begins',
+                                            context.l10n.onboardingBeginsTitle,
                                             style: AppTheme.of(context).headlineMedium.override(
                                                   font: GoogleFonts.lexendDeca(
                                                     fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
@@ -657,7 +658,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> with TickerProviderStat
                                           Padding(
                                             padding: const EdgeInsetsDirectional.fromSTEB(24.0, 12.0, 24.0, 0.0),
                                             child: Text(
-                                              'Sign up below in order to get started!',
+                                              context.l10n.onboardingBeginsSubtitle,
                                               style: AppTheme.of(context).titleSmall.override(
                                                     font: GoogleFonts.lexendDeca(
                                                       fontWeight: AppTheme.of(context).titleSmall.fontWeight,
@@ -678,7 +679,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> with TickerProviderStat
                                                 if (!context.mounted) return;
                                                 context.pushNamed(HomePage.routeName);
                                               },
-                                              text: 'Get Started',
+                                              text: context.l10n.onboardingGetStarted,
                                               options: FFButtonOptions(
                                                 width: 200.0,
                                                 height: 50.0,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/file_resource_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/resource_view_page/resource_view_page.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_youtube_player.dart';
@@ -115,7 +116,7 @@ class ResourceCardWidget extends StatelessWidget {
             ),
             if (isAdminOrManager) ...[
               const SizedBox(width: 8),
-              _buildStatusBadge(),
+              _buildStatusBadge(context),
             ],
           ],
         ),
@@ -138,7 +139,7 @@ class ResourceCardWidget extends StatelessWidget {
             Icon(_typeIcon(), size: 12, color: AppTheme.of(context).secondary),
             const SizedBox(width: 4),
             Text(
-              _typeLabel(),
+              _typeLabel(context),
               style: AppTheme.of(context).bodySmall.override(
                     font: GoogleFonts.lexendDeca(),
                     color: AppTheme.of(context).secondary,
@@ -150,7 +151,7 @@ class ResourceCardWidget extends StatelessWidget {
                 size: 12, color: AppTheme.of(context).secondary),
             const SizedBox(width: 4),
             Text(
-              _formatDate(resource.createdAt),
+              _formatDate(context, resource.createdAt),
               style: AppTheme.of(context).bodySmall.override(
                     font: GoogleFonts.lexendDeca(),
                     color: AppTheme.of(context).secondary,
@@ -167,7 +168,7 @@ class ResourceCardWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusBadge() {
+  Widget _buildStatusBadge(BuildContext context) {
     final isPublished = resource.status == 'published';
     final color = isPublished ? Colors.green : Colors.orange;
     return Container(
@@ -177,7 +178,7 @@ class ResourceCardWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(
-        isPublished ? 'Published' : 'Draft',
+        isPublished ? context.l10n.published : context.l10n.draft,
         style: TextStyle(
           fontSize: 10,
           fontWeight: FontWeight.w600,
@@ -206,22 +207,22 @@ class ResourceCardWidget extends StatelessWidget {
             _confirmDelete(context);
         }
       },
-      itemBuilder: (_) => [
-        const PopupMenuItem(
+      itemBuilder: (context) => [
+        PopupMenuItem(
           value: 'view',
           child: Row(children: [
-            Icon(Icons.open_in_new, size: 18),
-            SizedBox(width: 10),
-            Text('View'),
+            const Icon(Icons.open_in_new, size: 18),
+            const SizedBox(width: 10),
+            Text(context.l10n.view),
           ]),
         ),
         if (resource.portalItemId == null)
-          const PopupMenuItem(
+          PopupMenuItem(
             value: 'edit',
             child: Row(children: [
-              Icon(Icons.edit_outlined, size: 18),
-              SizedBox(width: 10),
-              Text('Edit'),
+              const Icon(Icons.edit_outlined, size: 18),
+              const SizedBox(width: 10),
+              Text(context.l10n.edit),
             ]),
           ),
         PopupMenuItem(
@@ -234,7 +235,7 @@ class ResourceCardWidget extends StatelessWidget {
               size: 18,
             ),
             const SizedBox(width: 10),
-            Text(resource.status == 'published' ? 'Unpublish' : 'Publish'),
+            Text(resource.status == 'published' ? context.l10n.unpublish : context.l10n.publish),
           ]),
         ),
         // Portal-linked resource: show Unlink, hide Delete
@@ -244,7 +245,7 @@ class ResourceCardWidget extends StatelessWidget {
             child: Row(children: [
               Icon(Icons.link_off, size: 18, color: Colors.orange.shade700),
               const SizedBox(width: 10),
-              Text('Unlink from Group',
+              Text(context.l10n.unlinkFromGroup,
                   style: TextStyle(color: Colors.orange.shade700)),
             ]),
           ),
@@ -255,7 +256,7 @@ class ResourceCardWidget extends StatelessWidget {
             child: Row(children: [
               Icon(Icons.delete_outline, size: 18, color: Colors.red.shade700),
               const SizedBox(width: 10),
-              Text('Delete', style: TextStyle(color: Colors.red.shade700)),
+              Text(context.l10n.delete, style: TextStyle(color: Colors.red.shade700)),
             ]),
           ),
       ],
@@ -297,15 +298,12 @@ class ResourceCardWidget extends StatelessWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Unlink from Group'),
-        content: Text(
-          'Remove "${resource.title}" from this group\'s Resources tab?\n\n'
-          'The original content will remain in the Library.',
-        ),
+        title: Text(context.l10n.unlinkFromGroup),
+        content: Text(context.l10n.confirmUnlinkResource(resource.title)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+            child: Text(context.l10n.cancel),
           ),
           ElevatedButton(
             onPressed: () {
@@ -316,7 +314,7 @@ class ResourceCardWidget extends StatelessWidget {
               backgroundColor: Colors.orange.shade700,
               foregroundColor: Colors.white,
             ),
-            child: const Text('Unlink'),
+            child: Text(context.l10n.unlink),
           ),
         ],
       ),
@@ -327,12 +325,12 @@ class ResourceCardWidget extends StatelessWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Delete Resource'),
-        content: Text('Remove "${resource.title}" from this group?'),
+        title: Text(context.l10n.deleteResource),
+        content: Text(context.l10n.confirmRemoveResource(resource.title)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+            child: Text(context.l10n.cancel),
           ),
           ElevatedButton(
             onPressed: () {
@@ -343,7 +341,7 @@ class ResourceCardWidget extends StatelessWidget {
               backgroundColor: Colors.red,
               foregroundColor: Colors.white,
             ),
-            child: const Text('Delete'),
+            child: Text(context.l10n.delete),
           ),
         ],
       ),
@@ -380,22 +378,23 @@ class ResourceCardWidget extends StatelessWidget {
     }
   }
 
-  String _typeLabel() {
+  String _typeLabel(BuildContext context) {
     switch (resource.type) {
       case 'pdf':
         return 'PDF';
       case 'audio':
-        return 'Audio';
+        return context.l10n.mediaAudio;
       case 'video':
-        return 'Video';
+        return context.l10n.mediaVideo;
       case 'text':
-        return 'Text';
+        return context.l10n.mediaText;
       default:
         return resource.type;
     }
   }
 
-  String _formatDate(DateTime date) => DateFormat('MMM d, yyyy').format(date);
+  String _formatDate(BuildContext context, DateTime date) =>
+      DateFormat('MMM d, yyyy', Localizations.localeOf(context).toString()).format(date);
 }
 
 class _VideoResourceModal extends StatelessWidget {
@@ -558,11 +557,11 @@ class _EditResourceSheetState extends State<_EditResourceSheet> {
     final url = _urlController.text.trim();
 
     if (title.isEmpty) {
-      setState(() => _errorMessage = 'Title is required.');
+      setState(() => _errorMessage = context.l10n.titleRequired);
       return;
     }
     if (url.isEmpty) {
-      setState(() => _errorMessage = 'URL / address is required.');
+      setState(() => _errorMessage = context.l10n.urlRequired);
       return;
     }
 
@@ -585,7 +584,7 @@ class _EditResourceSheetState extends State<_EditResourceSheet> {
     if (!ok) {
       setState(() {
         _isSaving = false;
-        _errorMessage = 'Failed to save. Please try again.';
+        _errorMessage = context.l10n.failedToSaveTryAgain;
       });
       return;
     }
@@ -628,7 +627,7 @@ class _EditResourceSheetState extends State<_EditResourceSheet> {
                       color: AppTheme.of(context).primary),
                   const SizedBox(width: 10),
                   Text(
-                    'Edit Resource',
+                    context.l10n.editResource,
                     style: GoogleFonts.montserrat(
                       fontSize: 17,
                       fontWeight: FontWeight.w600,
@@ -660,24 +659,24 @@ class _EditResourceSheetState extends State<_EditResourceSheet> {
                         ),
                       ),
                     ],
-                    _label('Title *'),
+                    _label('${context.l10n.title} *'),
                     const SizedBox(height: 6),
                     TextField(
                       controller: _titleController,
                       textCapitalization: TextCapitalization.sentences,
-                      decoration: _inputDecoration('Resource title'),
+                      decoration: _inputDecoration(context.l10n.resourceTitle),
                     ),
                     const SizedBox(height: 14),
-                    _label('Description'),
+                    _label(context.l10n.description),
                     const SizedBox(height: 6),
                     TextField(
                       controller: _descriptionController,
                       maxLines: 3,
                       textCapitalization: TextCapitalization.sentences,
-                      decoration: _inputDecoration('Optional description'),
+                      decoration: _inputDecoration(context.l10n.optionalDescription),
                     ),
                     const SizedBox(height: 14),
-                    _label('URL / Address'),
+                    _label(context.l10n.urlAddress),
                     const SizedBox(height: 6),
                     TextField(
                       controller: _urlController,
@@ -698,7 +697,7 @@ class _EditResourceSheetState extends State<_EditResourceSheet> {
                     child: OutlinedButton(
                       onPressed:
                           _isSaving ? null : () => Navigator.of(context).pop(),
-                      child: const Text('Cancel'),
+                      child: Text(context.l10n.cancel),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -716,7 +715,7 @@ class _EditResourceSheetState extends State<_EditResourceSheet> {
                               child: CircularProgressIndicator(
                                   strokeWidth: 2, color: Colors.white),
                             )
-                          : const Text('Save'),
+                          : Text(context.l10n.save),
                     ),
                   ),
                 ],

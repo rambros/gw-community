@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/index.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 
@@ -27,7 +28,7 @@ class EventCardWidget extends StatelessWidget {
   final CcEventsRow? event;
   final int? groupId;
 
-  String get _displayDateTime {
+  String _displayDateTime(BuildContext context) {
     if (event != null) {
       if (event!.eventType == 'multi_day') {
         final startStr = event!.eventDate != null ? dateTimeFormat('d/M/y', event!.eventDate) : '';
@@ -37,7 +38,7 @@ class EventCardWidget extends StatelessWidget {
         } else if (startStr.isNotEmpty) {
           return startStr;
         }
-        return 'No date';
+        return context.l10n.noDate;
       } else {
         final dateStr = event!.eventDate != null ? dateTimeFormat('d/M/y', event!.eventDate) : date;
         final timeStr = event!.eventTime != null ? event!.eventTime.toString().substring(0, 5) : time;
@@ -124,7 +125,7 @@ class EventCardWidget extends StatelessWidget {
                       const SizedBox(height: 4.0),
                       // Facilitator
                       Text(
-                        'by ${facilitator ?? '-'}',
+                        context.l10n.facilitatedBy(facilitator ?? '-'),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: AppTheme.of(context).bodyMedium.override(
@@ -136,7 +137,7 @@ class EventCardWidget extends StatelessWidget {
                       const SizedBox(height: 4.0),
                       // Date & Time
                       Text(
-                        _displayDateTime,
+                        _displayDateTime(context),
                         style: AppTheme.of(context).bodySmall.override(
                               font: GoogleFonts.lexendDeca(),
                               color: AppTheme.of(context).secondary,
@@ -152,7 +153,7 @@ class EventCardWidget extends StatelessWidget {
                             borderRadius: BorderRadius.circular(12.0),
                           ),
                           child: Text(
-                            'Registered',
+                            context.l10n.registered,
                             style: GoogleFonts.lexendDeca(
                                 color: AppTheme.of(context).primary,
                                 fontSize: 11.0,

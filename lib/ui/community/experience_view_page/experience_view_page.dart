@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/experience_edit_page/experience_edit_page.dart';
 import 'package:gw_community/ui/community/experience_view_page/view_model/experience_view_view_model.dart';
 import 'package:gw_community/ui/community/experience_view_page/widgets/comment_item_widget.dart';
@@ -220,7 +221,7 @@ class _ExperienceViewPageState extends State<ExperienceViewPage> {
               onComment: () => _showAddCommentModal(context, widget.experienceId!, null),
               onEdit: () => _handleEditExperience(context, experience),
               onDelete: () => _handleDeleteExperience(context, viewModel),
-              onToggleLock: () => viewModel.toggleLockCommand(widget.experienceId!),
+              onToggleLock: () => viewModel.toggleLockCommand(widget.experienceId!, context.l10n),
             ),
           ),
         ],
@@ -233,7 +234,7 @@ class _ExperienceViewPageState extends State<ExperienceViewPage> {
       return Padding(
         padding: const EdgeInsets.all(16.0),
         child: Text(
-          'No comments yet',
+          context.l10n.noCommentsYet,
           style: AppTheme.of(context).bodyMedium.override(
                 font: GoogleFonts.lexendDeca(),
                 letterSpacing: 0.0,
@@ -327,15 +328,15 @@ class _ExperienceViewPageState extends State<ExperienceViewPage> {
             return WebViewAware(
               child: AlertDialog(
                 title: const Text('Deletion of Experience'),
-                content: const Text('Confirm deletion of this experience?'),
+                content: Text(context.l10n.confirmDeleteThisExperience),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.pop(alertDialogContext, false),
-                    child: const Text('Cancel'),
+                    child: Text(context.l10n.cancel),
                   ),
                   TextButton(
                     onPressed: () => Navigator.pop(alertDialogContext, true),
-                    child: const Text('Confirm'),
+                    child: Text(context.l10n.confirm),
                   ),
                 ],
               ),
@@ -346,7 +347,7 @@ class _ExperienceViewPageState extends State<ExperienceViewPage> {
 
     if (confirmDialogResponse && widget.experienceId != null) {
       if (!context.mounted) return;
-      await viewModel.deleteExperienceCommand(context, widget.experienceId!);
+      await viewModel.deleteExperienceCommand(context, widget.experienceId!, context.l10n);
     }
   }
 
@@ -361,15 +362,15 @@ class _ExperienceViewPageState extends State<ExperienceViewPage> {
             return WebViewAware(
               child: AlertDialog(
                 title: const Text('Deletion of Comment'),
-                content: const Text('Confirm deletion of this comment?'),
+                content: Text(context.l10n.confirmDeleteThisComment),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.pop(alertDialogContext, false),
-                    child: const Text('Cancel'),
+                    child: Text(context.l10n.cancel),
                   ),
                   TextButton(
                     onPressed: () => Navigator.pop(alertDialogContext, true),
-                    child: const Text('Confirm'),
+                    child: Text(context.l10n.confirm),
                   ),
                 ],
               ),

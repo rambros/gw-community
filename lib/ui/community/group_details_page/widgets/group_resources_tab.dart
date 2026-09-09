@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/app_state.dart';
 import 'package:gw_community/data/models/enums/enums.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/group_details_page/view_model/group_details_view_model.dart';
 import 'package:gw_community/ui/community/group_details_page/widgets/resource_card_widget.dart';
 import 'package:gw_community/ui/community/group_details_page/widgets/resource_form_sheet.dart';
@@ -33,7 +34,7 @@ class GroupResourcesTab extends StatelessWidget {
                 color: AppTheme.of(context).primaryBackground,
               ),
               label: Text(
-                'New resource',
+                context.l10n.newResource,
                 style: AppTheme.of(context).labelLarge.override(
                       font: GoogleFonts.poppins(),
                       color: AppTheme.of(context).primaryBackground,
@@ -69,8 +70,8 @@ class GroupResourcesTab extends StatelessWidget {
               const SizedBox(height: 16),
               Text(
                 canManage
-                    ? 'No resources yet.\nTap + to add the first one.'
-                    : 'No resources available yet.',
+                    ? context.l10n.noResourcesYetAddFirst
+                    : context.l10n.noResourcesAvailable,
                 style: GoogleFonts.lexendDeca(
                   fontSize: 14,
                   color: Colors.grey.shade500,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/notifications/set_notifications_page/view_model/set_notifications_view_model.dart';
 import 'package:provider/provider.dart';
@@ -31,7 +32,7 @@ class _SetNotificationsView extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: theme.primary,
         title: Text(
-          'Notifications',
+          context.l10n.notifications,
           style: theme.headlineMedium.override(color: Colors.white, fontSize: 20),
         ),
         centerTitle: true,
@@ -46,23 +47,23 @@ class _SetNotificationsView extends StatelessWidget {
           : ListView(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
               children: [
-                _SectionHeader(title: 'Push Notifications', theme: theme),
+                _SectionHeader(title: context.l10n.pushNotifications, theme: theme),
                 const SizedBox(height: 8),
                 _NotificationTile(
                   icon: Icons.notifications_active_outlined,
-                  title: 'Push Notifications',
-                  subtitle: 'Receive alerts on your device even when the app is closed.',
+                  title: context.l10n.pushNotifications,
+                  subtitle: context.l10n.pushNotificationsSubtitle,
                   value: viewModel.pushEnabled,
                   onChanged: viewModel.setPushEnabled,
                   theme: theme,
                 ),
                 const SizedBox(height: 24),
-                _SectionHeader(title: 'In-App Notifications', theme: theme),
+                _SectionHeader(title: context.l10n.inAppNotifications, theme: theme),
                 const SizedBox(height: 8),
                 _NotificationTile(
                   icon: Icons.notifications_outlined,
-                  title: 'In-App Notifications',
-                  subtitle: 'Show the notification bell and alerts inside the app.',
+                  title: context.l10n.inAppNotifications,
+                  subtitle: context.l10n.inAppNotificationsSubtitle,
                   value: viewModel.inAppEnabled,
                   onChanged: viewModel.setInAppEnabled,
                   theme: theme,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/l10n/l10n.dart';
 
 class StatusBadgeWidget extends StatelessWidget {
   const StatusBadgeWidget({
@@ -13,7 +14,7 @@ class StatusBadgeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final config = _getStatusConfig(status);
+    final config = _getStatusConfig(context, status);
 
     return Container(
       padding: EdgeInsets.symmetric(
@@ -46,32 +47,33 @@ class StatusBadgeWidget extends StatelessWidget {
     );
   }
 
-  _StatusConfig _getStatusConfig(String status) {
+  _StatusConfig _getStatusConfig(BuildContext context, String status) {
+    final l10n = context.l10n;
     switch (status) {
       case 'open':
         return _StatusConfig(
-          label: 'Open',
+          label: l10n.supportStatusOpen,
           icon: Icons.fiber_new,
           backgroundColor: const Color(0xFFE3F2FD),
           textColor: const Color(0xFF1976D2),
         );
       case 'in_progress':
         return _StatusConfig(
-          label: 'Being Reviewed',
+          label: l10n.supportStatusReviewed,
           icon: Icons.hourglass_empty,
           backgroundColor: const Color(0xFFFFF3CD),
           textColor: const Color(0xFFB8860B),
         );
       case 'awaiting_user':
         return _StatusConfig(
-          label: 'Needs Your Response',
+          label: l10n.supportStatusNeedsResponse,
           icon: Icons.reply,
           backgroundColor: const Color(0xFFFFE0B2),
           textColor: const Color(0xFFE65100),
         );
       case 'resolved':
         return _StatusConfig(
-          label: 'Completed',
+          label: l10n.supportStatusCompleted,
           icon: Icons.check_circle_outline,
           backgroundColor: const Color(0xFFE8F5E9),
           textColor: const Color(0xFF388E3C),

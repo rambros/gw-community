@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
@@ -144,7 +144,7 @@ class ExperienceActionsWidget extends StatelessWidget {
                   ),
                   const SizedBox(width: 6.0),
                   Text(
-                    'Edit',
+                    context.l10n.edit,
                     style: AppTheme.of(context).bodyMedium.override(
                           font: GoogleFonts.lexendDeca(),
                           color: AppTheme.of(context).primary,

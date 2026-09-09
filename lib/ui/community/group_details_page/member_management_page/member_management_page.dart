@@ -4,6 +4,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/group_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/group_details_page/widgets/member_details_sheet.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/widgets/user_avatar.dart';
@@ -137,12 +138,12 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
     }
   }
 
-  String _getDisplayName(CcMembersRow member) {
+  String _getDisplayName(CcMembersRow member, BuildContext context) {
     if (member.hideLastName == true) {
-      return member.firstName ?? member.displayName ?? 'Unknown';
+      return member.firstName ?? member.displayName ?? context.l10n.unknown;
     }
     final fullName = '${member.firstName ?? ''} ${member.lastName ?? ''}'.trim();
-    return fullName.isNotEmpty ? fullName : (member.displayName ?? 'Unknown');
+    return fullName.isNotEmpty ? fullName : (member.displayName ?? context.l10n.unknown);
   }
 
   Future<void> _addUser(CcMembersRow user) async {
@@ -167,7 +168,7 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('${_getDisplayName(user)} added successfully'),
+            content: Text('${_getDisplayName(user, context)} added successfully'),
             backgroundColor: Colors.green,
           ),
         );
@@ -180,7 +181,7 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
         });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to add ${_getDisplayName(user)}'),
+            content: Text('Failed to add ${_getDisplayName(user, context)}'),
             backgroundColor: Colors.red,
           ),
         );
@@ -189,18 +190,18 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
   }
 
   Future<void> _removeMember(CcMembersRow member) async {
-    final displayName = _getDisplayName(member);
+    final displayName = _getDisplayName(member, context);
     final userId = member.authUserId ?? member.id;
 
     final confirm = await showDialog<bool>(
       context: context,
       builder: (alertContext) => AlertDialog(
-        title: const Text('Remove Member'),
-        content: Text('Are you sure you want to remove "$displayName" from this group?'),
+        title: Text(context.l10n.confirmation),
+        content: Text(context.l10n.confirmRemoveMemberNamed(displayName)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(alertContext, false),
-            child: const Text('Cancel'),
+            child: Text(context.l10n.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.pop(alertContext, true),
@@ -247,7 +248,7 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
   }
 
   Future<void> _toggleMemberRole(CcMembersRow member, {required bool makeFacilitator}) async {
-    final displayName = _getDisplayName(member);
+    final displayName = _getDisplayName(member, context);
     final userId = member.authUserId ?? member.id;
     final newRole = makeFacilitator ? 'GROUP_MANAGER' : 'MEMBER';
     final action = makeFacilitator ? 'promote to Facilitator' : 'demote to Member';
@@ -255,19 +256,19 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (alertContext) => AlertDialog(
-        title: Text(makeFacilitator ? 'Make Facilitator' : 'Remove as Facilitator'),
-        content: Text('Are you sure you want to $action "$displayName"?'),
+        title: Text(context.l10n.confirmation),
+        content: Text(context.l10n.confirmMemberAction(action, displayName)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(alertContext, false),
-            child: const Text('Cancel'),
+            child: Text(context.l10n.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.pop(alertContext, true),
             style: TextButton.styleFrom(
               foregroundColor: AppTheme.of(context).primary,
             ),
-            child: const Text('Confirm'),
+            child: Text(context.l10n.confirm),
           ),
         ],
       ),
@@ -388,7 +389,7 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
         TextField(
           controller: _searchController,
           decoration: InputDecoration(
-            hintText: 'Search by name or email...',
+            hintText: context.l10n.searchByNameOrEmail,
             prefixIcon: const Icon(Icons.search),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.0),
@@ -416,7 +417,9 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
                     child: Padding(
                       padding: const EdgeInsets.all(24.0),
                       child: Text(
-                        _searchController.text.isEmpty ? 'Search to find users' : 'No users found',
+                        _searchController.text.isEmpty
+                            ? context.l10n.searchToFindUsers
+                            : context.l10n.noUsersFound,
                         style: AppTheme.of(context).bodyMedium.override(
                               font: GoogleFonts.lexendDeca(),
                               color: AppTheme.of(context).secondaryText,
@@ -441,7 +444,7 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
 
   Widget _buildAvailableUserCard(BuildContext context, CcMembersRow user) {
     final isAdding = _addingUserIds.contains(user.authUserId);
-    final displayName = _getDisplayName(user);
+    final displayName = _getDisplayName(user, context);
 
     return Card(
       margin: const EdgeInsets.only(bottom: 8.0),
@@ -462,7 +465,7 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
                   ),
                   const SizedBox(height: 4.0),
                   Text(
-                    user.email?.isNotEmpty == true ? user.email! : 'No email registered',
+                    user.email?.isNotEmpty == true ? user.email! : context.l10n.noEmailRegistered,
                     style: AppTheme.of(context).bodySmall.override(
                           font: GoogleFonts.lexendDeca(),
                           color: AppTheme.of(context).primary,
@@ -526,7 +529,7 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
         child: Padding(
           padding: const EdgeInsets.all(24.0),
           child: Text(
-            'No members in this group',
+            context.l10n.noMembersInGroup,
             style: AppTheme.of(context).bodyMedium.override(
                   font: GoogleFonts.lexendDeca(),
                   color: AppTheme.of(context).secondaryText,
@@ -542,7 +545,7 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
         // Facilitators Section
         if (_facilitators.isNotEmpty) ...[
           Text(
-            'FACILITATORS (${_facilitators.length})',
+            '${context.l10n.facilitators} (${_facilitators.length})',
             style: AppTheme.of(context).labelMedium.override(
                   font: GoogleFonts.lexendDeca(),
                   color: AppTheme.of(context).primary,
@@ -565,7 +568,7 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
         // Regular Members Section
         if (_regularMembers.isNotEmpty) ...[
           Text(
-            'MEMBERS (${_regularMembers.length})',
+            '${context.l10n.members} (${_regularMembers.length})',
             style: AppTheme.of(context).labelMedium.override(
                   font: GoogleFonts.lexendDeca(),
                   color: AppTheme.of(context).primary,
@@ -588,7 +591,7 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
   }
 
   Widget _buildMemberCard(BuildContext context, CcMembersRow member, {bool isFacilitator = false}) {
-    final displayName = _getDisplayName(member);
+    final displayName = _getDisplayName(member, context);
 
     return Card(
       margin: const EdgeInsets.only(bottom: 8.0),
@@ -616,7 +619,7 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
                   ),
                   const SizedBox(height: 4.0),
                   Text(
-                    member.email?.isNotEmpty == true ? member.email! : 'No email registered',
+                    member.email?.isNotEmpty == true ? member.email! : context.l10n.noEmailRegistered,
                     style: AppTheme.of(context).bodySmall.override(
                           font: GoogleFonts.lexendDeca(),
                           color: AppTheme.of(context).primary,
@@ -665,7 +668,7 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
                         color: AppTheme.of(context).secondary,
                       ),
                       const SizedBox(width: 12),
-                      const Text('View Details'),
+                      Text(context.l10n.view),
                     ],
                   ),
                 ),

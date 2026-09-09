@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:gw_community/data/repositories/file_resource_repository.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/utils/upload_data.dart';
 
@@ -48,16 +49,16 @@ class _ResourceFormSheetState extends State<ResourceFormSheet> {
 
   Future<void> _save() async {
     if (_titleController.text.trim().isEmpty) {
-      setState(() => _errorMessage = 'Title is required.');
+      setState(() => _errorMessage = context.l10n.titleRequired);
       return;
     }
     if (_selectedType == 'video') {
       if (_videoUrlController.text.trim().isEmpty) {
-        setState(() => _errorMessage = 'Please enter a YouTube URL.');
+        setState(() => _errorMessage = context.l10n.pleaseEnterYoutubeUrl);
         return;
       }
     } else if (_selectedFile == null) {
-      setState(() => _errorMessage = 'Please select a file.');
+      setState(() => _errorMessage = context.l10n.pleaseSelectFile);
       return;
     }
 
@@ -77,7 +78,7 @@ class _ResourceFormSheetState extends State<ResourceFormSheet> {
           _selectedType,
         );
         if (url == null) {
-          setState(() => _errorMessage = 'Upload failed. Please try again.');
+          setState(() => _errorMessage = context.l10n.uploadFailed);
           return;
         }
       }
@@ -94,7 +95,7 @@ class _ResourceFormSheetState extends State<ResourceFormSheet> {
       );
 
       if (!ok) {
-        setState(() => _errorMessage = 'Failed to save resource.');
+        setState(() => _errorMessage = context.l10n.failedToSaveResource);
         return;
       }
 
@@ -149,7 +150,7 @@ class _ResourceFormSheetState extends State<ResourceFormSheet> {
           Icon(Icons.add_circle_outline, color: AppTheme.of(context).primary),
           const SizedBox(width: 10),
           Text(
-            'Add Resource',
+            context.l10n.addResource,
             style: GoogleFonts.montserrat(
               fontSize: 17,
               fontWeight: FontWeight.w600,
@@ -182,37 +183,40 @@ class _ResourceFormSheetState extends State<ResourceFormSheet> {
             ),
           ],
 
-          _label(context, 'Title *'),
+          _label(context, '${context.l10n.title} *'),
           const SizedBox(height: 6),
           TextField(
             controller: _titleController,
             textCapitalization: TextCapitalization.sentences,
-            decoration: _inputDecoration('Resource title'),
+            decoration: _inputDecoration(context.l10n.resourceTitle),
           ),
           const SizedBox(height: 14),
 
-          _label(context, 'Description'),
+          _label(context, context.l10n.description),
           const SizedBox(height: 6),
           TextField(
             controller: _descriptionController,
             maxLines: 2,
             textCapitalization: TextCapitalization.sentences,
-            decoration: _inputDecoration('Optional description'),
+            decoration: _inputDecoration(context.l10n.optionalDescription),
           ),
           const SizedBox(height: 14),
 
-          _label(context, 'Type'),
+          _label(context, context.l10n.type),
           const SizedBox(height: 8),
           _buildTypeSelector(context),
           const SizedBox(height: 14),
 
-          _label(context, _selectedType == 'video' ? 'URL do Vídeo (YouTube) *' : 'File *'),
+          _label(
+            context,
+            _selectedType == 'video' ? context.l10n.youtubeVideoUrl : context.l10n.fileRequired,
+          ),
           const SizedBox(height: 8),
           if (_selectedType == 'video')
             TextField(
               controller: _videoUrlController,
               keyboardType: TextInputType.url,
-              decoration: _inputDecoration('URL do YouTube'),
+              decoration: _inputDecoration(context.l10n.youtubeUrl),
             )
           else
             _buildFilePicker(context),
@@ -223,10 +227,10 @@ class _ResourceFormSheetState extends State<ResourceFormSheet> {
   }
 
   Widget _buildTypeSelector(BuildContext context) {
-    const types = [
+    final types = [
       ('pdf', Icons.picture_as_pdf_outlined, 'PDF'),
-      ('audio', Icons.audiotrack_outlined, 'Audio'),
-      ('video', Icons.videocam_outlined, 'Video'),
+      ('audio', Icons.audiotrack_outlined, context.l10n.mediaAudio),
+      ('video', Icons.videocam_outlined, context.l10n.mediaVideo),
     ];
 
     return Row(
@@ -295,7 +299,7 @@ class _ResourceFormSheetState extends State<ResourceFormSheet> {
             const SizedBox(width: 12),
             Expanded(
               child: Text(
-                _selectedFile?.originalFilename ?? 'Tap to select file',
+                _selectedFile?.originalFilename ?? context.l10n.tapToSelectFile,
                 style: TextStyle(
                   fontSize: 13,
                   color: _selectedFile != null ? const Color(0xFF1E2429) : Colors.grey.shade500,
@@ -318,7 +322,7 @@ class _ResourceFormSheetState extends State<ResourceFormSheet> {
           Expanded(
             child: OutlinedButton(
               onPressed: _isSaving ? null : () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
+              child: Text(context.l10n.cancel),
             ),
           ),
           const SizedBox(width: 12),
@@ -335,7 +339,7 @@ class _ResourceFormSheetState extends State<ResourceFormSheet> {
                       height: 18,
                       child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                     )
-                  : const Text('Save'),
+                  : Text(context.l10n.save),
             ),
           ),
         ],

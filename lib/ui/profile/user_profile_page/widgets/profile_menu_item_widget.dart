@@ -9,11 +9,13 @@ class ProfileMenuItemWidget extends StatelessWidget {
     required this.text,
     required this.onTap,
     this.textColor,
+    this.trailingText,
   });
 
   final String text;
   final VoidCallback onTap;
   final Color? textColor;
+  final String? trailingText;
 
   @override
   Widget build(BuildContext context) {
@@ -53,13 +55,30 @@ class ProfileMenuItemWidget extends StatelessWidget {
                         ),
                   ),
                 ),
-                const Expanded(
+                Expanded(
                   child: Align(
-                    alignment: AlignmentDirectional(0.9, 0.0),
-                    child: Icon(
-                      Icons.arrow_forward_ios,
-                      color: Color(0xFF95A1AC),
-                      size: 18.0,
+                    alignment: const AlignmentDirectional(0.9, 0.0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (trailingText != null)
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: Text(
+                              trailingText!,
+                              style: AppTheme.of(context).bodyMedium.override(
+                                    font: GoogleFonts.lexendDeca(),
+                                    color: const Color(0xFF95A1AC),
+                                    fontSize: 14.0,
+                                  ),
+                            ),
+                          ),
+                        const Icon(
+                          Icons.arrow_forward_ios,
+                          color: Color(0xFF95A1AC),
+                          size: 18.0,
+                        ),
+                      ],
                     ),
                   ),
                 ),

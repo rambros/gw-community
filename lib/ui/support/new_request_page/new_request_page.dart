@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/support_repository.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/ui/support/new_request_page/view_model/new_request_view_model.dart';
@@ -63,7 +64,7 @@ class _NewRequestPageContent extends StatelessWidget {
           onPressed: () => context.pop(),
         ),
         title: Text(
-          'Ask a Question',
+          context.l10n.askAQuestion,
           style: AppTheme.of(context).bodyMedium.override(
                 font: GoogleFonts.lexendDeca(),
                 color: Colors.white,
@@ -85,16 +86,16 @@ class _NewRequestPageContent extends StatelessWidget {
                 if (viewModel.contextTitle != null) _buildContextBanner(context, viewModel),
 
                 // Subject input
-                _buildSectionTitle(context, 'Subject'),
+                _buildSectionTitle(context, context.l10n.subject),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: viewModel.titleController,
-                  validator: viewModel.validateTitle,
+                  validator: (value) => viewModel.validateTitle(value, context.l10n),
                   textCapitalization: TextCapitalization.sentences,
                   maxLength: 255,
                   decoration: _buildInputDecoration(
                     context,
-                    hintText: 'Brief summary of your question',
+                    hintText: context.l10n.subjectHint,
                   ),
                   style: GoogleFonts.inter(
                     fontSize: 16,
@@ -104,17 +105,17 @@ class _NewRequestPageContent extends StatelessWidget {
                 const SizedBox(height: 16),
 
                 // Description input
-                _buildSectionTitle(context, 'Description'),
+                _buildSectionTitle(context, context.l10n.description),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: viewModel.descriptionController,
-                  validator: viewModel.validateDescription,
+                  validator: (value) => viewModel.validateDescription(value, context.l10n),
                   textCapitalization: TextCapitalization.sentences,
                   maxLines: 6,
                   maxLength: 2000,
                   decoration: _buildInputDecoration(
                     context,
-                    hintText: 'Please provide as much detail as possible...',
+                    hintText: context.l10n.descriptionHint,
                   ),
                   style: GoogleFonts.inter(
                     fontSize: 16,
@@ -143,7 +144,7 @@ class _NewRequestPageContent extends StatelessWidget {
                             size: 20,
                           )
                         : Text(
-                            'Submit Question',
+                            context.l10n.submitQuestion,
                             style: GoogleFonts.lexendDeca(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
@@ -191,7 +192,7 @@ class _NewRequestPageContent extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Question about:',
+                  context.l10n.questionAbout,
                   style: GoogleFonts.lexendDeca(
                     fontSize: 12,
                     color: AppTheme.of(context).primary.withValues(alpha: 0.7),
@@ -283,13 +284,13 @@ class _NewRequestPageContent extends StatelessWidget {
   }
 
   Future<void> _handleSubmit(BuildContext context, NewRequestViewModel viewModel) async {
-    final result = await viewModel.submit();
+    final result = await viewModel.submit(context.l10n);
 
     if (result != null && context.mounted) {
       // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Question submitted successfully!'),
+          content: Text(context.l10n.questionSubmitted),
           backgroundColor: AppTheme.of(context).success,
         ),
       );

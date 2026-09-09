@@ -9,6 +9,7 @@ import 'package:gw_community/data/repositories/group_repository.dart';
 import 'package:gw_community/data/repositories/journeys_repository.dart';
 import 'package:gw_community/data/repositories/learn_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/group_details_page/member_management_page/member_management_page.dart';
 import 'package:gw_community/ui/community/group_details_page/view_model/group_details_view_model.dart';
 import 'package:gw_community/ui/community/group_details_page/widgets/group_about_tab.dart';
@@ -103,7 +104,7 @@ class GroupDetailsPageView extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'Group',
+                      context.l10n.group,
                       style: AppTheme.of(context).titleLarge.override(
                             font: GoogleFonts.poppins(
                               fontWeight: AppTheme.of(context).titleLarge.fontWeight,
@@ -136,7 +137,7 @@ class GroupDetailsPageView extends StatelessWidget {
                                     MemberManagementPage.routeName,
                                     queryParameters: {
                                       'groupId': '${group.id}',
-                                      'groupName': group.name ?? 'Group',
+                                      'groupName': group.name ?? context.l10n.group,
                                     },
                                   );
                                   viewModel.refreshGroup();
@@ -170,7 +171,7 @@ class GroupDetailsPageView extends StatelessWidget {
                                       GroupModerationPage.routeName,
                                       queryParameters: {
                                         'groupId': '${group.id}',
-                                        'groupName': group.name ?? 'Group',
+                                        'groupName': group.name ?? context.l10n.group,
                                       },
                                     );
                                     // Refresh group details after moderation
@@ -197,7 +198,7 @@ class GroupDetailsPageView extends StatelessWidget {
                                             appBar: AppBar(
                                               backgroundColor: AppTheme.of(context).primary,
                                               title: Text(
-                                                'About',
+                                                context.l10n.about,
                                                 style: TextStyle(color: AppTheme.of(context).primaryBackground),
                                               ),
                                               iconTheme: IconThemeData(color: AppTheme.of(context).primaryBackground),
@@ -220,16 +221,16 @@ class GroupDetailsPageView extends StatelessWidget {
                                       context: context,
                                       builder: (alertDialogContext) {
                                         return AlertDialog(
-                                          title: const Text('Leave Group'),
-                                          content: const Text('Are you sure you want to leave this group?'),
+                                          title: Text(context.l10n.leaveGroup),
+                                          content: Text(context.l10n.confirmLeaveGroup),
                                           actions: [
                                             TextButton(
                                               onPressed: () => Navigator.pop(alertDialogContext, false),
-                                              child: const Text('Cancel'),
+                                              child: Text(context.l10n.cancel),
                                             ),
                                             TextButton(
                                               onPressed: () => Navigator.pop(alertDialogContext, true),
-                                              child: const Text('Leave'),
+                                              child: Text(context.l10n.leave),
                                             ),
                                           ],
                                         );
@@ -244,7 +245,7 @@ class GroupDetailsPageView extends StatelessWidget {
                                           ScaffoldMessenger.of(context).showSnackBar(
                                             SnackBar(
                                               content: Text(
-                                                'Left the group successfully',
+                                                context.l10n.leftGroupSuccessfully,
                                                 style: TextStyle(
                                                   color: AppTheme.of(context).primaryText,
                                                 ),
@@ -269,7 +270,7 @@ class GroupDetailsPageView extends StatelessWidget {
                                             color: AppTheme.of(context).secondary,
                                           ),
                                           const SizedBox(width: 12),
-                                          const Text('About'),
+                                          Text(context.l10n.about),
                                         ],
                                       ),
                                     ),
@@ -284,7 +285,7 @@ class GroupDetailsPageView extends StatelessWidget {
                                             color: AppTheme.of(context).secondary,
                                           ),
                                           const SizedBox(width: 12),
-                                          const Text('Edit Group'),
+                                          Text(context.l10n.editGroup),
                                         ],
                                       ),
                                     ),
@@ -299,7 +300,7 @@ class GroupDetailsPageView extends StatelessWidget {
                                             color: AppTheme.of(context).secondary,
                                           ),
                                           const SizedBox(width: 12),
-                                          const Text('Leave Group'),
+                                          Text(context.l10n.leaveGroup),
                                         ],
                                       ),
                                     ),
@@ -372,10 +373,13 @@ class GroupDetailsPageView extends StatelessWidget {
                             Padding(
                               padding: const EdgeInsetsDirectional.fromSTEB(0.0, 2.0, 0.0, 0.0),
                               child: Text(
-                                '${group.groupPrivacy} group - ${formatNumber(
-                                  group.numberMembers,
-                                  formatType: FormatType.compact,
-                                )} ${group.numberMembers == 1 ? 'member' : 'members'}',
+                                context.l10n.groupMetaDetails(
+                                  localizedGroupPrivacy(
+                                    context.l10n,
+                                    group.groupPrivacy,
+                                  ),
+                                  context.l10n.memberCount(group.numberMembers ?? 0),
+                                ),
                                 style: AppTheme.of(context).bodyMedium.override(
                                       font: GoogleFonts.lexendDeca(),
                                       color: AppTheme.of(context).secondary,
@@ -413,14 +417,14 @@ class GroupDetailsPageView extends StatelessWidget {
                                 indicatorColor: AppTheme.of(context).secondary,
                                 labelPadding: const EdgeInsets.symmetric(horizontal: 10.0),
                                 tabs: [
-                                  const Tab(key: ValueKey('tab_experiences'), text: 'Experiences'),
-                                  const Tab(key: ValueKey('tab_events'), text: 'Events'),
+                                  Tab(key: const ValueKey('tab_experiences'), text: context.l10n.tabExperiences),
+                                  Tab(key: const ValueKey('tab_events'), text: context.l10n.tabEvents),
                                   Tab(
                                     key: const ValueKey('tab_notifications'),
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        const Text('Messages'),
+                                        Text(context.l10n.tabMessages),
                                         if (viewModel.unreadNotificationCount > 0) ...[
                                           const SizedBox(width: 6),
                                           Container(
@@ -448,7 +452,7 @@ class GroupDetailsPageView extends StatelessWidget {
                                       ],
                                     ),
                                   ),
-                                  const Tab(key: ValueKey('tab_resources'), text: 'Resources'),
+                                  Tab(key: const ValueKey('tab_resources'), text: context.l10n.tabResources),
                                 ],
                                 controller: viewModel.tabController,
                               ),

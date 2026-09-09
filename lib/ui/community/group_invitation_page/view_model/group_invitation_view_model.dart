@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gw_community/data/repositories/group_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/l10n.dart';
 
 class GroupInvitationViewModel extends ChangeNotifier {
   final GroupRepository _groupRepository;
@@ -34,7 +35,7 @@ class GroupInvitationViewModel extends ChangeNotifier {
       debugPrint('Error joining group: $e');
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error joining group: $e')),
+          SnackBar(content: Text(context.l10n.errorJoiningGroup('$e'))),
         );
       }
       return false;

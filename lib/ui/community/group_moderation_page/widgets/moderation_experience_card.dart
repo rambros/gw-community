@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/widgets/user_avatar.dart';
+import 'package:intl/intl.dart';
 
 /// Card widget displaying an experience with moderation actions
 /// Shows status badge and dynamic action buttons based on current status
@@ -56,14 +58,14 @@ class ModerationExperienceCard extends StatelessWidget {
   }
 
   Widget _buildAuthorInfo(BuildContext context) {
-    final dateStr = _formatDate(experience.createdAt);
+    final dateStr = _formatDate(context, experience.createdAt);
     final groupName = experience.groupName ?? '';
 
     return Row(
       children: [
         UserAvatar(
           imageUrl: experience.authorPhotoUrl,
-          fullName: experience.authorDisplayName ?? experience.authorName ?? 'User',
+          fullName: experience.authorDisplayName ?? experience.authorName ?? context.l10n.userFallback,
           size: 40.0,
         ),
         const SizedBox(width: 12),
@@ -72,7 +74,7 @@ class ModerationExperienceCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                experience.authorDisplayName ?? experience.authorName ?? 'Unknown User',
+                experience.authorDisplayName ?? experience.authorName ?? context.l10n.unknown,
                 style: AppTheme.of(
                   context,
                 ).bodyMedium.override(font: GoogleFonts.lexendDeca(), fontWeight: FontWeight.w600, fontSize: 15.0),
@@ -93,15 +95,14 @@ class ModerationExperienceCard extends StatelessWidget {
     );
   }
 
-  String _formatDate(DateTime? date) {
+  String _formatDate(BuildContext context, DateTime? date) {
     if (date == null) return '';
-    final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    return '${months[date.month - 1]} ${date.day}, ${date.year}';
+    return DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(date);
   }
 
   Widget _buildStatusBadge(BuildContext context) {
     final status = experience.moderationStatus ?? 'awaiting_approval';
-    final statusLabel = _getStatusLabel(status);
+    final statusLabel = localizedExperienceStatus(context.l10n, status);
     final color = _getStatusColor(status);
 
     return Container(
@@ -128,7 +129,7 @@ class ModerationExperienceCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
       child: Text(
-        text.isEmpty ? '(No text)' : text,
+        text.isEmpty ? context.l10n.noContentAvailable : text,
         maxLines: 6,
         overflow: TextOverflow.ellipsis,
         style: AppTheme.of(context).bodyMedium.override(font: GoogleFonts.inter(), fontSize: 14.0),
@@ -221,7 +222,7 @@ class ModerationExperienceCard extends StatelessWidget {
       spacing: 8,
       runSpacing: 8,
       children: [
-        _buildRejectButton(context, label: 'Revert'),
+        _buildRejectButton(context, label: context.l10n.revert),
       ],
     );
   }
@@ -233,7 +234,7 @@ class ModerationExperienceCard extends StatelessWidget {
       spacing: 8,
       runSpacing: 8,
       children: [
-        _buildApproveButton(context, label: 'Approve'),
+        _buildApproveButton(context, label: context.l10n.approve),
       ],
     );
   }
@@ -258,7 +259,7 @@ class ModerationExperienceCard extends StatelessWidget {
       child: OutlinedButton.icon(
         onPressed: onSuggestRefinement,
         icon: const Icon(Icons.edit_outlined, size: 16),
-        label: const Text('Refine'),
+        label: Text(context.l10n.refine),
         style: OutlinedButton.styleFrom(
           foregroundColor: Colors.orange.shade700,
           side: BorderSide(color: Colors.orange.shade700, width: 1.5),
@@ -269,13 +270,13 @@ class ModerationExperienceCard extends StatelessWidget {
     );
   }
 
-  Widget _buildRejectButton(BuildContext context, {String label = 'Reject'}) {
+  Widget _buildRejectButton(BuildContext context, {String? label}) {
     return SizedBox(
       height: 36,
       child: OutlinedButton.icon(
         onPressed: onReject,
         icon: const Icon(Icons.close, size: 16),
-        label: Text(label),
+        label: Text(label ?? context.l10n.reject),
         style: OutlinedButton.styleFrom(
           foregroundColor: Colors.red.shade700,
           side: BorderSide(color: Colors.red.shade700, width: 1.5),
@@ -286,13 +287,13 @@ class ModerationExperienceCard extends StatelessWidget {
     );
   }
 
-  Widget _buildApproveButton(BuildContext context, {String label = 'Approve'}) {
+  Widget _buildApproveButton(BuildContext context, {String? label}) {
     return SizedBox(
       height: 36,
       child: ElevatedButton.icon(
         onPressed: onApprove,
         icon: const Icon(Icons.check, size: 16),
-        label: Text(label),
+        label: Text(label ?? context.l10n.approve),
         style: ElevatedButton.styleFrom(
           backgroundColor: AppTheme.of(context).primary,
           foregroundColor: Colors.white,
@@ -302,23 +303,6 @@ class ModerationExperienceCard extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String _getStatusLabel(String status) {
-    switch (status) {
-      case 'awaiting_approval':
-        return 'Awaiting Approval';
-      case 'pending':
-        return 'In Reflection';
-      case 'approved':
-        return 'Approved';
-      case 'rejected':
-        return 'Not Published';
-      case 'changes_requested':
-        return 'Refinement Suggested';
-      default:
-        return 'Pending';
-    }
   }
 
   Color _getStatusColor(String status) {

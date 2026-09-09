@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gw_community/app_state.dart';
 import 'package:gw_community/data/models/app_config.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/community_page/community_page.dart';
 import 'package:gw_community/ui/core/nav_bar/view_model/nav_bar_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
@@ -46,16 +47,12 @@ class _NavBarPageState extends State<NavBarPage> {
           return Scaffold(
             resizeToAvoidBottomInset: !widget.disableResizeToAvoidBottomInset,
             body: viewModel.currentPage ?? tabs[viewModel.currentPageName],
-            bottomNavigationBar: BottomNavigationBar(
+            bottomNavigationBar: _FittingBottomNavBar(
               currentIndex: currentIndex,
               onTap: (i) => viewModel.selectTab(tabs.keys.toList()[i]),
-              backgroundColor: Colors.white,
-              selectedItemColor: AppTheme.of(context).primary,
-              unselectedItemColor: const Color(0xFF95A1AC),
-              showSelectedLabels: true,
-              showUnselectedLabels: false,
-              type: BottomNavigationBarType.fixed,
               items: _buildBottomNavItems(context, appState, config),
+              selectedColor: AppTheme.of(context).primary,
+              unselectedColor: const Color(0xFF95A1AC),
             ),
           );
         },
@@ -95,10 +92,11 @@ class _NavBarPageState extends State<NavBarPage> {
 
   /// Build bottom navigation items based on app configuration and per-group module flags
   List<BottomNavigationBarItem> _buildBottomNavItems(BuildContext context, FFAppState appState, AppConfig config) {
+    final l10n = context.l10n;
     final items = <BottomNavigationBarItem>[
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.home_outlined, size: 28.0),
-        label: 'Home',
+      BottomNavigationBarItem(
+        icon: const Icon(Icons.home_outlined, size: 28.0),
+        label: l10n.navHome,
         tooltip: '',
       ),
     ];
@@ -106,9 +104,9 @@ class _NavBarPageState extends State<NavBarPage> {
     // Library item - only if enabled for the user's group
     if (appState.enableLibraryModule) {
       items.add(
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.library_music, size: 24.0),
-          label: 'Library',
+        BottomNavigationBarItem(
+          icon: const Icon(Icons.library_music, size: 24.0),
+          label: l10n.navLibrary,
           tooltip: '',
         ),
       );
@@ -117,10 +115,10 @@ class _NavBarPageState extends State<NavBarPage> {
     // Journey item - only if enabled for the user's group
     if (appState.enableJourneyModule) {
       items.add(
-        const BottomNavigationBarItem(
-          icon: Icon(FFIcons.kiconLogo, size: 24.0),
-          activeIcon: Icon(FFIcons.kiconLogo, size: 24.0),
-          label: 'Journey',
+        BottomNavigationBarItem(
+          icon: const Icon(FFIcons.kiconLogo, size: 24.0),
+          activeIcon: const Icon(FFIcons.kiconLogo, size: 24.0),
+          label: l10n.navJourney,
           tooltip: '',
         ),
       );
@@ -129,10 +127,10 @@ class _NavBarPageState extends State<NavBarPage> {
     // Add Community tab if enabled globally AND per-group
     if (config.enableCommunityModule && appState.enableCommunityModule) {
       items.add(
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.public, size: 28.0),
-          activeIcon: Icon(Icons.public, size: 28.0),
-          label: 'Community',
+        BottomNavigationBarItem(
+          icon: const Icon(Icons.public, size: 28.0),
+          activeIcon: const Icon(Icons.public, size: 28.0),
+          label: l10n.navCommunity,
           tooltip: '',
         ),
       );
@@ -140,14 +138,86 @@ class _NavBarPageState extends State<NavBarPage> {
 
     // Profile is always last
     items.add(
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.account_circle_outlined, size: 28.0),
-        activeIcon: Icon(Icons.account_circle, size: 28.0),
-        label: 'Profile',
+      BottomNavigationBarItem(
+        icon: const Icon(Icons.account_circle_outlined, size: 28.0),
+        activeIcon: const Icon(Icons.account_circle, size: 28.0),
+        label: l10n.navProfile,
         tooltip: '',
       ),
     );
 
     return items;
+  }
+}
+
+class _FittingBottomNavBar extends StatelessWidget {
+  const _FittingBottomNavBar({
+    required this.currentIndex,
+    required this.onTap,
+    required this.items,
+    required this.selectedColor,
+    required this.unselectedColor,
+  });
+
+  final int currentIndex;
+  final ValueChanged<int> onTap;
+  final List<BottomNavigationBarItem> items;
+  final Color selectedColor;
+  final Color unselectedColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.white,
+      elevation: 8.0,
+      child: SafeArea(
+        top: false,
+        child: SizedBox(
+          height: kBottomNavigationBarHeight,
+          child: Row(
+            children: [
+              for (var i = 0; i < items.length; i++)
+                Expanded(
+                  child: InkWell(
+                    onTap: () => onTap(i),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          IconTheme(
+                            data: IconThemeData(
+                              color: i == currentIndex ? selectedColor : unselectedColor,
+                              size: 24.0,
+                            ),
+                            child: i == currentIndex ? items[i].activeIcon : items[i].icon,
+                          ),
+                          if (i == currentIndex) ...[
+                            const SizedBox(height: 2.0),
+                            FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                items[i].label ?? '',
+                                maxLines: 1,
+                                softWrap: false,
+                                style: TextStyle(
+                                  color: selectedColor,
+                                  fontSize: 12.0,
+                                  fontWeight: FontWeight.w600,
+                                  height: 1.1,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

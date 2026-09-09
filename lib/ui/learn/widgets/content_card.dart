@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:gw_community/data/repositories/favorites_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/widgets/favorite_button.dart';
 import 'package:gw_community/ui/learn/content_view/content_view.dart';
@@ -96,7 +97,7 @@ class _ContentCardState extends State<ContentCard> {
                 children: [
                   Expanded(
                     child: Text(
-                      valueOrDefault<String>(widget.contentRow.title, 'Title'),
+                      valueOrDefault<String>(widget.contentRow.title, context.l10n.untitled),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: AppTheme.of(context).learn.contentTitle.override(
@@ -173,17 +174,17 @@ class _ContentCardState extends State<ContentCard> {
   List<Widget> _buildMediaTags(BuildContext context) {
     final tags = <Widget>[];
 
-    if (widget.contentRow.midiaType == 'audio') {
-      tags.add(_MediaTypeTag(label: 'Audio', context: context));
-    } else if (widget.contentRow.midiaType == 'video') {
-      tags.add(_MediaTypeTag(label: 'Video', context: context));
-    } else if (widget.contentRow.midiaType == 'text') {
-      tags.add(_MediaTypeTag(label: 'Text', context: context));
+    final mediaType = widget.contentRow.midiaType;
+    if (mediaType == 'audio' || mediaType == 'video' || mediaType == 'text') {
+      tags.add(_MediaTypeTag(
+        label: localizedMediaType(context.l10n, mediaType),
+        context: context,
+      ));
     }
 
     if (widget.contentRow.transcript != null &&
         widget.contentRow.transcript!.isNotEmpty) {
-      tags.add(_MediaTypeTag(label: 'Transcript', context: context));
+      tags.add(_MediaTypeTag(label: context.l10n.transcript, context: context));
     }
 
     return tags;
@@ -207,13 +208,13 @@ class _ActionsMenu extends StatelessWidget {
       onSelected: (value) {
         if (value == 'link') onLinkToGroups();
       },
-      itemBuilder: (_) => const [
+      itemBuilder: (_) => [
         PopupMenuItem(
           value: 'link',
           child: Row(children: [
             Icon(Icons.link, size: 18),
             SizedBox(width: 10),
-            Text('Link to Groups'),
+            Text(context.l10n.linkToGroups),
           ]),
         ),
       ],

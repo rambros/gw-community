@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/group_repository.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/group_add_page/view_model/group_add_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_drop_down.dart';
@@ -63,7 +64,7 @@ class GroupAddPageView extends StatelessWidget {
             },
           ),
           title: Text(
-            'New Group',
+            context.l10n.newGroup,
             style: AppTheme.of(context).titleLarge.override(
                   font: GoogleFonts.poppins(
                     fontWeight: AppTheme.of(context).titleLarge.fontWeight,
@@ -104,7 +105,7 @@ class GroupAddPageView extends StatelessWidget {
                                 controller: viewModel.nameController,
                                 textCapitalization: TextCapitalization.words,
                                 decoration: InputDecoration(
-                                  labelText: 'Name',
+                                  labelText: context.l10n.name,
                                   labelStyle: AppTheme.of(context).labelLarge.override(
                                         font: GoogleFonts.poppins(),
                                         color: AppTheme.of(context).primary,
@@ -132,7 +133,7 @@ class GroupAddPageView extends StatelessWidget {
                                     ),
                                 validator: (val) {
                                   if (val == null || val.isEmpty) {
-                                    return 'Field is required';
+                                    return context.l10n.fieldRequired;
                                   }
                                   return null;
                                 },
@@ -145,7 +146,7 @@ class GroupAddPageView extends StatelessWidget {
                                 controller: viewModel.descriptionController,
                                 textCapitalization: TextCapitalization.sentences,
                                 decoration: InputDecoration(
-                                  labelText: 'Description',
+                                  labelText: context.l10n.description,
                                   labelStyle: AppTheme.of(context).labelLarge.override(
                                         font: GoogleFonts.poppins(),
                                         color: AppTheme.of(context).primary,
@@ -174,7 +175,7 @@ class GroupAddPageView extends StatelessWidget {
                                 maxLines: 5,
                                 validator: (val) {
                                   if (val == null || val.isEmpty) {
-                                    return 'Field is required';
+                                    return context.l10n.fieldRequired;
                                   }
                                   return null;
                                 },
@@ -187,7 +188,7 @@ class GroupAddPageView extends StatelessWidget {
                                 controller: viewModel.moreInformationController,
                                 textCapitalization: TextCapitalization.sentences,
                                 decoration: InputDecoration(
-                                  labelText: 'More information',
+                                  labelText: context.l10n.moreInformation,
                                   labelStyle: AppTheme.of(context).labelLarge.override(
                                         font: GoogleFonts.poppins(),
                                         color: AppTheme.of(context).primary,
@@ -216,7 +217,7 @@ class GroupAddPageView extends StatelessWidget {
                                 maxLines: 5,
                                 validator: (val) {
                                   if (val == null || val.isEmpty) {
-                                    return 'Field is required';
+                                    return context.l10n.fieldRequired;
                                   }
                                   return null;
                                 },
@@ -249,7 +250,7 @@ class GroupAddPageView extends StatelessWidget {
                                   multiSelectController: FormListFieldController<String>(viewModel.selectedManagerIds),
                                   options: viewModel.availableManagers.map((e) => e.id).toList(),
                                   optionLabels:
-                                      viewModel.availableManagers.map((e) => e.displayName ?? 'Unknown').toList(),
+                                      viewModel.availableManagers.map((e) => e.displayName ?? context.l10n.unknown).toList(),
                                   onMultiSelectChanged: (val) => viewModel.setSelectedManagers(val),
                                   width: double.infinity,
                                   height: 50.0,
@@ -257,7 +258,7 @@ class GroupAddPageView extends StatelessWidget {
                                         font: GoogleFonts.lexendDeca(),
                                         color: AppTheme.of(context).secondary,
                                       ),
-                                  hintText: 'Select Managers/ facilitators',
+                                  hintText: context.l10n.selectManagers,
                                   icon: Icon(
                                     Icons.keyboard_arrow_down_rounded,
                                     color: AppTheme.of(context).secondaryText,
@@ -322,7 +323,7 @@ class GroupAddPageView extends StatelessWidget {
                                                     Padding(
                                                       padding: const EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 0.0),
                                                       child: Text(
-                                                        'Upload Image',
+                                                        context.l10n.uploadImage,
                                                         style: AppTheme.of(context).bodySmall,
                                                       ),
                                                     ),
@@ -347,7 +348,7 @@ class GroupAddPageView extends StatelessWidget {
                                     }
                                   }
                                 },
-                                text: 'Create Group',
+                                text: context.l10n.createGroup,
                                 options: FFButtonOptions(
                                   width: 270.0,
                                   height: 50.0,

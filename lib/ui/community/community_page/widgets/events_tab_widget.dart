@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/community_page/view_model/community_view_model.dart';
 import 'package:gw_community/ui/community/event_add_page/event_add_page.dart';
 import 'package:gw_community/ui/community/widgets/event_card.dart';
@@ -104,7 +105,7 @@ class _EventsTabWidgetState extends State<EventsTabWidget> {
                                 safeSetState(() {});
                               },
                               child: Text(
-                                'Upcoming',
+                                context.l10n.upcoming,
                                 style: AppTheme.of(context).bodyMedium.override(
                                       font: GoogleFonts.lexendDeca(
                                         fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
@@ -130,7 +131,7 @@ class _EventsTabWidgetState extends State<EventsTabWidget> {
                                 safeSetState(() {});
                               },
                               child: Text(
-                                'Recorded',
+                                context.l10n.recorded,
                                 style: AppTheme.of(context).bodyMedium.override(
                                       font: GoogleFonts.lexendDeca(
                                         fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
@@ -154,7 +155,9 @@ class _EventsTabWidgetState extends State<EventsTabWidget> {
           ),
         ),
         Text(
-          FFAppState().typeSelectedEvent,
+          FFAppState().typeSelectedEvent == 'recorded'
+              ? context.l10n.recorded
+              : context.l10n.upcoming,
           style: AppTheme.of(context).bodyMedium.override(
                 font: GoogleFonts.lexendDeca(
                   fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
@@ -179,7 +182,7 @@ class _EventsTabWidgetState extends State<EventsTabWidget> {
                     onPressed: () async {
                       context.pushNamed(EventAddPage.routeName);
                     },
-                    text: 'New Event',
+                    text: context.l10n.newEvent,
                     options: FFButtonOptions(
                       height: 40.0,
                       padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
@@ -247,7 +250,7 @@ class _EventsTabWidgetState extends State<EventsTabWidget> {
                         child: Padding(
                           padding: const EdgeInsets.all(24.0),
                           child: Text(
-                            'No upcoming events found',
+                            context.l10n.noUpcomingEvents,
                             style: AppTheme.of(context).bodyMedium,
                           ),
                         ),
@@ -317,10 +320,13 @@ class _EventsTabWidgetState extends State<EventsTabWidget> {
                         viewModel.listEvents.where((e) => e.eventAudioUrl != null && e.eventAudioUrl != '').toList();
 
                     if (listRecordedEvents.isEmpty) {
-                      return const Center(
+                      return Center(
                         child: Padding(
-                          padding: EdgeInsets.all(24.0),
-                          child: Text('No recorded events found'),
+                          padding: const EdgeInsets.all(24.0),
+                          child: Text(
+                            context.l10n.noRecordedEvents,
+                            style: AppTheme.of(context).bodyMedium,
+                          ),
                         ),
                       );
                     }
@@ -372,7 +378,7 @@ class _EventsTabWidgetState extends State<EventsTabWidget> {
                             userRegistered: listRecordedEventsItem.userRegistered,
                             eventName: valueOrDefault<String>(
                               listRecordedEventsItem.title,
-                              'title',
+                              context.l10n.title,
                             ),
                             facilitator: listRecordedEventsItem.facilitatorName,
                             date: formattedDate,

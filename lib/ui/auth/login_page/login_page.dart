@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/auth/login_page/view_model/login_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
@@ -163,7 +164,7 @@ class _LoginPageState extends State<LoginPage> {
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                'Welcome,',
+                context.l10n.welcomeComma,
                 style: AppTheme.of(context).displaySmall.override(
                       font: GoogleFonts.lexendDeca(
                         fontWeight: AppTheme.of(context).displaySmall.fontWeight,
@@ -181,7 +182,7 @@ class _LoginPageState extends State<LoginPage> {
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                'Enter your email to receive a secure access link.',
+                context.l10n.magicLinkHint,
                 style: AppTheme.of(context).bodyMedium.override(
                       font: GoogleFonts.lexendDeca(
                         fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
@@ -217,11 +218,11 @@ class _LoginPageState extends State<LoginPage> {
               focusNode: _magicEmailFocusNode,
               autofocus: true,
               keyboardType: TextInputType.emailAddress,
-              decoration: _inputDecoration(context, 'Email', hint: 'Your email'),
+              decoration: _inputDecoration(context, context.l10n.email, hint: context.l10n.yourEmail),
               style: _inputStyle(context),
               validator: (val) {
-                if (val == null || val.isEmpty) return 'Email is required';
-                if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(val)) return 'Enter a valid email';
+                if (val == null || val.isEmpty) return context.l10n.emailRequired;
+                if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(val)) return context.l10n.enterValidEmail;
                 return null;
               },
             ),
@@ -235,12 +236,13 @@ class _LoginPageState extends State<LoginPage> {
                       if (!_magicFormKey.currentState!.validate()) return;
                       final messenger = ScaffoldMessenger.of(context);
                       final theme = AppTheme.of(context);
+                      final l10n = context.l10n;
                       final result = await viewModel.sendMagicLink(_magicEmailController.text);
                       if (!mounted) return;
                       if (result == SendMagicLinkResult.notRegistered) {
                         messenger.showSnackBar(SnackBar(
                           content: Text(
-                            'Email not registered. Contact your administrator.',
+                            l10n.emailNotRegistered,
                             style: TextStyle(color: theme.primaryText),
                           ),
                           backgroundColor: theme.secondary,
@@ -248,14 +250,14 @@ class _LoginPageState extends State<LoginPage> {
                       } else if (result == SendMagicLinkResult.error) {
                         messenger.showSnackBar(SnackBar(
                           content: Text(
-                            'Error sending link. Please try again.',
+                            l10n.errorSendingLink,
                             style: TextStyle(color: theme.primaryText),
                           ),
                           backgroundColor: theme.secondary,
                         ));
                       }
                     },
-              text: 'Send Access Link',
+              text: context.l10n.sendAccessLink,
               options: FFButtonOptions(
                 width: double.infinity,
                 height: 50.0,
@@ -300,7 +302,7 @@ class _LoginPageState extends State<LoginPage> {
             Icon(Icons.mark_email_read_outlined, size: 48, color: AppTheme.of(context).primary),
             const SizedBox(height: 12),
             Text(
-              'Check your email!',
+              context.l10n.checkYourEmail,
               style: AppTheme.of(context).titleMedium.override(
                     font: GoogleFonts.lexendDeca(),
                     color: AppTheme.of(context).secondary,
@@ -309,7 +311,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             const SizedBox(height: 8),
             Text(
-              'We sent an access link to ${viewModel.magicLinkEmail ?? _magicEmailController.text}. Tap it to sign in.',
+              context.l10n.magicLinkSentTo(viewModel.magicLinkEmail ?? _magicEmailController.text),
               textAlign: TextAlign.center,
               style: AppTheme.of(context).bodyMedium.override(
                     font: GoogleFonts.lexendDeca(),
@@ -323,13 +325,14 @@ class _LoginPageState extends State<LoginPage> {
                   : () async {
                       final messenger = ScaffoldMessenger.of(context);
                       final theme = AppTheme.of(context);
+                      final l10n = context.l10n;
                       final email = viewModel.magicLinkEmail ?? _magicEmailController.text;
                       final result = await viewModel.sendMagicLink(email);
                       if (!mounted) return;
                       if (result == SendMagicLinkResult.sent) {
                         messenger.showSnackBar(SnackBar(
                           content: Text(
-                            'Link sent again. Check your inbox.',
+                            l10n.linkSentAgain,
                             style: TextStyle(color: theme.primaryText),
                           ),
                           backgroundColor: theme.secondary,
@@ -337,7 +340,7 @@ class _LoginPageState extends State<LoginPage> {
                       } else if (result == SendMagicLinkResult.error) {
                         messenger.showSnackBar(SnackBar(
                           content: Text(
-                            'Error sending link. Please try again.',
+                            l10n.errorSendingLink,
                             style: TextStyle(color: theme.primaryText),
                           ),
                           backgroundColor: theme.secondary,
@@ -345,7 +348,7 @@ class _LoginPageState extends State<LoginPage> {
                       }
                     },
               child: Text(
-                'Resend link',
+                context.l10n.resendLink,
                 style: AppTheme.of(context).bodySmall.override(
                       font: GoogleFonts.lexendDeca(),
                       color: AppTheme.of(context).primary,
@@ -384,7 +387,7 @@ class _LoginPageState extends State<LoginPage> {
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                'Welcome,',
+                context.l10n.welcomeComma,
                 style: AppTheme.of(context).displaySmall.override(
                       font: GoogleFonts.lexendDeca(
                         fontWeight: AppTheme.of(context).displaySmall.fontWeight,
@@ -402,7 +405,7 @@ class _LoginPageState extends State<LoginPage> {
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                'Access your account below.',
+                context.l10n.accessAccountBelow,
                 style: AppTheme.of(context).bodyMedium.override(
                       font: GoogleFonts.lexendDeca(
                         fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
@@ -420,9 +423,9 @@ class _LoginPageState extends State<LoginPage> {
               focusNode: _emailFocusNode,
               autofocus: false,
               keyboardType: TextInputType.emailAddress,
-              decoration: _inputDecoration(context, 'Email', hint: 'Your email'),
+              decoration: _inputDecoration(context, context.l10n.email, hint: context.l10n.yourEmail),
               style: _inputStyle(context),
-              validator: (val) => (val == null || val.isEmpty) ? 'Field is required' : null,
+              validator: (val) => (val == null || val.isEmpty) ? context.l10n.fieldRequired : null,
             ),
           ),
           Padding(
@@ -432,7 +435,7 @@ class _LoginPageState extends State<LoginPage> {
               focusNode: _passwordFocusNode,
               autofocus: false,
               obscureText: !viewModel.passwordVisibility,
-              decoration: _inputDecoration(context, 'Password', hint: 'Your password').copyWith(
+              decoration: _inputDecoration(context, context.l10n.password, hint: context.l10n.yourPassword).copyWith(
                 suffixIcon: InkWell(
                   onTap: viewModel.togglePasswordVisibility,
                   focusNode: FocusNode(skipTraversal: true),
@@ -446,7 +449,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               style: _inputStyle(context),
-              validator: (val) => (val == null || val.isEmpty) ? 'Field is required' : null,
+              validator: (val) => (val == null || val.isEmpty) ? context.l10n.fieldRequired : null,
             ),
           ),
           Padding(
@@ -464,7 +467,7 @@ class _LoginPageState extends State<LoginPage> {
                   }
                 }
               },
-              text: 'Login',
+              text: context.l10n.login,
               options: FFButtonOptions(
                 width: double.infinity,
                 height: 50.0,
@@ -495,7 +498,7 @@ class _LoginPageState extends State<LoginPage> {
               child: GestureDetector(
                 onTap: () => context.pushNamed('forgotPassword'),
                 child: Text(
-                  'Forgot password?',
+                  context.l10n.forgotPassword,
                   style: AppTheme.of(context).bodySmall.override(
                         font: GoogleFonts.lexendDeca(),
                         color: AppTheme.of(context).primary,
@@ -527,7 +530,7 @@ class _LoginPageState extends State<LoginPage> {
               GestureDetector(
                 onTap: viewModel.toggleLoginMode,
                 child: Text(
-                  toPassword ? 'Sign in with password →' : '← Sign in without password',
+                  toPassword ? context.l10n.signInWithPassword : context.l10n.signInWithoutPassword,
                   style: AppTheme.of(context).bodySmall.override(
                         font: GoogleFonts.lexendDeca(),
                         color: AppTheme.of(context).primary,

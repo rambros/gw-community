@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/event_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/index.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/event_details_page/view_model/event_details_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
@@ -101,7 +102,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                   },
                 ),
                 title: Text(
-                  'Event Details',
+                  context.l10n.eventDetails,
                   style: AppTheme.of(context).titleLarge.override(
                         font: GoogleFonts.poppins(
                           fontWeight: AppTheme.of(context).titleLarge.fontWeight,
@@ -191,7 +192,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              valueOrDefault<String>(event.title, 'Title'),
+              valueOrDefault<String>(event.title, context.l10n.title),
               style: AppTheme.of(context).headlineMedium.override(
                     font: GoogleFonts.lexendDeca(
                       fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
@@ -202,7 +203,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                   ),
             ),
             Text(
-              'Facilitated by ${event.facilitatorName ?? '-'}',
+              context.l10n.facilitatedBy(event.facilitatorName ?? '-'),
               style: AppTheme.of(context).titleSmall.override(
                     font: GoogleFonts.lexendDeca(
                       fontWeight: AppTheme.of(context).titleSmall.fontWeight,
@@ -212,7 +213,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                   ),
             ),
             Text(
-              viewModel.isPublic ? 'Open for everyone' : 'Open only for this group',
+              viewModel.isPublic ? context.l10n.openForEveryone : context.l10n.openOnlyForThisGroup,
               style: AppTheme.of(context).bodyMedium.override(
                     font: GoogleFonts.lexendDeca(
                       fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
@@ -334,7 +335,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                       ),
                       Expanded(
                         child: Text(
-                          'Event Link',
+                          context.l10n.eventLink,
                           style: AppTheme.of(context).bodyMedium.override(
                                 font: GoogleFonts.lexendDeca(
                                   fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
@@ -389,7 +390,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
-                  'No registrations yet.',
+                  context.l10n.noRegistrationsYet,
                   style: AppTheme.of(context).labelMedium,
                 ),
               )
@@ -464,7 +465,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                'You are registered with success',
+                                context.l10n.registeredSuccessfully,
                                 style: TextStyle(
                                   color: AppTheme.of(context).primaryText,
                                 ),
@@ -473,7 +474,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                             ),
                           );
                         },
-                  text: viewModel.isActionInProgress ? 'Processing...' : 'Register',
+                  text: viewModel.isActionInProgress ? context.l10n.processing : context.l10n.register,
                   options: FFButtonOptions(
                     width: 160.0,
                     height: 40.0,
@@ -510,7 +511,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                'You are unsubscribed with success',
+                                context.l10n.unsubscribedSuccessfully,
                                 style: TextStyle(
                                   color: AppTheme.of(context).primaryText,
                                 ),
@@ -519,7 +520,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                             ),
                           );
                         },
-                  text: viewModel.isActionInProgress ? 'Processing...' : 'Unsubscribe',
+                  text: viewModel.isActionInProgress ? context.l10n.processing : context.l10n.unsubscribe,
                   options: FFButtonOptions(
                     width: 160.0,
                     height: 40.0,
@@ -573,16 +574,16 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                           builder: (alertDialogContext) {
                             return WebViewAware(
                               child: AlertDialog(
-                                title: const Text('Confirmation'),
-                                content: const Text('Delete this event?'),
+                                title: Text(context.l10n.confirmation),
+                                content: Text(context.l10n.deleteThisEvent),
                                 actions: [
                                   TextButton(
                                     onPressed: () => Navigator.pop(alertDialogContext, false),
-                                    child: const Text('Cancel'),
+                                    child: Text(context.l10n.cancel),
                                   ),
                                   TextButton(
                                     onPressed: () => Navigator.pop(alertDialogContext, true),
-                                    child: const Text('Confirm'),
+                                    child: Text(context.l10n.confirm),
                                   ),
                                 ],
                               ),
@@ -600,7 +601,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
-                          'Event deleted with success',
+                          context.l10n.eventDeletedSuccessfully,
                           style: TextStyle(
                             color: AppTheme.of(context).primaryText,
                           ),
@@ -614,7 +615,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                       context.goNamed(CommunityPage.routeName);
                     }
                   },
-                  text: 'Delete',
+                  text: context.l10n.delete,
                   options: FFButtonOptions(
                     height: 40.0,
                     padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
@@ -665,7 +666,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                     _viewModel.initialize(viewModel.event!.id);
                   }
                 },
-                text: 'Edit',
+                text: context.l10n.edit,
                 options: FFButtonOptions(
                   height: 40.0,
                   padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),

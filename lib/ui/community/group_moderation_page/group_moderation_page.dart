@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/announcement_repository.dart';
 import 'package:gw_community/data/repositories/experience_moderation_repository.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/group_moderation_page/view_model/group_moderation_view_model.dart';
 import 'package:gw_community/ui/community/group_moderation_page/widgets/moderation_action_dialog.dart';
 import 'package:gw_community/ui/community/group_moderation_page/widgets/moderation_experience_card.dart';
@@ -46,7 +47,7 @@ class GroupModerationPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Moderation',
+            context.l10n.moderation,
             style: GoogleFonts.lexendDeca(color: Colors.white, fontSize: 20.0, fontWeight: FontWeight.w500),
           ),
           Text(
@@ -136,7 +137,7 @@ class GroupModerationPage extends StatelessWidget {
               padding: const EdgeInsets.only(right: 8.0),
               child: _buildTabChip(
                 context,
-                filter.label,
+                _moderationFilterLabel(context, filter),
                 count,
                 isSelected,
                 () => viewModel.setStatusFilter(filter),
@@ -207,10 +208,9 @@ class GroupModerationPage extends StatelessWidget {
   }
 
   Widget _buildEmptyState(BuildContext context, GroupModerationViewModel viewModel) {
-    final filterLabel = viewModel.statusFilter.label.toLowerCase();
     final message = viewModel.statusFilter == ModerationStatusFilter.all
-        ? 'No experiences to moderate'
-        : 'No $filterLabel experiences';
+        ? context.l10n.noExperiencesToModerate
+        : context.l10n.noFilteredExperiences(_moderationFilterLabel(context, viewModel.statusFilter));
 
     return Center(
       child: Column(
@@ -219,7 +219,7 @@ class GroupModerationPage extends StatelessWidget {
           Icon(Icons.check_circle_outline, size: 80, color: AppTheme.of(context).secondaryText),
           const SizedBox(height: 16),
           Text(
-            'No Pending Experiences',
+            context.l10n.noPendingExperiences,
             style: AppTheme.of(
               context,
             ).titleMedium.override(font: GoogleFonts.lexendDeca(), fontSize: 20.0, fontWeight: FontWeight.w500),
@@ -245,7 +245,7 @@ class GroupModerationPage extends StatelessWidget {
           children: [
             Icon(Icons.error_outline, size: 64, color: AppTheme.of(context).error),
             const SizedBox(height: 16),
-            Text('Error', style: AppTheme.of(context).headlineSmall.override(font: GoogleFonts.lexendDeca())),
+            Text(context.l10n.anErrorOccurred(''), style: AppTheme.of(context).headlineSmall.override(font: GoogleFonts.lexendDeca())),
             const SizedBox(height: 8),
             Text(errorMessage, style: AppTheme.of(context).bodyMedium, textAlign: TextAlign.center),
           ],
@@ -262,19 +262,19 @@ class GroupModerationPage extends StatelessWidget {
       builder: (context) => AlertDialog(
         backgroundColor: AppTheme.of(context).primaryBackground,
         title: Text(
-          'Approve Experience',
+          context.l10n.approveExperience,
           style: AppTheme.of(context).headlineSmall.override(font: GoogleFonts.lexendDeca()),
         ),
-        content: const Text('Are you sure you want to approve this experience?'),
+        content: Text(context.l10n.confirmApproveExperience),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: Text('Cancel', style: GoogleFonts.lexendDeca()),
+            child: Text(context.l10n.cancel, style: GoogleFonts.lexendDeca()),
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
             style: ElevatedButton.styleFrom(backgroundColor: AppTheme.of(context).primary),
-            child: Text('Approve', style: GoogleFonts.lexendDeca(color: Colors.white)),
+            child: Text(context.l10n.approve, style: GoogleFonts.lexendDeca(color: Colors.white)),
           ),
         ],
       ),
@@ -286,7 +286,7 @@ class GroupModerationPage extends StatelessWidget {
       if (success && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Experience approved successfully', style: GoogleFonts.lexendDeca()),
+            content: Text(context.l10n.experienceApproved, style: GoogleFonts.lexendDeca()),
             backgroundColor: Colors.green.shade700,
           ),
         );
@@ -303,7 +303,7 @@ class GroupModerationPage extends StatelessWidget {
       if (success && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Experience status updated to Not Published', style: GoogleFonts.lexendDeca()),
+            content: Text(context.l10n.notPublished, style: GoogleFonts.lexendDeca()),
             backgroundColor: Colors.red.shade700,
           ),
         );
@@ -324,11 +324,27 @@ class GroupModerationPage extends StatelessWidget {
       if (success && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Refinement suggested', style: GoogleFonts.lexendDeca()),
+            content: Text(context.l10n.refinementSuggested, style: GoogleFonts.lexendDeca()),
             backgroundColor: Colors.orange.shade700,
           ),
         );
       }
+    }
+  }
+
+  String _moderationFilterLabel(BuildContext context, ModerationStatusFilter filter) {
+    final l10n = context.l10n;
+    switch (filter) {
+      case ModerationStatusFilter.all:
+        return l10n.supportFilterAll;
+      case ModerationStatusFilter.awaitingApproval:
+        return l10n.moderationFilterAwaiting;
+      case ModerationStatusFilter.approved:
+        return l10n.approved;
+      case ModerationStatusFilter.rejected:
+        return l10n.notPublished;
+      case ModerationStatusFilter.changesRequested:
+        return l10n.moderationFilterRefinement;
     }
   }
 }

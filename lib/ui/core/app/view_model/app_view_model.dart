@@ -1,19 +1,35 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
 
+import 'package:flutter/material.dart';
 import 'package:gw_community/app_state.dart';
 import 'package:gw_community/data/repositories/auth_repository.dart';
 import 'package:gw_community/data/repositories/home_repository.dart';
+import 'package:gw_community/data/repositories/user_profile_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/domain/models/app_auth_user.dart';
+import 'package:gw_community/l10n/app_locale.dart';
 import 'package:gw_community/routing/router.dart';
 import 'package:gw_community/utils/internationalization.dart';
 
 class AppViewModel extends ChangeNotifier with WidgetsBindingObserver {
+  AppViewModel({
+    required this.authRepository,
+    required this.userProfileRepository,
+  }) {
+    WidgetsBinding.instance.addObserver(this);
+    final stored = FFLocalizations.getStoredLocale();
+    if (stored != null) {
+      _locale = AppLocale.parse(stored.languageCode);
+    }
+    _initialize();
+  }
+
   final AuthRepository authRepository;
+  final UserProfileRepository userProfileRepository;
   late AppStateNotifier appStateNotifier;
   late GoRouter router;
 
+  /// Null means follow the phone language until the user picks one in Profile.
   Locale? _locale;
   Locale? get locale => _locale;
 
@@ -22,11 +38,6 @@ class AppViewModel extends ChangeNotifier with WidgetsBindingObserver {
 
   StreamSubscription<AppAuthUser>? _userSubscription;
   StreamSubscription<AuthState>? _authEventSubscription;
-
-  AppViewModel({required this.authRepository}) {
-    WidgetsBinding.instance.addObserver(this);
-    _initialize();
-  }
 
   void _initialize() {
     appStateNotifier = AppStateNotifier.instance;
@@ -79,9 +90,17 @@ class AppViewModel extends ChangeNotifier with WidgetsBindingObserver {
     super.dispose();
   }
 
-  void setLocale(String language) {
-    _locale = createLocale(language);
+  Future<void> setLocaleAndPersist(String language) async {
+    final locale = AppLocale.parse(language);
+    _locale = locale;
+    await FFLocalizations.storeLocale(locale.languageCode);
     notifyListeners();
+
+    final userId = authRepository.currentUserId;
+    if (userId == null || userId.isEmpty) return;
+    await userProfileRepository.updateProfile(userId, {
+      'language': locale.languageCode,
+    });
   }
 
   void setThemeMode(ThemeMode mode) {

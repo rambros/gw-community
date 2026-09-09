@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/experience_repository.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/experience_add_page/view_model/experience_add_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
@@ -81,7 +82,7 @@ class _ExperienceAddPageContent extends StatelessWidget {
         onPressed: () => context.pop(),
       ),
       title: Text(
-        'New Experience',
+        context.l10n.newExperience,
         style: AppTheme.of(context).titleLarge.override(
               font: GoogleFonts.poppins(
                 fontWeight: AppTheme.of(context).titleLarge.fontWeight,
@@ -184,7 +185,7 @@ class _ExperienceAddPageContent extends StatelessWidget {
                   ),
                   if (viewModel.groupId != null)
                     Text(
-                      'From group ${viewModel.groupName}',
+                      context.l10n.fromGroup(viewModel.groupName ?? ''),
                       style: AppTheme.of(context).bodyMedium.override(
                             font: GoogleFonts.lexendDeca(),
                             color: AppTheme.of(context).primary,
@@ -211,14 +212,14 @@ class _ExperienceAddPageContent extends StatelessWidget {
         obscureText: false,
         textCapitalization: TextCapitalization.sentences,
         decoration: InputDecoration(
-          labelText: 'Share your experience',
+          labelText: context.l10n.shareYourExperience,
           labelStyle: AppTheme.of(context).labelLarge.override(
                 font: GoogleFonts.poppins(),
                 color: AppTheme.of(context).primary,
                 fontSize: 18.0,
                 letterSpacing: 0.0,
               ),
-          hintText: 'Write about your experience...',
+          hintText: context.l10n.writeAboutExperience,
           hintStyle: AppTheme.of(context).bodySmall.override(
                 font: GoogleFonts.lexendDeca(),
                 color: AppTheme.of(context).alternate,
@@ -296,7 +297,7 @@ class _ExperienceAddPageContent extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            'Enable comments',
+            context.l10n.enableComments,
             style: AppTheme.of(context).bodyMedium.override(
                   font: GoogleFonts.lexendDeca(),
                   color: AppTheme.of(context).secondary,
@@ -337,7 +338,7 @@ class _ExperienceAddPageContent extends StatelessWidget {
             padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
             child: FFButtonWidget(
               onPressed: viewModel.isSaving ? null : () => viewModel.cancelCommand(context),
-              text: 'Cancel',
+              text: context.l10n.cancel,
               options: FFButtonOptions(
                 height: 40.0,
                 padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
@@ -368,13 +369,13 @@ class _ExperienceAddPageContent extends StatelessWidget {
                       if (success && context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: const Text('Draft saved'),
+                            content: Text(context.l10n.draftSaved),
                             backgroundColor: AppTheme.of(context).success,
                           ),
                         );
                       }
                     },
-              text: 'Draft',
+              text: context.l10n.draft,
               options: FFButtonOptions(
                 height: 40.0,
                 padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
@@ -399,7 +400,7 @@ class _ExperienceAddPageContent extends StatelessWidget {
             padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
             child: FFButtonWidget(
               onPressed: viewModel.isSaving || !viewModel.canSave() ? null : () => viewModel.saveCommand(context),
-              text: viewModel.isSaving ? 'Saving...' : 'Publish',
+              text: viewModel.isSaving ? context.l10n.saving : context.l10n.publish,
               options: FFButtonOptions(
                 height: 40.0,
                 padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),

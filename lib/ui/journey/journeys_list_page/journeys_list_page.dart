@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/widgets/screen_hint.dart';
 import 'package:gw_community/ui/journey/journey_page/journey_page.dart';
@@ -64,8 +65,8 @@ class _JourneysListPageState extends State<JourneysListPage> with TickerProvider
       ),
       body: ScreenHint(
         hintKey: 'hint_journey',
-        title: 'Welcome to a wonderful journey!',
-        message: 'Learn, create, and share good wishes that make a real impact. Discover inspiration, meditations, and daily practices for personal and world transformation.',
+        title: context.l10n.journeyHintTitle,
+        message: context.l10n.journeyHintMessage,
         child: SafeArea(
         top: true,
         child: Column(
@@ -83,9 +84,9 @@ class _JourneysListPageState extends State<JourneysListPage> with TickerProvider
                       unselectedLabelStyle: const TextStyle(),
                       indicatorColor: AppTheme.of(context).primary,
                       padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 0.0),
-                      tabs: const [
-                        Tab(text: 'My Journeys'),
-                        Tab(text: 'Other Journeys'),
+                      tabs: [
+                        Tab(text: context.l10n.myJourneys),
+                        Tab(text: context.l10n.otherJourneys),
                       ],
                       controller: _tabBarController,
                     ),
@@ -143,10 +144,10 @@ class _JourneysListPageState extends State<JourneysListPage> with TickerProvider
               itemBuilder: (context, index) {
                 final item = viewModel.userJourneys[index];
                 return JourneyCardWidget(
-                  title: item.title ?? 'Journey',
+                  title: item.title ?? context.l10n.untitledJourney,
                   stepsCompleted: item.stepsCompleted ?? 0,
                   stepsTotal: item.stepsTotal ?? 0,
-                  buttonText: 'RESUME',
+                  buttonText: context.l10n.resumeUpper,
                   journeyStatus: item.journeyStatus,
                   onTap: () async {
                     context.pushNamed(
@@ -205,10 +206,10 @@ class _JourneysListPageState extends State<JourneysListPage> with TickerProvider
               itemBuilder: (context, index) {
                 final item = viewModel.availableJourneys[index];
                 return JourneyCardWidget(
-                  title: item.title ?? 'Journey',
+                  title: item.title ?? context.l10n.untitledJourney,
                   stepsCompleted: 0,
                   stepsTotal: item.stepsTotal ?? 0,
-                  buttonText: 'View more',
+                  buttonText: context.l10n.viewMore,
                   onTap: () async {
                     context.pushNamed(
                       JourneyPage.routeName,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
 import 'package:gw_community/ui/core/widgets/screen_hint.dart';
@@ -92,7 +93,7 @@ class _LearnListPageState extends State<LearnListPage> {
                 )
               : null,
           title: Text(
-            widget.customTitle ?? 'Library',
+            widget.customTitle ?? context.l10n.library,
             style: AppTheme.of(context).headlineMedium.override(
                   color: Colors.white,
                   fontSize: 20.0,
@@ -103,8 +104,8 @@ class _LearnListPageState extends State<LearnListPage> {
         ),
         body: ScreenHint(
           hintKey: 'hint_library',
-          title: 'Explore and grow',
-          message: 'Access a growing collection of meditations, reflections, and resources to deepen your practice and support your growth.',
+          title: context.l10n.libraryHintTitle,
+          message: context.l10n.libraryHintMessage,
           pointerFraction: 0.3, // Library: 2nd of 5 nav items
           child: SafeArea(
             top: true,
@@ -136,7 +137,7 @@ class _LearnListPageState extends State<LearnListPage> {
                               Padding(
                                 padding: const EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 12.0, 0.0),
                                 child: Text(
-                                  'Portal Content Library',
+                                  context.l10n.portalContentLibrary,
                                   style: AppTheme.of(context).headlineMedium.override(
                                         color: AppTheme.of(context).primary,
                                       ),
@@ -167,7 +168,7 @@ class _LearnListPageState extends State<LearnListPage> {
                                               textCapitalization: TextCapitalization.words,
                                               textInputAction: TextInputAction.search,
                                               decoration: InputDecoration(
-                                                labelText: 'Search all content...',
+                                                labelText: context.l10n.searchAllContent,
                                                 labelStyle: AppTheme.of(context)
                                                     .labelMedium
                                                     .copyWith(color: AppTheme.of(context).primary),
@@ -203,7 +204,7 @@ class _LearnListPageState extends State<LearnListPage> {
                                         ),
                                       ),
                                       Text(
-                                        'or ',
+                                        '${context.l10n.orSeparator} ',
                                         style: AppTheme.of(context).bodyMedium.override(
                                               color: AppTheme.of(context).primary,
                                               fontSize: 18.0,
@@ -236,7 +237,7 @@ class _LearnListPageState extends State<LearnListPage> {
                                               },
                                             );
                                           },
-                                          text: 'Filter',
+                                          text: context.l10n.filter,
                                           icon: const Icon(
                                             Icons.filter_alt,
                                             size: 15.0,
@@ -277,8 +278,8 @@ class _LearnListPageState extends State<LearnListPage> {
                                             padding: const EdgeInsetsDirectional.fromSTEB(24.0, 1.0, 12.0, 4.0),
                                             child: Text(
                                               (viewModel.isSearchActive || viewModel.isFilterActive)
-                                                  ? 'List of Contents'
-                                                  : 'List of All Content',
+                                                  ? context.l10n.listOfContents
+                                                  : context.l10n.listOfAllContent,
                                               style: AppTheme.of(context).labelLarge.override(
                                                     fontWeight: FontWeight.w600,
                                                     color: AppTheme.of(context).primary,
@@ -301,7 +302,7 @@ class _LearnListPageState extends State<LearnListPage> {
                                           viewModel.clearFilters();
                                           viewModel.clearSearch();
                                         },
-                                        text: 'Clear Filter',
+                                        text: context.l10n.clearFilter,
                                         options: FFButtonOptions(
                                           height: 40.0,
                                           padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
@@ -329,7 +330,7 @@ class _LearnListPageState extends State<LearnListPage> {
                                 child: Padding(
                                   padding: const EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 4.0),
                                   child: Text(
-                                    viewModel.filterDescription,
+                                    viewModel.localizedFilterDescription(context.l10n),
                                     textAlign: TextAlign.start,
                                     maxLines: 2,
                                     style: AppTheme.of(context).labelLarge.override(
@@ -372,14 +373,14 @@ class _LearnListPageState extends State<LearnListPage> {
                                                     ),
                                                     const SizedBox(height: 16.0),
                                                     Text(
-                                                      'No content found',
+                                                      context.l10n.noContentFound,
                                                       style: AppTheme.of(context).headlineSmall.override(
                                                             color: AppTheme.of(context).secondaryText,
                                                           ),
                                                     ),
                                                     const SizedBox(height: 8.0),
                                                     Text(
-                                                      'Try adjusting your filters or search terms',
+                                                      context.l10n.tryAdjustingFilters,
                                                       textAlign: TextAlign.center,
                                                       style: AppTheme.of(context).bodyMedium.override(
                                                             color: AppTheme.of(context).alternate,

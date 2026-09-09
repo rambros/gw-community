@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/group_details_page/view_model/group_details_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/widgets/user_avatar.dart';
@@ -14,12 +15,12 @@ class MemberDetailsSheet extends StatelessWidget {
     required this.member,
   });
 
-  String get _displayName {
+  String _displayName(BuildContext context) {
     if (member.hideLastName == true) {
-      return member.firstName ?? member.displayName ?? 'Unknown';
+      return member.firstName ?? member.displayName ?? context.l10n.unknown;
     }
     final fullName = '${member.firstName ?? ''} ${member.lastName ?? ''}'.trim();
-    return fullName.isNotEmpty ? fullName : (member.displayName ?? 'Unknown');
+    return fullName.isNotEmpty ? fullName : (member.displayName ?? context.l10n.unknown);
   }
 
   @override
@@ -42,7 +43,7 @@ class MemberDetailsSheet extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Member Details',
+                  context.l10n.details,
                   style: AppTheme.of(context).titleMedium.override(
                         font: GoogleFonts.lexendDeca(),
                       ),
@@ -63,13 +64,13 @@ class MemberDetailsSheet extends StatelessWidget {
                   // Avatar
                   UserAvatar(
                     imageUrl: member.photoUrl,
-                    fullName: _displayName,
+                    fullName: _displayName(context),
                     size: 80,
                   ),
                   const SizedBox(height: 16.0),
                   // Name
                   Text(
-                    _displayName,
+                    _displayName(context),
                     style: AppTheme.of(context).headlineSmall.override(
                           font: GoogleFonts.lexendDeca(),
                         ),
@@ -80,7 +81,7 @@ class MemberDetailsSheet extends StatelessWidget {
                   if (member.email != null) ...[
                     _InfoCard(
                       icon: Icons.email_outlined,
-                      label: 'Email',
+                      label: context.l10n.email,
                       value: member.email!,
                       context: context,
                     ),
@@ -144,12 +145,12 @@ class MemberDetailsSheet extends StatelessWidget {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (alertContext) => AlertDialog(
-        title: const Text('Remove Member'),
-        content: Text('Are you sure you want to remove "$_displayName" from this group?'),
+        title: Text(context.l10n.confirmation),
+        content: Text(context.l10n.confirmRemoveMemberNamed(_displayName(alertContext))),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(alertContext, false),
-            child: const Text('Cancel'),
+            child: Text(context.l10n.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.pop(alertContext, true),

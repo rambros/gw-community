@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/community_page/widgets/experience_card_widget.dart';
 import 'package:gw_community/ui/community/experience_add_page/experience_add_page.dart';
 import 'package:gw_community/ui/community/group_details_page/view_model/group_details_view_model.dart';
@@ -29,7 +30,7 @@ class GroupExperiencesTab extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'A space to share your experiences, inspire others, and receive good wishes from the community',
+                      context.l10n.shareExperiencesSpace,
                       style: AppTheme.of(context).titleSmall.override(
                             font: GoogleFonts.lexendDeca(
                               fontWeight: FontWeight.normal,
@@ -64,7 +65,7 @@ class GroupExperiencesTab extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: Text(
-                            'No experiences yet.',
+                            context.l10n.noExperiencesYetPeriod,
                             style: AppTheme.of(context).bodyMedium,
                           ),
                         ),
@@ -90,7 +91,7 @@ class GroupExperiencesTab extends StatelessWidget {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(
-                                  'Experience deleted with success',
+                                  context.l10n.experienceDeleted,
                                   style: TextStyle(color: AppTheme.of(context).primaryText),
                                 ),
                                 duration: const Duration(milliseconds: 4000),
@@ -104,7 +105,7 @@ class GroupExperiencesTab extends StatelessWidget {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(
-                                  'Experience unpublished',
+                                  context.l10n.experienceUnpublished,
                                   style: TextStyle(color: AppTheme.of(context).primaryText),
                                 ),
                                 duration: const Duration(milliseconds: 4000),
@@ -158,7 +159,7 @@ class GroupExperiencesTab extends StatelessWidget {
               color: AppTheme.of(context).primaryBackground,
             ),
             label: Text(
-              'New experience',
+              context.l10n.newExperience,
               style: AppTheme.of(context).labelLarge.override(
                     font: GoogleFonts.poppins(),
                     color: AppTheme.of(context).primaryBackground,

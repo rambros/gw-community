@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/announcement_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/index.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/announcement_view_page/view_model/announcement_view_view_model.dart';
 import 'package:gw_community/ui/community/experience_view_page/widgets/comment_item_widget.dart';
 import 'package:gw_community/ui/community/widgets/add_comment/add_comment_widget.dart';
@@ -123,7 +124,7 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
     if (announcement == null) {
       return Center(
         child: Text(
-          viewModel.errorMessage ?? 'Message not found.',
+          viewModel.errorMessage ?? context.l10n.messageNotFound,
           style: AppTheme.of(context).labelLarge,
         ),
       );
@@ -305,7 +306,7 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
                             final confirm = await _showConfirmationDialog(
                               context,
                               title: 'Deletion of Message',
-                              message: 'Confirm deletion of this message?',
+                              message: context.l10n.confirmDeleteThisMessage,
                             );
                             if (!confirm || !context.mounted) return;
                             final success = await viewModel.deleteAnnouncement();
@@ -313,7 +314,7 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(
-                                  'Message deleted successfully',
+                                  context.l10n.messageDeletedSuccessfully,
                                   style: TextStyle(
                                     color: AppTheme.of(context).primaryText,
                                   ),
@@ -412,7 +413,7 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
       return Padding(
         padding: const EdgeInsetsDirectional.fromSTEB(0.0, 24.0, 0.0, 0.0),
         child: Text(
-          'No comments yet.',
+          context.l10n.noCommentsYetPeriod,
           style: AppTheme.of(context).labelLarge,
         ),
       );
@@ -432,7 +433,7 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
                   final confirm = await _showConfirmationDialog(
                     context,
                     title: 'Deletion of Comment',
-                    message: 'Confirm deletion of this comment?',
+                    message: context.l10n.confirmDeleteThisComment,
                   );
                   if (!confirm) return;
                   await viewModel.deleteComment(comment.id!);
@@ -458,11 +459,11 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.pop(alertDialogContext, false),
-                    child: const Text('Cancel'),
+                    child: Text(context.l10n.cancel),
                   ),
                   TextButton(
                     onPressed: () => Navigator.pop(alertDialogContext, true),
-                    child: const Text('Confirm'),
+                    child: Text(context.l10n.confirm),
                   ),
                 ],
               ),

@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/widgets/user_avatar.dart';
 import 'package:intl/intl.dart';
@@ -82,7 +83,7 @@ class MessageBubbleWidget extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(top: 4),
             child: Text(
-              _formatTime(message.createdAt),
+              _formatTime(context, message.createdAt),
               style: GoogleFonts.lexendDeca(
                 fontSize: 11,
                 color: AppTheme.of(context).secondary.withValues(alpha: 0.5),
@@ -128,7 +129,7 @@ class MessageBubbleWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Text(
-                'Support',
+                context.l10n.supportTeam,
                 style: GoogleFonts.lexendDeca(
                   fontSize: 10,
                   fontWeight: FontWeight.w500,
@@ -213,16 +214,16 @@ class MessageBubbleWidget extends StatelessWidget {
     );
   }
 
-  String _formatTime(DateTime date) {
+  String _formatTime(BuildContext context, DateTime date) {
+    final locale = Localizations.localeOf(context).toString();
     final now = DateTime.now();
     final isToday = now.day == date.day &&
         now.month == date.month &&
         now.year == date.year;
 
     if (isToday) {
-      return DateFormat('HH:mm').format(date);
-    } else {
-      return DateFormat('MMM d, HH:mm').format(date);
+      return DateFormat.Hm(locale).format(date);
     }
+    return '${DateFormat.MMMd(locale).format(date)}, ${DateFormat.Hm(locale).format(date)}';
   }
 }

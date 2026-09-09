@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_pdf_viewer.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_youtube_player.dart';
@@ -185,7 +186,7 @@ class _ResourceViewPageState extends State<ResourceViewPage> {
     if (content.isEmpty) {
       return Center(
         child: Text(
-          'No content available.',
+          context.l10n.noContentAvailable,
           style: AppTheme.of(context).bodyMedium.override(
                 font: GoogleFonts.openSans(),
                 color: AppTheme.of(context).secondaryText,

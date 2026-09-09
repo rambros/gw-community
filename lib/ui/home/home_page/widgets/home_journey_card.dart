@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/index.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
@@ -22,7 +24,7 @@ class HomeJourneyCard extends StatelessWidget {
   Widget _buildResumeCard(BuildContext context) {
     return Container(
       width: MediaQuery.sizeOf(context).width * 0.925,
-      height: 110.0,
+      height: 118.0,
       decoration: BoxDecoration(
         color: AppTheme.of(context).primaryBackground,
         boxShadow: const [
@@ -73,7 +75,10 @@ class HomeJourneyCard extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 12.0),
                         child: Text(
-                          'Completed ${userJourneyProgress.stepsCompleted?.toString()} of ${userJourneyProgress.stepsTotal?.toString()} steps',
+                          context.l10n.stepsProgress(
+                            userJourneyProgress.stepsCompleted ?? 0,
+                            userJourneyProgress.stepsTotal ?? 0,
+                          ),
                           style: AppTheme.of(context).bodySmall.override(
                                 color: AppTheme.of(context).secondary,
                                 fontSize: 12.0,
@@ -101,11 +106,10 @@ class HomeJourneyCard extends StatelessWidget {
                                 }.withoutNulls,
                               );
                             },
-                            text: 'RESUME',
+                            text: context.l10n.resumeUpper,
                             options: FFButtonOptions(
-                              width: 100.0,
-                              height: 32.0,
-                              padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
+                              height: 36.0,
+                              padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
                               iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
                               color: AppTheme.of(context).primary,
                               textStyle: AppTheme.of(context).labelLarge.override(
@@ -134,6 +138,7 @@ class HomeJourneyCard extends StatelessWidget {
   }
 
   Widget _buildLogo() {
+    final imageUrl = userJourneyProgress.imageUrl;
     return Column(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -142,15 +147,29 @@ class HomeJourneyCard extends StatelessWidget {
           padding: const EdgeInsets.all(12.0),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(16.0),
-            child: Image.asset(
-              'assets/images/logo_goodwishes_300.png',
-              width: 74.0,
-              height: 74.0,
-              fit: BoxFit.scaleDown,
-            ),
+            child: imageUrl != null && imageUrl.isNotEmpty
+                ? CachedNetworkImage(
+                    fadeInDuration: const Duration(milliseconds: 500),
+                    fadeOutDuration: const Duration(milliseconds: 500),
+                    imageUrl: imageUrl,
+                    width: 74.0,
+                    height: 74.0,
+                    fit: BoxFit.cover,
+                    errorWidget: (context, url, error) => _buildDefaultIcon(),
+                  )
+                : _buildDefaultIcon(),
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildDefaultIcon() {
+    return Image.asset(
+      'assets/images/logo_goodwishes_300.png',
+      width: 74.0,
+      height: 74.0,
+      fit: BoxFit.scaleDown,
     );
   }
 }

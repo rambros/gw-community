@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
@@ -50,7 +51,7 @@ class _UserJourneysViewPageState extends State<UserJourneysViewPage> {
           onPressed: () => context.pop(),
         ),
         title: Text(
-          'My Journeys',
+          context.l10n.myJourneys,
           style: AppTheme.of(context).bodyMedium.override(
                 font: GoogleFonts.lexendDeca(),
                 color: Colors.white,
@@ -165,7 +166,10 @@ class _UserJourneysViewPageState extends State<UserJourneysViewPage> {
                                               Padding(
                                                 padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 12.0),
                                                 child: Text(
-                                                  'Completed  ${journey.stepsCompleted?.toString()} of ${journey.stepsTotal?.toString()} steps',
+                                                  context.l10n.stepsProgress(
+                                                    journey.stepsCompleted ?? 0,
+                                                    journey.stepsTotal ?? 0,
+                                                  ),
                                                   style: GoogleFonts.lexendDeca(
                                                     color: AppTheme.of(context).secondary,
                                                     fontWeight: FontWeight.normal,
@@ -194,12 +198,11 @@ class _UserJourneysViewPageState extends State<UserJourneysViewPage> {
                                                         }.withoutNulls,
                                                       );
                                                     },
-                                                    text: 'RESUME',
+                                                    text: context.l10n.resumeUpper,
                                                     options: FFButtonOptions(
-                                                      width: 100.0,
-                                                      height: 32.0,
+                                                      height: 36.0,
                                                       padding:
-                                                          const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
+                                                          const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
                                                       iconPadding:
                                                           const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
                                                       color: AppTheme.of(context).primary,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
 import 'package:gw_community/ui/profile/user_journal_edit/user_journal_edit_page.dart';
@@ -68,7 +69,7 @@ class _UserJournalOptionsSheetState extends State<UserJournalOptionsSheet> {
                   }.withoutNulls,
                 );
               },
-              text: 'Edit ',
+              text: context.l10n.edit,
               icon: const Icon(
                 Icons.edit,
                 size: 22.0,
@@ -107,16 +108,16 @@ class _UserJournalOptionsSheetState extends State<UserJournalOptionsSheet> {
                               builder: (alertDialogContext) {
                                 return WebViewAware(
                                   child: AlertDialog(
-                                    title: const Text('Deletion of journal entry'),
-                                    content: const Text('Confirm deletion of this entry?'),
+                                    title: Text(context.l10n.deletionOfJournalEntry),
+                                    content: Text(context.l10n.confirmDeleteJournalEntry),
                                     actions: [
                                       TextButton(
                                         onPressed: () => Navigator.pop(alertDialogContext, false),
-                                        child: const Text('Cancel'),
+                                        child: Text(context.l10n.cancel),
                                       ),
                                       TextButton(
                                         onPressed: () => Navigator.pop(alertDialogContext, true),
-                                        child: const Text('Confirm'),
+                                        child: Text(context.l10n.confirm),
                                       ),
                                     ],
                                   ),
@@ -132,7 +133,7 @@ class _UserJournalOptionsSheetState extends State<UserJournalOptionsSheet> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(
-                                    'Journal saved',
+                                    context.l10n.journalSaved,
                                     style: TextStyle(
                                       color: AppTheme.of(context).primaryText,
                                     ),
@@ -159,7 +160,7 @@ class _UserJournalOptionsSheetState extends State<UserJournalOptionsSheet> {
                           }
                         }
                       },
-                text: viewModel.isLoading ? 'Clearing...' : 'Clear entry',
+                text: viewModel.isLoading ? context.l10n.clearing : context.l10n.clearEntry,
                 icon: const Icon(
                   Icons.delete,
                   size: 22.0,
@@ -195,7 +196,7 @@ class _UserJournalOptionsSheetState extends State<UserJournalOptionsSheet> {
                   context.pop();
                   Navigator.pop(context);
                 },
-                text: 'Cancel',
+                text: context.l10n.cancel,
                 icon: const Icon(
                   Icons.cancel,
                   size: 22.0,

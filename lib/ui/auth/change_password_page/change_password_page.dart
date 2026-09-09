@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/routing/router.dart';
 import 'package:gw_community/ui/auth/change_password_page/view_model/change_password_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
@@ -60,7 +61,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               ),
             ),
             title: Text(
-              'Change Password',
+              context.l10n.changePassword,
               style: AppTheme.of(context).headlineMedium.override(
                     font: GoogleFonts.lexendDeca(
                       fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
@@ -95,7 +96,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                         mainAxisSize: MainAxisSize.max,
                         children: [
                           Text(
-                            'Enter your new password below.',
+                            context.l10n.enterNewPasswordBelow,
                             style: AppTheme.of(context).bodyMedium.override(
                                   font: GoogleFonts.lexendDeca(
                                     fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
@@ -114,7 +115,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                               autofocus: false,
                               obscureText: !viewModel.passwordVisibility,
                               decoration: InputDecoration(
-                                labelText: 'New Password',
+                                labelText: context.l10n.newPassword,
                                 labelStyle: AppTheme.of(context).labelLarge.override(
                                       font: GoogleFonts.poppins(
                                         fontWeight: AppTheme.of(context).labelLarge.fontWeight,
@@ -124,7 +125,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                                       fontSize: 16.0,
                                       letterSpacing: 0.0,
                                     ),
-                                hintText: 'Enter new password',
+                                hintText: context.l10n.enterNewPassword,
                                 hintStyle: AppTheme.of(context).bodySmall.override(
                                       font: GoogleFonts.lexendDeca(
                                         fontWeight: AppTheme.of(context).bodySmall.fontWeight,
@@ -186,7 +187,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                                   ),
                               validator: (val) {
                                 if (val == null || val.isEmpty) {
-                                  return 'Field is required';
+                                  return context.l10n.fieldRequired;
                                 }
                                 return null;
                               },
@@ -200,7 +201,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                               autofocus: false,
                               obscureText: !viewModel.confirmPasswordVisibility,
                               decoration: InputDecoration(
-                                labelText: 'Confirm Password',
+                                labelText: context.l10n.confirmPassword,
                                 labelStyle: AppTheme.of(context).labelLarge.override(
                                       font: GoogleFonts.poppins(
                                         fontWeight: AppTheme.of(context).labelLarge.fontWeight,
@@ -210,7 +211,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                                       fontSize: 16.0,
                                       letterSpacing: 0.0,
                                     ),
-                                hintText: 'Confirm new password',
+                                hintText: context.l10n.confirmNewPassword,
                                 hintStyle: AppTheme.of(context).bodySmall.override(
                                       font: GoogleFonts.lexendDeca(
                                         fontWeight: AppTheme.of(context).bodySmall.fontWeight,
@@ -272,10 +273,10 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                                   ),
                               validator: (val) {
                                 if (val == null || val.isEmpty) {
-                                  return 'Field is required';
+                                  return context.l10n.fieldRequired;
                                 }
                                 if (val != _passwordController.text) {
-                                  return 'Passwords do not match';
+                                  return context.l10n.passwordsDoNotMatch;
                                 }
                                 return null;
                               },
@@ -296,7 +297,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                                       ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
                                           content: Text(
-                                            'Password updated successfully',
+                                            context.l10n.passwordUpdated,
                                             style: TextStyle(
                                               color: AppTheme.of(context).primaryText,
                                             ),
@@ -327,7 +328,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                                   }
                                 }
                               },
-                              text: 'Update Password',
+                              text: context.l10n.updatePassword,
                               options: FFButtonOptions(
                                 width: double.infinity,
                                 height: 50.0,

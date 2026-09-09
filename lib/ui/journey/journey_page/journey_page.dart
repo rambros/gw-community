@@ -3,6 +3,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:gw_community/data/repositories/journeys_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/domain/models/journey_step_group.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/ui/journey/journey_page/view_model/journey_view_model.dart';
@@ -112,7 +113,7 @@ class _JourneyPageState extends State<JourneyPage> {
                             color: AppTheme.of(context).secondary,
                           ),
                           const SizedBox(width: 12),
-                          const Text('Journey Resources'),
+                          Text(context.l10n.journeyResources),
                         ],
                       ),
                     ),
@@ -128,7 +129,7 @@ class _JourneyPageState extends State<JourneyPage> {
                               color: AppTheme.of(context).secondary,
                             ),
                             const SizedBox(width: 12),
-                            const Text('Restart Journey'),
+                            Text(context.l10n.restartJourney),
                           ],
                         ),
                       ),
@@ -144,7 +145,7 @@ class _JourneyPageState extends State<JourneyPage> {
                             color: AppTheme.of(context).secondary,
                           ),
                           const SizedBox(width: 12),
-                          const Text('About this journey'),
+                          Text(context.l10n.aboutThisJourney),
                         ],
                       ),
                     ),
@@ -290,7 +291,9 @@ class _JourneyPageState extends State<JourneyPage> {
                     child: Padding(
                       padding: const EdgeInsetsDirectional.fromSTEB(0.0, 32.0, 0.0, 0.0),
                       child: Text(
-                        'Welcome back, ${context.read<FFAppState>().loginUser.firstName}',
+                        context.l10n.welcomeBack(
+                          context.read<FFAppState>().loginUser.firstName,
+                        ),
                         textAlign: TextAlign.center,
                         style: AppTheme.of(context).journey.bodyText.override(
                               color: AppTheme.of(context).tertiary,
@@ -463,7 +466,7 @@ class _JourneyPageState extends State<JourneyPage> {
       LearnListPage.routeName,
       queryParameters: {
         'journeyId': viewModel.journeyId.toString(),
-        'customTitle': 'Journey Resources',
+        'customTitle': context.l10n.journeyResources,
       }.withoutNulls,
       extra: <String, dynamic>{
         kTransitionInfoKey: const TransitionInfo(
@@ -481,12 +484,11 @@ class _JourneyPageState extends State<JourneyPage> {
     final confirmDialogResponse = await showDialog<bool>(
           context: context,
           builder: (alertDialogContext) {
-            return const WebViewAware(
+            return WebViewAware(
               child: ConfirmProfileActionDialog(
-                title: 'Reset your Good Wishes Journey',
-                description: 'Resetting your journey will delete all progress made so far. '
-                    'This action cannot be undone.',
-                confirmLabel: 'Reset Journey',
+                title: context.l10n.resetJourneyTitle,
+                description: context.l10n.resetJourneyDescription,
+                confirmLabel: context.l10n.resetJourneyConfirm,
                 icon: Icons.restart_alt,
               ),
             );
@@ -512,7 +514,7 @@ class _JourneyPageState extends State<JourneyPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Journey reset successfully',
+              context.l10n.journeyResetSuccess,
               style: TextStyle(
                 color: AppTheme.of(context).primaryText,
               ),
@@ -529,7 +531,7 @@ class _JourneyPageState extends State<JourneyPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Error resetting journey: $e',
+              context.l10n.errorResettingJourney('$e'),
               style: const TextStyle(color: Colors.white),
             ),
             backgroundColor: Colors.red,

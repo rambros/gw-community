@@ -3,6 +3,7 @@ import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/community_repository.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/community_guidelines_page/view_model/community_guidelines_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
@@ -47,7 +48,7 @@ class CommunityGuidelinesPageView extends StatelessWidget {
           },
         ),
         title: Text(
-          'Community Guidelines',
+          context.l10n.communityGuidelines,
           style: AppTheme.of(
             context,
           ).titleLarge.override(font: GoogleFonts.poppins(), color: Colors.white, fontSize: 22.0),
@@ -64,7 +65,7 @@ class CommunityGuidelinesPageView extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Text(
-                        'No guidelines available yet.',
+                        context.l10n.noGuidelinesYet,
                         style: AppTheme.of(context).bodyMedium.override(
                               font: GoogleFonts.readexPro(),
                               color: AppTheme.of(context).secondaryText,

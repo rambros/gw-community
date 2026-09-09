@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/index.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
 import 'package:gw_community/ui/profile/user_profile_page/view_model/user_profile_view_model.dart';
@@ -36,8 +37,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
     });
   }
 
-  String _getUserDisplayName(CcMembersRow? profile) {
-    if (profile == null) return 'Name';
+  String _getUserDisplayName(CcMembersRow? profile, BuildContext context) {
+    if (profile == null) return context.l10n.nameFallback;
 
     final displayName = profile.displayName?.trim();
     if (displayName != null && displayName.isNotEmpty) {
@@ -58,7 +59,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
       }
     }
 
-    return 'Name';
+    return context.l10n.nameFallback;
   }
 
   @override
@@ -72,7 +73,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
         backgroundColor: AppTheme.of(context).primary,
         automaticallyImplyLeading: false,
         title: Text(
-          'Profile',
+          context.l10n.profile,
           style: AppTheme.of(context).headlineMedium.override(
                 font: GoogleFonts.lexendDeca(
                   fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
@@ -141,7 +142,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          _getUserDisplayName(userProfile),
+                          _getUserDisplayName(userProfile, context),
                           style: AppTheme.of(context).headlineSmall.override(
                                 font: GoogleFonts.lexendDeca(
                                   fontWeight: AppTheme.of(context)
@@ -168,7 +169,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                             child: Text(
                               valueOrDefault<String>(
                                 userProfile?.email,
-                                'Email',
+                                context.l10n.email,
                               ),
                               textAlign: TextAlign.start,
                               style: AppTheme.of(context).bodyMedium.override(
@@ -260,7 +261,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   Text(
-                    'Account Settings',
+                    context.l10n.accountSettings,
                     style: AppTheme.of(context).titleMedium.override(
                           font: GoogleFonts.lexendDeca(
                             fontWeight:
@@ -288,7 +289,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 onPressed: () async {
                   await _handleLogout(context, viewModel);
                 },
-                text: 'Log Out',
+                text: context.l10n.logOut,
                 options: FFButtonOptions(
                   width: double.infinity,
                   height: 48.0,
@@ -328,7 +329,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       snapshot.hasData ? snapshot.data!.version : '...';
                   return Center(
                     child: Text(
-                      'Version $version',
+                      context.l10n.versionLabel(version),
                       textAlign: TextAlign.center,
                       style: AppTheme.of(context).bodyMedium.override(
                             font: GoogleFonts.lexendDeca(
@@ -351,15 +352,16 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
   Future<void> _handleResetOnboarding(
       BuildContext context, UserProfileViewModel viewModel) async {
+    final l10n = context.l10n;
     final confirmDialogResponse = await showDialog<bool>(
           context: context,
           builder: (alertDialogContext) {
-            return const WebViewAware(
+            return WebViewAware(
               child: ConfirmProfileActionDialog(
-                title: 'Reset onboarding experience',
-                description:
-                    'We will clear your onboarding progress so you can go through the introduction again.',
-                confirmLabel: 'Reset Onboarding',
+                title: l10n.resetOnboardingTitle,
+                description: l10n.resetOnboardingDescription,
+                confirmLabel: l10n.resetOnboarding,
+                cancelLabel: l10n.cancel,
                 icon: Icons.flag_outlined,
               ),
             );
@@ -378,7 +380,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Onboarding reset successfully.',
+              context.l10n.onboardingResetSuccess,
               style: TextStyle(
                 color: AppTheme.of(context).primaryText,
               ),
@@ -393,7 +395,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Error resetting onboarding: $e',
+              context.l10n.errorResettingOnboarding('$e'),
               style: const TextStyle(color: Colors.white),
             ),
             backgroundColor: Colors.red,
@@ -418,7 +420,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Error logging out: $e',
+              context.l10n.errorLoggingOut('$e'),
               style: const TextStyle(color: Colors.white),
             ),
             backgroundColor: Colors.red,

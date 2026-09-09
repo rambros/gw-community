@@ -52,13 +52,11 @@ List<JourneyStepGroup<T>> groupJourneySteps<T>({
   final orderedSections = List.of(sections)
     ..sort((a, b) => a.sectionOrder.compareTo(b.sectionOrder));
   for (final section in orderedSections) {
-    final sectionSteps = bySection[section.id] ?? <T>[];
-    if (sectionSteps.isEmpty) continue;
     groups.add(
       JourneyStepGroup<T>(
         sectionId: section.id,
         title: section.title,
-        steps: sectionSteps,
+        steps: bySection[section.id] ?? <T>[],
       ),
     );
   }

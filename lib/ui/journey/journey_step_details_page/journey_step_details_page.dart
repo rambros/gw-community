@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:gw_community/data/repositories/journeys_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/journey/journey_page/view_model/journey_view_model.dart';
 import 'package:gw_community/ui/journey/journey_page/widgets/journey_step_item_widget.dart';
@@ -76,7 +77,7 @@ class _JourneyStepDetailsPageState extends State<JourneyStepDetailsPage> {
           backgroundColor: AppTheme.of(context).primary,
           automaticallyImplyLeading: false,
           title: Text(
-            FFLocalizations.of(context).getText('3k4dstim' /* Journey */),
+            context.l10n.navJourney,
             style: AppTheme.of(context).journey.pageTitle.override(
                   color: Colors.white,
                 ),
@@ -146,7 +147,9 @@ class _JourneyStepDetailsPageState extends State<JourneyStepDetailsPage> {
                             child: Padding(
                               padding: const EdgeInsetsDirectional.fromSTEB(0.0, 32.0, 0.0, 0.0),
                               child: Text(
-                                'Welcome back, ${FFAppState().loginUser.firstName}',
+                                context.l10n.welcomeBack(
+                                  FFAppState().loginUser.firstName,
+                                ),
                                 textAlign: TextAlign.center,
                                 style: AppTheme.of(context).journey.stepTitle.override(
                                       color: AppTheme.of(context).tertiary400,

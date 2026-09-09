@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
 
@@ -119,8 +120,10 @@ class FeaturedJourneyCard extends StatelessWidget {
                         child: FFButtonWidget(
                           onPressed: onTap,
                           text: isCompleted
-                              ? 'VIEW AGAIN'
-                              : (journeyStatus != null ? 'RESUME' : 'START'),
+                              ? context.l10n.viewAgain
+                              : (journeyStatus != null
+                                  ? context.l10n.resumeUpper
+                                  : context.l10n.startUpper),
                           options: FFButtonOptions(
                             width: 120.0,
                             height: 36.0,

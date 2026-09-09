@@ -3,6 +3,7 @@ import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
@@ -78,7 +79,7 @@ class _UserJournalEditPageState extends State<UserJournalEditPage> {
           },
         ),
         title: Text(
-          'Your Journal Entry',
+          context.l10n.yourJournalEntry,
           style: AppTheme.of(context).headlineMedium.override(
                 font: GoogleFonts.lexendDeca(
                   fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
@@ -117,7 +118,7 @@ class _UserJournalEditPageState extends State<UserJournalEditPage> {
                             dateTimeFormat(
                               "yMMMd",
                               widget.userJournalEntryRow?.dateCompleted,
-                              locale: FFLocalizations.of(context).languageCode,
+                              locale: Localizations.localeOf(context).languageCode,
                             ),
                             minFontSize: 14.0,
                             style: AppTheme.of(context).titleMedium.override(
@@ -141,7 +142,7 @@ class _UserJournalEditPageState extends State<UserJournalEditPage> {
                         Text(
                           valueOrDefault<String>(
                             widget.userJournalEntryRow?.journeyTitle,
-                            'Journey',
+                            context.l10n.journeyLabel,
                           ),
                           style: AppTheme.of(context).titleMedium.override(
                                 font: GoogleFonts.lexendDeca(
@@ -204,7 +205,7 @@ class _UserJournalEditPageState extends State<UserJournalEditPage> {
                                     fontWeight: AppTheme.of(context).labelMedium.fontWeight,
                                     fontStyle: AppTheme.of(context).labelMedium.fontStyle,
                                   ),
-                              hintText: 'TextField',
+                              hintText: '',
                               hintStyle: AppTheme.of(context).labelMedium.override(
                                     font: GoogleFonts.poppins(
                                       fontWeight: AppTheme.of(context).labelMedium.fontWeight,
@@ -299,7 +300,7 @@ class _UserJournalEditPageState extends State<UserJournalEditPage> {
                       onPressed: () async {
                         context.pop();
                       },
-                      text: 'Cancel',
+                      text: context.l10n.cancel,
                       options: FFButtonOptions(
                         height: 40.0,
                         padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
@@ -336,7 +337,7 @@ class _UserJournalEditPageState extends State<UserJournalEditPage> {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(
-                                      'Journal saved',
+                                      context.l10n.journalSaved,
                                       style: TextStyle(
                                         color: AppTheme.of(context).primaryText,
                                       ),
@@ -348,7 +349,7 @@ class _UserJournalEditPageState extends State<UserJournalEditPage> {
                                 context.safePop();
                               }
                             },
-                      text: viewModel.isLoading ? 'Saving...' : 'Save Changes',
+                      text: viewModel.isLoading ? context.l10n.saving : context.l10n.saveChanges,
                       options: FFButtonOptions(
                         height: 40.0,
                         padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),

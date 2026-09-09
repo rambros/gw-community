@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gw_community/data/repositories/support_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/app_localizations.dart';
 import 'package:image_picker/image_picker.dart';
 
 class RequestChatViewModel extends ChangeNotifier {
@@ -92,7 +93,7 @@ class RequestChatViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> sendMessage() async {
+  Future<bool> sendMessage(AppLocalizations l10n) async {
     final content = messageController.text.trim();
 
     if (content.isEmpty && _selectedImage == null) {
@@ -139,13 +140,13 @@ class RequestChatViewModel extends ChangeNotifier {
 
         return true;
       } else {
-        _errorMessage = 'Failed to send message';
+        _errorMessage = l10n.failedToSendMessage;
         notifyListeners();
         return false;
       }
     } catch (e) {
       _isSending = false;
-      _errorMessage = 'Error sending message: $e';
+      _errorMessage = l10n.errorSendingMessage('$e');
       notifyListeners();
       return false;
     }

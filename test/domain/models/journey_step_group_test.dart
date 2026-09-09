@@ -23,4 +23,27 @@ void main() {
       expect(firstNumberOfGroup(groups, 2), 10);
     });
   });
+
+  group('groupJourneySteps', () {
+    test('keeps empty named sections in order', () {
+      final groups = groupJourneySteps<(int id, int? sectionId, int number)>(
+        steps: const [
+          (1, 10, 1),
+          (2, 10, 2),
+        ],
+        sections: const [
+          (id: 10, title: 'Fundamentos', sectionOrder: 1),
+          (id: 20, title: 'Meditação', sectionOrder: 2),
+        ],
+        sectionIdOf: (step) => step.$2,
+        stepNumberOf: (step) => step.$3,
+      );
+
+      expect(groups, hasLength(2));
+      expect(groups[0].title, 'Fundamentos');
+      expect(groups[0].steps, hasLength(2));
+      expect(groups[1].title, 'Meditação');
+      expect(groups[1].steps, isEmpty);
+    });
+  });
 }

@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/index.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/group_details_page/view_model/group_details_view_model.dart';
 import 'package:gw_community/ui/community/widgets/event_card.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
@@ -29,7 +30,7 @@ class GroupEventsTab extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Events',
+                    context.l10n.tabEvents,
                     style: AppTheme.of(context).titleSmall.override(
                           font: GoogleFonts.lexendDeca(
                             fontWeight: FontWeight.w500,
@@ -62,7 +63,7 @@ class GroupEventsTab extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: Text(
-                            'No events yet.',
+                            context.l10n.noEventsYet,
                             style: AppTheme.of(context).bodyMedium,
                           ),
                         ),
@@ -130,7 +131,7 @@ class GroupEventsTab extends StatelessWidget {
                 color: AppTheme.of(context).primaryBackground,
               ),
               label: Text(
-                'New event',
+                context.l10n.newEvent,
                 style: AppTheme.of(context).labelLarge.override(
                       font: GoogleFonts.poppins(),
                       color: AppTheme.of(context).primaryBackground,

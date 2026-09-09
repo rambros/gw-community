@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/experience_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/experience_edit_page/view_model/experience_edit_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
@@ -26,9 +27,9 @@ class ExperienceEditPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (experienceRow == null) {
-      return const Scaffold(
+      return Scaffold(
         body: Center(
-          child: Text('Experience not found'),
+          child: Text(context.l10n.experienceNotFound),
         ),
       );
     }
@@ -81,7 +82,7 @@ class _ExperienceEditPageContent extends StatelessWidget {
         onPressed: () => context.pop(),
       ),
       title: Text(
-        'Edit Experience',
+        context.l10n.editExperience,
         style: AppTheme.of(context).titleLarge.override(
               font: GoogleFonts.poppins(
                 fontWeight: AppTheme.of(context).titleLarge.fontWeight,
@@ -156,7 +157,7 @@ class _ExperienceEditPageContent extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      'Draft - Not published yet',
+                      context.l10n.draftNotPublishedYet,
                       style: GoogleFonts.lexendDeca(
                         fontSize: 13.0,
                         fontWeight: FontWeight.w500,
@@ -193,7 +194,7 @@ class _ExperienceEditPageContent extends StatelessWidget {
                       ),
                       if (experience.groupName != null && experience.groupName != '')
                         Text(
-                          'From group ${experience.groupName}',
+                          context.l10n.fromGroup(experience.groupName ?? ''),
                           style: AppTheme.of(context).bodyMedium.override(
                                 font: GoogleFonts.lexendDeca(),
                                 color: AppTheme.of(context).primary,
@@ -301,7 +302,7 @@ class _ExperienceEditPageContent extends StatelessWidget {
 
   Widget _buildActions(BuildContext context, ExperienceEditViewModel viewModel) {
     // Texto do botão principal
-    final publishButtonText = viewModel.isDraft ? 'Publish' : 'Update';
+    final publishButtonText = viewModel.isDraft ? context.l10n.publish : context.l10n.update;
 
     return Padding(
       padding: const EdgeInsets.all(4.0),
@@ -313,7 +314,7 @@ class _ExperienceEditPageContent extends StatelessWidget {
         children: [
           FFButtonWidget(
             onPressed: viewModel.isSaving ? null : () => viewModel.cancelCommand(context),
-            text: 'Cancel',
+            text: context.l10n.cancel,
             options: FFButtonOptions(
               height: 40.0,
               padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
@@ -341,13 +342,13 @@ class _ExperienceEditPageContent extends StatelessWidget {
                     if (success && context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: const Text('Draft saved'),
+                          content: Text(context.l10n.draftSaved),
                           backgroundColor: AppTheme.of(context).success,
                         ),
                       );
                     }
                   },
-            text: 'Draft',
+            text: context.l10n.draft,
             options: FFButtonOptions(
               height: 40.0,
               padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),

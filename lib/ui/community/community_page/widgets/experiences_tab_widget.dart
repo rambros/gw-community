@@ -3,6 +3,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/index.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/community_page/view_model/community_view_model.dart';
 import 'package:gw_community/ui/community/community_page/widgets/experience_card_widget.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
@@ -27,7 +28,7 @@ class ExperiencesTabWidget extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Experience experiences that inspire',
+                    context.l10n.experiencesInspire,
                     style: AppTheme.of(context).titleSmall.override(
                           font: GoogleFonts.lexendDeca(
                             fontWeight: FontWeight.w500,
@@ -61,7 +62,7 @@ class ExperiencesTabWidget extends StatelessWidget {
                               ),
                               const SizedBox(height: 16.0),
                               Text(
-                                'Error loading experiences',
+                                context.l10n.errorLoadingExperiences,
                                 style: AppTheme.of(context).headlineSmall.override(
                                       color: AppTheme.of(context).error,
                                     ),
@@ -110,14 +111,14 @@ class ExperiencesTabWidget extends StatelessWidget {
                               ),
                               const SizedBox(height: 16.0),
                               Text(
-                                'No experiences yet',
+                                context.l10n.noExperiencesYet,
                                 style: AppTheme.of(context).headlineSmall.override(
                                       color: AppTheme.of(context).secondaryText,
                                     ),
                               ),
                               const SizedBox(height: 8.0),
                               Text(
-                                'Be the first to share an experience with everyone',
+                                context.l10n.beFirstToShareExperience,
                                 textAlign: TextAlign.center,
                                 style: AppTheme.of(context).bodyMedium.override(
                                       color: AppTheme.of(context).alternate,
@@ -150,7 +151,7 @@ class ExperiencesTabWidget extends StatelessWidget {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(
-                                  'Experience deleted with success',
+                                  context.l10n.experienceDeleted,
                                   style: TextStyle(
                                     color: AppTheme.of(context).primaryText,
                                   ),
@@ -202,7 +203,7 @@ class ExperiencesTabWidget extends StatelessWidget {
               color: AppTheme.of(context).primaryBackground,
             ),
             label: Text(
-              'New experience',
+              context.l10n.newExperience,
               style: AppTheme.of(context).labelLarge.override(
                     font: GoogleFonts.poppins(
                       fontWeight: AppTheme.of(context).labelLarge.fontWeight,

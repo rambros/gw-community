@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
@@ -10,7 +11,7 @@ class ConfirmProfileActionDialog extends StatelessWidget {
     required this.title,
     required this.description,
     required this.confirmLabel,
-    this.cancelLabel = 'Cancel',
+    this.cancelLabel,
     this.icon,
     this.confirmColor,
   });
@@ -18,7 +19,7 @@ class ConfirmProfileActionDialog extends StatelessWidget {
   final String title;
   final String description;
   final String confirmLabel;
-  final String cancelLabel;
+  final String? cancelLabel;
   final IconData? icon;
   final Color? confirmColor;
 
@@ -128,7 +129,7 @@ class ConfirmProfileActionDialog extends StatelessWidget {
                         onPressed: () async {
                           Navigator.pop(context, false);
                         },
-                        text: cancelLabel,
+                        text: cancelLabel ?? context.l10n.cancel,
                         options: FFButtonOptions(
                           height: 40.0,
                           padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),

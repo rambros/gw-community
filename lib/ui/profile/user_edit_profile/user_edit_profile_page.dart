@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
@@ -53,7 +54,7 @@ class _UserEditProfilePageState extends State<UserEditProfilePage> {
           },
         ),
         title: Text(
-          'Your Profile',
+          context.l10n.yourProfile,
           style: AppTheme.of(context).headlineMedium.override(
                 font: GoogleFonts.lexendDeca(
                   fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
@@ -113,7 +114,7 @@ class _UserEditProfilePageState extends State<UserEditProfilePage> {
                                     obscureText: false,
                                     textCapitalization: TextCapitalization.words,
                                     decoration: InputDecoration(
-                                      labelText: 'First Name',
+                                      labelText: context.l10n.firstName,
                                       labelStyle: AppTheme.of(context).labelLarge.override(
                                             font: GoogleFonts.poppins(
                                               fontWeight: AppTheme.of(context).labelLarge.fontWeight,
@@ -125,7 +126,7 @@ class _UserEditProfilePageState extends State<UserEditProfilePage> {
                                             fontWeight: AppTheme.of(context).labelLarge.fontWeight,
                                             fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                                           ),
-                                      hintText: 'FirstName',
+                                      hintText: context.l10n.firstName,
                                       hintStyle: AppTheme.of(context).bodySmall.override(
                                             font: GoogleFonts.lexendDeca(
                                               fontWeight: AppTheme.of(context).bodySmall.fontWeight,
@@ -191,7 +192,7 @@ class _UserEditProfilePageState extends State<UserEditProfilePage> {
                                     obscureText: false,
                                     textCapitalization: TextCapitalization.words,
                                     decoration: InputDecoration(
-                                      labelText: 'Last Name',
+                                      labelText: context.l10n.lastName,
                                       labelStyle: AppTheme.of(context).labelLarge.override(
                                             font: GoogleFonts.poppins(
                                               fontWeight: AppTheme.of(context).labelLarge.fontWeight,
@@ -203,7 +204,7 @@ class _UserEditProfilePageState extends State<UserEditProfilePage> {
                                             fontWeight: AppTheme.of(context).labelLarge.fontWeight,
                                             fontStyle: AppTheme.of(context).labelLarge.fontStyle,
                                           ),
-                                      hintText: 'Last Name',
+                                      hintText: context.l10n.lastName,
                                       hintStyle: AppTheme.of(context).bodySmall.override(
                                             font: GoogleFonts.lexendDeca(
                                               fontWeight: AppTheme.of(context).bodySmall.fontWeight,
@@ -271,7 +272,7 @@ class _UserEditProfilePageState extends State<UserEditProfilePage> {
                               Padding(
                                 padding: const EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 12.0, 0.0),
                                 child: Text(
-                                  'Hide my last name',
+                                  context.l10n.hideMyLastName,
                                   style: AppTheme.of(context).bodyMedium.override(
                                         font: GoogleFonts.lexendDeca(
                                           fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
@@ -308,7 +309,7 @@ class _UserEditProfilePageState extends State<UserEditProfilePage> {
                                     readOnly: true,
                                     obscureText: false,
                                     decoration: InputDecoration(
-                                      labelText: 'Display Name',
+                                      labelText: context.l10n.displayName,
                                       labelStyle: AppTheme.of(context).labelLarge.override(
                                             font: GoogleFonts.poppins(
                                               fontWeight: AppTheme.of(context).labelLarge.fontWeight,
@@ -390,7 +391,7 @@ class _UserEditProfilePageState extends State<UserEditProfilePage> {
                                   onPressed: () async {
                                     context.pop();
                                   },
-                                  text: 'Cancel',
+                                  text: context.l10n.cancel,
                                   options: FFButtonOptions(
                                     height: 40.0,
                                     padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
@@ -421,7 +422,7 @@ class _UserEditProfilePageState extends State<UserEditProfilePage> {
                                   onPressed: () async {
                                     await viewModel.saveProfileCommand(context);
                                   },
-                                  text: 'Save Changes',
+                                  text: context.l10n.saveChanges,
                                   options: FFButtonOptions(
                                     height: 40.0,
                                     padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),

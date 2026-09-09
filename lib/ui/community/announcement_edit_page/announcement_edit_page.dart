@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/announcement_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/announcement_edit_page/view_model/announcement_edit_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
@@ -74,7 +75,7 @@ class _AnnouncementEditPageState extends State<AnnouncementEditPage> {
                   onPressed: () => context.pop(),
                 ),
                 title: Text(
-                  'Edit Message',
+                  context.l10n.editMessage,
                   style: AppTheme.of(context).titleLarge.override(
                         font: GoogleFonts.poppins(
                           fontWeight: AppTheme.of(context).titleLarge.fontWeight,
@@ -145,7 +146,7 @@ class _AnnouncementEditPageState extends State<AnnouncementEditPage> {
                 ),
                 if (experience.groupName != null && experience.groupName!.isNotEmpty)
                   Text(
-                    'From group ${experience.groupName}',
+                    context.l10n.fromGroup(experience.groupName ?? ''),
                     style: AppTheme.of(context).bodyMedium.override(
                           font: GoogleFonts.lexendDeca(
                             fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
@@ -173,7 +174,7 @@ class _AnnouncementEditPageState extends State<AnnouncementEditPage> {
             controller: viewModel.titleController,
             focusNode: viewModel.titleFocusNode,
             textCapitalization: TextCapitalization.sentences,
-            decoration: _inputDecoration(context, 'Title'),
+            decoration: _inputDecoration(context, context.l10n.title),
             style: AppTheme.of(context).bodyMedium.override(
                   font: GoogleFonts.lexendDeca(
                     fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
@@ -190,7 +191,7 @@ class _AnnouncementEditPageState extends State<AnnouncementEditPage> {
             controller: viewModel.descriptionController,
             focusNode: viewModel.descriptionFocusNode,
             textCapitalization: TextCapitalization.sentences,
-            decoration: _inputDecoration(context, 'Details'),
+            decoration: _inputDecoration(context, context.l10n.details),
             style: AppTheme.of(context).bodyMedium.override(
                   font: GoogleFonts.lexendDeca(
                     fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
@@ -255,7 +256,7 @@ class _AnnouncementEditPageState extends State<AnnouncementEditPage> {
             padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
             child: FFButtonWidget(
               onPressed: () => context.pop(),
-              text: 'Cancel',
+              text: context.l10n.cancel,
               options: FFButtonOptions(
                 height: 40.0,
                 padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
@@ -286,7 +287,7 @@ class _AnnouncementEditPageState extends State<AnnouncementEditPage> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
-                          'Message updated with success',
+                          context.l10n.messageUpdatedSuccessfully,
                           style: TextStyle(
                             color: AppTheme.of(context).primaryText,
                           ),
@@ -300,7 +301,7 @@ class _AnnouncementEditPageState extends State<AnnouncementEditPage> {
                       context.pop(true);
                     }
                   },
-            text: viewModel.isSaving ? 'Saving...' : 'Save Message',
+            text: viewModel.isSaving ? context.l10n.saving : context.l10n.saveMessage,
             options: FFButtonOptions(
               height: 40.0,
               padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),

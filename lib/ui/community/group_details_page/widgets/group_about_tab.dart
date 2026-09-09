@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/group_details_page/view_model/group_details_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
@@ -22,7 +23,7 @@ class GroupAboutTab extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildSection(context, 'Description', group.description),
+            _buildSection(context, context.l10n.description, group.description),
             if (viewModel.shouldShowOnlyAbout) ...[
               if (!viewModel.canJoin && group.groupPrivacy?.toLowerCase().trim() == 'private') ...[
                 const SizedBox(height: 24.0),
@@ -39,7 +40,7 @@ class GroupAboutTab extends StatelessWidget {
                       Icon(Icons.lock_outline, color: AppTheme.of(context).secondary, size: 32.0),
                       const SizedBox(height: 12.0),
                       Text(
-                        'This is a private group. You need an invitation to join and see the content.',
+                        context.l10n.privateGroupInviteOnly,
                         textAlign: TextAlign.center,
                         style: AppTheme.of(
                           context,
@@ -56,7 +57,7 @@ class GroupAboutTab extends StatelessWidget {
               Center(
                 child: FFButtonWidget(
                   onPressed: () => viewModel.joinGroup(),
-                  text: 'Join Group',
+                  text: context.l10n.joinGroup,
                   options: FFButtonOptions(
                     width: double.infinity,
                     height: 50.0,
@@ -78,7 +79,7 @@ class GroupAboutTab extends StatelessWidget {
               Center(child: SpinKitRipple(color: AppTheme.of(context).primary, size: 30.0))
             else if (viewModel.members.isEmpty)
               Text(
-                'No members found.',
+                context.l10n.noMembersFound,
                 style: AppTheme.of(context).bodyMedium.override(
                       color: AppTheme.of(context).textColor,
                     ),
@@ -133,7 +134,7 @@ class GroupAboutTab extends StatelessWidget {
         // Seção Facilitators
         if (facilitators.isNotEmpty) ...[
           Text(
-            'Facilitators',
+            context.l10n.facilitators,
             style: AppTheme.of(
               context,
             ).titleMedium.override(font: GoogleFonts.lexendDeca(), color: AppTheme.of(context).primary),
@@ -152,7 +153,7 @@ class GroupAboutTab extends StatelessWidget {
         // Seção Members
         if (regularMembers.isNotEmpty) ...[
           Text(
-            'Members',
+            context.l10n.members,
             style: AppTheme.of(
               context,
             ).titleMedium.override(font: GoogleFonts.lexendDeca(), color: AppTheme.of(context).primary),
@@ -174,10 +175,10 @@ class GroupAboutTab extends StatelessWidget {
   Widget _buildMemberRow(BuildContext context, CcMembersRow member) {
     final displayName = () {
       if (member.hideLastName == true) {
-        return member.firstName ?? member.displayName ?? 'Unknown';
+        return member.firstName ?? member.displayName ?? context.l10n.unknown;
       }
       final fullName = '${member.firstName ?? ''} ${member.lastName ?? ''}'.trim();
-      return fullName.isNotEmpty ? fullName : (member.displayName ?? 'Unknown');
+      return fullName.isNotEmpty ? fullName : (member.displayName ?? context.l10n.unknown);
     }();
 
     return Padding(

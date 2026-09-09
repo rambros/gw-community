@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gw_community/index.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/community_guidelines_page/community_guidelines_page.dart';
 import 'package:gw_community/ui/profile/user_profile_page/widgets/profile_menu_item_widget.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
@@ -14,7 +15,7 @@ class ProfileMenuSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         ProfileMenuItemWidget(
-          text: 'My Favorites',
+          text: context.l10n.myFavorites,
           onTap: () async {
             context.pushNamed(
               FavoritesPage.routeName,
@@ -31,7 +32,7 @@ class ProfileMenuSection extends StatelessWidget {
         Padding(
           padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
           child: ProfileMenuItemWidget(
-            text: 'My Journal',
+            text: context.l10n.myJournal,
             onTap: () async {
               context.pushNamed(
                 UserJournalListPage.routeName,
@@ -49,7 +50,7 @@ class ProfileMenuSection extends StatelessWidget {
         Padding(
           padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
           child: ProfileMenuItemWidget(
-            text: 'My Journeys',
+            text: context.l10n.myJourneys,
             onTap: () async {
               context.pushNamed(
                 UserJourneysViewPage.routeName,
@@ -67,7 +68,7 @@ class ProfileMenuSection extends StatelessWidget {
         Padding(
           padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
           child: ProfileMenuItemWidget(
-            text: 'My Experiences',
+            text: context.l10n.myExperiences,
             onTap: () async {
               context.pushNamed(MyExperiencesPage.routeName);
             },
@@ -76,7 +77,7 @@ class ProfileMenuSection extends StatelessWidget {
         Padding(
           padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
           child: ProfileMenuItemWidget(
-            text: 'Ask a Question',
+            text: context.l10n.askAQuestion,
             onTap: () async {
               context.pushNamed(SupportPage.routeName);
             },
@@ -85,7 +86,7 @@ class ProfileMenuSection extends StatelessWidget {
         Padding(
           padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
           child: ProfileMenuItemWidget(
-            text: 'Community Guidelines',
+            text: context.l10n.communityGuidelines,
             onTap: () async {
               context.pushNamed(
                 CommunityGuidelinesPage.routeName,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/group_details_page/group_details_page.dart';
 import 'package:gw_community/ui/community/widgets/group_card.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
@@ -66,14 +67,14 @@ class _HomePageState extends State<HomePage> {
                     _buildWelcomeMessage(context, viewModel),
                     _buildCommunityMessage(context),
                     if (appState.enableJourneyModule) ...[
-                      _buildSectionTitle(context, 'My Journeys'),
+                      _buildSectionTitle(context, context.l10n.myJourneys),
 
                       // Journey Cards List
                       if (viewModel.userJourneyProgressList.isEmpty)
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
                           child: Text(
-                            'No journeys started yet',
+                            context.l10n.noJourneysStarted,
                             style: AppTheme.of(context).bodyMedium.override(
                                   color: AppTheme.of(context).secondaryText,
                                 ),
@@ -109,19 +110,19 @@ class _HomePageState extends State<HomePage> {
 
                     // Groups Section
                     if (viewModel.userGroups.isNotEmpty) ...[
-                      _buildSectionTitle(context, 'My Groups'),
+                      _buildSectionTitle(context, context.l10n.myGroups),
                       Column(
                         children: viewModel.userGroups.map((group) => _buildGroupItem(context, group)).toList(),
                       ),
                     ] else ...[
-                      _buildSectionTitle(context, 'Other Groups'),
+                      _buildSectionTitle(context, context.l10n.otherGroups),
                       Column(
                         children:
                             viewModel.publicGroups.take(3).map((group) => _buildGroupItem(context, group)).toList(),
                       ),
                     ],
 
-                    _buildSectionTitle(context, 'Upcoming Events'),
+                    _buildSectionTitle(context, context.l10n.upcomingEvents),
 
                     // Events List
                     ListView.builder(
@@ -183,7 +184,7 @@ class _HomePageState extends State<HomePage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            'Welcome, ',
+            '${context.l10n.welcomeComma} ',
             style: AppTheme.of(context).headlineSmall,
           ),
           if (viewModel.userProfile != null)
@@ -205,7 +206,7 @@ class _HomePageState extends State<HomePage> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          'A community of well-wishers\ncreating a new world together',
+          context.l10n.communityTagline,
           textAlign: TextAlign.center,
           style: AppTheme.of(context).bodyMedium.override(
                 color: Colors.black,

@@ -3,12 +3,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/announcement_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/index.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/announcement_add_page/view_model/add_announcement_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
-
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
-
 import 'package:gw_community/ui/core/widgets/user_avatar.dart';
 import 'package:gw_community/utils/context_extensions.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
@@ -90,7 +89,7 @@ class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
                   onPressed: () => context.pop(),
                 ),
                 title: Text(
-                  'New Message',
+                  context.l10n.newMessage,
                   style: AppTheme.of(context).titleLarge.override(
                         font: GoogleFonts.poppins(
                           fontWeight:
@@ -176,7 +175,7 @@ class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
                   ),
                   if (widget.groupId != null)
                     Text(
-                      'From group ${widget.groupName}',
+                      context.l10n.fromGroup(widget.groupName ?? ''),
                       style: AppTheme.of(context).bodyMedium.override(
                             font: GoogleFonts.lexendDeca(
                               fontWeight:
@@ -206,7 +205,7 @@ class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
             controller: viewModel.titleController,
             focusNode: viewModel.titleFocusNode,
             textCapitalization: TextCapitalization.sentences,
-            decoration: _inputDecoration(context, 'Title'),
+            decoration: _inputDecoration(context, context.l10n.title),
             style: AppTheme.of(context).bodyMedium.override(
                   font: GoogleFonts.lexendDeca(
                     fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
@@ -223,7 +222,7 @@ class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
             controller: viewModel.experienceController,
             focusNode: viewModel.experienceFocusNode,
             textCapitalization: TextCapitalization.sentences,
-            decoration: _inputDecoration(context, 'Message'),
+            decoration: _inputDecoration(context, context.l10n.message),
             style: AppTheme.of(context).bodyMedium.override(
                   font: GoogleFonts.lexendDeca(
                     fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
@@ -240,12 +239,12 @@ class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
             padding: const EdgeInsetsDirectional.fromSTEB(8.0, 8.0, 8.0, 0.0),
             child: DropdownButtonFormField<CcMembersRow?>(
               initialValue: viewModel.recipientMember,
-              decoration: _inputDecoration(context, 'Send to'),
+              decoration: _inputDecoration(context, context.l10n.sendTo),
               items: [
                 DropdownMenuItem<CcMembersRow?>(
                   value: null,
                   child: Text(
-                    'All members (broadcast)',
+                    context.l10n.allMembersBroadcast,
                     style: AppTheme.of(context).bodyMedium.override(
                           font: GoogleFonts.lexendDeca(),
                           color: AppTheme.of(context).secondary,
@@ -259,7 +258,7 @@ class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
                             member.displayName ??
                                 member.firstName ??
                                 member.email ??
-                                'Member',
+                                context.l10n.member,
                             style: AppTheme.of(context).bodyMedium.override(
                                   font: GoogleFonts.lexendDeca(),
                                   color: AppTheme.of(context).secondary,
@@ -334,7 +333,7 @@ class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
             padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
             child: FFButtonWidget(
               onPressed: () => context.pushNamed(CommunityPage.routeName),
-              text: 'Cancel',
+              text: context.l10n.cancel,
               options: FFButtonOptions(
                 height: 40.0,
                 padding:
@@ -366,7 +365,7 @@ class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
-                          'Message created with success',
+                          context.l10n.messageCreatedSuccessfully,
                           style: TextStyle(
                             color: AppTheme.of(context).primaryText,
                           ),
@@ -376,7 +375,7 @@ class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
                     );
                     context.pop();
                   },
-            text: viewModel.isSaving ? 'Saving...' : 'Add Message',
+            text: viewModel.isSaving ? context.l10n.saving : context.l10n.addMessage,
             options: FFButtonOptions(
               height: 40.0,
               padding:

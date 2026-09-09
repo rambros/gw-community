@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/ui/profile/user_journal_options/user_journal_options_sheet.dart';
@@ -61,7 +62,7 @@ class _UserJournalViewPageState extends State<UserJournalViewPage> {
           },
         ),
         title: Text(
-          'Your Journal Entry',
+          context.l10n.yourJournalEntry,
           style: AppTheme.of(context).headlineMedium.override(
                 font: GoogleFonts.lexendDeca(
                   fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
@@ -112,7 +113,7 @@ class _UserJournalViewPageState extends State<UserJournalViewPage> {
     if (journalEntry == null) {
       return Center(
         child: Text(
-          'Journal entry not found.',
+          context.l10n.journalEntryNotFound,
           style: AppTheme.of(context).bodyMedium,
         ),
       );
@@ -193,7 +194,7 @@ class _UserJournalViewPageState extends State<UserJournalViewPage> {
                         Text(
                           valueOrDefault<String>(
                             journalEntry.journeyTitle,
-                            'Journey Title',
+                            context.l10n.untitledJourney,
                           ),
                           style: AppTheme.of(context).titleMedium.override(
                                 font: GoogleFonts.lexendDeca(

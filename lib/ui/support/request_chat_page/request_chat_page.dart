@@ -3,6 +3,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/support_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/ui/support/request_chat_page/view_model/request_chat_view_model.dart';
@@ -63,7 +64,7 @@ class _RequestChatPageContent extends StatelessWidget {
             onPressed: () => context.pop(),
           ),
           title: Text(
-            'Question',
+            context.l10n.question,
             style: AppTheme.of(context).bodyMedium.override(
                   font: GoogleFonts.lexendDeca(),
                   color: Colors.white,
@@ -115,7 +116,7 @@ class _RequestChatPageContent extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               Text(
-                'Question not found',
+                context.l10n.questionNotFound,
                 style: AppTheme.of(context).bodyMedium.override(
                       font: GoogleFonts.lexendDeca(),
                       color: AppTheme.of(context).error,
@@ -205,7 +206,7 @@ class _RequestChatPageContent extends StatelessWidget {
                 ),
                 const SizedBox(width: 12),
                 Text(
-                  'Mark as Completed',
+                  context.l10n.markAsCompleted,
                   style: GoogleFonts.lexendDeca(
                     fontSize: 14,
                     color: AppTheme.of(context).success,
@@ -226,7 +227,7 @@ class _RequestChatPageContent extends StatelessWidget {
                 ),
                 const SizedBox(width: 12),
                 Text(
-                  'Reopen Question',
+                  context.l10n.reopenQuestion,
                   style: GoogleFonts.lexendDeca(
                     fontSize: 14,
                     color: AppTheme.of(context).primary,
@@ -272,7 +273,9 @@ class _RequestChatPageContent extends StatelessWidget {
 
           // Asked date
           Text(
-            'Asked on ${DateFormat('MMM d').format(request.createdAt)}',
+            context.l10n.askedOn(
+              DateFormat.MMMd(Localizations.localeOf(context).toString()).format(request.createdAt),
+            ),
             style: GoogleFonts.lexendDeca(
               fontSize: 14,
               color: AppTheme.of(context).secondary.withValues(alpha: 0.6),
@@ -282,7 +285,7 @@ class _RequestChatPageContent extends StatelessWidget {
 
           // Reference ID (small)
           Text(
-            'Reference ${request.requestNumber}',
+            context.l10n.referenceNumber(request.requestNumber),
             style: GoogleFonts.lexendDeca(
               fontSize: 11,
               color: AppTheme.of(context).secondary.withValues(alpha: 0.4),
@@ -337,7 +340,7 @@ class _RequestChatPageContent extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'No messages yet',
+                    context.l10n.noMessagesYet,
                     style: GoogleFonts.lexendDeca(
                       fontSize: 16,
                       color: AppTheme.of(context).cadetGrey,
@@ -345,7 +348,7 @@ class _RequestChatPageContent extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Send a message to start the conversation',
+                    context.l10n.sendMessageToStart,
                     textAlign: TextAlign.center,
                     style: GoogleFonts.inter(
                       fontSize: 14,
@@ -421,7 +424,7 @@ class _RequestChatPageContent extends StatelessWidget {
                     maxLines: 4,
                     minLines: 1,
                     decoration: InputDecoration(
-                      hintText: 'Type a message...',
+                      hintText: context.l10n.typeAMessage,
                       hintStyle: GoogleFonts.inter(
                         color: AppTheme.of(context).secondary.withValues(alpha: 0.4),
                       ),
@@ -533,7 +536,7 @@ class _RequestChatPageContent extends StatelessWidget {
             const SizedBox(width: 12),
             Expanded(
               child: Text(
-                'This question has been completed',
+                context.l10n.questionHasBeenCompleted,
                 style: GoogleFonts.lexendDeca(
                   fontSize: 14,
                   color: const Color(0xFF388E3C),
@@ -543,7 +546,7 @@ class _RequestChatPageContent extends StatelessWidget {
             TextButton(
               onPressed: () => _confirmReopen(context, viewModel),
               child: Text(
-                'Reopen',
+                context.l10n.reopen,
                 style: GoogleFonts.lexendDeca(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
@@ -569,7 +572,7 @@ class _RequestChatPageContent extends StatelessWidget {
                 Icons.photo_library,
                 color: AppTheme.of(context).primary,
               ),
-              title: const Text('Choose from Gallery'),
+              title: Text(context.l10n.chooseFromGallery),
               onTap: () {
                 Navigator.pop(context);
                 viewModel.pickImage();
@@ -580,7 +583,7 @@ class _RequestChatPageContent extends StatelessWidget {
                 Icons.camera_alt,
                 color: AppTheme.of(context).primary,
               ),
-              title: const Text('Take a Photo'),
+              title: Text(context.l10n.takeAPhoto),
               onTap: () {
                 Navigator.pop(context);
                 viewModel.takePhoto();
@@ -593,7 +596,7 @@ class _RequestChatPageContent extends StatelessWidget {
   }
 
   Future<void> _sendMessage(BuildContext context, RequestChatViewModel viewModel) async {
-    final success = await viewModel.sendMessage();
+    final success = await viewModel.sendMessage(context.l10n);
     if (!success && viewModel.errorMessage != null && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -612,22 +615,22 @@ class _RequestChatPageContent extends StatelessWidget {
       context: context,
       builder: (context) => WebViewAware(
         child: AlertDialog(
-          title: const Text('Mark as Completed'),
-          content: const Text(
-            'Are you sure your question has been answered? You can reopen it later if needed.',
+          title: Text(context.l10n.markAsCompleted),
+          content: Text(
+            context.l10n.confirmMarkCompleted,
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
               child: Text(
-                'Cancel',
+                context.l10n.cancel,
                 style: TextStyle(color: AppTheme.of(context).secondary),
               ),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
               child: Text(
-                'Mark as Completed',
+                context.l10n.markAsCompleted,
                 style: TextStyle(color: AppTheme.of(context).success),
               ),
             ),
@@ -641,7 +644,7 @@ class _RequestChatPageContent extends StatelessWidget {
       if (success && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('Question marked as completed'),
+            content: Text(context.l10n.questionMarkedCompleted),
             backgroundColor: AppTheme.of(context).success,
           ),
         );
@@ -657,22 +660,22 @@ class _RequestChatPageContent extends StatelessWidget {
       context: context,
       builder: (context) => WebViewAware(
         child: AlertDialog(
-          title: const Text('Reopen Question'),
-          content: const Text(
-            'Do you need further assistance with this question?',
+          title: Text(context.l10n.reopenQuestion),
+          content: Text(
+            context.l10n.confirmReopenQuestion,
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
               child: Text(
-                'Cancel',
+                context.l10n.cancel,
                 style: TextStyle(color: AppTheme.of(context).secondary),
               ),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
               child: Text(
-                'Reopen',
+                context.l10n.reopen,
                 style: TextStyle(color: AppTheme.of(context).primary),
               ),
             ),
@@ -686,7 +689,7 @@ class _RequestChatPageContent extends StatelessWidget {
       if (success && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('Question reopened'),
+            content: Text(context.l10n.questionReopened),
             backgroundColor: AppTheme.of(context).primary,
           ),
         );

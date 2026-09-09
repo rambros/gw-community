@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/group_details_page/view_model/group_details_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/journey/journey_page/journey_page.dart';
@@ -52,7 +53,7 @@ class GroupJourneysTab extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'No journeys found for this group.',
+                    context.l10n.noJourneysFoundForGroup,
                     textAlign: TextAlign.center,
                     style: AppTheme.of(context).bodyMedium.override(
                           color: AppTheme.of(context).secondaryText,
@@ -71,10 +72,10 @@ class GroupJourneysTab extends StatelessWidget {
           itemBuilder: (context, index) {
             final journey = journeys[index];
             return JourneyCardWidget(
-              title: journey.title ?? 'Untitled Journey',
+              title: journey.title ?? context.l10n.untitledJourney,
               stepsCompleted: 0, // Default to 0 for now as requested
               stepsTotal: journey.stepsTotal ?? 0,
-              buttonText: 'Start', // Or 'View'
+              buttonText: context.l10n.start, // Or 'View'
               onTap: () {
                 context.pushNamed(
                   JourneyPage.routeName,

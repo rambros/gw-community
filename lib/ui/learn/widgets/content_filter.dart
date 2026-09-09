@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_animations.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_drop_down.dart';
@@ -181,21 +182,21 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
                             Padding(
                               padding: const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 0.0, 8.0),
                               child: Text(
-                                'Content Filter',
+                                context.l10n.contentFilter,
                                 style: AppTheme.of(context).headlineMedium,
                               ),
                             ),
                             // Author Dropdown
                             _buildLabel(
                               context,
-                              'Author',
+                              context.l10n.author,
                               hasValue: _selectedAuthorId != 0,
                               onClear: _clearAuthor,
                             ),
                             FlutterFlowDropDown<int>(
                               controller: _authorController,
                               options: authors.map((e) => e.id!).toList(),
-                              optionLabels: authors.map((e) => e.name ?? 'Author').toList(),
+                              optionLabels: authors.map((e) => e.name ?? context.l10n.author).toList(),
                               onChanged: (val) {
                                 setState(() {
                                   _selectedAuthorId = val ?? 0;
@@ -208,8 +209,8 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
                               textStyle: AppTheme.of(context).bodyMedium.override(
                                     color: AppTheme.of(context).textColor,
                                   ),
-                              hintText: 'Select Author',
-                              searchHintText: 'Search for an author...',
+                              hintText: context.l10n.selectAuthor,
+                              searchHintText: context.l10n.searchAuthor,
                               icon: Icon(
                                 Icons.keyboard_arrow_down_rounded,
                                 color: AppTheme.of(context).secondaryText,
@@ -229,14 +230,14 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
                             // Event Dropdown
                             _buildLabel(
                               context,
-                              'Event',
+                              context.l10n.event,
                               hasValue: _selectedEventId != 0,
                               onClear: _clearEvent,
                             ),
                             FlutterFlowDropDown<int>(
                               controller: _eventController,
                               options: events.map((e) => e.eventId!).toList(),
-                              optionLabels: events.map((e) => e.eventName ?? 'Event').toList(),
+                              optionLabels: events.map((e) => e.eventName ?? context.l10n.event).toList(),
                               onChanged: (val) {
                                 setState(() {
                                   _selectedEventId = val ?? 0;
@@ -249,8 +250,8 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
                               textStyle: AppTheme.of(context).bodyMedium.override(
                                     color: AppTheme.of(context).textColor,
                                   ),
-                              hintText: 'Select Event',
-                              searchHintText: 'Search for an event...',
+                              hintText: context.l10n.selectEvent,
+                              searchHintText: context.l10n.searchEvent,
                               icon: Icon(
                                 Icons.keyboard_arrow_down_rounded,
                                 color: AppTheme.of(context).secondaryText,
@@ -270,7 +271,7 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
                             // Year Dropdown
                             _buildLabel(
                               context,
-                              'Year',
+                              context.l10n.year,
                               hasValue: _selectedYear.isNotEmpty,
                               onClear: _clearYear,
                             ),
@@ -290,8 +291,8 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
                               textStyle: AppTheme.of(context).bodyMedium.override(
                                     color: AppTheme.of(context).textColor,
                                   ),
-                              hintText: 'Select Year',
-                              searchHintText: 'Search for a year...',
+                              hintText: context.l10n.selectYear,
+                              searchHintText: context.l10n.searchYear,
                               icon: Icon(
                                 Icons.keyboard_arrow_down_rounded,
                                 color: AppTheme.of(context).secondaryText,
@@ -311,7 +312,7 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
                             // Topics Dropdown
                             _buildLabel(
                               context,
-                              'Topics',
+                              context.l10n.topics,
                               hasValue: _selectedTopics.isNotEmpty,
                               onClear: _clearTopics,
                             ),
@@ -329,8 +330,8 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
                               textStyle: AppTheme.of(context).bodyMedium.override(
                                     color: AppTheme.of(context).textColor,
                                   ),
-                              hintText: 'Select Topics',
-                              searchHintText: 'Search... (tap outside to close)',
+                              hintText: context.l10n.selectTopics,
+                              searchHintText: context.l10n.searchTapOutsideToClose,
                               icon: Icon(
                                 Icons.keyboard_arrow_down_rounded,
                                 color: AppTheme.of(context).secondaryText,
@@ -355,7 +356,7 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
                                 children: [
                                   FFButtonWidget(
                                     onPressed: () => _cancel(context),
-                                    text: 'Cancel',
+                                    text: context.l10n.cancel,
                                     options: FFButtonOptions(
                                       height: 40.0,
                                       padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
@@ -377,7 +378,7 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
                                   ),
                                   FFButtonWidget(
                                     onPressed: () => _applyFilters(context, viewModel),
-                                    text: 'Apply Filters',
+                                    text: context.l10n.applyFilters,
                                     options: FFButtonOptions(
                                       height: 44.0,
                                       padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
@@ -442,7 +443,7 @@ class _ContentFilterState extends State<ContentFilter> with TickerProviderStateM
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(),
               splashRadius: 16.0,
-              tooltip: 'Clear $label filter',
+              tooltip: context.l10n.clearNamedFilter(label),
             ),
         ],
       ),

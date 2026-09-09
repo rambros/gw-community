@@ -3,6 +3,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/experience_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/experience_edit_page/experience_edit_page.dart';
 import 'package:gw_community/ui/community/experience_view_page/experience_view_page.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
@@ -55,7 +56,7 @@ class _MyExperiencesPageContent extends StatelessWidget {
           onPressed: () => context.pop(),
         ),
         title: Text(
-          'My Experiences',
+          context.l10n.myExperiences,
           style: AppTheme.of(
             context,
           ).bodyMedium.override(font: GoogleFonts.lexendDeca(), color: Colors.white, fontSize: 20.0),
@@ -89,7 +90,7 @@ class _MyExperiencesPageContent extends StatelessWidget {
                 ).bodyMedium.override(font: GoogleFonts.lexendDeca(), color: AppTheme.of(context).error),
               ),
               const SizedBox(height: 16),
-              ElevatedButton(onPressed: () => viewModel.loadExperiences(), child: const Text('Try Again')),
+              ElevatedButton(onPressed: () => viewModel.loadExperiences(), child: Text(context.l10n.tryAgain)),
             ],
           ),
         ),
@@ -104,7 +105,7 @@ class _MyExperiencesPageContent extends StatelessWidget {
             Icon(Icons.article_outlined, size: 64, color: AppTheme.of(context).cadetGrey),
             const SizedBox(height: 16),
             Text(
-              'No experiences yet',
+              context.l10n.noExperiencesYet,
               style: AppTheme.of(context).bodyMedium.override(
                     font: GoogleFonts.lexendDeca(),
                     color: AppTheme.of(context).cadetGrey,
@@ -113,7 +114,7 @@ class _MyExperiencesPageContent extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'Start experience your experiences with the community!',
+              context.l10n.startSharingExperiences,
               textAlign: TextAlign.center,
               style: AppTheme.of(
                 context,
@@ -175,10 +176,10 @@ class _MyExperiencesPageContent extends StatelessWidget {
               Expanded(
                 child: _buildFilterDropdown<String>(
                   context: context,
-                  label: 'Group',
+                  label: context.l10n.group,
                   value: viewModel.groupFilter,
                   items: [
-                    const DropdownMenuItem(value: null, child: Text('All Groups')),
+                    DropdownMenuItem(value: null, child: Text(context.l10n.allGroups)),
                     ...viewModel.availableGroups.map((g) => DropdownMenuItem(value: g, child: Text(g))),
                   ],
                   onChanged: (val) => viewModel.setGroupFilter(val),
@@ -189,15 +190,15 @@ class _MyExperiencesPageContent extends StatelessWidget {
               Expanded(
                 child: _buildFilterDropdown<String>(
                   context: context,
-                  label: 'Status',
+                  label: context.l10n.status,
                   value: viewModel.statusFilter,
-                  items: const [
-                    DropdownMenuItem(value: null, child: Text('All Status')),
-                    DropdownMenuItem(value: 'approved', child: Text('Published')),
-                    DropdownMenuItem(value: 'draft', child: Text('In Reflection')),
-                    DropdownMenuItem(value: 'pending', child: Text('Awaiting Approval')),
-                    DropdownMenuItem(value: 'rejected', child: Text('Not Published')),
-                    DropdownMenuItem(value: 'changes_requested', child: Text('Refinement Suggested')),
+                  items: [
+                    DropdownMenuItem(value: null, child: Text(context.l10n.allStatus)),
+                    DropdownMenuItem(value: 'approved', child: Text(context.l10n.published)),
+                    DropdownMenuItem(value: 'draft', child: Text(context.l10n.inReflection)),
+                    DropdownMenuItem(value: 'pending', child: Text(context.l10n.awaitingApproval)),
+                    DropdownMenuItem(value: 'rejected', child: Text(context.l10n.notPublished)),
+                    DropdownMenuItem(value: 'changes_requested', child: Text(context.l10n.refinementSuggested)),
                   ],
                   onChanged: (val) => viewModel.setStatusFilter(val),
                 ),
@@ -210,7 +211,7 @@ class _MyExperiencesPageContent extends StatelessWidget {
               child: InkWell(
                 onTap: () => viewModel.clearFilters(),
                 child: Text(
-                  'Clear Filters',
+                  context.l10n.clearFilters,
                   style: AppTheme.of(context).bodySmall.override(
                         font: GoogleFonts.lexendDeca(),
                         color: AppTheme.of(context).primary,
@@ -277,16 +278,16 @@ class _MyExperiencesPageContent extends StatelessWidget {
       context: context,
       builder: (context) => WebViewAware(
         child: AlertDialog(
-          title: const Text('Delete Experience'),
-          content: const Text('Are you sure you want to delete this experience? This action cannot be undone.'),
+          title: Text(context.l10n.deleteExperience),
+          content: Text(context.l10n.confirmDeleteExperience),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: Text('Cancel', style: TextStyle(color: AppTheme.of(context).secondary)),
+              child: Text(context.l10n.cancel, style: TextStyle(color: AppTheme.of(context).secondary)),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
-              child: const Text('Delete', style: TextStyle(color: Colors.red)),
+              child: Text(context.l10n.delete, style: const TextStyle(color: Colors.red)),
             ),
           ],
         ),
@@ -298,7 +299,7 @@ class _MyExperiencesPageContent extends StatelessWidget {
       if (success && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('Experience deleted successfully'),
+            content: Text(context.l10n.experienceDeleted),
             backgroundColor: AppTheme.of(context).success,
           ),
         );
@@ -315,18 +316,18 @@ class _MyExperiencesPageContent extends StatelessWidget {
       context: context,
       builder: (context) => WebViewAware(
         child: AlertDialog(
-          title: const Text('Publish Experience'),
-          content: const Text(
-            'Are you sure you want to publish this experience? It will be sent for moderation review.',
+          title: Text(context.l10n.publishExperience),
+          content: Text(
+            context.l10n.confirmPublishExperience,
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: Text('Cancel', style: TextStyle(color: AppTheme.of(context).secondary)),
+              child: Text(context.l10n.cancel, style: TextStyle(color: AppTheme.of(context).secondary)),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
-              child: Text('Publish', style: TextStyle(color: AppTheme.of(context).primary)),
+              child: Text(context.l10n.publish, style: TextStyle(color: AppTheme.of(context).primary)),
             ),
           ],
         ),
@@ -338,7 +339,7 @@ class _MyExperiencesPageContent extends StatelessWidget {
       if (success && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('Experience published successfully'),
+            content: Text(context.l10n.experiencePublished),
             backgroundColor: AppTheme.of(context).success,
           ),
         );
@@ -394,7 +395,7 @@ class _ExperienceCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            experience.displayName ?? experience.fullName ?? 'User',
+                            experience.displayName ?? experience.fullName ?? context.l10n.userFallback,
                             style: AppTheme.of(context).bodyMedium.override(
                                   font: GoogleFonts.lexendDeca(),
                                   fontWeight: FontWeight.w500,
@@ -510,7 +511,7 @@ class _ExperienceCard extends StatelessWidget {
             children: [
               Icon(Icons.visibility_outlined, size: 20, color: AppTheme.of(context).secondary),
               const SizedBox(width: 12),
-              Text('View', style: GoogleFonts.lexendDeca(fontSize: 14, color: AppTheme.of(context).secondary)),
+              Text(context.l10n.view, style: GoogleFonts.lexendDeca(fontSize: 14, color: AppTheme.of(context).secondary)),
             ],
           ),
         ),
@@ -521,7 +522,7 @@ class _ExperienceCard extends StatelessWidget {
               Icon(Icons.edit_outlined, size: 20, color: AppTheme.of(context).primary),
               const SizedBox(width: 12),
               Text(
-                experience.moderationStatus == 'draft' ? 'Submit' : 'Revise',
+                experience.moderationStatus == 'draft' ? context.l10n.submit : context.l10n.revise,
                 style: GoogleFonts.lexendDeca(
                   fontSize: 14,
                   color: experience.moderationStatus == 'draft'
@@ -542,7 +543,7 @@ class _ExperienceCard extends StatelessWidget {
               children: [
                 Icon(Icons.publish, size: 20, color: AppTheme.of(context).success),
                 const SizedBox(width: 12),
-                Text('Publish', style: GoogleFonts.lexendDeca(fontSize: 14, color: AppTheme.of(context).success)),
+                Text(context.l10n.publish, style: GoogleFonts.lexendDeca(fontSize: 14, color: AppTheme.of(context).success)),
               ],
             ),
           ),
@@ -553,7 +554,7 @@ class _ExperienceCard extends StatelessWidget {
             children: [
               Icon(Icons.delete_outline, size: 20, color: AppTheme.of(context).error),
               const SizedBox(width: 12),
-              Text('Delete', style: GoogleFonts.lexendDeca(fontSize: 14, color: AppTheme.of(context).error)),
+              Text(context.l10n.delete, style: GoogleFonts.lexendDeca(fontSize: 14, color: AppTheme.of(context).error)),
             ],
           ),
         ),
@@ -567,11 +568,11 @@ class _ExperienceCard extends StatelessWidget {
 
     String text;
     if (visibility == 'everyone') {
-      text = 'Visible for everyone';
+      text = context.l10n.visibleForEveryone;
     } else if (groupName != null && groupName.isNotEmpty) {
-      text = 'Visible only for $groupName';
+      text = context.l10n.visibleOnlyFor(groupName);
     } else {
-      text = 'Group only';
+      text = context.l10n.groupOnly;
     }
 
     return Text(
@@ -604,26 +605,26 @@ class _ExperienceCard extends StatelessWidget {
         backgroundColor = const Color(0xFFE3F2FD);
         textColor = const Color(0xFF1976D2);
         icon = Icons.edit_note;
-        label = 'In Reflection';
+        label = context.l10n.inReflection;
         break;
       case 'awaiting_approval':
       case 'pending':
         backgroundColor = const Color(0xFFFFF3CD);
         textColor = const Color(0xFFB8860B);
         icon = Icons.hourglass_empty;
-        label = 'Awaiting Approval';
+        label = context.l10n.awaitingApproval;
         break;
       case 'rejected':
         backgroundColor = AppTheme.of(context).error.withValues(alpha: 0.15);
         textColor = AppTheme.of(context).error;
         icon = Icons.cancel_outlined;
-        label = 'Not Published';
+        label = context.l10n.notPublished;
         break;
       case 'changes_requested':
         backgroundColor = AppTheme.of(context).copperRed.withValues(alpha: 0.15);
         textColor = AppTheme.of(context).copperRed;
         icon = Icons.edit_note;
-        label = 'Refinement Suggested';
+        label = context.l10n.refinementSuggested;
         break;
       default:
         return const SizedBox.shrink();

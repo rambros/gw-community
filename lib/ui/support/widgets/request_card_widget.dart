@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/support/widgets/status_badge_widget.dart';
 import 'package:intl/intl.dart';
@@ -107,7 +108,7 @@ class RequestCardWidget extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      _formatDate(request.updatedAt),
+                      _formatDate(context, request.updatedAt),
                       style: GoogleFonts.lexendDeca(
                         fontSize: 12,
                         color: AppTheme.of(context).secondary.withValues(alpha: 0.5),
@@ -144,7 +145,7 @@ class RequestCardWidget extends StatelessWidget {
               Icon(Icons.delete_outline, size: 20, color: AppTheme.of(context).error),
               const SizedBox(width: 12),
               Text(
-                'Delete',
+                context.l10n.delete,
                 style: GoogleFonts.lexendDeca(
                   fontSize: 14,
                   color: AppTheme.of(context).error,
@@ -157,21 +158,16 @@ class RequestCardWidget extends StatelessWidget {
     );
   }
 
-  String _formatDate(DateTime date) {
-    final now = DateTime.now();
-    final difference = now.difference(date);
+  String _formatDate(BuildContext context, DateTime date) {
+    final l10n = context.l10n;
+    final locale = Localizations.localeOf(context).toString();
+    final difference = DateTime.now().difference(date);
 
-    if (difference.inDays == 0) {
-      if (difference.inHours == 0) {
-        return '${difference.inMinutes}m ago';
-      }
-      return '${difference.inHours}h ago';
-    } else if (difference.inDays == 1) {
-      return 'Yesterday';
-    } else if (difference.inDays < 7) {
-      return '${difference.inDays}d ago';
-    } else {
-      return DateFormat('MMM d').format(date);
-    }
+    if (difference.inMinutes < 1) return l10n.justNow;
+    if (difference.inMinutes < 60) return l10n.minutesAgoShort(difference.inMinutes);
+    if (difference.inHours < 24) return l10n.hoursAgoShort(difference.inHours);
+    if (difference.inDays == 1) return l10n.yesterday;
+    if (difference.inDays < 7) return l10n.daysAgoShort(difference.inDays);
+    return DateFormat.MMMd(locale).format(date);
   }
 }

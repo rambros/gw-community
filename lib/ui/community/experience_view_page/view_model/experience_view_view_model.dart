@@ -4,6 +4,7 @@ import 'package:gw_community/app_state.dart';
 import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:gw_community/data/repositories/experience_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/app_localizations.dart';
 
 /// ViewModel para a página de visualização de Experience
 /// Gerencia estado, lógica de negócio e ações do usuário
@@ -65,9 +66,13 @@ class ExperienceViewViewModel extends ChangeNotifier {
 
   /// Deleta o experience atual após confirmação
   /// Navega de volta para a página de comunidade após deletar
-  Future<void> deleteExperienceCommand(BuildContext context, int experienceId) async {
+  Future<void> deleteExperienceCommand(
+    BuildContext context,
+    int experienceId,
+    AppLocalizations l10n,
+  ) async {
     if (!canDelete()) {
-      _setError('You do not have permission to delete this experience');
+      _setError(l10n.noPermissionToDeleteExperience);
       return;
     }
 
@@ -84,9 +89,9 @@ class ExperienceViewViewModel extends ChangeNotifier {
 
   /// Alterna o estado de lock do experience
   /// Quando locked, usuários não podem comentar
-  Future<void> toggleLockCommand(int experienceId) async {
+  Future<void> toggleLockCommand(int experienceId, AppLocalizations l10n) async {
     if (!canLock()) {
-      _setError('You do not have permission to lock this experience');
+      _setError(l10n.noPermissionToLockExperience);
       return;
     }
 

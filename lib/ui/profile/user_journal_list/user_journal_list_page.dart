@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/index.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/ui/profile/user_journal_list/view_model/user_journal_list_view_model.dart';
@@ -54,7 +55,7 @@ class _UserJournalListPageState extends State<UserJournalListPage> {
           onPressed: () => context.pop(),
         ),
         title: Text(
-          'My Journal',
+          context.l10n.myJournal,
           style: AppTheme.of(context).bodyMedium.override(
                 font: GoogleFonts.lexendDeca(),
                 color: Colors.white,
@@ -72,7 +73,7 @@ class _UserJournalListPageState extends State<UserJournalListPage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
               child: Text(
-                'Your journal entries are private and secure.',
+                context.l10n.journalEntriesPrivate,
                 textAlign: TextAlign.center,
                 style: AppTheme.of(context).bodySmall.override(
                       font: GoogleFonts.lexendDeca(),
@@ -120,7 +121,7 @@ class _UserJournalListPageState extends State<UserJournalListPage> {
     if (journalEntries.isEmpty) {
       return Center(
         child: Text(
-          'No journal entries found.',
+          context.l10n.noJournalEntries,
           style: AppTheme.of(context).bodyMedium,
         ),
       );
@@ -202,7 +203,7 @@ class _UserJournalListPageState extends State<UserJournalListPage> {
                                         dateTimeFormat(
                                           "yMMMd",
                                           entry.dateCompleted,
-                                          locale: FFLocalizations.of(context).languageCode,
+                                          locale: Localizations.localeOf(context).languageCode,
                                         ),
                                         minFontSize: 12.0,
                                         style: AppTheme.of(context).titleMedium.override(
@@ -226,7 +227,7 @@ class _UserJournalListPageState extends State<UserJournalListPage> {
                                     Text(
                                       valueOrDefault<String>(
                                         entry.journeyTitle,
-                                        'Journey',
+                                        context.l10n.journeyLabel,
                                       ),
                                       style: AppTheme.of(context).titleMedium.override(
                                             font: GoogleFonts.lexendDeca(
@@ -268,7 +269,7 @@ class _UserJournalListPageState extends State<UserJournalListPage> {
                                         child: Text(
                                           valueOrDefault<String>(
                                             entry.journalSaved,
-                                            'Your journal entry',
+                                            context.l10n.yourJournalEntry,
                                           ),
                                           style: AppTheme.of(context).bodySmall.override(
                                                 font: GoogleFonts.lexendDeca(

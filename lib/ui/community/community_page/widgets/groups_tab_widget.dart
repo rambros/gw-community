@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/community_page/view_model/community_view_model.dart';
 import 'package:gw_community/ui/community/group_details_page/group_details_page.dart';
 import 'package:gw_community/ui/community/widgets/group_card.dart';
@@ -25,7 +26,7 @@ class GroupsTabWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'My Groups',
+                  context.l10n.myGroups,
                   style: AppTheme.of(context).headlineSmall.override(
                         font: GoogleFonts.lexendDeca(
                           fontWeight: AppTheme.of(context).headlineSmall.fontWeight,
@@ -96,7 +97,7 @@ class GroupsTabWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Other Groups',
+                  context.l10n.otherGroups,
                   style: AppTheme.of(context).headlineSmall.override(
                         font: GoogleFonts.lexendDeca(
                           fontWeight: AppTheme.of(context).headlineSmall.fontWeight,

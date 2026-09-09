@@ -4,6 +4,7 @@ import 'package:gw_community/data/models/enums/user_role.dart';
 
 import 'package:gw_community/data/repositories/group_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/group_actions_page/view_model/group_actions_view_model.dart';
 import 'package:gw_community/ui/community/group_edit_page/group_edit_page.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
@@ -82,7 +83,7 @@ class GroupActionsSheetView extends StatelessWidget {
                           },
                         );
                       },
-                      text: 'Edit Group',
+                      text: context.l10n.editGroup,
                       icon: const Icon(
                         Icons.edit_rounded,
                         size: 24.0,
@@ -117,7 +118,7 @@ class GroupActionsSheetView extends StatelessWidget {
                           .onShowAbout
                           ?.call();
                     },
-                    text: 'About this group',
+                    text: context.l10n.aboutThisGroup,
                     icon: const Icon(
                       Icons.info_outline,
                       size: 24.0,
@@ -162,7 +163,7 @@ class GroupActionsSheetView extends StatelessWidget {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(
-                              'Left the group successfully',
+                              context.l10n.leftGroupSuccessfully,
                               style: TextStyle(
                                 color: AppTheme.of(context).primaryText,
                               ),
@@ -173,7 +174,7 @@ class GroupActionsSheetView extends StatelessWidget {
                       }
                     }
                   },
-                  text: 'Leave the Group',
+                  text: context.l10n.leaveTheGroup,
                   icon: const Icon(
                     Icons.exit_to_app_rounded,
                     size: 24.0,
@@ -203,7 +204,7 @@ class GroupActionsSheetView extends StatelessWidget {
                   onPressed: () async {
                     Navigator.pop(context);
                   },
-                  text: 'Cancel',
+                  text: context.l10n.cancel,
                   options: FFButtonOptions(
                     width: double.infinity,
                     height: 60.0,

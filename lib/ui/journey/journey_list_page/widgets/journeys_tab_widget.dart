@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/journey/journey_list_page/view_model/journey_list_view_model.dart';
 import 'package:gw_community/ui/journey/journey_list_page/widgets/featured_journey_card.dart';
@@ -26,7 +27,7 @@ class JourneysTabWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'My Journeys',
+                  context.l10n.myJourneys,
                   style: AppTheme.of(context).headlineSmall.override(
                         font: GoogleFonts.lexendDeca(
                           fontWeight: AppTheme.of(context).headlineSmall.fontWeight,
@@ -50,7 +51,7 @@ class JourneysTabWidget extends StatelessWidget {
                   return Padding(
                     padding: const EdgeInsets.all(24.0),
                     child: Text(
-                      'You haven\'t started any journeys yet',
+                      context.l10n.noJourneysStartedYet,
                       style: AppTheme.of(context).bodyMedium.override(
                             color: AppTheme.of(context).secondaryText,
                           ),
@@ -128,7 +129,7 @@ class JourneysTabWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Other Journeys',
+                  context.l10n.otherJourneys,
                   style: AppTheme.of(context).headlineSmall.override(
                         font: GoogleFonts.lexendDeca(
                           fontWeight: AppTheme.of(context).headlineSmall.fontWeight,
@@ -152,7 +153,7 @@ class JourneysTabWidget extends StatelessWidget {
                   return Padding(
                     padding: const EdgeInsets.all(24.0),
                     child: Text(
-                      'No other journeys available',
+                      context.l10n.noOtherJourneys,
                       style: AppTheme.of(context).bodyMedium.override(
                             color: AppTheme.of(context).secondaryText,
                           ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 
 /// Dialog for moderation actions that require a reason (Reject or Request Changes)
@@ -12,19 +13,20 @@ class ModerationActionDialog extends StatefulWidget {
   const ModerationActionDialog({
     super.key,
     required this.title,
-    this.hint = 'Provide a reason...',
-    this.actionLabel = 'Confirm',
+    required this.hint,
+    required this.actionLabel,
     this.actionColor,
   });
 
   /// Shows a dialog for rejecting an experience
   static Future<String?> showReject(BuildContext context) {
+    final l10n = context.l10n;
     return showDialog<String>(
       context: context,
-      builder: (_) => const ModerationActionDialog(
-        title: 'Set as Not Published',
-        hint: 'Explain why this experience is not being published...',
-        actionLabel: 'Confirm',
+      builder: (_) => ModerationActionDialog(
+        title: l10n.setAsNotPublished,
+        hint: l10n.explainNotPublished,
+        actionLabel: l10n.confirm,
         actionColor: Colors.red,
       ),
     );
@@ -32,12 +34,13 @@ class ModerationActionDialog extends StatefulWidget {
 
   /// Shows a dialog for suggesting refinement on an experience
   static Future<String?> showSuggestRefinement(BuildContext context) {
+    final l10n = context.l10n;
     return showDialog<String>(
       context: context,
-      builder: (_) => const ModerationActionDialog(
-        title: 'Suggest Refinement',
-        hint: 'Provide feedback on what refinement is suggested...',
-        actionLabel: 'Suggest Refinement',
+      builder: (_) => ModerationActionDialog(
+        title: l10n.suggestRefinement,
+        hint: l10n.provideRefinementFeedback,
+        actionLabel: l10n.suggestRefinement,
         actionColor: Colors.orange,
       ),
     );
@@ -87,7 +90,7 @@ class _ModerationActionDialogState extends State<ModerationActionDialog> {
           autofocus: true,
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
-              return 'Please provide a reason';
+              return context.l10n.pleaseProvideReason;
             }
             return null;
           },
@@ -97,7 +100,7 @@ class _ModerationActionDialogState extends State<ModerationActionDialog> {
         TextButton(
           onPressed: () => Navigator.pop(context),
           child: Text(
-            'Cancel',
+            context.l10n.cancel,
             style: AppTheme.of(
               context,
             ).bodyMedium.override(font: GoogleFonts.lexendDeca(), color: AppTheme.of(context).secondaryText),

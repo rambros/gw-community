@@ -124,68 +124,91 @@ class CommunityRepository {
     );
   }
 
-  // Key used in the cc_settings table
-  static const String _guidelinesKey = 'community_guidelines';
+  static const String _englishKey = 'community_guidelines';
+  static const String _portugueseKey = 'community_guidelines_pt';
 
-  /// Fetches the community guidelines content from cc_settings.
-  Future<String?> getCommunityGuidelines() async {
+  /// Fetches the guidelines version that matches [languageCode].
+  Future<String?> getCommunityGuidelines({required String languageCode}) async {
+    final versions = await getCommunityGuidelinesVersions();
+    return versions.resolve(languageCode);
+  }
+
+  Future<CommunityGuidelinesVersions> getCommunityGuidelinesVersions() async {
     try {
-      debugPrint('🔵 [Guidelines] Fetching with key: $_guidelinesKey');
       final rows = await CcSettingsTable().queryRows(
-        queryFn: (q) => q.eq('setting_key', _guidelinesKey),
+        queryFn: (q) => q.inFilter('setting_key', [_englishKey, _portugueseKey]),
       );
 
-      debugPrint('🔵 [Guidelines] Found ${rows.length} rows');
-      if (rows.isNotEmpty) {
-        final value = rows.first.value;
-        debugPrint('✅ [Guidelines] Loaded content (${value?.length ?? 0} chars): ${value?.substring(0, value.length > 50 ? 50 : value.length)}...');
-        return value;
-      }
-      debugPrint('⚠️ [Guidelines] No content found');
-      return null;
+      return CommunityGuidelinesVersions(
+        english: _valueFor(rows, _englishKey),
+        portuguese: _valueFor(rows, _portugueseKey),
+      );
     } catch (e) {
       debugPrint('❌ [Guidelines] Error fetching: $e');
-      return null;
+      return const CommunityGuidelinesVersions();
     }
   }
 
-  /// Updates the community guidelines content.
-  Future<void> updateCommunityGuidelines(String content) async {
+  Future<void> updateCommunityGuidelinesVersions({
+    required String english,
+    required String portuguese,
+  }) async {
     try {
-      debugPrint('🔵 [Guidelines] Saving content (${content.length} chars): ${content.substring(0, content.length > 50 ? 50 : content.length)}...');
-
-      // Check existence
-      final rows = await CcSettingsTable().queryRows(
-        queryFn: (q) => q.eq('setting_key', _guidelinesKey),
+      await _upsertGuidelineSetting(
+        key: _englishKey,
+        name: 'Community Guidelines',
+        description: 'English community guidelines and policy.',
+        content: english,
       );
-
-      if (rows.isNotEmpty) {
-        // Update
-        debugPrint('🔵 [Guidelines] Updating existing row with key: $_guidelinesKey');
-        await SupaFlow.client.from('cc_settings').update({
-          'value': content,
-          'updated_at': DateTime.now().toIso8601String(),
-        }).eq('setting_key', _guidelinesKey);
-        debugPrint('✅ [Guidelines] Update successful');
-      } else {
-        // Insert
-        debugPrint('🔵 [Guidelines] Inserting new row with key: $_guidelinesKey');
-        await SupaFlow.client.from('cc_settings').insert({
-          'setting_key': _guidelinesKey,
-          'setting_name': 'Community Guidelines',
-          'description': 'Global community guidelines and policy.',
-          'value': content,
-          'value_type': 'string',
-          'is_active': true,
-          'is_encrypted': false,
-          'created_at': DateTime.now().toIso8601String(),
-          'updated_at': DateTime.now().toIso8601String(),
-        });
-        debugPrint('✅ [Guidelines] Insert successful');
-      }
+      await _upsertGuidelineSetting(
+        key: _portugueseKey,
+        name: 'Community Guidelines (PT)',
+        description: 'Portuguese community guidelines and policy.',
+        content: portuguese,
+      );
     } catch (e) {
       debugPrint('Error updating community guidelines: $e');
       throw Exception('Failed to update community guidelines: $e');
     }
+  }
+
+  String? _valueFor(List<CcSettingsRow> rows, String key) {
+    for (final row in rows) {
+      if (row.settingKey == key) return row.value;
+    }
+    return null;
+  }
+
+  Future<void> _upsertGuidelineSetting({
+    required String key,
+    required String name,
+    required String description,
+    required String content,
+  }) async {
+    final rows = await CcSettingsTable().queryRows(
+      queryFn: (q) => q.eq('setting_key', key),
+    );
+    final now = DateTime.now().toIso8601String();
+
+    if (rows.isNotEmpty) {
+      await SupaFlow.client.from('cc_settings').update({
+        'value': content,
+        'updated_at': now,
+      }).eq('setting_key', key);
+      return;
+    }
+
+    await SupaFlow.client.from('cc_settings').insert({
+      'setting_key': key,
+      'setting_name': name,
+      'description': description,
+      'value': content,
+      'value_type': 'string',
+      'category': 'community',
+      'is_active': true,
+      'is_encrypted': false,
+      'created_at': now,
+      'updated_at': now,
+    });
   }
 }

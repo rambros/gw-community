@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/journeys_repository.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/widgets/screen_hint.dart';
 import 'package:gw_community/ui/journey/journey_list_page/view_model/journey_list_view_model.dart';
@@ -75,7 +76,7 @@ class _JourneyListPageState extends State<JourneyListPage> with RouteAware {
               backgroundColor: AppTheme.of(context).primary,
               automaticallyImplyLeading: false,
               title: Text(
-                'Journeys',
+                context.l10n.journeys,
                 style: AppTheme.of(context).bodyMedium.override(
                       font: GoogleFonts.lexendDeca(
                         fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
@@ -92,12 +93,12 @@ class _JourneyListPageState extends State<JourneyListPage> with RouteAware {
               centerTitle: true,
               elevation: 4.0,
             ),
-            body: const ScreenHint(
+            body: ScreenHint(
               hintKey: 'hint_journey',
-              title: 'Welcome to a wonderful journey!',
-              message: 'Learn, create, and share good wishes that make a real impact. Discover inspiration, meditations, and daily practices for personal and world transformation.',
+              title: context.l10n.journeyHintTitle,
+              message: context.l10n.journeyHintMessage,
               pointerFraction: 0.5, // Journey: 3rd of 5 nav items
-              child: SafeArea(
+              child: const SafeArea(
                 top: true,
                 child: JourneysTabWidget(),
               ),

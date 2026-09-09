@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
 import 'package:gw_community/ui/journey/themes/journey_theme_extension.dart';
@@ -77,8 +78,8 @@ class JourneyCardWidget extends StatelessWidget {
                           // Steps progress
                           Text(
                             (stepsCompleted > 0)
-                                ? 'Completed $stepsCompleted of $stepsTotal steps'
-                                : '$stepsTotal steps',
+                                ? context.l10n.stepsProgress(stepsCompleted, stepsTotal)
+                                : context.l10n.stepsCount(stepsTotal),
                             style: AppTheme.of(context).journey.caption.override(
                                   color: AppTheme.of(context).secondary,
                                 ),
@@ -94,7 +95,7 @@ class JourneyCardWidget extends StatelessWidget {
                               child: Padding(
                                 padding: const EdgeInsetsDirectional.fromSTEB(8.0, 2.0, 8.0, 2.0),
                                 child: Text(
-                                  'public',
+                                  context.l10n.publicLabel,
                                   style: AppTheme.of(context).bodyMedium.override(
                                         color: AppTheme.of(context).secondary,
                                         fontSize: 10.0,
@@ -107,19 +108,24 @@ class JourneyCardWidget extends StatelessWidget {
                           // Action button
                           Builder(
                             builder: (context) {
+                              final l10n = context.l10n;
                               Color buttonColor = AppTheme.of(context).secondary;
                               double buttonWidth = 90.0;
                               String textToDisplay = buttonText;
 
-                              if (buttonText.toUpperCase() == 'RESUME') {
+                              if (buttonText == l10n.resumeUpper ||
+                                  buttonText.toUpperCase() == 'RESUME') {
+                                textToDisplay = l10n.resumeUpper;
                                 buttonColor = AppTheme.of(context).primary;
                                 buttonWidth = 110.0;
-                              } else if (buttonText.toUpperCase() == 'COMPLETED' || journeyStatus == 'completed') {
-                                textToDisplay = 'COMPLETED';
+                              } else if (buttonText == l10n.completedUpper ||
+                                  buttonText.toUpperCase() == 'COMPLETED' ||
+                                  journeyStatus == 'completed') {
+                                textToDisplay = l10n.completedUpper;
                                 buttonColor = AppTheme.of(context).tertiary;
                                 buttonWidth = 110.0;
                               } else if (stepsTotal > 0 && stepsCompleted >= stepsTotal) {
-                                textToDisplay = 'COMPLETED';
+                                textToDisplay = l10n.completedUpper;
                                 buttonColor = AppTheme.of(context).tertiary;
                                 buttonWidth = 110.0;
                               }

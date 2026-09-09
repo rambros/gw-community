@@ -4,6 +4,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/group_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/group_edit_page/view_model/group_edit_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
@@ -67,7 +68,7 @@ class GroupEditPageView extends StatelessWidget {
             },
           ),
           title: Text(
-            'Edit Group',
+            context.l10n.editGroup,
             style: AppTheme.of(context).titleLarge.override(
                   font: GoogleFonts.poppins(
                     fontWeight: AppTheme.of(context).titleLarge.fontWeight,
@@ -108,7 +109,7 @@ class GroupEditPageView extends StatelessWidget {
                                 controller: viewModel.nameController,
                                 textCapitalization: TextCapitalization.words,
                                 decoration: InputDecoration(
-                                  labelText: 'Name',
+                                  labelText: context.l10n.name,
                                   labelStyle: AppTheme.of(context).labelLarge.override(
                                         font: GoogleFonts.poppins(),
                                         color: AppTheme.of(context).primary,
@@ -136,7 +137,7 @@ class GroupEditPageView extends StatelessWidget {
                                     ),
                                 validator: (val) {
                                   if (val == null || val.isEmpty) {
-                                    return 'Field is required';
+                                    return context.l10n.fieldRequired;
                                   }
                                   return null;
                                 },
@@ -149,7 +150,7 @@ class GroupEditPageView extends StatelessWidget {
                                 controller: viewModel.descriptionController,
                                 textCapitalization: TextCapitalization.sentences,
                                 decoration: InputDecoration(
-                                  labelText: 'Description',
+                                  labelText: context.l10n.description,
                                   labelStyle: AppTheme.of(context).labelLarge.override(
                                         font: GoogleFonts.poppins(),
                                         color: AppTheme.of(context).primary,
@@ -178,7 +179,7 @@ class GroupEditPageView extends StatelessWidget {
                                 maxLines: 5,
                                 validator: (val) {
                                   if (val == null || val.isEmpty) {
-                                    return 'Field is required';
+                                    return context.l10n.fieldRequired;
                                   }
                                   return null;
                                 },
@@ -191,7 +192,7 @@ class GroupEditPageView extends StatelessWidget {
                                 controller: viewModel.moreInformationController,
                                 textCapitalization: TextCapitalization.sentences,
                                 decoration: InputDecoration(
-                                  labelText: 'More information',
+                                  labelText: context.l10n.moreInformation,
                                   labelStyle: AppTheme.of(context).labelLarge.override(
                                         font: GoogleFonts.poppins(),
                                         color: AppTheme.of(context).primary,
@@ -220,7 +221,7 @@ class GroupEditPageView extends StatelessWidget {
                                 maxLines: 5,
                                 validator: (val) {
                                   if (val == null || val.isEmpty) {
-                                    return 'Field is required';
+                                    return context.l10n.fieldRequired;
                                   }
                                   return null;
                                 },
@@ -243,14 +244,14 @@ class GroupEditPageView extends StatelessWidget {
                                   value: viewModel.isPrivate,
                                   onChanged: viewModel.setIsPrivate,
                                   title: Text(
-                                    'Private Group',
+                                    context.l10n.privateGroup,
                                     style: AppTheme.of(context).bodyMedium.override(
                                           font: GoogleFonts.lexendDeca(),
                                           color: AppTheme.of(context).secondary,
                                         ),
                                   ),
                                   subtitle: Text(
-                                    viewModel.isPrivate ? 'Only members can see content.' : 'Anyone can see content.',
+                                    viewModel.isPrivate ? context.l10n.onlyMembersCanSee : context.l10n.anyoneCanSee,
                                     style: AppTheme.of(context).bodySmall.override(
                                           font: GoogleFonts.lexendDeca(),
                                           color: const Color(0xFF57636C),
@@ -273,7 +274,7 @@ class GroupEditPageView extends StatelessWidget {
                                   Padding(
                                     padding: const EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 8.0),
                                     child: Text(
-                                      'Managers / Facilitators (${viewModel.selectedManagerIds.length})',
+                                      context.l10n.managersFacilitatorsCount(viewModel.selectedManagerIds.length),
                                       style: AppTheme.of(context).labelLarge.override(
                                             font: GoogleFonts.poppins(),
                                             color: AppTheme.of(context).primary,
@@ -296,7 +297,7 @@ class GroupEditPageView extends StatelessWidget {
                                               size: 24.0,
                                             ),
                                             label: Text(
-                                              manager.displayName ?? 'Unknown',
+                                              manager.displayName ?? context.l10n.unknown,
                                               style: AppTheme.of(context).bodySmall.override(
                                                     font: GoogleFonts.lexendDeca(),
                                                     color: Colors.white,
@@ -312,7 +313,7 @@ class GroupEditPageView extends StatelessWidget {
                                   // Search field
                                   TextField(
                                     decoration: InputDecoration(
-                                      hintText: 'Search by name or email (min 3 chars)...',
+                                      hintText: context.l10n.searchByNameOrEmail,
                                       prefixIcon: const Icon(Icons.search),
                                       border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(12.0),
@@ -345,8 +346,8 @@ class GroupEditPageView extends StatelessWidget {
                                         ? Center(
                                             child: Text(
                                               viewModel.managerSearchQuery.isEmpty
-                                                  ? 'Search to find users'
-                                                  : 'No users found',
+                                                  ? context.l10n.searchToFindUsers
+                                                  : context.l10n.noUsersFound,
                                               style: AppTheme.of(context).bodyMedium.override(
                                                     font: GoogleFonts.lexendDeca(),
                                                     color: const Color(0xFF57636C),
@@ -386,7 +387,7 @@ class GroupEditPageView extends StatelessWidget {
                                                             mainAxisSize: MainAxisSize.min,
                                                             children: [
                                                               Text(
-                                                                manager.displayName ?? 'Unknown',
+                                                                manager.displayName ?? context.l10n.unknown,
                                                                 style: AppTheme.of(context).bodyMedium.override(
                                                                       font: GoogleFonts.lexendDeca(),
                                                                       color: AppTheme.of(context).secondary,
@@ -428,7 +429,7 @@ class GroupEditPageView extends StatelessWidget {
                                   Padding(
                                     padding: const EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 8.0),
                                     child: Text(
-                                      'Group Image',
+                                      context.l10n.groupImage,
                                       style: AppTheme.of(context).labelLarge.override(
                                             font: GoogleFonts.poppins(),
                                             color: AppTheme.of(context).primary,
@@ -480,7 +481,7 @@ class GroupEditPageView extends StatelessWidget {
                                     }
                                   }
                                 },
-                                text: 'Update Group',
+                                text: context.l10n.updateGroup,
                                 options: FFButtonOptions(
                                   width: 270.0,
                                   height: 50.0,

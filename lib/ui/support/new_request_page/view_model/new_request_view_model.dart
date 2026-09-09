@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gw_community/data/repositories/support_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/app_localizations.dart';
 
 enum SupportCategory {
   journey('journey', 'Journey'),
@@ -60,27 +61,27 @@ class NewRequestViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  String? validateTitle(String? value) {
+  String? validateTitle(String? value, AppLocalizations l10n) {
     if (value == null || value.trim().isEmpty) {
-      return 'Please enter a subject for your question';
+      return l10n.pleaseEnterSubject;
     }
     if (value.trim().length < 5) {
-      return 'Subject must be at least 5 characters';
+      return l10n.subjectMinLength;
     }
     return null;
   }
 
-  String? validateDescription(String? value) {
+  String? validateDescription(String? value, AppLocalizations l10n) {
     if (value == null || value.trim().isEmpty) {
-      return 'Please describe your question';
+      return l10n.pleaseDescribeQuestion;
     }
     if (value.trim().length < 20) {
-      return 'Description must be at least 20 characters';
+      return l10n.descriptionMinLength;
     }
     return null;
   }
 
-  Future<CcSupportRequestsRow?> submit() async {
+  Future<CcSupportRequestsRow?> submit(AppLocalizations l10n) async {
     _errorMessage = null;
 
     // Validate form
@@ -104,7 +105,7 @@ class NewRequestViewModel extends ChangeNotifier {
       _isSubmitting = false;
 
       if (result == null) {
-        _errorMessage = 'Failed to create question. Please try again.';
+        _errorMessage = l10n.failedToCreateQuestion;
         notifyListeners();
         return null;
       }
@@ -113,7 +114,7 @@ class NewRequestViewModel extends ChangeNotifier {
       return result;
     } catch (e) {
       _isSubmitting = false;
-      _errorMessage = 'An error occurred: $e';
+      _errorMessage = l10n.anErrorOccurred('$e');
       notifyListeners();
       return null;
     }

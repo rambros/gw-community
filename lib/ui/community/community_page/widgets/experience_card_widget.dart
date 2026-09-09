@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/experience_edit_page/experience_edit_page.dart';
 import 'package:gw_community/ui/community/experience_view_page/experience_view_page.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
@@ -105,7 +106,7 @@ class ExperienceCardWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    valueOrDefault<String>(experienceRow.displayName, 'User name'),
+                    valueOrDefault<String>(experienceRow.displayName, context.l10n.userFallback),
                     style: AppTheme.of(context).bodyMedium.override(
                           font: GoogleFonts.lexendDeca(
                             fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
@@ -139,37 +140,34 @@ class ExperienceCardWidget extends StatelessWidget {
     Color backgroundColor;
     Color textColor;
     IconData icon;
-    String label;
 
     switch (status) {
       case 'draft':
         backgroundColor = const Color(0xFFE3F2FD);
         textColor = const Color(0xFF1976D2);
         icon = Icons.edit_note;
-        label = 'In Reflection';
         break;
       case 'awaiting_approval':
       case 'pending':
         backgroundColor = AppTheme.of(context).warning.withValues(alpha: 0.15);
         textColor = const Color(0xFFB8860B);
         icon = Icons.hourglass_empty;
-        label = 'Awaiting Approval';
         break;
       case 'rejected':
         backgroundColor = AppTheme.of(context).error.withValues(alpha: 0.15);
         textColor = AppTheme.of(context).error;
         icon = Icons.cancel_outlined;
-        label = 'Not Published';
         break;
       case 'changes_requested':
         backgroundColor = AppTheme.of(context).copperRed.withValues(alpha: 0.15);
         textColor = AppTheme.of(context).copperRed;
         icon = Icons.edit_note;
-        label = 'Refinement Suggested';
         break;
       default:
         return const SizedBox.shrink();
     }
+
+    final label = localizedExperienceStatus(context.l10n, status);
 
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 12.0),
@@ -239,8 +237,8 @@ class ExperienceCardWidget extends StatelessWidget {
                   ),
                 Text(
                   experienceRow.moderationStatus == 'rejected'
-                      ? 'You’re welcome to revise and share again whenever you feel ready.'
-                      : 'Suggestions were shared to help refine this experience.',
+                      ? context.l10n.welcomeToReviseExperience
+                      : context.l10n.suggestionsSharedToRefine,
                   style: AppTheme.of(context).bodySmall.override(
                         font: GoogleFonts.lexendDeca(),
                         color: AppTheme.of(context).secondary,
@@ -324,12 +322,12 @@ class ExperienceCardWidget extends StatelessWidget {
     final actions = <Widget>[];
 
     if (canDelete && onDelete != null) {
-      actions.add(outlineBtn('Delete', () async {
+      actions.add(outlineBtn(context.l10n.delete, () async {
         final confirmed = await ConfirmationDialog.show(
           context: context,
-          title: 'Withdraw this experience?',
-          message: 'It will be permanently removed from the group and cannot be restored.',
-          confirmLabel: 'Delete',
+          title: context.l10n.withdrawExperienceTitle,
+          message: context.l10n.withdrawExperienceMessage,
+          confirmLabel: context.l10n.delete,
           confirmColor: AppTheme.of(context).secondary,
         );
         if (context.mounted && confirmed) await onDelete!(context);
@@ -337,12 +335,12 @@ class ExperienceCardWidget extends StatelessWidget {
     }
 
     if (canUnpublish) {
-      actions.add(outlineBtn('Unpublish', () async {
+      actions.add(outlineBtn(context.l10n.unpublish, () async {
         final confirmed = await ConfirmationDialog.show(
           context: context,
-          title: 'Unpublish this experience?',
-          message: 'The experience will be removed from public view.',
-          confirmLabel: 'Unpublish',
+          title: context.l10n.unpublishExperienceTitle,
+          message: context.l10n.unpublishExperienceMessage,
+          confirmLabel: context.l10n.unpublish,
           confirmColor: AppTheme.of(context).secondary,
         );
         if (context.mounted && confirmed) await onUnpublish!(context);
@@ -352,7 +350,7 @@ class ExperienceCardWidget extends StatelessWidget {
     if (isOwner &&
         experienceRow.moderationStatus != 'awaiting_approval' &&
         experienceRow.moderationStatus != 'pending') {
-      actions.add(filledBtn('Edit', () {
+      actions.add(filledBtn(context.l10n.edit, () {
         context.pushNamed(
           ExperienceEditPage.routeName,
           extra: <String, dynamic>{

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/event_repository.dart';
 import 'package:gw_community/index.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/event_add_page/view_model/event_add_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_drop_down.dart';
@@ -81,7 +82,7 @@ class _EventAddPageState extends State<EventAddPage> {
                   onPressed: () => context.pop(),
                 ),
                 title: Text(
-                  'New Event',
+                  context.l10n.newEvent,
                   style: AppTheme.of(context).titleLarge.override(
                         font: GoogleFonts.poppins(
                           fontWeight: AppTheme.of(context).titleLarge.fontWeight,
@@ -121,7 +122,7 @@ class _EventAddPageForm extends StatefulWidget {
 class _EventAddPageFormState extends State<_EventAddPageForm> {
   String? _requiredValidator(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return 'Required';
+      return context.l10n.required;
     }
     return null;
   }
@@ -149,10 +150,10 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
                   child: FlutterFlowDropDown<String>(
                     controller: eventTypeController,
                     options: const ['single_day', 'multi_day'],
-                    optionLabels: const ['Single Day', 'Multi-day'],
+                    optionLabels: [context.l10n.singleDay, context.l10n.multiDay],
                     onChanged: vm.setEventType,
                     textStyle: AppTheme.of(context).bodyMedium,
-                    hintText: 'Event Type',
+                    hintText: context.l10n.eventType,
                     fillColor: AppTheme.of(context).primaryBackground,
                     elevation: 2.0,
                     borderColor: AppTheme.of(context).alternate,
@@ -165,7 +166,7 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
                   context: context,
                   controller: vm.titleController,
                   focusNode: vm.titleFocus,
-                  label: 'Title',
+                  label: context.l10n.title,
                   validator: _requiredValidator,
                   textCapitalization: TextCapitalization.words,
                 ),
@@ -173,7 +174,7 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
                   context: context,
                   controller: vm.facilitatorController,
                   focusNode: vm.facilitatorFocus,
-                  label: 'Facilitator',
+                  label: context.l10n.facilitator,
                   validator: _requiredValidator,
                   textCapitalization: TextCapitalization.words,
                 ),
@@ -181,7 +182,7 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
                   context: context,
                   controller: vm.descriptionController,
                   focusNode: vm.descriptionFocus,
-                  label: 'Description',
+                  label: context.l10n.description,
                   maxLines: 6,
                   validator: _requiredValidator,
                   textCapitalization: TextCapitalization.sentences,
@@ -193,29 +194,29 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
                     context: context,
                     controller: vm.durationController,
                     focusNode: vm.durationFocus,
-                    label: 'Duration (minutes)',
+                    label: context.l10n.durationMinutes,
                     keyboardType: TextInputType.number,
                     validator: _requiredValidator,
                   ),
                 ] else ...[
-                  _buildDateField(context, vm, label: 'Start Date'),
+                  _buildDateField(context, vm, label: context.l10n.startDate),
                   _buildEndDateField(context, vm),
                 ],
                 _buildTextField(
                   context: context,
                   controller: vm.urlRegistrationController,
                   focusNode: vm.urlFocus,
-                  label: 'Registration URL (optional)',
+                  label: context.l10n.registrationUrlOptional,
                 ),
                 Padding(
                   padding: const EdgeInsetsDirectional.fromSTEB(4.0, 8.0, 4.0, 8.0),
                   child: FlutterFlowDropDown<String>(
                     controller: statusController,
                     options: const ['scheduled', 'recorded'],
-                    optionLabels: const ['Scheduled', 'Recorded'],
+                    optionLabels: [context.l10n.scheduled, context.l10n.recorded],
                     onChanged: vm.setStatus,
                     textStyle: AppTheme.of(context).bodyMedium,
-                    hintText: 'Status',
+                    hintText: context.l10n.status,
                     fillColor: AppTheme.of(context).primaryBackground,
                     elevation: 2.0,
                     borderColor: AppTheme.of(context).alternate,
@@ -302,7 +303,7 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
     );
   }
 
-  Widget _buildDateField(BuildContext context, EventAddViewModel vm, {String label = 'Date'}) {
+  Widget _buildDateField(BuildContext context, EventAddViewModel vm, {String? label}) {
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(4.0, 8.0, 4.0, 8.0),
       child: Row(
@@ -312,7 +313,7 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
               controller: vm.dateController,
               focusNode: vm.dateFocus,
               readOnly: true,
-              decoration: _dateTimeDecoration(context, label),
+              decoration: _dateTimeDecoration(context, label ?? context.l10n.date),
               validator: _requiredValidator,
             ),
           ),
@@ -333,7 +334,7 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
                 );
               }
             },
-            text: 'Select date',
+            text: context.l10n.selectDate,
             options: _pickerButtonOptions(context),
           ),
         ],
@@ -351,7 +352,7 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
               controller: vm.endDateController,
               focusNode: vm.endDateFocus,
               readOnly: true,
-              decoration: _dateTimeDecoration(context, 'End Date'),
+              decoration: _dateTimeDecoration(context, context.l10n.endDate),
               validator: _requiredValidator,
             ),
           ),
@@ -372,7 +373,7 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
                 );
               }
             },
-            text: 'Select date',
+            text: context.l10n.selectDate,
             options: _pickerButtonOptions(context),
           ),
         ],
@@ -390,7 +391,7 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
               controller: vm.timeController,
               focusNode: vm.timeFocus,
               readOnly: true,
-              decoration: _dateTimeDecoration(context, 'Time'),
+              decoration: _dateTimeDecoration(context, context.l10n.time),
               validator: _requiredValidator,
             ),
           ),
@@ -410,7 +411,7 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
                 );
               }
             },
-            text: 'Select time',
+            text: context.l10n.selectTime,
             options: _pickerButtonOptions(context),
           ),
         ],
@@ -476,7 +477,7 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
           context.pushNamed(CommunityPage.routeName);
         }
       },
-      text: 'Cancel',
+      text: context.l10n.cancel,
       options: FFButtonOptions(
         height: 40.0,
         padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
@@ -508,7 +509,7 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
-                    'Event created with success',
+                    context.l10n.eventCreatedSuccessfully,
                     style: TextStyle(color: AppTheme.of(context).primaryText),
                   ),
                   backgroundColor: AppTheme.of(context).secondary,
@@ -520,7 +521,7 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
                 context.pushNamed(CommunityPage.routeName);
               }
             },
-      text: vm.isSaving ? 'Saving...' : 'Save Event',
+      text: vm.isSaving ? context.l10n.saving : context.l10n.saveEvent,
       options: FFButtonOptions(
         height: 40.0,
         padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),

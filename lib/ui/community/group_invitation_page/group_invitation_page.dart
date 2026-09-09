@@ -3,6 +3,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/group_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/group_invitation_page/view_model/group_invitation_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
@@ -63,7 +64,7 @@ class GroupInvitationPageView extends StatelessWidget {
             },
           ),
           title: Text(
-            'Group Not Found',
+            context.l10n.groupNotFound,
             style: AppTheme.of(context).titleLarge.override(
                   font: GoogleFonts.poppins(),
                   color: AppTheme.of(context).primaryBackground,
@@ -72,7 +73,7 @@ class GroupInvitationPageView extends StatelessWidget {
           centerTitle: true,
           elevation: 2.0,
         ),
-        body: const Center(child: Text('Group information is missing.')),
+        body: Center(child: Text(context.l10n.groupInformationMissing)),
       );
     }
 
@@ -90,7 +91,7 @@ class GroupInvitationPageView extends StatelessWidget {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
-                        'You have joined the group successfully',
+                        context.l10n.joinedGroupSuccessfully,
                         style: TextStyle(
                           color: AppTheme.of(context).primaryText,
                         ),
@@ -126,7 +127,7 @@ class GroupInvitationPageView extends StatelessWidget {
                         width: MediaQuery.sizeOf(context).width * 0.6,
                         alignment: const AlignmentDirectional(0.0, 0.0),
                         child: Text(
-                          'Join Group',
+                          context.l10n.joinGroup,
                           style: AppTheme.of(context).bodyMedium.override(
                                 font: GoogleFonts.lexendDeca(),
                                 color: AppTheme.of(context).primaryBackground,
@@ -157,7 +158,7 @@ class GroupInvitationPageView extends StatelessWidget {
           },
         ),
         title: Text(
-          'About Group',
+          context.l10n.aboutGroup,
           style: AppTheme.of(context).titleLarge.override(
                 font: GoogleFonts.poppins(),
                 color: AppTheme.of(context).primaryBackground,
@@ -209,10 +210,13 @@ class GroupInvitationPageView extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 8.0),
                             child: Text(
-                              '${group.groupPrivacy} group - ${formatNumber(
-                                group.numberMembers,
-                                formatType: FormatType.compact,
-                              )} members',
+                              context.l10n.groupMetaDetails(
+                                localizedGroupPrivacy(
+                                  context.l10n,
+                                  group.groupPrivacy,
+                                ),
+                                context.l10n.memberCount(group.numberMembers ?? 0),
+                              ),
                               style: AppTheme.of(context).bodyMedium.override(
                                     font: GoogleFonts.lexendDeca(fontWeight: FontWeight.w500),
                                     color: AppTheme.of(context).secondary,
@@ -228,7 +232,7 @@ class GroupInvitationPageView extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 0.0, 0.0),
                   child: Text(
-                    'Description',
+                    context.l10n.description,
                     style: AppTheme.of(context).bodyMedium.override(
                           font: GoogleFonts.lexendDeca(fontWeight: FontWeight.w500),
                           color: AppTheme.of(context).secondary,
@@ -285,7 +289,7 @@ class GroupInvitationPageView extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 0.0, 0.0),
                           child: Text(
-                            'Facilitators',
+                            context.l10n.facilitators,
                             style: AppTheme.of(context).bodyMedium.override(
                                   font: GoogleFonts.lexendDeca(fontWeight: FontWeight.w500),
                                   color: AppTheme.of(context).secondary,

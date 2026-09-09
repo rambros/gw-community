@@ -1,0 +1,728 @@
+{
+  "@@locale": "en",
+  "navHome": "Home",
+  "navLibrary": "Library",
+  "navJourney": "Journey",
+  "navCommunity": "Community",
+  "navProfile": "Profile",
+  "language": "Language",
+  "languageEnglish": "English",
+  "languagePortuguese": "Português",
+  "chooseLanguage": "Choose language",
+  "journeyContents": "Contents",
+  "start": "Start",
+  "resume": "Resume",
+  "startUpper": "START",
+  "resumeUpper": "RESUME",
+  "completedUpper": "COMPLETED",
+  "viewAgain": "VIEW AGAIN",
+  "viewMore": "View more",
+  "journeys": "Journeys",
+  "myJourneys": "My Journeys",
+  "otherJourneys": "Other Journeys",
+  "untitledJourney": "Untitled Journey",
+  "noJourneysStarted": "No journeys started yet",
+  "noJourneysStartedYet": "You haven't started any journeys yet",
+  "noOtherJourneys": "No other journeys available",
+  "stepsCount": "{count, plural, =1{1 step} other{{count} steps}}",
+  "@stepsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "stepsProgress": "Completed {completed} of {total} steps",
+  "@stepsProgress": {
+    "placeholders": {
+      "completed": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "publicLabel": "public",
+  "privateLabel": "private",
+  "groupPrivacyPublic": "Public",
+  "groupPrivacyPrivate": "Private",
+  "noPostsYet": "No posts yet",
+  "lastPostJustNow": "Last post just now",
+  "lastPostMinutesAgo": "Last post {minutes} min ago",
+  "@lastPostMinutesAgo": {
+    "placeholders": {
+      "minutes": { "type": "int" }
+    }
+  },
+  "lastPostHoursAgo": "Last post {hours} h ago",
+  "@lastPostHoursAgo": {
+    "placeholders": {
+      "hours": { "type": "int" }
+    }
+  },
+  "lastPostDaysAgo": "{count, plural, =1{Last post 1 day ago} other{Last post {count} days ago}}",
+  "@lastPostDaysAgo": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "lastPostOn": "Last post {date}",
+  "@lastPostOn": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "memberCount": "{count, plural, =1{1 member} other{{count} members}}",
+  "@memberCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "groupMetaLine": "{privacy} - {members}",
+  "@groupMetaLine": {
+    "placeholders": {
+      "privacy": { "type": "String" },
+      "members": { "type": "String" }
+    }
+  },
+  "groupMetaDetails": "{privacy} group - {members}",
+  "@groupMetaDetails": {
+    "placeholders": {
+      "privacy": { "type": "String" },
+      "members": { "type": "String" }
+    }
+  },
+  "deleteGroup": "Delete Group",
+  "confirmDeleteGroup": "Confirm deletion of group named {name}",
+  "@confirmDeleteGroup": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "confirm": "Confirm",
+  "groupDeleted": "Group deleted with success",
+  "welcomeComma": "Welcome,",
+  "communityTagline": "A community of well-wishers\ncreating a new world together",
+  "myGroups": "My Groups",
+  "otherGroups": "Other Groups",
+  "upcomingEvents": "Upcoming Events",
+  "profile": "Profile",
+  "accountSettings": "Account Settings",
+  "editProfile": "Edit Profile",
+  "changePassword": "Change Password",
+  "setNotifications": "Set Notifications",
+  "editGuidelines": "Edit Guidelines",
+  "resetTips": "Reset Tips",
+  "tipsReset": "Tips reset — switching tabs will show them again.",
+  "myFavorites": "My Favorites",
+  "myJournal": "My Journal",
+  "myExperiences": "My Experiences",
+  "askAQuestion": "Ask a Question",
+  "communityGuidelines": "Community Guidelines",
+  "logOut": "Log Out",
+  "versionLabel": "Version {version}",
+  "@versionLabel": {
+    "placeholders": {
+      "version": { "type": "String" }
+    }
+  },
+  "library": "Library",
+  "community": "Community",
+  "login": "Login",
+  "email": "Email",
+  "password": "Password",
+  "yourEmail": "Your email",
+  "yourPassword": "Your password",
+  "emailRequired": "Email is required",
+  "enterValidEmail": "Enter a valid email",
+  "fieldRequired": "Field is required",
+  "accessAccountBelow": "Access your account below.",
+  "forgotPassword": "Forgot password?",
+  "sendAccessLink": "Send Access Link",
+  "magicLinkHint": "Enter your email to receive a secure access link.",
+  "emailNotRegistered": "Email not registered. Contact your administrator.",
+  "errorSendingLink": "Error sending link. Please try again.",
+  "checkYourEmail": "Check your email!",
+  "magicLinkSentTo": "We sent an access link to {email}. Tap it to sign in.",
+  "@magicLinkSentTo": {
+    "placeholders": {
+      "email": { "type": "String" }
+    }
+  },
+  "linkSentAgain": "Link sent again. Check your inbox.",
+  "resendLink": "Resend link",
+  "signInWithPassword": "Sign in with password →",
+  "signInWithoutPassword": "← Sign in without password",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "notifications": "Notifications",
+  "noNotificationsYet": "No notifications yet",
+  "markAllAsRead": "Mark all as read",
+  "deleteRead": "Delete read",
+  "deleteAll": "Delete all",
+  "notificationsNew": "New",
+  "notificationsRead": "Read",
+  "deleteReadNotifications": "Delete read notifications",
+  "confirmDeleteReadNotifications": "Are you sure you want to delete all read notifications?",
+  "deleteAllNotifications": "Delete all notifications",
+  "confirmDeleteAllNotifications": "Are you sure you want to delete all system notifications? This cannot be undone.",
+  "justNow": "Just now",
+  "minutesAgoShort": "{minutes}m ago",
+  "@minutesAgoShort": {
+    "placeholders": {
+      "minutes": { "type": "int" }
+    }
+  },
+  "hoursAgoShort": "{hours}h ago",
+  "@hoursAgoShort": {
+    "placeholders": {
+      "hours": { "type": "int" }
+    }
+  },
+  "daysAgoShort": "{days}d ago",
+  "@daysAgoShort": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "yourProfile": "Your Profile",
+  "firstName": "First Name",
+  "lastName": "Last Name",
+  "displayName": "Display Name",
+  "hideMyLastName": "Hide my last name",
+  "saveChanges": "Save Changes",
+  "nameFallback": "Name",
+  "signUp": "Sign Up",
+  "hideLastNameHint": "You can hide your last name in your profile if you like.",
+  "agreeToTermsPrefix": "By creating an account, you are agreeing to our ",
+  "termsAndConditions": "Terms & Conditions ",
+  "andWord": "and ",
+  "privacyPolicy": "Privacy Policy.",
+  "completeSetup": "Complete Setup",
+  "resetOnboardingTitle": "Reset onboarding experience",
+  "resetOnboardingDescription": "We will clear your onboarding progress so you can go through the introduction again.",
+  "resetOnboarding": "Reset Onboarding",
+  "onboardingResetSuccess": "Onboarding reset successfully.",
+  "errorResettingOnboarding": "Error resetting onboarding: {error}",
+  "@errorResettingOnboarding": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "errorLoggingOut": "Error logging out: {error}",
+  "@errorLoggingOut": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "yourJournalEntry": "Your Journal Entry",
+  "journalEntriesPrivate": "Your journal entries are private and secure.",
+  "noJournalEntries": "No journal entries found.",
+  "journalEntryNotFound": "Journal entry not found.",
+  "journeyLabel": "Journey",
+  "journalSaved": "Journal saved",
+  "saving": "Saving...",
+  "edit": "Edit",
+  "deletionOfJournalEntry": "Deletion of journal entry",
+  "confirmDeleteJournalEntry": "Confirm deletion of this entry?",
+  "clearing": "Clearing...",
+  "clearEntry": "Clear entry",
+  "tryAgain": "Try Again",
+  "noExperiencesYet": "No experiences yet",
+  "group": "Group",
+  "allGroups": "All Groups",
+  "status": "Status",
+  "allStatus": "All Status",
+  "published": "Published",
+  "inReflection": "In Reflection",
+  "awaitingApproval": "Awaiting Approval",
+  "notPublished": "Not Published",
+  "refinementSuggested": "Refinement Suggested",
+  "clearFilters": "Clear Filters",
+  "deleteExperience": "Delete Experience",
+  "confirmDeleteExperience": "Are you sure you want to delete this experience? This action cannot be undone.",
+  "experienceDeleted": "Experience deleted successfully",
+  "publishExperience": "Publish Experience",
+  "confirmPublishExperience": "Are you sure you want to publish this experience? It will be sent for moderation review.",
+  "experiencePublished": "Experience published successfully",
+  "view": "View",
+  "submit": "Submit",
+  "revise": "Revise",
+  "publish": "Publish",
+  "visibleForEveryone": "Visible for everyone",
+  "groupOnly": "Group only",
+  "userFallback": "User",
+  "enterNewPasswordBelow": "Enter your new password below.",
+  "newPassword": "New Password",
+  "enterNewPassword": "Enter new password",
+  "confirmPassword": "Confirm Password",
+  "confirmNewPassword": "Confirm new password",
+  "passwordsDoNotMatch": "Passwords do not match",
+  "passwordUpdated": "Password updated successfully",
+  "updatePassword": "Update Password",
+  "pushNotifications": "Push Notifications",
+  "pushNotificationsSubtitle": "Receive alerts on your device even when the app is closed.",
+  "inAppNotifications": "In-App Notifications",
+  "inAppNotificationsSubtitle": "Show the notification bell and alerts inside the app.",
+  "startSharingExperiences": "Share your experiences with the community!",
+  "visibleOnlyFor": "Visible only for {group}",
+  "@visibleOnlyFor": {
+    "placeholders": {
+      "group": { "type": "String" }
+    }
+  },
+  "save": "Save",
+  "markdownSupported": "Markdown supported: **bold**, *italic*, # heading, - list",
+  "enterGuidelinesHint": "Enter community guidelines here...",
+  "enterEnglishGuidelinesHint": "Enter the English guidelines here...",
+  "enterPortugueseGuidelinesHint": "Enter the Portuguese guidelines here...",
+  "guidelinesVersionsHint": "The app shows the version that matches the participant's language. If Portuguese is empty, English is used.",
+  "noGuidelinesYet": "No guidelines available yet.",
+  "guidelinesSaved": "Guidelines saved successfully!",
+  "failedToSaveGuidelines": "Failed to save guidelines: {error}",
+  "@failedToSaveGuidelines": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "myQuestions": "My Questions",
+  "supportFilterAll": "All",
+  "supportFilterOpen": "Open",
+  "supportFilterCompleted": "Completed",
+  "failedToLoadQuestions": "Failed to load questions",
+  "noQuestionsYet": "No questions yet",
+  "noQuestionsFound": "No questions found",
+  "haveAQuestionHelp": "Have a question? We're here to help!",
+  "tryChangingFilter": "Try changing your filter",
+  "deleteQuestion": "Delete Question",
+  "confirmDeleteQuestion": "Are you sure you want to delete this question? This action cannot be undone.",
+  "questionDeleted": "Question deleted successfully",
+  "subject": "Subject",
+  "description": "Description",
+  "subjectHint": "Brief summary of your question",
+  "descriptionHint": "Please provide as much detail as possible...",
+  "submitQuestion": "Submit Question",
+  "questionAbout": "Question about:",
+  "questionSubmitted": "Question submitted successfully!",
+  "pleaseEnterSubject": "Please enter a subject for your question",
+  "subjectMinLength": "Subject must be at least 5 characters",
+  "pleaseDescribeQuestion": "Please describe your question",
+  "descriptionMinLength": "Description must be at least 20 characters",
+  "failedToCreateQuestion": "Failed to create question. Please try again.",
+  "anErrorOccurred": "An error occurred: {error}",
+  "@anErrorOccurred": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "question": "Question",
+  "questionNotFound": "Question not found",
+  "markAsCompleted": "Mark as Completed",
+  "reopenQuestion": "Reopen Question",
+  "askedOn": "Asked on {date}",
+  "@askedOn": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "referenceNumber": "Reference {number}",
+  "@referenceNumber": {
+    "placeholders": {
+      "number": { "type": "String" }
+    }
+  },
+  "noMessagesYet": "No messages yet",
+  "sendMessageToStart": "Send a message to start the conversation",
+  "typeAMessage": "Type a message...",
+  "questionHasBeenCompleted": "This question has been completed",
+  "reopen": "Reopen",
+  "chooseFromGallery": "Choose from Gallery",
+  "takeAPhoto": "Take a Photo",
+  "confirmMarkCompleted": "Are you sure your question has been answered? You can reopen it later if needed.",
+  "questionMarkedCompleted": "Question marked as completed",
+  "confirmReopenQuestion": "Do you need further assistance with this question?",
+  "questionReopened": "Question reopened",
+  "supportTeam": "Support",
+  "supportStatusOpen": "Open",
+  "supportStatusReviewed": "Being Reviewed",
+  "supportStatusNeedsResponse": "Needs Your Response",
+  "supportStatusCompleted": "Completed",
+  "yesterday": "Yesterday",
+  "failedToSendMessage": "Failed to send message",
+  "errorSendingMessage": "Error sending message: {error}",
+  "@errorSendingMessage": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "noFavoritesYet": "No favorites yet",
+  "tapHeartToCollectPrefix": "Tap ",
+  "tapHeartToCollectSuffix": " throughout the app to collect your favorites",
+  "failedToLoadFavorites": "Failed to load favorites",
+  "fromLibrary": "From Library",
+  "fromJourney": "From Journey",
+  "fromSource": "From {title}",
+  "@fromSource": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+  "stepWithTitle": "Step {number}: {title}",
+  "@stepWithTitle": {
+    "placeholders": {
+      "number": { "type": "int" },
+      "title": { "type": "String" }
+    }
+  },
+  "mediaAudio": "Audio",
+  "mediaVideo": "Video",
+  "mediaText": "Text",
+  "mediaJournal": "Journal",
+  "untitled": "Untitled",
+  "activityFallback": "Activity",
+  "communityHintTitle": "The power of community",
+  "communityHintMessage": "Join a community to connect and share experiences, encouraging thoughts, ideas, and content for self-development.",
+  "libraryHintTitle": "Explore and grow",
+  "libraryHintMessage": "Access a growing collection of reflections, meditations, and resources to deepen your practice and support your spiritual development.",
+  "journeyHintTitle": "Welcome to a wonderful journey!",
+  "journeyHintMessage": "Learn, create, and share good wishes that make a real impact. Discover inspiration, meditations, and daily practices for personal and world transformation.",
+  "onboardingJourneyTitle": "Journey",
+  "onboardingJourneyBody": "Welcome to a wonderful journey! A journey to learn, create and share good wishes that have an impact. Good wishes are a way for self-transformation and world transformation. You will find inspirations, meditations, daily practices and companionship…",
+  "onboardingLearnTitle": "Learn",
+  "onboardingLearnBody": "When you feel that you would like to learn more, clarify or deepen your understanding and experience, new content and references are available to help you with your practice and personal progress…",
+  "onboardingCommunityTitle": "Community",
+  "onboardingCommunityBody": "Collective good wishes are powerful. As you move along you will be part of a community of good wishers, available to help one another through the exchange of a heart-felt feelings that gives hope, strength and support… the basis for a new world.",
+  "onboardingBeginsTitle": "Your Journey Begins",
+  "onboardingBeginsSubtitle": "Sign up below in order to get started!",
+  "onboardingGetStarted": "Get Started",
+  "searchAllContent": "Search all content...",
+  "filter": "Filter",
+  "listOfAllContent": "List of All Content",
+  "listOfContents": "List of Contents",
+  "clearFilter": "Clear Filter",
+  "noContentFound": "No content found",
+  "tryAdjustingFilters": "Try adjusting your filters or search terms",
+  "transcript": "Transcript",
+  "contentFilter": "Content Filter",
+  "author": "Author",
+  "event": "Event",
+  "year": "Year",
+  "topics": "Topics",
+  "selectAuthor": "Select Author",
+  "selectEvent": "Select Event",
+  "selectYear": "Select Year",
+  "selectTopics": "Select Topics",
+  "searchAuthor": "Search for an author...",
+  "searchEvent": "Search for an event...",
+  "searchYear": "Search for a year...",
+  "searchTapOutsideToClose": "Search... (tap outside to close)",
+  "applyFilters": "Apply Filters",
+  "clearNamedFilter": "Clear {label} filter",
+  "@clearNamedFilter": {
+    "placeholders": {
+      "label": { "type": "String" }
+    }
+  },
+  "portalContentLibrary": "Portal Content Library",
+  "orSeparator": "or",
+  "withAuthors": "With {names}",
+  "@withAuthors": {
+    "placeholders": {
+      "names": { "type": "String" }
+    }
+  },
+  "atEvent": "at {event}",
+  "@atEvent": {
+    "placeholders": {
+      "event": { "type": "String" }
+    }
+  },
+  "linkToGroups": "Link to Groups",
+  "groupLinksUpdated": "Group links updated.",
+  "failedToUpdateLinks": "Failed to update links.",
+  "noGroupsAvailable": "No groups available.",
+  "noGroupsMatch": "No groups match \"{query}\".",
+  "@noGroupsMatch": {
+    "placeholders": {
+      "query": { "type": "String" }
+    }
+  },
+  "searchGroups": "Search groups…",
+  "willBeUnlinked": "Will be unlinked",
+  "willBeLinked": "Will be linked",
+  "noFilter": "No filter",
+  "filteredBySearch": "Filtered by Search Field → {query}",
+  "@filteredBySearch": {
+    "placeholders": {
+      "query": { "type": "String" }
+    }
+  },
+  "filtersApplied": "Filters → {filters}",
+  "@filtersApplied": {
+    "placeholders": {
+      "filters": { "type": "String" }
+    }
+  },
+  "filterByAuthor": "Author: {value}",
+  "@filterByAuthor": {
+    "placeholders": {
+      "value": { "type": "String" }
+    }
+  },
+  "filterByEvent": "Event: {value}",
+  "@filterByEvent": {
+    "placeholders": {
+      "value": { "type": "String" }
+    }
+  },
+  "filterByYear": "Year: {value}",
+  "@filterByYear": {
+    "placeholders": {
+      "value": { "type": "String" }
+    }
+  },
+  "filterByJourney": "Journey: {value}",
+  "@filterByJourney": {
+    "placeholders": {
+      "value": { "type": "String" }
+    }
+  },
+  "filterByGroup": "Group: {value}",
+  "@filterByGroup": {
+    "placeholders": {
+      "value": { "type": "String" }
+    }
+  },
+  "filterByTopics": "Topics: {value}",
+  "@filterByTopics": {
+    "placeholders": {
+      "value": { "type": "String" }
+    }
+  },
+  "about": "About",
+  "aboutGroup": "About Group",
+  "aboutThisGroup": "About this group",
+  "leaveGroup": "Leave Group",
+  "leaveTheGroup": "Leave the Group",
+  "leave": "Leave",
+  "confirmLeaveGroup": "Are you sure you want to leave this group?",
+  "leftGroupSuccessfully": "Left the group successfully",
+  "editGroup": "Edit Group",
+  "newGroup": "New Group",
+  "createGroup": "Create Group",
+  "updateGroup": "Update Group",
+  "joinGroup": "Join Group",
+  "joinedGroupSuccessfully": "You have joined the group successfully",
+  "groupNotFound": "Group Not Found",
+  "groupInformationMissing": "Group information is missing.",
+  "privateGroupInviteOnly": "This is a private group. You need an invitation to join and see the content.",
+  "facilitators": "Facilitators",
+  "members": "Members",
+  "noMembersFound": "No members found.",
+  "noMembersInGroup": "No members in this group",
+  "unknown": "Unknown",
+  "tabExperiences": "Experiences",
+  "tabEvents": "Events",
+  "tabMessages": "Messages",
+  "tabResources": "Resources",
+  "newExperience": "New experience",
+  "shareExperiencesSpace": "A space to share your experiences, inspire others, and receive good wishes from the community",
+  "experienceUnpublished": "Experience unpublished",
+  "experiencesInspire": "Experience experiences that inspire",
+  "errorLoadingExperiences": "Error loading experiences",
+  "beFirstToShareExperience": "Be the first to share an experience with everyone",
+  "noExperiencesYetPeriod": "No experiences yet.",
+  "fromGroup": "From group {name}",
+  "@fromGroup": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "shareYourExperience": "Share your experience",
+  "writeAboutExperience": "Write about your experience...",
+  "enableComments": "Enable comments",
+  "draft": "Draft",
+  "draftSaved": "Draft saved",
+  "experienceNotFound": "Experience not found",
+  "editExperience": "Edit Experience",
+  "draftNotPublishedYet": "Draft - Not published yet",
+  "update": "Update",
+  "noCommentsYet": "No comments yet",
+  "noCommentsYetPeriod": "No comments yet.",
+  "confirmDeleteThisExperience": "Confirm deletion of this experience?",
+  "confirmDeleteThisComment": "Confirm deletion of this comment?",
+  "withdrawExperienceTitle": "Withdraw this experience?",
+  "withdrawExperienceMessage": "It will be permanently removed from the group and cannot be restored.",
+  "unpublish": "Unpublish",
+  "unpublishExperienceTitle": "Unpublish this experience?",
+  "unpublishExperienceMessage": "The experience will be removed from public view.",
+  "welcomeToReviseExperience": "You’re welcome to revise and share again whenever you feel ready.",
+  "suggestionsSharedToRefine": "Suggestions were shared to help refine this experience.",
+  "newEvent": "New Event",
+  "editEvent": "Edit Event",
+  "eventDetails": "Event Details",
+  "facilitatedBy": "Facilitated by {name}",
+  "@facilitatedBy": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "openForEveryone": "Open for everyone",
+  "openOnlyForThisGroup": "Open only for this group",
+  "eventLink": "Event Link",
+  "noRegistrationsYet": "No registrations yet.",
+  "registeredSuccessfully": "You are registered with success",
+  "processing": "Processing...",
+  "register": "Register",
+  "registered": "Registered",
+  "unsubscribedSuccessfully": "You are unsubscribed with success",
+  "unsubscribe": "Unsubscribe",
+  "deleteThisEvent": "Delete this event?",
+  "eventDeletedSuccessfully": "Event deleted with success",
+  "eventCreatedSuccessfully": "Event created with success",
+  "eventUpdatedSuccessfully": "Event updated with success",
+  "upcoming": "Upcoming",
+  "recorded": "Recorded",
+  "noUpcomingEvents": "No upcoming events found",
+  "noRecordedEvents": "No recorded events found",
+  "noEventsYet": "No events yet.",
+  "noDate": "No date",
+  "title": "Title",
+  "facilitator": "Facilitator",
+  "required": "Required",
+  "eventType": "Event Type",
+  "singleDay": "Single Day",
+  "multiDay": "Multi-day",
+  "durationMinutes": "Duration (minutes)",
+  "startDate": "Start Date",
+  "endDate": "End Date",
+  "registrationUrlOptional": "Registration URL (optional)",
+  "scheduled": "Scheduled",
+  "selectDate": "Select date",
+  "selectTime": "Select time",
+  "time": "Time",
+  "saveEvent": "Save Event",
+  "eventHeaderImage": "Event Header Image",
+  "changeImage": "Change Image",
+  "uploadImage": "Upload Image",
+  "onlyThisGroup": "Only this group",
+  "everyone": "Everyone",
+  "date": "Date",
+  "messagesByFacilitator": "Messages shared by the facilitator.",
+  "newMessage": "New message",
+  "editMessage": "Edit Message",
+  "details": "Details",
+  "message": "Message",
+  "sendTo": "Send to",
+  "allMembersBroadcast": "All members (broadcast)",
+  "member": "Member",
+  "messageUpdatedSuccessfully": "Message updated with success",
+  "messageCreatedSuccessfully": "Message created with success",
+  "saveMessage": "Save Message",
+  "addMessage": "Add Message",
+  "confirmDeleteThisMessage": "Confirm deletion of this message?",
+  "newResource": "New resource",
+  "addResource": "Add Resource",
+  "editResource": "Edit Resource",
+  "noResourcesYetAddFirst": "No resources yet.\nTap + to add the first one.",
+  "noResourcesAvailable": "No resources available yet.",
+  "unlinkFromGroup": "Unlink from Group",
+  "unlink": "Unlink",
+  "confirmUnlinkResource": "Remove \"{title}\" from this group's Resources tab?\n\nThe original content will remain in the Library.",
+  "@confirmUnlinkResource": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+  "deleteResource": "Delete Resource",
+  "confirmRemoveResource": "Remove \"{title}\" from this group?",
+  "@confirmRemoveResource": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+  "titleRequired": "Title is required.",
+  "urlRequired": "URL / address is required.",
+  "failedToSaveTryAgain": "Failed to save. Please try again.",
+  "optionalDescription": "Optional description",
+  "urlAddress": "URL / Address",
+  "resourceTitle": "Resource title",
+  "type": "Type",
+  "youtubeVideoUrl": "YouTube video URL *",
+  "youtubeUrl": "YouTube URL",
+  "pleaseEnterYoutubeUrl": "Please enter a YouTube URL.",
+  "pleaseSelectFile": "Please select a file.",
+  "uploadFailed": "Upload failed. Please try again.",
+  "failedToSaveResource": "Failed to save resource.",
+  "tapToSelectFile": "Tap to select file",
+  "fileRequired": "File *",
+  "noContentAvailable": "No content available.",
+  "noContentFoundInResources": "No content found in resources.",
+  "writeSomething": "Write something...",
+  "close": "Close",
+  "posting": "Posting...",
+  "post": "Post",
+  "name": "Name",
+  "moreInformation": "More information",
+  "groupManagers": "Group managers",
+  "selectManagers": "Select Managers/ facilitators",
+  "privateGroup": "Private Group",
+  "onlyMembersCanSee": "Only members can see content.",
+  "anyoneCanSee": "Anyone can see content.",
+  "managersFacilitatorsCount": "Managers / Facilitators ({count})",
+  "@managersFacilitatorsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "searchByNameOrEmail": "Search by name or email (min 3 chars)...",
+  "searchToFindUsers": "Search to find users",
+  "noUsersFound": "No users found",
+  "groupImage": "Group Image",
+  "noJourneysFoundForGroup": "No journeys found for this group.",
+  "noExperiencesToModerate": "No experiences to moderate",
+  "noFilteredExperiences": "No {filter} experiences",
+  "@noFilteredExperiences": {
+    "placeholders": {
+      "filter": { "type": "String" }
+    }
+  },
+  "noPendingExperiences": "No Pending Experiences",
+  "confirmApproveExperience": "Are you sure you want to approve this experience?",
+  "setAsNotPublished": "Set as Not Published",
+  "explainNotPublished": "Explain why this experience is not being published...",
+  "suggestRefinement": "Suggest Refinement",
+  "provideRefinementFeedback": "Provide feedback on what refinement is suggested...",
+  "pleaseProvideReason": "Please provide a reason",
+  "provideAReason": "Provide a reason...",
+  "confirmRemoveMemberNamed": "Are you sure you want to remove \"{name}\" from this group?",
+  "@confirmRemoveMemberNamed": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "confirmMemberAction": "Are you sure you want to {action} \"{name}\"?",
+  "@confirmMemberAction": {
+    "placeholders": {
+      "action": { "type": "String" },
+      "name": { "type": "String" }
+    }
+  },
+  "noEmailRegistered": "No email registered",
+  "confirmation": "Confirmation",
+  "moderation": "Moderation",
+  "moderationFilterAwaiting": "Awaiting",
+  "moderationFilterRefinement": "Refinement",
+  "approved": "Approved",
+  "approve": "Approve",
+  "approveExperience": "Approve Experience",
+  "experienceApproved": "Experience approved successfully",
+  "revert": "Revert",
+  "refine": "Refine",
+  "reject": "Reject",
+  "errorJoiningGroup": "Error joining group: {error}",
+  "@errorJoiningGroup": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "noPermissionToDeleteExperience": "You do not have permission to delete this experience",
+  "noPermissionToLockExperience": "You do not have permission to lock this experience",
+  "messageNotFound": "Message not found.",
+  "messageDeletedSuccessfully": "Message deleted successfully"
+}

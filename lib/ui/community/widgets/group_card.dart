@@ -5,6 +5,7 @@ import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:gw_community/data/repositories/announcement_repository.dart';
 import 'package:gw_community/data/repositories/group_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/group_edit_page/group_edit_page.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
@@ -54,15 +55,21 @@ class _GroupCardState extends State<GroupCard> {
   }
 
   String _relativeLastPost(BuildContext context) {
-    if (_lastPostDate == null) return 'No posts yet';
-    final now = DateTime.now();
-    final diff = now.difference(_lastPostDate!);
-    if (diff.inMinutes < 1) return 'Last post just now';
-    if (diff.inMinutes < 60) return 'Last post ${diff.inMinutes} min ago';
-    if (diff.inHours < 24) return 'Last post ${diff.inHours} h ago';
-    if (diff.inDays < 7) return 'Last post ${diff.inDays} ${diff.inDays == 1 ? 'day' : 'days'} ago';
-    final locale = FFLocalizations.of(context).languageCode;
-    return 'Last post ${dateTimeFormat('MMMd', _lastPostDate, locale: locale)}';
+    final locale = Localizations.localeOf(context).languageCode;
+    return relativeLastPostLabel(
+      l10n: context.l10n,
+      now: DateTime.now(),
+      lastPost: _lastPostDate,
+      formattedDate: dateTimeFormat('MMMd', _lastPostDate, locale: locale),
+    );
+  }
+
+  String _groupMetaLine(BuildContext context) {
+    final l10n = context.l10n;
+    return l10n.groupMetaLine(
+      localizedGroupPrivacy(l10n, widget.groupRow.groupPrivacy),
+      l10n.memberCount(widget.groupRow.numberMembers ?? 0),
+    );
   }
 
   @override
@@ -180,10 +187,7 @@ class _GroupCardState extends State<GroupCard> {
                           ),
                           const SizedBox(height: 4.0),
                           Text(
-                            '${groupRow.groupPrivacy} - ${formatNumber(
-                              groupRow.numberMembers,
-                              formatType: FormatType.compact,
-                            )} ${groupRow.numberMembers == 1 ? 'member' : 'members'}',
+                            _groupMetaLine(context),
                             style: AppTheme.of(context).bodyMedium.override(
                                   font: GoogleFonts.lexendDeca(
                                     fontWeight: FontWeight.w500,
@@ -232,21 +236,24 @@ class _GroupCardState extends State<GroupCard> {
                               size: 24.0,
                             ),
                             onPressed: () async {
+                              final l10n = context.l10n;
                               final confirm = await showDialog<bool>(
                                     context: context,
                                     builder: (alertDialogContext) {
                                       return WebViewAware(
                                         child: AlertDialog(
-                                          title: const Text('Delete Group'),
-                                          content: Text('Confirm deletion of group named ${groupRow.name}'),
+                                          title: Text(l10n.deleteGroup),
+                                          content: Text(
+                                            l10n.confirmDeleteGroup(groupRow.name ?? ''),
+                                          ),
                                           actions: [
                                             TextButton(
                                               onPressed: () => Navigator.pop(alertDialogContext, false),
-                                              child: const Text('Cancel'),
+                                              child: Text(l10n.cancel),
                                             ),
                                             TextButton(
                                               onPressed: () => Navigator.pop(alertDialogContext, true),
-                                              child: const Text('Confirm'),
+                                              child: Text(l10n.confirm),
                                             ),
                                           ],
                                         ),
@@ -262,7 +269,7 @@ class _GroupCardState extends State<GroupCard> {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       content: Text(
-                                        'Group deleted with success',
+                                        l10n.groupDeleted,
                                         style: TextStyle(
                                           color: AppTheme.of(context).primaryText,
                                         ),

@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/favorites_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_animations.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_pdf_viewer.dart';
@@ -171,7 +172,7 @@ class _ContentViewState extends State<ContentView> with TickerProviderStateMixin
                                     child: Text(
                                       valueOrDefault<String>(
                                         viewModel.viewContentRow.title,
-                                        'Title',
+                                        context.l10n.untitled,
                                       ),
                                       style: AppTheme.of(context).bodyLarge.override(
                                             font: GoogleFonts.poppins(
@@ -191,9 +192,9 @@ class _ContentViewState extends State<ContentView> with TickerProviderStateMixin
                                   Padding(
                                     padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 8.0),
                                     child: Text(
-                                      'With ${(List<String> listSpeakers) {
-                                        return listSpeakers.join(', ');
-                                      }(viewModel.viewContentRow.authorsNames.toList())}',
+                                      context.l10n.withAuthors(
+                                        viewModel.viewContentRow.authorsNames.join(', '),
+                                      ),
                                       style: AppTheme.of(context).bodyMedium.override(
                                             font: GoogleFonts.lexendDeca(
                                               fontWeight: FontWeight.normal,
@@ -214,7 +215,7 @@ class _ContentViewState extends State<ContentView> with TickerProviderStateMixin
                                     Padding(
                                       padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 8.0),
                                       child: Text(
-                                        'at ${viewModel.viewContentRow.eventName}',
+                                        context.l10n.atEvent(viewModel.viewContentRow.eventName ?? ''),
                                         style: AppTheme.of(context).bodyMedium.override(
                                               font: GoogleFonts.lexendDeca(
                                                 fontWeight: FontWeight.normal,
@@ -236,7 +237,7 @@ class _ContentViewState extends State<ContentView> with TickerProviderStateMixin
                                         child: Text(
                                       valueOrDefault<String>(
                                         viewModel.viewContentRow.description,
-                                        'description',
+                                        '',
                                       ),
                                       style: AppTheme.of(context).bodyMedium.override(
                                             font: GoogleFonts.lexendDeca(
