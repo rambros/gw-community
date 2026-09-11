@@ -68,6 +68,7 @@ class _ContentViewState extends State<ContentView> with TickerProviderStateMixin
       ),
       child: Consumer<ContentViewModel>(
         builder: (context, viewModel, child) {
+          final row = viewModel.viewContentRow ?? widget.viewContentRow;
           final modalMaxHeight = MediaQuery.sizeOf(context).height * 0.75;
           return GestureDetector(
             onTap: () => Navigator.of(context).pop(),
@@ -114,7 +115,7 @@ class _ContentViewState extends State<ContentView> with TickerProviderStateMixin
                                   children: [
                                     // Favorite button
                                     if (context.currentUserIdOrEmpty.isNotEmpty &&
-                                        viewModel.viewContentRow.contentId != null)
+                                        row.contentId != null)
                                       Padding(
                                         padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
                                         child: Container(
@@ -127,7 +128,7 @@ class _ContentViewState extends State<ContentView> with TickerProviderStateMixin
                                           child: Center(
                                             child: FavoriteButton(
                                               contentType: FavoritesRepository.typeRecording,
-                                              contentId: viewModel.viewContentRow.contentId!,
+                                              contentId: row.contentId!,
                                               authUserId: context.currentUserIdOrEmpty,
                                               size: 24.0,
                                             ),
@@ -171,7 +172,7 @@ class _ContentViewState extends State<ContentView> with TickerProviderStateMixin
                                     padding: const EdgeInsetsDirectional.fromSTEB(16.0, 24.0, 16.0, 12.0),
                                     child: Text(
                                       valueOrDefault<String>(
-                                        viewModel.viewContentRow.title,
+                                        row.title,
                                         context.l10n.untitled,
                                       ),
                                       style: AppTheme.of(context).bodyLarge.override(
@@ -193,7 +194,7 @@ class _ContentViewState extends State<ContentView> with TickerProviderStateMixin
                                     padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 8.0),
                                     child: Text(
                                       context.l10n.withAuthors(
-                                        viewModel.viewContentRow.authorsNames.join(', '),
+                                        row.authorsNames.join(', '),
                                       ),
                                       style: AppTheme.of(context).bodyMedium.override(
                                             font: GoogleFonts.lexendDeca(
@@ -210,12 +211,12 @@ class _ContentViewState extends State<ContentView> with TickerProviderStateMixin
                                   ),
 
                                   // Event
-                                  if ((viewModel.viewContentRow.cottEventId != null) &&
-                                      (viewModel.viewContentRow.cottEventId! > 0))
+                                  if ((row.cottEventId != null) &&
+                                      (row.cottEventId! > 0))
                                     Padding(
                                       padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 8.0),
                                       child: Text(
-                                        context.l10n.atEvent(viewModel.viewContentRow.eventName ?? ''),
+                                        context.l10n.atEvent(row.eventName ?? ''),
                                         style: AppTheme.of(context).bodyMedium.override(
                                               font: GoogleFonts.lexendDeca(
                                                 fontWeight: FontWeight.normal,
@@ -236,7 +237,7 @@ class _ContentViewState extends State<ContentView> with TickerProviderStateMixin
                                     child: SelectionArea(
                                         child: Text(
                                       valueOrDefault<String>(
-                                        viewModel.viewContentRow.description,
+                                        row.description,
                                         '',
                                       ),
                                       style: AppTheme.of(context).bodyMedium.override(
@@ -262,30 +263,30 @@ class _ContentViewState extends State<ContentView> with TickerProviderStateMixin
                                       child: AudioPlayerWidget(
                                         width: double.infinity,
                                         height: 320,
-                                        audioUrl: viewModel.viewContentRow.audioUrl!,
-                                        audioTitle: viewModel.viewContentRow.title!,
+                                        audioUrl: row.audioUrl!,
+                                        audioTitle: row.title!,
                                         audioArt: ' ',
                                         colorButton: AppTheme.of(context).primary,
                                       ),
                                     ),
 
                                   // PDF
-                                  if (viewModel.midiaType == 'text' && viewModel.viewContentRow.midiaFileUrl != null)
+                                  if (viewModel.midiaType == 'text' && row.midiaFileUrl != null)
                                     Padding(
                                       padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
                                       child: FlutterFlowPdfViewer(
-                                        networkPath: viewModel.viewContentRow.midiaFileUrl!,
+                                        networkPath: row.midiaFileUrl!,
                                         height: 600.0,
                                         horizontalScroll: false,
                                       ),
                                     ),
 
                                   // Video
-                                  if (viewModel.midiaType == 'video' && viewModel.viewContentRow.midiaFileUrl != null)
+                                  if (viewModel.midiaType == 'video' && row.midiaFileUrl != null)
                                     Padding(
                                       padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
                                       child: FlutterFlowYoutubePlayer(
-                                        url: viewModel.viewContentRow.midiaFileUrl!,
+                                        url: row.midiaFileUrl!,
                                         autoPlay: false,
                                         looping: true,
                                         mute: false,

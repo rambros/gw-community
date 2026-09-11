@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:gw_community/data/repositories/favorites_repository.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
@@ -33,6 +34,37 @@ class StepAudioPlayerPage extends StatelessWidget {
 
   static String routeName = 'stepAudioPlayerPage';
   static String routePath = '/stepAudioPlayerPage';
+
+  static const defaultAudioArt =
+      'https://firebasestorage.googleapis.com/v0/b/good-wishes-project.appspot.com/o/images%2Fic_goodwishes.png?alt=media&token=e441f239-c823-468b-bff7-c16be921c7be';
+
+  /// Passes audio data via `extra` so URLs and transcripts are not stripped
+  /// from the query string (`?`, `&`, `%20`, long text).
+  static Future<T?> open<T extends Object?>(
+    GoRouter router, {
+    String? audioUrl,
+    String? audioTitle,
+    String? audioArt,
+    String? typeStep,
+    int? activityId,
+    String? transcript,
+    String? animationUrl,
+    String? animationMediaType,
+  }) {
+    return router.pushNamed(
+      routeName,
+      extra: <String, dynamic>{
+        'stepAudioUrl': audioUrl ?? '',
+        'audioTitle': audioTitle,
+        'audioArt': (audioArt != null && audioArt.isNotEmpty) ? audioArt : defaultAudioArt,
+        'typeStep': typeStep,
+        'activityId': activityId,
+        'transcript': transcript,
+        'animationUrl': animationUrl,
+        'animationMediaType': animationMediaType,
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +126,7 @@ class StepAudioPlayerPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(12.0, 32.0, 12.0, 16.0),
                 child: Text(
-                  audioTitle!,
+                  audioTitle ?? '',
                   textAlign: TextAlign.center,
                   style: AppTheme.of(context).journey.stepTitle,
                 ),
@@ -118,9 +150,9 @@ class StepAudioPlayerPage extends StatelessWidget {
                     child: AudioPlayerWidget(
                       width: 600.0,
                       height: 620.0,
-                      audioUrl: stepAudioUrl!,
-                      audioTitle: audioTitle!,
-                      audioArt: audioArt!,
+                      audioUrl: stepAudioUrl ?? '',
+                      audioTitle: audioTitle ?? '',
+                      audioArt: audioArt,
                       colorButton: AppTheme.of(context).primary,
                     ),
                   ),

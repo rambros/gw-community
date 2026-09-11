@@ -17,6 +17,8 @@
   "completedUpper": "COMPLETED",
   "viewAgain": "VIEW AGAIN",
   "viewMore": "View more",
+  "seeAllJourneys": "See all",
+  "seeAllGroups": "See all",
   "journeys": "Journeys",
   "myJourneys": "My Journeys",
   "otherJourneys": "Other Journeys",
@@ -419,6 +421,29 @@
     }
   },
   "portalContentLibrary": "Portal Content Library",
+  "portalHubTitle": "The Call of the Time Portal",
+  "portalDialoguesRetreats": "Dialogues & Retreats",
+  "portalHeartToHeart": "Heart to Heart Conversations",
+  "portalMessages": "Messages",
+  "portalDadiJanki": "Dadi Janki",
+  "portalMeditations": "Meditations",
+  "portalListOfAllMessages": "List of All Messages",
+  "portalListOfAllMeditations": "List of All Meditations",
+  "portalListOfAllDadiJanki": "List of All Content with Dadi Janki",
+  "portalListOfAllDialogues": "List of All Dialogues & Retreats",
+  "portalListOfAllHeartToHeart": "List of All Heart to Heart Conversations",
+  "portalEventContents": "Event contents",
+  "messageFromAuthors": "Message from {authors}",
+  "@messageFromAuthors": {
+    "placeholders": {
+      "authors": { "type": "String" }
+    }
+  },
+  "shareContent": "Share",
+  "location": "Location",
+  "eventType": "Event type",
+  "selectLocation": "Select location",
+  "selectEventType": "Select event type",
   "orSeparator": "or",
   "withAuthors": "With {names}",
   "@withAuthors": {
@@ -724,5 +749,30 @@
   "noPermissionToDeleteExperience": "You do not have permission to delete this experience",
   "noPermissionToLockExperience": "You do not have permission to lock this experience",
   "messageNotFound": "Message not found.",
-  "messageDeletedSuccessfully": "Message deleted successfully"
+  "messageDeletedSuccessfully": "Message deleted successfully",
+  "welcomeBack": "Welcome back, {name}",
+  "@welcomeBack": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "journeyResources": "Journey resources",
+  "restartJourney": "Restart journey",
+  "aboutThisJourney": "About this journey",
+  "aboutNamed": "About {title}",
+  "@aboutNamed": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+  "resetJourneyTitle": "Reset this journey",
+  "resetJourneyDescription": "Resetting your journey will delete all progress made so far. This action cannot be undone.",
+  "resetJourneyConfirm": "Reset journey",
+  "journeyResetSuccess": "Journey reset successfully",
+  "errorResettingJourney": "Error resetting journey: {error}",
+  "@errorResettingJourney": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  }
 }

@@ -8,7 +8,7 @@ import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/home/home_page/home_page.dart';
 import 'package:gw_community/ui/journey/journey_list_page/journey_list_page.dart';
 import 'package:gw_community/ui/journey/journey_page/journey_page.dart';
-import 'package:gw_community/ui/learn/learn_list_page/learn_list_page.dart';
+import 'package:gw_community/ui/learn/library_hub_page/library_hub_page.dart';
 import 'package:gw_community/ui/profile/user_profile_page/user_profile_page.dart';
 import 'package:gw_community/utils/custom_icons.dart';
 import 'package:provider/provider.dart';
@@ -68,7 +68,7 @@ class _NavBarPageState extends State<NavBarPage> {
 
     // Library tab - only include if enabled for the user's group
     if (appState.enableLibraryModule) {
-      tabs['learnListPage'] = const LearnListPage();
+      tabs['learnListPage'] = const LibraryHubPage();
     }
 
     // Journey tab - only include if enabled for the user's group

@@ -162,6 +162,47 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
                 ),
         ),
         FFRoute(
+          name: LibraryHubPage.routeName,
+          path: LibraryHubPage.routePath,
+          builder: (context, params) => params.isEmpty
+              ? const NavBarPage(initialPage: 'learnListPage')
+              : const LibraryHubPage(),
+        ),
+        FFRoute(
+          name: PortalEventsPage.routeName,
+          path: PortalEventsPage.routePath,
+          builder: (context, params) => PortalEventsPage(
+            dashboardGroupId: params.getParam('dashboardGroupId', ParamType.int) ?? 1,
+          ),
+        ),
+        FFRoute(
+          name: PortalCatalogPage.routeName,
+          path: PortalCatalogPage.routePath,
+          builder: (context, params) {
+            final kindName = params.getParam('kind', ParamType.String) ?? PortalCatalogKind.messages.name;
+            final kind = PortalCatalogKind.values.firstWhere(
+              (value) => value.name == kindName,
+              orElse: () => PortalCatalogKind.messages,
+            );
+            return PortalCatalogPage(kind: kind);
+          },
+        ),
+        FFRoute(
+          name: PortalEventDetailPage.routeName,
+          path: PortalEventDetailPage.routePath,
+          builder: (context, params) => PortalEventDetailPage(
+            eventId: params.getParam('id', ParamType.int) ?? 0,
+          ),
+        ),
+        FFRoute(
+          name: ContentViewPage.routeName,
+          path: ContentViewPage.routePath,
+          builder: (context, params) => ContentViewPage(
+            contentId: params.getParam('id', ParamType.int) ?? 0,
+            previewRow: params.state.extra is ViewContentRow ? params.state.extra as ViewContentRow : null,
+          ),
+        ),
+        FFRoute(
           name: JourneysListPage.routeName,
           path: JourneysListPage.routePath,
           builder: (context, params) => const JourneysListPage(),

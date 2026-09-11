@@ -12,14 +12,14 @@ class CommunityGuidelinesViewModel extends ChangeNotifier {
   bool _isLoading = true;
   bool get isLoading => _isLoading;
 
-  Future<void> init() async {
+  Future<void> init(String languageCode) async {
     _isLoading = true;
     notifyListeners();
 
     try {
-      debugPrint('🔵 [GuidelinesView] Loading guidelines...');
-      _guidelines = await _communityRepository.getCommunityGuidelines();
-      debugPrint('✅ [GuidelinesView] Loaded: ${_guidelines?.length ?? 0} chars');
+      _guidelines = await _communityRepository.getCommunityGuidelines(
+        languageCode: languageCode,
+      );
     } catch (e) {
       debugPrint('❌ [GuidelinesView] Error loading guidelines: $e');
     } finally {

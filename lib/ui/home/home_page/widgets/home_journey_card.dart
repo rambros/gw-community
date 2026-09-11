@@ -23,7 +23,7 @@ class HomeJourneyCard extends StatelessWidget {
 
   Widget _buildResumeCard(BuildContext context) {
     return Container(
-      width: MediaQuery.sizeOf(context).width * 0.925,
+      width: double.infinity,
       height: 118.0,
       decoration: BoxDecoration(
         color: AppTheme.of(context).primaryBackground,
@@ -52,7 +52,8 @@ class HomeJourneyCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 3.0),
+                    padding: const EdgeInsetsDirectional.fromSTEB(
+                        0.0, 4.0, 0.0, 3.0),
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
                       children: [
@@ -73,7 +74,8 @@ class HomeJourneyCard extends StatelessWidget {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       Padding(
-                        padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 12.0),
+                        padding: const EdgeInsetsDirectional.fromSTEB(
+                            0.0, 0.0, 0.0, 12.0),
                         child: Text(
                           context.l10n.stepsProgress(
                             userJourneyProgress.stepsCompleted ?? 0,
@@ -88,12 +90,14 @@ class HomeJourneyCard extends StatelessWidget {
                     ],
                   ),
                   Padding(
-                    padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 8.0),
+                    padding: const EdgeInsetsDirectional.fromSTEB(
+                        0.0, 0.0, 0.0, 8.0),
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
                       children: [
                         Padding(
-                          padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
+                          padding: const EdgeInsetsDirectional.fromSTEB(
+                              0.0, 0.0, 8.0, 0.0),
                           child: FFButtonWidget(
                             onPressed: () async {
                               context.pushNamed(
@@ -109,11 +113,16 @@ class HomeJourneyCard extends StatelessWidget {
                             text: context.l10n.resumeUpper,
                             options: FFButtonOptions(
                               height: 36.0,
-                              padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
-                              iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                              padding: const EdgeInsetsDirectional.fromSTEB(
+                                  16.0, 0.0, 16.0, 0.0),
+                              iconPadding: const EdgeInsetsDirectional.fromSTEB(
+                                  0.0, 0.0, 0.0, 0.0),
                               color: AppTheme.of(context).primary,
-                              textStyle: AppTheme.of(context).labelLarge.override(
-                                    color: AppTheme.of(context).primaryBackground,
+                              textStyle: AppTheme.of(context)
+                                  .labelLarge
+                                  .override(
+                                    color:
+                                        AppTheme.of(context).primaryBackground,
                                   ),
                               elevation: 1.0,
                               borderSide: BorderSide(

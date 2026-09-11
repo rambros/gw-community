@@ -7,7 +7,8 @@ class CommunityGuidelinesEditViewModel extends ChangeNotifier {
 
   CommunityGuidelinesEditViewModel(this._communityRepository);
 
-  final TextEditingController contentController = TextEditingController();
+  final TextEditingController englishController = TextEditingController();
+  final TextEditingController portugueseController = TextEditingController();
 
   bool _isLoading = true;
   bool get isLoading => _isLoading;
@@ -17,10 +18,10 @@ class CommunityGuidelinesEditViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final content = await _communityRepository.getCommunityGuidelines();
-      if (content != null) {
-        contentController.text = content;
-      }
+      final versions =
+          await _communityRepository.getCommunityGuidelinesVersions();
+      englishController.text = versions.english ?? '';
+      portugueseController.text = versions.portuguese ?? '';
     } catch (e) {
       debugPrint('Error loading guidelines for edit: $e');
     } finally {
@@ -34,9 +35,10 @@ class CommunityGuidelinesEditViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      debugPrint('🔵 [GuidelinesEdit] Attempting to save...');
-      await _communityRepository.updateCommunityGuidelines(contentController.text);
-      debugPrint('✅ [GuidelinesEdit] Save completed successfully');
+      await _communityRepository.updateCommunityGuidelinesVersions(
+        english: englishController.text,
+        portuguese: portugueseController.text,
+      );
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -65,7 +67,8 @@ class CommunityGuidelinesEditViewModel extends ChangeNotifier {
 
   @override
   void dispose() {
-    contentController.dispose();
+    englishController.dispose();
+    portugueseController.dispose();
     super.dispose();
   }
 }

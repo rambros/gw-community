@@ -36,4 +36,19 @@ void main() {
       );
     });
   });
+
+  group('CommunityGuidelinesVersions.resolve', () {
+    const versions = CommunityGuidelinesVersions(
+      english: 'Hello',
+      portuguese: 'Olá',
+    );
+
+    test('resolves Portuguese for pt locales', () {
+      expect(versions.resolve('pt-BR'), 'Olá');
+    });
+
+    test('resolves English otherwise', () {
+      expect(versions.resolve('en'), 'Hello');
+    });
+  });
 }

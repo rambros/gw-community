@@ -64,7 +64,14 @@ class StepDetailsViewModel extends ChangeNotifier {
           activitiesMap[activityId] = activity;
         }
       }
-      _activities = activitiesMap.values.toList()..sort((a, b) => (a.orderInStep ?? 0).compareTo(b.orderInStep ?? 0));
+      _activities = activitiesMap.values.toList()
+        ..sort((a, b) {
+          final order =
+              (a.orderInStep ?? 0).compareTo(b.orderInStep ?? 0);
+          if (order != 0) return order;
+          return (a.stepActivityId ?? a.id ?? 0)
+              .compareTo(b.stepActivityId ?? b.id ?? 0);
+        });
 
       notifyListeners();
     } catch (e, stackTrace) {

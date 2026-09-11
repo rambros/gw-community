@@ -19,7 +19,9 @@ class CommunityGuidelinesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => CommunityGuidelinesViewModel(context.read<CommunityRepository>())..init(),
+      create: (context) =>
+          CommunityGuidelinesViewModel(context.read<CommunityRepository>())
+            ..init(Localizations.localeOf(context).languageCode),
       child: const CommunityGuidelinesPageView(),
     );
   }
@@ -42,7 +44,8 @@ class CommunityGuidelinesPageView extends StatelessWidget {
           borderRadius: 30.0,
           borderWidth: 1.0,
           buttonSize: 60.0,
-          icon: const Icon(Icons.arrow_back_rounded, color: Colors.white, size: 30.0),
+          icon: const Icon(Icons.arrow_back_rounded,
+              color: Colors.white, size: 30.0),
           onPressed: () async {
             context.pop();
           },
@@ -51,7 +54,8 @@ class CommunityGuidelinesPageView extends StatelessWidget {
           context.l10n.communityGuidelines,
           style: AppTheme.of(
             context,
-          ).titleLarge.override(font: GoogleFonts.poppins(), color: Colors.white, fontSize: 22.0),
+          ).titleLarge.override(
+              font: GoogleFonts.poppins(), color: Colors.white, fontSize: 22.0),
         ),
         centerTitle: true,
         elevation: 2.0,
@@ -59,7 +63,9 @@ class CommunityGuidelinesPageView extends StatelessWidget {
       body: SafeArea(
         top: true,
         child: viewModel.isLoading
-            ? Center(child: CircularProgressIndicator(color: AppTheme.of(context).primary))
+            ? Center(
+                child: CircularProgressIndicator(
+                    color: AppTheme.of(context).primary))
             : viewModel.guidelines == null || viewModel.guidelines!.isEmpty
                 ? Center(
                     child: Padding(

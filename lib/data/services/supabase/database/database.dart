@@ -63,6 +63,7 @@ export 'tables/view_content.dart';
 export 'tables/view_events.dart';
 export 'tables/view_location.dart';
 export 'tables/view_messages.dart';
+export 'tables/view_meditations.dart';
 export 'tables/years_with_content.dart';
 export 'tables/years_with_content_published.dart';
 export 'tables/years_with_events.dart';

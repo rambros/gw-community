@@ -12,6 +12,7 @@ import 'package:gw_community/ui/journey/journey_page/widgets/journey_intro_widge
 import 'package:gw_community/ui/journey/journey_page/widgets/journey_step_item_widget.dart';
 import 'package:gw_community/ui/journey/step_details_page/step_details_page.dart';
 import 'package:gw_community/ui/journey/themes/journey_theme_extension.dart';
+import 'package:gw_community/ui/journey/widgets/journey_locale_scope.dart';
 import 'package:gw_community/ui/learn/learn_list_page/learn_list_page.dart';
 import 'package:gw_community/ui/onboarding/splash_page/splash_page.dart';
 import 'package:gw_community/ui/profile/widgets/confirm_profile_action_dialog.dart';
@@ -77,7 +78,11 @@ class _JourneyPageState extends State<JourneyPage> {
 
     return ChangeNotifierProvider.value(
       value: _viewModel!,
-      child: Scaffold(
+      child: Consumer<JourneyViewModel>(
+        builder: (context, viewModel, _) {
+          return JourneyLocaleScope(
+            fixedLanguage: viewModel.fixedLanguage,
+            child: Scaffold(
         backgroundColor: AppTheme.of(context).secondary,
         appBar: AppBar(
           backgroundColor: AppTheme.of(context).primary,
@@ -207,6 +212,9 @@ class _JourneyPageState extends State<JourneyPage> {
           top: true,
           child: _buildBody(context),
         ),
+      ),
+          );
+        },
       ),
     );
   }
@@ -485,11 +493,14 @@ class _JourneyPageState extends State<JourneyPage> {
           context: context,
           builder: (alertDialogContext) {
             return WebViewAware(
-              child: ConfirmProfileActionDialog(
-                title: context.l10n.resetJourneyTitle,
-                description: context.l10n.resetJourneyDescription,
-                confirmLabel: context.l10n.resetJourneyConfirm,
-                icon: Icons.restart_alt,
+              child: JourneyLocaleScope(
+                fixedLanguage: viewModel.fixedLanguage,
+                child: ConfirmProfileActionDialog(
+                  title: context.l10n.resetJourneyTitle,
+                  description: context.l10n.resetJourneyDescription,
+                  confirmLabel: context.l10n.resetJourneyConfirm,
+                  icon: Icons.restart_alt,
+                ),
               ),
             );
           },
@@ -552,9 +563,12 @@ class _JourneyPageState extends State<JourneyPage> {
       context: context,
       builder: (dialogContext) {
         return WebViewAware(
-          child: JourneyAboutDialog(
-            title: title,
-            description: description,
+          child: JourneyLocaleScope(
+            fixedLanguage: viewModel.fixedLanguage,
+            child: JourneyAboutDialog(
+              title: title,
+              description: description,
+            ),
           ),
         );
       },

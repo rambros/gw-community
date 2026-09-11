@@ -18,6 +18,7 @@ import 'package:audio_session/audio_session.dart';
 // Imports custom functions
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:just_audio/just_audio.dart';
@@ -217,6 +218,7 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
 
   late AudioPlayer _player;
   bool _isOwner = false;
+  bool _loadFailed = false;
 
   @override
   void initState() {
@@ -249,11 +251,18 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
       debugPrint('Error configuring audio session: $e');
     }
 
+    final audioUri = _resolveAudioUri(widget.audioUrl);
+    if (audioUri == null) {
+      debugPrint('Invalid audio URL: "${widget.audioUrl}"');
+      if (mounted) setState(() => _loadFailed = true);
+      return;
+    }
+
     final artUri = await _resolveArtUri();
     final audioSource = AudioSource.uri(
-      Uri.parse(widget.audioUrl),
+      audioUri,
       tag: MediaItem(
-        id: 'GoodWishes',
+        id: audioUri.toString(),
         album: 'GoodWishes Album',
         title: widget.audioTitle,
         artUri: artUri,
@@ -267,16 +276,33 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
     try {
       await _player.setAudioSource(audioSource);
     } catch (e) {
-      // Catch load errors: 404, invalid url, background service errors...
-      debugPrint("Error loading audio source: $e");
-      // Try without background service tag
-      try {
-        final simpleSource = AudioSource.uri(Uri.parse(widget.audioUrl));
-        await _player.setAudioSource(simpleSource);
-      } catch (e2) {
-        debugPrint("Error loading simple audio source: $e2");
+      debugPrint('Error loading audio source: $e');
+      if (mounted) setState(() => _loadFailed = true);
+    }
+  }
+
+  /// Resolves absolute http(s) URLs and Supabase storage paths for playback.
+  Uri? _resolveAudioUri(String rawUrl) {
+    final trimmed = rawUrl.trim();
+    if (trimmed.isEmpty) return null;
+
+    for (final candidate in [trimmed, trimmed.replaceAll(' ', '%20')]) {
+      final uri = Uri.tryParse(candidate);
+      if (uri != null &&
+          uri.hasScheme &&
+          (uri.scheme == 'http' || uri.scheme == 'https')) {
+        return uri;
       }
     }
+
+    var path = trimmed.replaceAll('\\', '/').replaceAll(RegExp(r'^/+'), '');
+    if (path.startsWith('portal/')) {
+      path = path.substring('portal/'.length);
+    }
+    if (path.isEmpty) return null;
+
+    final publicUrl = SupaFlow.client.storage.from('portal').getPublicUrl(path);
+    return Uri.tryParse(publicUrl);
   }
 
   @override
@@ -323,6 +349,22 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
 
   @override
   Widget build(BuildContext context) {
+    if (_loadFailed) {
+      return SizedBox(
+        width: widget.width,
+        height: widget.height,
+        child: Center(
+          child: Text(
+            'Audio unavailable',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: widget.colorButton ?? Colors.white70,
+                ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      );
+    }
+
     return SizedBox(
       width: widget.width,
       height: widget.height,

@@ -55,10 +55,10 @@ class CommunityGuidelinesEditPageView extends StatelessWidget {
         title: Text(
           context.l10n.editGuidelines,
           style: theme.titleLarge.override(
-                font: GoogleFonts.poppins(),
-                color: Colors.white,
-                fontSize: 22.0,
-              ),
+            font: GoogleFonts.poppins(),
+            color: Colors.white,
+            fontSize: 22.0,
+          ),
         ),
         centerTitle: true,
         elevation: 2.0,
@@ -78,10 +78,10 @@ class CommunityGuidelinesEditPageView extends StatelessWidget {
                 child: Text(
                   context.l10n.save,
                   style: theme.bodyMedium.override(
-                        font: GoogleFonts.readexPro(),
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    font: GoogleFonts.readexPro(),
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
@@ -125,10 +125,10 @@ class CommunityGuidelinesEditPageView extends StatelessWidget {
                               child: Text(
                                 '${context.l10n.guidelinesVersionsHint}\n${context.l10n.markdownSupported}',
                                 style: theme.bodySmall.override(
-                                      font: GoogleFonts.readexPro(),
-                                      color: theme.primary,
-                                      fontSize: 12.0,
-                                    ),
+                                  font: GoogleFonts.readexPro(),
+                                  color: theme.primary,
+                                  fontSize: 12.0,
+                                ),
                               ),
                             ),
                           ],
@@ -153,7 +153,8 @@ class CommunityGuidelinesEditPageView extends StatelessWidget {
                             ),
                             _GuidelinesEditor(
                               controller: viewModel.portugueseController,
-                              hintText: context.l10n.enterPortugueseGuidelinesHint,
+                              hintText:
+                                  context.l10n.enterPortugueseGuidelinesHint,
                             ),
                           ],
                         ),
@@ -190,9 +191,9 @@ class _GuidelinesEditor extends StatelessWidget {
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: theme.bodyMedium.override(
-              font: GoogleFonts.readexPro(),
-              color: theme.secondaryText,
-            ),
+          font: GoogleFonts.readexPro(),
+          color: theme.secondaryText,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.0),
         ),
@@ -213,9 +214,9 @@ class _GuidelinesEditor extends StatelessWidget {
         fillColor: theme.primaryBackground,
       ),
       style: theme.bodyMedium.override(
-            font: GoogleFonts.readexPro(),
-            color: theme.textColor,
-          ),
+        font: GoogleFonts.readexPro(),
+        color: theme.textColor,
+      ),
     );
   }
 }

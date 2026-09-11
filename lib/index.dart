@@ -28,7 +28,13 @@ export 'package:gw_community/ui/journey/step_details_page/step_details_page.dart
 export 'package:gw_community/ui/journey/step_journal_page/step_journal_page.dart' show StepJournalPage;
 export 'package:gw_community/ui/journey/step_text_view_page/step_text_view_page.dart' show StepTextViewPage;
 export 'package:gw_community/ui/journey/step_video_player_page/step_video_player_page.dart' show StepVideoPlayerPage;
+export 'package:gw_community/ui/learn/content_view/content_view_page.dart' show ContentViewPage;
 export 'package:gw_community/ui/learn/learn_list_page/learn_list_page.dart' show LearnListPage;
+export 'package:gw_community/ui/learn/library_hub_page/library_hub_page.dart' show LibraryHubPage;
+export 'package:gw_community/ui/learn/portal_catalog/portal_catalog_kind.dart' show PortalCatalogKind;
+export 'package:gw_community/ui/learn/portal_catalog/portal_catalog_page.dart' show PortalCatalogPage;
+export 'package:gw_community/ui/learn/portal_event_detail/portal_event_detail_page.dart' show PortalEventDetailPage;
+export 'package:gw_community/ui/learn/portal_events/portal_events_page.dart' show PortalEventsPage;
 export 'package:gw_community/ui/notifications/in_app_notifications_page/in_app_notifications_page.dart'
     show InAppNotificationsPage;
 export 'package:gw_community/ui/onboarding/splash_page/splash_page.dart' show SplashPage;

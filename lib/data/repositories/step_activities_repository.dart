@@ -56,7 +56,7 @@ class StepActivitiesRepository {
   ) async {
     final result = await CcViewUserActivitiesTable().queryRows(
       queryFn: (q) =>
-          q.eqOrNull('user_id', userId).eqOrNull('user_step_id', userStepId).order('order_in_step', ascending: true),
+          q.eqOrNull('user_id', userId).eqOrNull('user_step_id', userStepId).order('order_in_step', ascending: true).order('step_activity_id', ascending: true),
     );
     return result;
   }
@@ -100,7 +100,7 @@ class StepActivitiesRepository {
       queryFn: (q) => q
           .eqOrNull('user_journey_id', userJourneyId)
           .eqOrNull('user_id', userId)
-          .eqOrNull('step_status', 'locked')
+          .inFilter('step_status', ['locked', 'closed'])
           .order('step_number', ascending: true),
     );
     return result;

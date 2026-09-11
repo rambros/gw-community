@@ -66,7 +66,58 @@ class JourneysRepository {
     // Clean up duplicates if found
     await _cleanUpDuplicateUserSteps(result);
 
+    final repaired = await _repairStepProgression(result);
+    if (repaired) {
+      return CcViewUserStepsTable().queryRows(
+        queryFn: (q) => q
+            .eqOrNull('user_id', userId)
+            .eqOrNull('journey_id', journeyId)
+            .order('step_number', ascending: true),
+      );
+    }
+
     return result;
+  }
+
+  /// Fixes progression when new journey steps were inserted as `closed`
+  /// (DB trigger) and the app skipped ahead to a later `locked` step.
+  Future<bool> _repairStepProgression(List<CcViewUserStepsRow> steps) async {
+    if (steps.isEmpty) return false;
+
+    final ordered = List<CcViewUserStepsRow>.from(steps)
+      ..sort((a, b) => (a.stepNumber ?? 0).compareTo(b.stepNumber ?? 0));
+
+    final firstIncompleteIndex = ordered.indexWhere((s) => s.stepStatus != 'completed');
+    if (firstIncompleteIndex == -1) return false;
+
+    var changed = false;
+    for (var i = 0; i < ordered.length; i++) {
+      final step = ordered[i];
+      final stepId = step.id;
+      if (stepId == null) continue;
+
+      if (i == firstIncompleteIndex) {
+        if (step.stepStatus != 'open') {
+          await CcUserStepsTable().update(
+            data: {
+              'step_status': 'open',
+              'date_started': supaSerialize(getCurrentTimestamp),
+            },
+            matchingRows: (rows) => rows.eq('id', stepId),
+          );
+          changed = true;
+        }
+      } else if (i > firstIncompleteIndex &&
+          (step.stepStatus == 'open' || step.stepStatus == 'closed')) {
+        await CcUserStepsTable().update(
+          data: {'step_status': 'locked'},
+          matchingRows: (rows) => rows.eq('id', stepId),
+        );
+        changed = true;
+      }
+    }
+
+    return changed;
   }
 
   Future<void> _cleanUpDuplicateUserSteps(List<CcViewUserStepsRow> userSteps) async {

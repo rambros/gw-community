@@ -36,30 +36,22 @@ class _FavoriteActivityCardState extends State<FavoriteActivityCard> {
         behavior: HitTestBehavior.opaque,
         onTap: () {
           if (widget.activity.activityType == 'audio') {
-            context.pushNamed(
-              StepAudioPlayerPage.routeName,
-              queryParameters: {
-                'stepAudioUrl': serializeParam(widget.activity.audioUrl, ParamType.String),
-                'audioTitle': serializeParam(widget.activity.activityPrompt, ParamType.String),
-                'audioArt': serializeParam(
-                  'https://firebasestorage.googleapis.com/v0/b/good-wishes-project.appspot.com/o/images%2Fic_goodwishes.png?alt=media&token=e441f239-c823-468b-bff7-c16be921c7be',
-                  ParamType.String,
-                ),
-                'typeStep': serializeParam(widget.activity.activityLabel, ParamType.String),
-                'activityId': serializeParam(widget.activity.id, ParamType.int),
-                'transcript': serializeParam(widget.activity.transcript, ParamType.String),
-                'animationUrl': serializeParam(widget.activity.animationUrl, ParamType.String),
-                'animationMediaType': serializeParam(widget.activity.animationMediaType, ParamType.String),
-              }.withoutNulls,
+            StepAudioPlayerPage.open(
+              GoRouter.of(context),
+              audioUrl: widget.activity.audioUrl,
+              audioTitle: widget.activity.activityPrompt,
+              typeStep: widget.activity.activityLabel,
+              activityId: widget.activity.id,
+              transcript: widget.activity.transcript,
+              animationUrl: widget.activity.animationUrl,
+              animationMediaType: widget.activity.animationMediaType,
             );
           } else if (widget.activity.activityType == 'text') {
-            context.pushNamed(
-              StepTextViewPage.routeName,
-              queryParameters: {
-                'stepTextTitle': serializeParam(widget.activity.activityPrompt, ParamType.String),
-                'stepTextContent': serializeParam(widget.activity.text, ParamType.String),
-                'activityId': serializeParam(widget.activity.id, ParamType.int),
-              }.withoutNulls,
+            StepTextViewPage.open(
+              GoRouter.of(context),
+              title: widget.activity.activityPrompt,
+              content: widget.activity.text,
+              activityId: widget.activity.id,
             );
           } else if (widget.activity.activityType == 'video') {
             context.pushNamed(

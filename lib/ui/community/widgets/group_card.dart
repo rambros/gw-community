@@ -18,10 +18,12 @@ class GroupCard extends StatefulWidget {
     super.key,
     required this.groupRow,
     this.onUpdate,
+    this.padding = const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 10.0),
   });
 
   final CcGroupsRow groupRow;
   final VoidCallback? onUpdate;
+  final EdgeInsetsGeometry padding;
 
   @override
   State<GroupCard> createState() => _GroupCardState();
@@ -78,9 +80,9 @@ class _GroupCardState extends State<GroupCard> {
     final groupRow = widget.groupRow;
 
     return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 10.0),
+      padding: widget.padding,
       child: Container(
-        width: MediaQuery.sizeOf(context).width * 0.925,
+        width: double.infinity,
         constraints: const BoxConstraints(minHeight: 96.0),
         decoration: BoxDecoration(
           color: AppTheme.of(context).primaryBackground,
@@ -117,7 +119,8 @@ class _GroupCardState extends State<GroupCard> {
                           width: 74.0,
                           height: 74.0,
                           fit: BoxFit.cover,
-                          errorWidget: (context, url, error) => const Icon(Icons.error),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
                         ),
                       ),
                       if (_unreadCount > 0)
@@ -129,9 +132,11 @@ class _GroupCardState extends State<GroupCard> {
                             decoration: BoxDecoration(
                               color: AppTheme.of(context).error,
                               shape: BoxShape.circle,
-                              border: Border.all(color: Colors.white, width: 1.5),
+                              border:
+                                  Border.all(color: Colors.white, width: 1.5),
                             ),
-                            constraints: const BoxConstraints(minWidth: 20, minHeight: 20),
+                            constraints: const BoxConstraints(
+                                minWidth: 20, minHeight: 20),
                             child: Text(
                               _unreadCount > 9 ? '9+' : _unreadCount.toString(),
                               style: const TextStyle(
@@ -150,7 +155,8 @@ class _GroupCardState extends State<GroupCard> {
             ),
             Expanded(
               child: Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(4.0, 8.0, 4.0, 8.0),
+                padding:
+                    const EdgeInsetsDirectional.fromSTEB(4.0, 8.0, 4.0, 8.0),
                 child: Row(
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -244,15 +250,18 @@ class _GroupCardState extends State<GroupCard> {
                                         child: AlertDialog(
                                           title: Text(l10n.deleteGroup),
                                           content: Text(
-                                            l10n.confirmDeleteGroup(groupRow.name ?? ''),
+                                            l10n.confirmDeleteGroup(
+                                                groupRow.name ?? ''),
                                           ),
                                           actions: [
                                             TextButton(
-                                              onPressed: () => Navigator.pop(alertDialogContext, false),
+                                              onPressed: () => Navigator.pop(
+                                                  alertDialogContext, false),
                                               child: Text(l10n.cancel),
                                             ),
                                             TextButton(
-                                              onPressed: () => Navigator.pop(alertDialogContext, true),
+                                              onPressed: () => Navigator.pop(
+                                                  alertDialogContext, true),
                                               child: Text(l10n.confirm),
                                             ),
                                           ],
@@ -271,11 +280,14 @@ class _GroupCardState extends State<GroupCard> {
                                       content: Text(
                                         l10n.groupDeleted,
                                         style: TextStyle(
-                                          color: AppTheme.of(context).primaryText,
+                                          color:
+                                              AppTheme.of(context).primaryText,
                                         ),
                                       ),
-                                      duration: const Duration(milliseconds: 4000),
-                                      backgroundColor: AppTheme.of(context).secondary,
+                                      duration:
+                                          const Duration(milliseconds: 4000),
+                                      backgroundColor:
+                                          AppTheme.of(context).secondary,
                                     ),
                                   );
                                   widget.onUpdate?.call();

@@ -246,41 +246,23 @@ class _StepDetailsPageState extends State<StepDetailsPage> {
         if (!mounted) return;
 
         if (routeName == 'stepAudioPlayerPage') {
-          router.pushNamed(
-            StepAudioPlayerPage.routeName,
-            queryParameters: {
-              'stepAudioUrl': serializeParam(params['stepAudioUrl'], ParamType.String),
-              'audioTitle': serializeParam(params['audioTitle'], ParamType.String),
-              'audioArt': serializeParam(params['audioArt'], ParamType.String),
-              'typeStep': serializeParam(params['typeStep'], ParamType.String),
-              'activityId': serializeParam(params['activityId'], ParamType.int),
-              'transcript': serializeParam(params['transcript'], ParamType.String),
-              'animationUrl': serializeParam(params['animationUrl'], ParamType.String),
-              'animationMediaType': serializeParam(params['animationMediaType'], ParamType.String),
-            }.withoutNulls,
-            extra: <String, dynamic>{
-              kTransitionInfoKey: const TransitionInfo(
-                hasTransition: true,
-                transitionType: PageTransitionType.fade,
-                duration: Duration(milliseconds: 0),
-              ),
-            },
+          StepAudioPlayerPage.open(
+            router,
+            audioUrl: params['stepAudioUrl'] as String?,
+            audioTitle: params['audioTitle'] as String?,
+            audioArt: params['audioArt'] as String?,
+            typeStep: params['typeStep'] as String?,
+            activityId: params['activityId'] as int?,
+            transcript: params['transcript'] as String?,
+            animationUrl: params['animationUrl'] as String?,
+            animationMediaType: params['animationMediaType'] as String?,
           );
         } else if (routeName == 'stepTextViewPage') {
-          router.pushNamed(
-            StepTextViewPage.routeName,
-            queryParameters: {
-              'stepTextTitle': serializeParam(params['stepTextTitle'], ParamType.String),
-              'stepTextContent': serializeParam(params['stepTextContent'], ParamType.String),
-              'activityId': serializeParam(params['activityId'], ParamType.int),
-            }.withoutNulls,
-            extra: <String, dynamic>{
-              kTransitionInfoKey: const TransitionInfo(
-                hasTransition: true,
-                transitionType: PageTransitionType.fade,
-                duration: Duration(milliseconds: 0),
-              ),
-            },
+          StepTextViewPage.open(
+            router,
+            title: params['stepTextTitle'] as String?,
+            content: params['stepTextContent'] as String?,
+            activityId: params['activityId'] as int?,
           );
         } else if (routeName == 'stepVideoPlayerPage') {
           router.pushNamed(

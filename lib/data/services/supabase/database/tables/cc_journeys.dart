@@ -52,4 +52,8 @@ class CcJourneysRow extends SupabaseDataRow {
 
   bool get isFeatured => getField<bool>('is_featured') ?? false;
   set isFeatured(bool value) => setField<bool>('is_featured', value);
+
+  /// `en` / `pt` locks journey labels to that language. Null follows the app.
+  String? get fixedLanguage => getField<String>('fixed_language');
+  set fixedLanguage(String? value) => setField<String>('fixed_language', value);
 }

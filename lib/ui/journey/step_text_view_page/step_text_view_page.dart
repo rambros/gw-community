@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/favorites_repository.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
@@ -22,6 +23,23 @@ class StepTextViewPage extends StatelessWidget {
 
   static String routeName = 'stepTextViewPage';
   static String routePath = '/stepTextViewPage';
+
+  /// Passes title/body via `extra` so newlines in the activity text survive.
+  static Future<T?> open<T extends Object?>(
+    GoRouter router, {
+    String? title,
+    String? content,
+    int? activityId,
+  }) {
+    return router.pushNamed(
+      routeName,
+      extra: <String, dynamic>{
+        'stepTextTitle': title,
+        'stepTextContent': content ?? '',
+        'activityId': activityId,
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,6 +122,7 @@ class StepTextViewPage extends StatelessWidget {
                       child: MarkdownBody(
                         data: stepTextContent ?? 'text',
                         selectable: true,
+                        softLineBreak: true,
                         styleSheet: MarkdownStyleSheet(
                           p: GoogleFonts.lexendDeca(
                             color: AppTheme.of(context).primaryText,

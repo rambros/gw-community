@@ -7,12 +7,11 @@ import 'package:gw_community/ui/core/widgets/favorite_button.dart';
 import 'package:gw_community/ui/journey/step_audio_player_page/step_audio_player_page.dart';
 import 'package:gw_community/ui/journey/step_text_view_page/step_text_view_page.dart';
 import 'package:gw_community/ui/journey/step_video_player_page/step_video_player_page.dart';
-import 'package:gw_community/ui/learn/content_view/content_view.dart';
+import 'package:gw_community/ui/learn/content_view/content_view_page.dart';
 import 'package:gw_community/ui/learn/themes/learn_theme_extension.dart';
 import 'package:gw_community/utils/context_extensions.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
-import 'package:webviewx_plus/webviewx_plus.dart';
 
 /// Card unificado que exibe tanto recordings quanto activities
 class UnifiedFavoriteCard extends StatefulWidget {
@@ -60,23 +59,10 @@ class _UnifiedFavoriteCardState extends State<UnifiedFavoriteCard> {
       'event_name': recording.eventName,
     });
 
-    await showModalBottomSheet(
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      enableDrag: true,
-      isDismissible: true,
-      context: context,
-      builder: (context) {
-        return WebViewAware(
-          child: Padding(
-            padding: MediaQuery.viewInsetsOf(context),
-            child: ContentView(
-              contentId: recording.contentId!,
-              viewContentRow: viewContentRow,
-            ),
-          ),
-        );
-      },
+    await context.pushNamed(
+      ContentViewPage.routeName,
+      queryParameters: {'id': recording.contentId.toString()}.withoutNulls,
+      extra: viewContentRow,
     );
 
     // Após fechar o modal, verificar se ainda está favoritado
@@ -103,30 +89,22 @@ class _UnifiedFavoriteCardState extends State<UnifiedFavoriteCard> {
     final activity = widget.item.activity!;
 
     if (activity.activityType == 'audio') {
-      context.pushNamed(
-        StepAudioPlayerPage.routeName,
-        queryParameters: {
-          'stepAudioUrl': serializeParam(activity.audioUrl, ParamType.String),
-          'audioTitle': serializeParam(activity.activityPrompt, ParamType.String),
-          'audioArt': serializeParam(
-            'https://firebasestorage.googleapis.com/v0/b/good-wishes-project.appspot.com/o/images%2Fic_goodwishes.png?alt=media&token=e441f239-c823-468b-bff7-c16be921c7be',
-            ParamType.String,
-          ),
-          'typeStep': serializeParam(activity.activityLabel, ParamType.String),
-          'activityId': serializeParam(activity.id, ParamType.int),
-          'transcript': serializeParam(activity.transcript, ParamType.String),
-          'animationUrl': serializeParam(activity.animationUrl, ParamType.String),
-          'animationMediaType': serializeParam(activity.animationMediaType, ParamType.String),
-        }.withoutNulls,
+      StepAudioPlayerPage.open(
+        GoRouter.of(context),
+        audioUrl: activity.audioUrl,
+        audioTitle: activity.activityPrompt,
+        typeStep: activity.activityLabel,
+        activityId: activity.id,
+        transcript: activity.transcript,
+        animationUrl: activity.animationUrl,
+        animationMediaType: activity.animationMediaType,
       );
     } else if (activity.activityType == 'text') {
-      context.pushNamed(
-        StepTextViewPage.routeName,
-        queryParameters: {
-          'stepTextTitle': serializeParam(activity.activityPrompt, ParamType.String),
-          'stepTextContent': serializeParam(activity.text, ParamType.String),
-          'activityId': serializeParam(activity.id, ParamType.int),
-        }.withoutNulls,
+      StepTextViewPage.open(
+        GoRouter.of(context),
+        title: activity.activityPrompt,
+        content: activity.text,
+        activityId: activity.id,
       );
     } else if (activity.activityType == 'video') {
       context.pushNamed(

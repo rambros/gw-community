@@ -73,6 +73,8 @@ class JourneyViewModel extends ChangeNotifier {
 
   bool get isJourneyStarted => _userJourney != null || _startedJourneys.contains(journeyId);
 
+  String? get fixedLanguage => _journey?.fixedLanguage;
+
   // ========== COMMANDS ==========
 
   Future<void> loadJourneyData() async {

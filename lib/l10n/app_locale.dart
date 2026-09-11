@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Supported UI languages. Content of each journey stays in the language it was written.
+/// Supported UI languages. A journey may lock labels to its own language.
 class AppLocale {
   static const en = Locale('en');
   static const pt = Locale('pt');

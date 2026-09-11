@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 
 import 'package:gw_community/data/services/supabase/database/tables/cc_settings.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/guidelines_locale.dart';
 
 class CommunityRepository {
   // ==================== MEMBER ID CACHE ====================
@@ -33,7 +34,8 @@ class CommunityRepository {
 
   /// Stream de experiences visíveis para todos
   /// Mostra experiências aprovadas + experiências do próprio usuário (qualquer status)
-  Stream<List<CcViewSharingsUsersRow>> getExperiencesStream({String? currentUserId}) {
+  Stream<List<CcViewSharingsUsersRow>> getExperiencesStream(
+      {String? currentUserId}) {
     return SupaFlow.client
         .from("cc_view_experiences_users")
         .stream(primaryKey: ['id'])
@@ -62,7 +64,8 @@ class CommunityRepository {
         .stream(primaryKey: ['id'])
         .eq('user_id', userId)
         .order('updated_at', ascending: false)
-        .map((list) => list.map((item) => CcViewSharingsUsersRow(item)).toList());
+        .map((list) =>
+            list.map((item) => CcViewSharingsUsersRow(item)).toList());
   }
 
   Future<List<CcEventsRow>> getEvents(String currentUserUid) async {
@@ -74,7 +77,9 @@ class CommunityRepository {
         },
       );
       if (response is List) {
-        return response.map((row) => CcEventsRow(row as Map<String, dynamic>)).toList();
+        return response
+            .map((row) => CcEventsRow(row as Map<String, dynamic>))
+            .toList();
       }
     } catch (e) {
       // ignore error
@@ -91,7 +96,9 @@ class CommunityRepository {
     );
 
     if (response is List) {
-      return response.map((row) => CcGroupsRow(row as Map<String, dynamic>)).where((group) {
+      return response
+          .map((row) => CcGroupsRow(row as Map<String, dynamic>))
+          .where((group) {
         final privacy = group.groupPrivacy?.toLowerCase().trim();
         // Aceita 'public' ou null (padrão legado como público)
         return privacy == 'public' || group.groupPrivacy == null;
@@ -109,7 +116,9 @@ class CommunityRepository {
     );
 
     if (response is List) {
-      final groups = response.map((row) => CcGroupsRow(row as Map<String, dynamic>)).toList();
+      final groups = response
+          .map((row) => CcGroupsRow(row as Map<String, dynamic>))
+          .toList();
       return groups;
     }
     return [];
@@ -136,7 +145,8 @@ class CommunityRepository {
   Future<CommunityGuidelinesVersions> getCommunityGuidelinesVersions() async {
     try {
       final rows = await CcSettingsTable().queryRows(
-        queryFn: (q) => q.inFilter('setting_key', [_englishKey, _portugueseKey]),
+        queryFn: (q) =>
+            q.inFilter('setting_key', [_englishKey, _portugueseKey]),
       );
 
       return CommunityGuidelinesVersions(

@@ -200,6 +200,18 @@ abstract class AppLocalizations {
   /// **'View more'**
   String get viewMore;
 
+  /// No description provided for @seeAllJourneys.
+  ///
+  /// In en, this message translates to:
+  /// **'See all'**
+  String get seeAllJourneys;
+
+  /// No description provided for @seeAllGroups.
+  ///
+  /// In en, this message translates to:
+  /// **'See all'**
+  String get seeAllGroups;
+
   /// No description provided for @journeys.
   ///
   /// In en, this message translates to:
@@ -1808,6 +1820,114 @@ abstract class AppLocalizations {
   /// **'Portal Content Library'**
   String get portalContentLibrary;
 
+  /// No description provided for @portalHubTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The Call of the Time Portal'**
+  String get portalHubTitle;
+
+  /// No description provided for @portalDialoguesRetreats.
+  ///
+  /// In en, this message translates to:
+  /// **'Dialogues & Retreats'**
+  String get portalDialoguesRetreats;
+
+  /// No description provided for @portalHeartToHeart.
+  ///
+  /// In en, this message translates to:
+  /// **'Heart to Heart Conversations'**
+  String get portalHeartToHeart;
+
+  /// No description provided for @portalMessages.
+  ///
+  /// In en, this message translates to:
+  /// **'Messages'**
+  String get portalMessages;
+
+  /// No description provided for @portalDadiJanki.
+  ///
+  /// In en, this message translates to:
+  /// **'Dadi Janki'**
+  String get portalDadiJanki;
+
+  /// No description provided for @portalMeditations.
+  ///
+  /// In en, this message translates to:
+  /// **'Meditations'**
+  String get portalMeditations;
+
+  /// No description provided for @portalListOfAllMessages.
+  ///
+  /// In en, this message translates to:
+  /// **'List of All Messages'**
+  String get portalListOfAllMessages;
+
+  /// No description provided for @portalListOfAllMeditations.
+  ///
+  /// In en, this message translates to:
+  /// **'List of All Meditations'**
+  String get portalListOfAllMeditations;
+
+  /// No description provided for @portalListOfAllDadiJanki.
+  ///
+  /// In en, this message translates to:
+  /// **'List of All Content with Dadi Janki'**
+  String get portalListOfAllDadiJanki;
+
+  /// No description provided for @portalListOfAllDialogues.
+  ///
+  /// In en, this message translates to:
+  /// **'List of All Dialogues & Retreats'**
+  String get portalListOfAllDialogues;
+
+  /// No description provided for @portalListOfAllHeartToHeart.
+  ///
+  /// In en, this message translates to:
+  /// **'List of All Heart to Heart Conversations'**
+  String get portalListOfAllHeartToHeart;
+
+  /// No description provided for @portalEventContents.
+  ///
+  /// In en, this message translates to:
+  /// **'Event contents'**
+  String get portalEventContents;
+
+  /// No description provided for @messageFromAuthors.
+  ///
+  /// In en, this message translates to:
+  /// **'Message from {authors}'**
+  String messageFromAuthors(String authors);
+
+  /// No description provided for @shareContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get shareContent;
+
+  /// No description provided for @location.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get location;
+
+  /// No description provided for @eventType.
+  ///
+  /// In en, this message translates to:
+  /// **'Event Type'**
+  String get eventType;
+
+  /// No description provided for @selectLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Select location'**
+  String get selectLocation;
+
+  /// No description provided for @selectEventType.
+  ///
+  /// In en, this message translates to:
+  /// **'Select event type'**
+  String get selectEventType;
+
   /// No description provided for @orSeparator.
   ///
   /// In en, this message translates to:
@@ -2413,12 +2533,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Required'**
   String get required;
-
-  /// No description provided for @eventType.
-  ///
-  /// In en, this message translates to:
-  /// **'Event Type'**
-  String get eventType;
 
   /// No description provided for @singleDay.
   ///
@@ -3037,6 +3151,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Message deleted successfully'**
   String get messageDeletedSuccessfully;
+
+  /// No description provided for @welcomeBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome back, {name}'**
+  String welcomeBack(String name);
+
+  /// No description provided for @journeyResources.
+  ///
+  /// In en, this message translates to:
+  /// **'Journey resources'**
+  String get journeyResources;
+
+  /// No description provided for @restartJourney.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart journey'**
+  String get restartJourney;
+
+  /// No description provided for @aboutThisJourney.
+  ///
+  /// In en, this message translates to:
+  /// **'About this journey'**
+  String get aboutThisJourney;
+
+  /// No description provided for @aboutNamed.
+  ///
+  /// In en, this message translates to:
+  /// **'About {title}'**
+  String aboutNamed(String title);
+
+  /// No description provided for @resetJourneyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset this journey'**
+  String get resetJourneyTitle;
+
+  /// No description provided for @resetJourneyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Resetting your journey will delete all progress made so far. This action cannot be undone.'**
+  String get resetJourneyDescription;
+
+  /// No description provided for @resetJourneyConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset journey'**
+  String get resetJourneyConfirm;
+
+  /// No description provided for @journeyResetSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Journey reset successfully'**
+  String get journeyResetSuccess;
+
+  /// No description provided for @errorResettingJourney.
+  ///
+  /// In en, this message translates to:
+  /// **'Error resetting journey: {error}'**
+  String errorResettingJourney(String error);
 }
 
 class _AppLocalizationsDelegate

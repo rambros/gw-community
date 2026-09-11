@@ -60,6 +60,12 @@ class AppLocalizationsPt extends AppLocalizations {
   String get viewMore => 'Ver mais';
 
   @override
+  String get seeAllJourneys => 'Ver todas';
+
+  @override
+  String get seeAllGroups => 'Ver todos';
+
+  @override
   String get journeys => 'Jornadas';
 
   @override
@@ -966,6 +972,64 @@ class AppLocalizationsPt extends AppLocalizations {
   String get portalContentLibrary => 'Biblioteca de conteúdo';
 
   @override
+  String get portalHubTitle => 'The Call of the Time Portal';
+
+  @override
+  String get portalDialoguesRetreats => 'Diálogos e Retiros';
+
+  @override
+  String get portalHeartToHeart => 'Conversas de Coração a Coração';
+
+  @override
+  String get portalMessages => 'Mensagens';
+
+  @override
+  String get portalDadiJanki => 'Dadi Janki';
+
+  @override
+  String get portalMeditations => 'Meditações';
+
+  @override
+  String get portalListOfAllMessages => 'Lista de todas as mensagens';
+
+  @override
+  String get portalListOfAllMeditations => 'Lista de todas as meditações';
+
+  @override
+  String get portalListOfAllDadiJanki =>
+      'Lista de todo o conteúdo com Dadi Janki';
+
+  @override
+  String get portalListOfAllDialogues => 'Lista de todos os Diálogos e Retiros';
+
+  @override
+  String get portalListOfAllHeartToHeart =>
+      'Lista de todas as Conversas de Coração a Coração';
+
+  @override
+  String get portalEventContents => 'Conteúdos do evento';
+
+  @override
+  String messageFromAuthors(String authors) {
+    return 'Mensagem de $authors';
+  }
+
+  @override
+  String get shareContent => 'Compartilhar';
+
+  @override
+  String get location => 'Local';
+
+  @override
+  String get eventType => 'Tipo de evento';
+
+  @override
+  String get selectLocation => 'Selecionar local';
+
+  @override
+  String get selectEventType => 'Selecionar tipo de evento';
+
+  @override
   String get orSeparator => 'ou';
 
   @override
@@ -1305,9 +1369,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get required => 'Obrigatório';
 
   @override
-  String get eventType => 'Tipo de evento';
-
-  @override
   String get singleDay => 'Um dia';
 
   @override
@@ -1639,4 +1700,41 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get messageDeletedSuccessfully => 'Mensagem excluída com sucesso';
+
+  @override
+  String welcomeBack(String name) {
+    return 'Bem-vindo de volta, $name';
+  }
+
+  @override
+  String get journeyResources => 'Recursos da jornada';
+
+  @override
+  String get restartJourney => 'Reiniciar jornada';
+
+  @override
+  String get aboutThisJourney => 'Sobre esta jornada';
+
+  @override
+  String aboutNamed(String title) {
+    return 'Sobre $title';
+  }
+
+  @override
+  String get resetJourneyTitle => 'Reiniciar esta jornada';
+
+  @override
+  String get resetJourneyDescription =>
+      'Reiniciar a jornada apaga todo o progresso feito até agora. Esta ação não pode ser desfeita.';
+
+  @override
+  String get resetJourneyConfirm => 'Reiniciar jornada';
+
+  @override
+  String get journeyResetSuccess => 'Jornada reiniciada com sucesso';
+
+  @override
+  String errorResettingJourney(String error) {
+    return 'Erro ao reiniciar a jornada: $error';
+  }
 }

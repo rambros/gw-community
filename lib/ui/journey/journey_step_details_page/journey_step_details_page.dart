@@ -8,6 +8,7 @@ import 'package:gw_community/ui/journey/journey_page/view_model/journey_view_mod
 import 'package:gw_community/ui/journey/journey_page/widgets/journey_step_item_widget.dart';
 import 'package:gw_community/ui/journey/step_details_page/step_details_page.dart';
 import 'package:gw_community/ui/journey/themes/journey_theme_extension.dart';
+import 'package:gw_community/ui/journey/widgets/journey_locale_scope.dart';
 import 'package:gw_community/utils/context_extensions.dart';
 import 'package:gw_community/utils/custom_functions.dart' as functions;
 import 'package:gw_community/utils/flutter_flow_util.dart';
@@ -71,7 +72,11 @@ class _JourneyStepDetailsPageState extends State<JourneyStepDetailsPage> {
 
     return ChangeNotifierProvider.value(
       value: _viewModel!,
-      child: Scaffold(
+      child: Consumer<JourneyViewModel>(
+        builder: (context, viewModel, _) {
+          return JourneyLocaleScope(
+            fixedLanguage: viewModel.fixedLanguage,
+            child: Scaffold(
         backgroundColor: AppTheme.of(context).secondary,
         appBar: AppBar(
           backgroundColor: AppTheme.of(context).primary,
@@ -93,6 +98,9 @@ class _JourneyStepDetailsPageState extends State<JourneyStepDetailsPage> {
             child: _buildBody(context),
           ),
         ),
+      ),
+          );
+        },
       ),
     );
   }

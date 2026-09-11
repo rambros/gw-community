@@ -60,6 +60,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get viewMore => 'View more';
 
   @override
+  String get seeAllJourneys => 'See all';
+
+  @override
+  String get seeAllGroups => 'See all';
+
+  @override
   String get journeys => 'Journeys';
 
   @override
@@ -966,6 +972,63 @@ class AppLocalizationsEn extends AppLocalizations {
   String get portalContentLibrary => 'Portal Content Library';
 
   @override
+  String get portalHubTitle => 'The Call of the Time Portal';
+
+  @override
+  String get portalDialoguesRetreats => 'Dialogues & Retreats';
+
+  @override
+  String get portalHeartToHeart => 'Heart to Heart Conversations';
+
+  @override
+  String get portalMessages => 'Messages';
+
+  @override
+  String get portalDadiJanki => 'Dadi Janki';
+
+  @override
+  String get portalMeditations => 'Meditations';
+
+  @override
+  String get portalListOfAllMessages => 'List of All Messages';
+
+  @override
+  String get portalListOfAllMeditations => 'List of All Meditations';
+
+  @override
+  String get portalListOfAllDadiJanki => 'List of All Content with Dadi Janki';
+
+  @override
+  String get portalListOfAllDialogues => 'List of All Dialogues & Retreats';
+
+  @override
+  String get portalListOfAllHeartToHeart =>
+      'List of All Heart to Heart Conversations';
+
+  @override
+  String get portalEventContents => 'Event contents';
+
+  @override
+  String messageFromAuthors(String authors) {
+    return 'Message from $authors';
+  }
+
+  @override
+  String get shareContent => 'Share';
+
+  @override
+  String get location => 'Location';
+
+  @override
+  String get eventType => 'Event Type';
+
+  @override
+  String get selectLocation => 'Select location';
+
+  @override
+  String get selectEventType => 'Select event type';
+
+  @override
   String get orSeparator => 'or';
 
   @override
@@ -1304,9 +1367,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get required => 'Required';
 
   @override
-  String get eventType => 'Event Type';
-
-  @override
   String get singleDay => 'Single Day';
 
   @override
@@ -1634,4 +1694,41 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get messageDeletedSuccessfully => 'Message deleted successfully';
+
+  @override
+  String welcomeBack(String name) {
+    return 'Welcome back, $name';
+  }
+
+  @override
+  String get journeyResources => 'Journey resources';
+
+  @override
+  String get restartJourney => 'Restart journey';
+
+  @override
+  String get aboutThisJourney => 'About this journey';
+
+  @override
+  String aboutNamed(String title) {
+    return 'About $title';
+  }
+
+  @override
+  String get resetJourneyTitle => 'Reset this journey';
+
+  @override
+  String get resetJourneyDescription =>
+      'Resetting your journey will delete all progress made so far. This action cannot be undone.';
+
+  @override
+  String get resetJourneyConfirm => 'Reset journey';
+
+  @override
+  String get journeyResetSuccess => 'Journey reset successfully';
+
+  @override
+  String errorResettingJourney(String error) {
+    return 'Error resetting journey: $error';
+  }
 }

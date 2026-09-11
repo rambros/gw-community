@@ -3,12 +3,11 @@ import 'package:gw_community/data/repositories/favorites_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/widgets/favorite_button.dart';
-import 'package:gw_community/ui/learn/content_view/content_view.dart';
+import 'package:gw_community/ui/learn/content_view/content_view_page.dart';
 import 'package:gw_community/ui/learn/themes/learn_theme_extension.dart';
 import 'package:gw_community/utils/context_extensions.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
-import 'package:webviewx_plus/webviewx_plus.dart';
 
 /// Card de recording favorito (redesenhado com novo layout)
 class FavoriteRecordingCard extends StatefulWidget {
@@ -46,23 +45,10 @@ class _FavoriteRecordingCardState extends State<FavoriteRecordingCard> {
       'event_name': widget.recording.eventName,
     });
 
-    await showModalBottomSheet(
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      enableDrag: true,
-      isDismissible: true,
-      context: context,
-      builder: (context) {
-        return WebViewAware(
-          child: Padding(
-            padding: MediaQuery.viewInsetsOf(context),
-            child: ContentView(
-              contentId: widget.recording.contentId!,
-              viewContentRow: viewContentRow,
-            ),
-          ),
-        );
-      },
+    await context.pushNamed(
+      ContentViewPage.routeName,
+      queryParameters: {'id': widget.recording.contentId.toString()}.withoutNulls,
+      extra: viewContentRow,
     );
 
     // Após fechar o modal, verificar se ainda está favoritado
