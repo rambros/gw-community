@@ -62,7 +62,7 @@ class _UnifiedFavoriteCardState extends State<UnifiedFavoriteCard> {
     await context.pushNamed(
       ContentViewPage.routeName,
       queryParameters: {'id': recording.contentId.toString()}.withoutNulls,
-      extra: viewContentRow,
+      extra: {'previewRow': viewContentRow},
     );
 
     // Após fechar o modal, verificar se ainda está favoritado

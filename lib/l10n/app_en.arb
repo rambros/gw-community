@@ -414,6 +414,12 @@
   "searchYear": "Search for a year...",
   "searchTapOutsideToClose": "Search... (tap outside to close)",
   "applyFilters": "Apply Filters",
+  "sortBy": "Sort by",
+  "sortByRelevance": "Relevance",
+  "sortByDateNewest": "Date (newest first)",
+  "sortByDateOldest": "Date (oldest first)",
+  "sortByTitleAZ": "Title (A-Z)",
+  "sortByTitleZA": "Title (Z-A)",
   "clearNamedFilter": "Clear {label} filter",
   "@clearNamedFilter": {
     "placeholders": {
@@ -433,6 +439,62 @@
   "portalListOfAllDialogues": "List of All Dialogues & Retreats",
   "portalListOfAllHeartToHeart": "List of All Heart to Heart Conversations",
   "portalEventContents": "Event contents",
+  "searchForADialogue": "Search for a dialogue...",
+  "searchForAConversation": "Search for a conversation...",
+  "searchForAMessage": "Search for a message...",
+  "searchForAMeditation": "Search for a meditation...",
+  "searchForContent": "Search for content...",
+  "speakers": "Speakers: {names}",
+  "@speakers": {
+    "placeholders": {
+      "names": { "type": "String" }
+    }
+  },
+  "mainSpeakers": "Main Speakers: {names}",
+  "@mainSpeakers": {
+    "placeholders": {
+      "names": { "type": "String" }
+    }
+  },
+  "locationValue": "Location: {value}",
+  "@locationValue": {
+    "placeholders": {
+      "value": { "type": "String" }
+    }
+  },
+  "eventStartEnd": "Start {start} - End {end}",
+  "@eventStartEnd": {
+    "placeholders": {
+      "start": { "type": "String" },
+      "end": { "type": "String" }
+    }
+  },
+  "listOfRecordings": "List of Recordings",
+  "eventFilter": "Event Filter",
+  "messageYear": "Message - {year}",
+  "@messageYear": {
+    "placeholders": {
+      "year": { "type": "String" }
+    }
+  },
+  "fromAuthors": "From {names}",
+  "@fromAuthors": {
+    "placeholders": {
+      "names": { "type": "String" }
+    }
+  },
+  "filterByLocation": "Location: {value}",
+  "@filterByLocation": {
+    "placeholders": {
+      "value": { "type": "String" }
+    }
+  },
+  "filterByEventType": "Event type: {value}",
+  "@filterByEventType": {
+    "placeholders": {
+      "value": { "type": "String" }
+    }
+  },
   "messageFromAuthors": "Message from {authors}",
   "@messageFromAuthors": {
     "placeholders": {

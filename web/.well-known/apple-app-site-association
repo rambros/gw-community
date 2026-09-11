@@ -12,7 +12,11 @@
           "/login-callback",
           "/login-callback/*",
           "/welcome",
-          "/welcome/*"
+          "/welcome/*",
+          "/event",
+          "/event/*",
+          "/content",
+          "/content/*"
         ]
       }
     ]

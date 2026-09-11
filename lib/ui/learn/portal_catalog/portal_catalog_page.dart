@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
-import 'package:gw_community/ui/core/ui/flutter_flow_drop_down.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
 import 'package:gw_community/ui/core/ui/form_field_controller.dart';
 import 'package:gw_community/ui/learn/portal_catalog/portal_catalog_kind.dart';
 import 'package:gw_community/ui/learn/portal_catalog/view_model/portal_catalog_view_model.dart';
 import 'package:gw_community/ui/learn/widgets/content_card.dart';
+import 'package:gw_community/ui/learn/widgets/portal_filter_sheet.dart';
+import 'package:gw_community/ui/learn/widgets/portal_list_sort.dart';
+import 'package:gw_community/ui/learn/widgets/portal_search_bar.dart';
 import 'package:provider/provider.dart';
 
 class PortalCatalogPage extends StatefulWidget {
@@ -49,6 +50,14 @@ class _PortalCatalogPageState extends State<PortalCatalogPage> {
     };
   }
 
+  String _searchHint(BuildContext context) {
+    return switch (widget.kind) {
+      PortalCatalogKind.messages => context.l10n.searchForAMessage,
+      PortalCatalogKind.dadiJanki => context.l10n.searchForContent,
+      PortalCatalogKind.meditations => context.l10n.searchForAMeditation,
+    };
+  }
+
   String _listTitle(BuildContext context, PortalCatalogViewModel vm) {
     if (vm.isSearchActive || vm.isFilterActive) return context.l10n.listOfContents;
     return switch (widget.kind) {
@@ -61,92 +70,53 @@ class _PortalCatalogPageState extends State<PortalCatalogPage> {
   Future<void> _showFilterSheet(BuildContext context, PortalCatalogViewModel viewModel) async {
     int authorId = viewModel.filterByAuthorId;
     String year = viewModel.filterByYear;
+    PortalListSort sort = viewModel.sort.forBrowse;
     final authorController = FormFieldController<int>(authorId == 0 ? null : authorId);
     final yearController = FormFieldController<String>(year.isEmpty ? null : year);
+    final sortController = FormFieldController<PortalListSort>(sort);
 
-    await showModalBottomSheet<void>(
+    await showPortalFilterSheet(
       context: context,
-      isScrollControlled: true,
-      builder: (sheetContext) {
-        return Padding(
-          padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(sheetContext).bottom),
-          child: StatefulBuilder(
-            builder: (context, setModalState) {
-              final authors = viewModel.authors.where((a) => a.id != null).toList();
-              final years = viewModel.years.where((y) => y.year != null).toList();
-              return Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(context.l10n.contentFilter, style: AppTheme.of(context).headlineSmall),
-                    const SizedBox(height: 12),
-                    if (widget.kind != PortalCatalogKind.dadiJanki) ...[
-                      Text(context.l10n.author),
-                      FlutterFlowDropDown<int>(
-                        controller: authorController,
-                        options: authors.map((e) => e.id!).toList(),
-                        optionLabels: authors.map((e) => e.name ?? context.l10n.author).toList(),
-                        onChanged: (val) => setModalState(() => authorId = val ?? 0),
-                        width: double.infinity,
-                        height: 50,
-                        textStyle: AppTheme.of(context).bodyMedium.override(
-                              font: GoogleFonts.lexendDeca(),
-                              color: AppTheme.of(context).secondary,
-                            ),
-                        hintText: context.l10n.selectAuthor,
-                        fillColor: AppTheme.of(context).secondaryBackground,
-                        elevation: 2,
-                        borderColor: AppTheme.of(context).alternate,
-                        borderWidth: 1,
-                        borderRadius: 12,
-                        margin: const EdgeInsets.only(bottom: 12),
-                      ),
-                    ],
-                    Text(context.l10n.year),
-                    FlutterFlowDropDown<String>(
-                      controller: yearController,
-                      options: years.map((e) => e.year!.toInt().toString()).toList(),
-                      optionLabels: years.map((e) => e.year!.toInt().toString()).toList(),
-                      onChanged: (val) => setModalState(() => year = val ?? ''),
-                      width: double.infinity,
-                      height: 50,
-                      textStyle: AppTheme.of(context).bodyMedium.override(
-                            font: GoogleFonts.lexendDeca(),
-                            color: AppTheme.of(context).secondary,
-                          ),
-                      hintText: context.l10n.selectYear,
-                      fillColor: AppTheme.of(context).secondaryBackground,
-                      elevation: 2,
-                      borderColor: AppTheme.of(context).alternate,
-                      borderWidth: 1,
-                      borderRadius: 12,
-                      margin: const EdgeInsets.only(bottom: 16),
-                    ),
-                    FFButtonWidget(
-                      onPressed: () async {
-                        await viewModel.applyFilters(
-                          authorId: widget.kind == PortalCatalogKind.dadiJanki
-                              ? null
-                              : authorId,
-                          year: year,
-                        );
-                        if (sheetContext.mounted) Navigator.pop(sheetContext);
-                      },
-                      text: context.l10n.applyFilters,
-                      options: FFButtonOptions(
-                        width: double.infinity,
-                        height: 44,
-                        color: AppTheme.of(context).primary,
-                        textStyle: AppTheme.of(context).labelLarge.override(color: Colors.white),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
+      title: context.l10n.contentFilter,
+      onApply: () async {
+        viewModel.setSort(sort);
+        await viewModel.applyFilters(
+          authorId: widget.kind == PortalCatalogKind.dadiJanki ? null : authorId,
+          year: year,
+        );
+      },
+      buildFields: (context, setModalState) {
+        final authors = viewModel.authors.where((a) => a.id != null).toList();
+        final years = viewModel.years.where((y) => y.year != null).toList();
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (widget.kind != PortalCatalogKind.dadiJanki)
+              PortalFilterDropdown<int>(
+                label: context.l10n.author,
+                controller: authorController,
+                options: authors.map((e) => e.id!).toList(),
+                optionLabels: authors.map((e) => e.name ?? context.l10n.author).toList(),
+                hintText: context.l10n.selectAuthor,
+                searchHintText: context.l10n.searchAuthor,
+                isSearchable: true,
+                onChanged: (val) => setModalState(() => authorId = val ?? 0),
+              ),
+            PortalFilterDropdown<String>(
+              label: context.l10n.year,
+              controller: yearController,
+              options: years.map((e) => e.year!.toInt().toString()).toList(),
+              optionLabels: years.map((e) => e.year!.toInt().toString()).toList(),
+              hintText: context.l10n.selectYear,
+              isSearchable: true,
+              searchHintText: context.l10n.searchYear,
+              onChanged: (val) => setModalState(() => year = val ?? ''),
+            ),
+            PortalSortDropdown(
+              controller: sortController,
+              onChanged: (value) => setModalState(() => sort = value),
+            ),
+          ],
         );
       },
     );
@@ -171,34 +141,11 @@ class _PortalCatalogPageState extends State<PortalCatalogPage> {
             body: SafeArea(
               child: Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: TextFormField(
-                            controller: _searchController,
-                            onFieldSubmitted: viewModel.search,
-                            decoration: InputDecoration(
-                              labelText: context.l10n.searchAllContent,
-                              suffixIcon: Icon(Icons.search_rounded, color: AppTheme.of(context).primary),
-                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        FFButtonWidget(
-                          onPressed: () => _showFilterSheet(context, viewModel),
-                          text: context.l10n.filter,
-                          icon: const Icon(Icons.filter_alt, size: 15),
-                          options: FFButtonOptions(
-                            height: 44,
-                            color: AppTheme.of(context).primary,
-                            textStyle: AppTheme.of(context).labelLarge.override(color: Colors.white),
-                          ),
-                        ),
-                      ],
-                    ),
+                  PortalSearchBar(
+                    controller: _searchController,
+                    hintText: _searchHint(context),
+                    onSubmitted: viewModel.search,
+                    onFilter: () => _showFilterSheet(context, viewModel),
                   ),
                   Padding(
                     padding: const EdgeInsetsDirectional.fromSTEB(24, 16, 16, 0),
@@ -207,8 +154,13 @@ class _PortalCatalogPageState extends State<PortalCatalogPage> {
                         Expanded(
                           child: Text(
                             _listTitle(context, viewModel),
-                            style: AppTheme.of(context).labelLarge.override(fontWeight: FontWeight.w600),
+                            style: portalSectionTitleStyle(context),
                           ),
+                        ),
+                        PortalSortButton(
+                          value: viewModel.sort,
+                          onChanged: viewModel.setSort,
+                          showRelevance: viewModel.isSearchActive,
                         ),
                         if (viewModel.isSearchActive || viewModel.isFilterActive)
                           FFButtonWidget(
@@ -221,7 +173,9 @@ class _PortalCatalogPageState extends State<PortalCatalogPage> {
                             options: FFButtonOptions(
                               height: 36,
                               color: AppTheme.of(context).primaryBackground,
-                              textStyle: AppTheme.of(context).labelLarge,
+                              textStyle: AppTheme.of(context).labelLarge.override(
+                                    color: AppTheme.of(context).secondary,
+                                  ),
                             ),
                           ),
                       ],
@@ -234,7 +188,10 @@ class _PortalCatalogPageState extends State<PortalCatalogPage> {
                         alignment: Alignment.centerLeft,
                         child: Text(
                           viewModel.localizedFilterDescription(context.l10n),
-                          style: AppTheme.of(context).labelLarge.override(fontSize: 12),
+                          style: AppTheme.of(context).bodySmall.override(
+                                color: AppTheme.of(context).secondaryText,
+                                fontSize: 12,
+                              ),
                         ),
                       ),
                     ),
@@ -242,11 +199,17 @@ class _PortalCatalogPageState extends State<PortalCatalogPage> {
                     child: viewModel.isLoading
                         ? Center(child: SpinKitRipple(color: AppTheme.of(context).primary, size: 50))
                         : viewModel.items.isEmpty
-                            ? Center(child: Text(context.l10n.noContentFound))
-                            : ListView.separated(
-                                padding: const EdgeInsets.only(top: 8, bottom: 12),
+                            ? Center(
+                                child: Text(
+                                  context.l10n.noContentFound,
+                                  style: AppTheme.of(context).bodyMedium.override(
+                                        color: AppTheme.of(context).secondaryText,
+                                      ),
+                                ),
+                              )
+                            : ListView.builder(
+                                padding: const EdgeInsets.only(top: 8, bottom: 16),
                                 itemCount: viewModel.items.length,
-                                separatorBuilder: (_, __) => const SizedBox(height: 1),
                                 itemBuilder: (context, index) {
                                   return ContentCard(contentRow: viewModel.items[index]);
                                 },

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/favorites_repository.dart';
@@ -33,17 +32,6 @@ class ContentViewPage extends StatefulWidget {
 }
 
 class _ContentViewPageState extends State<ContentViewPage> {
-  Future<void> _shareContent(BuildContext context, ContentViewModel viewModel) async {
-    final title = viewModel.viewContentRow?.title ?? '';
-    final link = 'https://cottportal.brahmakumaris.org/content?id=${widget.contentId}';
-    await Clipboard.setData(ClipboardData(text: '$title\n$link'));
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.shareContent)),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -81,17 +69,16 @@ class _ContentViewPageState extends State<ContentViewPage> {
               centerTitle: true,
               actions: [
                 if (context.currentUserIdOrEmpty.isNotEmpty && row.contentId != null)
-                  FavoriteButton(
-                    contentType: FavoritesRepository.typeRecording,
-                    contentId: row.contentId!,
-                    authUserId: context.currentUserIdOrEmpty,
-                    size: 24,
-                    iconColor: Colors.white,
+                  Padding(
+                    padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 12, 0),
+                    child: FavoriteButton(
+                      contentType: FavoritesRepository.typeRecording,
+                      contentId: row.contentId!,
+                      authUserId: context.currentUserIdOrEmpty,
+                      size: 24,
+                      iconColor: Colors.white,
+                    ),
                   ),
-                IconButton(
-                  icon: const Icon(Icons.ios_share, color: Colors.white),
-                  onPressed: () => _shareContent(context, viewModel),
-                ),
               ],
             ),
             body: SingleChildScrollView(
@@ -102,23 +89,35 @@ class _ContentViewPageState extends State<ContentViewPage> {
                   if (viewModel.isMessageType)
                     Text(
                       context.l10n.messageFromAuthors(row.authorsNames.join(', ')),
-                      style: AppTheme.of(context).bodyLarge.override(fontWeight: FontWeight.w600),
+                      style: AppTheme.of(context).bodyLarge.override(
+                            fontWeight: FontWeight.w600,
+                            color: AppTheme.of(context).secondary,
+                          ),
                     )
                   else ...[
                     Text(
                       valueOrDefault<String>(row.title, context.l10n.untitled),
-                      style: AppTheme.of(context).bodyLarge.override(fontWeight: FontWeight.bold),
+                      style: AppTheme.of(context).bodyLarge.override(
+                            fontWeight: FontWeight.bold,
+                            color: AppTheme.of(context).secondary,
+                          ),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       context.l10n.withAuthors(row.authorsNames.join(', ')),
-                      style: AppTheme.of(context).bodyMedium.override(fontSize: 12),
+                      style: AppTheme.of(context).bodyMedium.override(
+                            fontSize: 12,
+                            color: AppTheme.of(context).secondaryText,
+                          ),
                     ),
                     if ((row.cottEventId ?? 0) > 0) ...[
                       const SizedBox(height: 4),
                       Text(
                         context.l10n.atEvent(row.eventName ?? ''),
-                        style: AppTheme.of(context).bodyMedium.override(fontSize: 12),
+                        style: AppTheme.of(context).bodyMedium.override(
+                              fontSize: 12,
+                              color: AppTheme.of(context).secondaryText,
+                            ),
                       ),
                     ],
                   ],
@@ -167,6 +166,7 @@ class _ContentViewPageState extends State<ContentViewPage> {
                           row.text!,
                           style: AppTheme.of(context).bodyMedium.override(
                                 font: GoogleFonts.lexendDeca(),
+                                color: AppTheme.of(context).secondary,
                               ),
                         ),
                       )
@@ -182,7 +182,10 @@ class _ContentViewPageState extends State<ContentViewPage> {
                     ExpansionTile(
                       title: Text(
                         context.l10n.transcript,
-                        style: AppTheme.of(context).labelLarge.override(fontWeight: FontWeight.w600),
+                        style: AppTheme.of(context).labelLarge.override(
+                              fontWeight: FontWeight.w600,
+                              color: AppTheme.of(context).secondary,
+                            ),
                       ),
                       children: [
                         Padding(
@@ -190,7 +193,9 @@ class _ContentViewPageState extends State<ContentViewPage> {
                           child: SelectionArea(
                             child: Text(
                               row.transcript!,
-                              style: AppTheme.of(context).bodyMedium,
+                              style: AppTheme.of(context).bodyMedium.override(
+                                    color: AppTheme.of(context).secondary,
+                                  ),
                             ),
                           ),
                         ),

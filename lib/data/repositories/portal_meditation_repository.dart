@@ -1,3 +1,4 @@
+import 'package:gw_community/data/services/portal/portal_year_filter.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 
 class PortalMeditationRepository {
@@ -21,7 +22,7 @@ class PortalMeditationRepository {
       query = query.contains('authors', [authorId]);
     }
     if (year.trim().isNotEmpty) {
-      query = query.eq('year_published', year);
+      query = applyDatePublishedYearFilter(query, year);
     }
     if (eventId != 0) {
       query = query.eq('cott_event_id', eventId);

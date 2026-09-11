@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Good Wishes</title>
+        <link rel="preload" href="assets/images/logo.png" as="image" />
+        <style>
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                background: linear-gradient(135deg, #7c52a0 0%, #340964 100%);
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+            }
+            .container {
+                background: white;
+                border-radius: 20px;
+                padding: 40px;
+                max-width: 500px;
+                width: 100%;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                text-align: center;
+            }
+            .logo { width: 120px; height: 120px; margin: 0 auto 30px; object-fit: contain; }
+            h1 { color: #2d3748; font-size: 28px; margin-bottom: 10px; }
+            p { color: #718096; font-size: 16px; line-height: 1.6; margin-bottom: 24px; }
+            .buttons { display: flex; flex-direction: column; gap: 15px; }
+            .btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 12px;
+                padding: 16px 24px;
+                border-radius: 12px;
+                text-decoration: none;
+                font-weight: 600;
+                font-size: 16px;
+                border: none;
+                cursor: pointer;
+                color: white;
+            }
+            .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+            .btn-ios { background: #340964; }
+            .btn-android { background: #7c52a0; }
+            .hidden { display: none; }
+            .opening-hint { font-size: 13px; color: #a0aec0; margin-top: 12px; margin-bottom: 0; }
+            @media (max-width: 480px) {
+                .container { padding: 30px 20px; }
+                h1 { font-size: 24px; }
+                .logo { width: 100px; height: 100px; }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <img src="assets/images/logo.png" alt="Good Wishes Logo" class="logo" />
+
+            <div id="mobile" class="hidden">
+                <h1>Continue in the app</h1>
+                <p id="mobile-copy">Open this link in Good Wishes to see the recordings.</p>
+                <div class="buttons">
+                    <button onclick="openDeepLink()" class="btn btn-primary">Open in Good Wishes</button>
+                    <a href="https://apps.apple.com/app/id6758221292" class="btn btn-ios hidden" id="ios-link">
+                        Download on App Store
+                    </a>
+                    <a href="https://play.google.com/store/apps/details?id=org.callofthetime.gw" class="btn btn-android hidden" id="android-link">
+                        Get it on Google Play
+                    </a>
+                </div>
+                <p class="opening-hint" id="opening-hint">Trying to open the app…</p>
+            </div>
+
+            <div id="desktop" class="hidden">
+                <h1>Open on your phone</h1>
+                <p>This link opens the Good Wishes app. Open the same email or message on your iPhone or Android.</p>
+                <div class="buttons">
+                    <a href="https://apps.apple.com/app/id6758221292" class="btn btn-ios">Download on App Store</a>
+                    <a href="https://play.google.com/store/apps/details?id=org.callofthetime.gw" class="btn btn-android">Get it on Google Play</a>
+                </div>
+            </div>
+
+            <div id="error" class="hidden">
+                <h1>Link unavailable</h1>
+                <p>This link is missing an event or recording id. Ask the sender to share it again from the app.</p>
+            </div>
+        </div>
+
+        <script>
+            const params = new URLSearchParams(window.location.search);
+            const idMatch = (params.get("id") || "").match(/\d+/);
+            const id = idMatch ? idMatch[0] : null;
+            const kind = window.location.pathname.replace(/\/+$/, "").split("/").pop();
+
+            function getMobileOS() {
+                const ua = navigator.userAgent;
+                if (/iPad|iPhone|iPod/.test(ua)) return "iOS";
+                if (/android/i.test(ua)) return "Android";
+                return "Desktop";
+            }
+
+            function openDeepLink() {
+                if (!id || (kind !== "event" && kind !== "content")) return;
+                window.location.href = "gw://" + kind + "?id=" + encodeURIComponent(id);
+            }
+
+            function showStore(platform) {
+                document.getElementById(platform === "iOS" ? "ios-link" : "android-link").classList.remove("hidden");
+                document.getElementById("opening-hint").textContent = "Already have the app? Tap Open in Good Wishes.";
+            }
+
+            function start() {
+                if (!id || (kind !== "event" && kind !== "content")) {
+                    document.getElementById("error").classList.remove("hidden");
+                    return;
+                }
+
+                document.getElementById("mobile-copy").textContent =
+                    kind === "event"
+                        ? "Open this event in Good Wishes to listen to its recordings."
+                        : "Open this recording in Good Wishes.";
+
+                const platform = getMobileOS();
+                if (platform === "Desktop") {
+                    document.getElementById("desktop").classList.remove("hidden");
+                    return;
+                }
+
+                document.getElementById("mobile").classList.remove("hidden");
+                openDeepLink();
+                setTimeout(() => {
+                    if (document.visibilityState === "visible") showStore(platform);
+                }, 1200);
+            }
+
+            start();
+        </script>
+    </body>
+</html>

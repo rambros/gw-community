@@ -5,6 +5,7 @@ import 'package:gw_community/data/repositories/learn_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/l10n/app_localizations.dart';
 import 'package:gw_community/l10n/l10n_format.dart';
+import 'package:gw_community/ui/learn/widgets/portal_list_sort.dart';
 
 class LearnListViewModel extends ChangeNotifier {
   final LearnRepository _repository = LearnRepository();
@@ -42,6 +43,21 @@ class LearnListViewModel extends ChangeNotifier {
 
   int _filterByGroupId = 0;
   int get filterByGroupId => _filterByGroupId;
+
+  PortalListSort _sort = PortalListSort.titleAsc;
+  PortalListSort get sort => _sort;
+
+  void setSort(PortalListSort sort) {
+    if (_sort == sort) return;
+    _sort = sort;
+    if (_isSearchActive) {
+      searchContent(_searchQuery, keepSort: true);
+    } else if (_isFilterActive) {
+      applyFilters();
+    } else {
+      loadInitialData();
+    }
+  }
 
 
   // Filter Options
@@ -91,6 +107,8 @@ class LearnListViewModel extends ChangeNotifier {
     try {
       // 2. Fetch first page of content
       final newContent = await _repository.getAllContent(
+        sortColumn: _sort.queryColumn,
+        ascending: _sort.queryAscending,
         limit: _pageSize,
         offset: 0,
       );
@@ -132,6 +150,9 @@ class LearnListViewModel extends ChangeNotifier {
           filterByTopics: _filterByTopics,
           filterByJourneyId: _filterByJourneyId,
           filterByGroupId: _filterByGroupId,
+          useHybridSearch: _sort.isRelevance,
+          sortColumn: _sort.queryColumn,
+          ascending: _sort.queryAscending,
           limit: _pageSize,
           offset: offset,
         );
@@ -143,11 +164,15 @@ class LearnListViewModel extends ChangeNotifier {
           filterByTopics: _filterByTopics,
           filterByJourneyId: _filterByJourneyId,
           filterByGroupId: _filterByGroupId,
+          sortColumn: _sort.queryColumn,
+          ascending: _sort.queryAscending,
           limit: _pageSize,
           offset: offset,
         );
       } else {
         newContent = await _repository.getAllContent(
+          sortColumn: _sort.queryColumn,
+          ascending: _sort.queryAscending,
           limit: _pageSize,
           offset: offset,
         );
@@ -216,7 +241,7 @@ class LearnListViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> searchContent(String query) async {
+  Future<void> searchContent(String query, {bool keepSort = false}) async {
     if (query.isEmpty) {
       clearSearch();
       return;
@@ -226,6 +251,9 @@ class LearnListViewModel extends ChangeNotifier {
     _searchQuery = query;
     _isSearchActive = true;
     _isFilterActive = false; // Search overrides filter display logic in original code
+    if (!keepSort) {
+      _sort = PortalListSort.relevance;
+    }
 
     // Reset pagination
     _page = 0;
@@ -240,6 +268,9 @@ class LearnListViewModel extends ChangeNotifier {
         filterByTopics: _filterByTopics,
         filterByJourneyId: _filterByJourneyId,
         filterByGroupId: _filterByGroupId,
+        useHybridSearch: _sort.isRelevance,
+        sortColumn: _sort.queryColumn,
+        ascending: _sort.queryAscending,
         limit: _pageSize,
         offset: 0,
       );
@@ -273,6 +304,9 @@ class LearnListViewModel extends ChangeNotifier {
     if (groupId != null) _filterByGroupId = groupId;
 
     _isSearchActive = false;
+    if (_sort.isRelevance) {
+      _sort = PortalListSort.titleAsc;
+    }
 
     // Load filter options if not loaded yet
     if (_journeys.isEmpty && journeyId != null) {
@@ -304,6 +338,8 @@ class LearnListViewModel extends ChangeNotifier {
         filterByTopics: _filterByTopics,
         filterByJourneyId: _filterByJourneyId,
         filterByGroupId: _filterByGroupId,
+        sortColumn: _sort.queryColumn,
+        ascending: _sort.queryAscending,
         limit: _pageSize,
         offset: 0,
       );
@@ -319,6 +355,9 @@ class LearnListViewModel extends ChangeNotifier {
   void clearSearch() {
     _searchQuery = '';
     _isSearchActive = false;
+    if (_sort.isRelevance) {
+      _sort = PortalListSort.titleAsc;
+    }
     if (_isFilterActive) {
       // If filter was active, re-apply it? Or just clear everything?
       // Original code: _model.searchOn = false;

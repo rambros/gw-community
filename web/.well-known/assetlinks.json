@@ -1,0 +1,22 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "org.callofthetime.gw",
+      "sha256_cert_fingerprints": [
+        "38:16:90:83:A8:F0:28:90:5C:A2:C0:31:3C:B1:98:A4:19:03:06:68:F2:48:97:3F:F2:30:5C:CA:F7:B3:06:D3"
+      ]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "org.brahmakumaris.cottportal",
+      "sha256_cert_fingerprints": [
+        "07:B9:2E:02:75:D5:E2:F3:B3:51:EF:6C:44:C5:A6:74:C3:6B:E6:F4:36:9F:01:E0:13:34:AF:A3:7B:6D:6E:EF"
+      ]
+    }
+  }
+]

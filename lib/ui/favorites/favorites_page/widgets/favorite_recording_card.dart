@@ -48,7 +48,7 @@ class _FavoriteRecordingCardState extends State<FavoriteRecordingCard> {
     await context.pushNamed(
       ContentViewPage.routeName,
       queryParameters: {'id': widget.recording.contentId.toString()}.withoutNulls,
-      extra: viewContentRow,
+      extra: {'previewRow': viewContentRow},
     );
 
     // Após fechar o modal, verificar se ainda está favoritado

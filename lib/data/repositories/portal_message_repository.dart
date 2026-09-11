@@ -1,3 +1,4 @@
+import 'package:gw_community/data/services/portal/portal_year_filter.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 
 class PortalMessageRepository {
@@ -20,7 +21,7 @@ class PortalMessageRepository {
       query = query.contains('authors', [authorId]);
     }
     if (year.trim().isNotEmpty) {
-      query = query.eq('year_published', year);
+      query = applyDatePublishedYearFilter(query, year);
     }
 
     final data = await query.order('date_published', ascending: false);

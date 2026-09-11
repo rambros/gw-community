@@ -68,6 +68,22 @@
           "destination": "/access-link.html"
         },
         {
+          "source": "/event",
+          "destination": "/app-link.html"
+        },
+        {
+          "source": "/event.html",
+          "destination": "/app-link.html"
+        },
+        {
+          "source": "/content",
+          "destination": "/app-link.html"
+        },
+        {
+          "source": "/content.html",
+          "destination": "/app-link.html"
+        },
+        {
           "source": "**",
           "destination": "/invite.html"
         }
@@ -84,6 +100,15 @@
         },
         {
           "source": "/.well-known/apple-app-site-association",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        {
+          "source": "/.well-known/assetlinks.json",
           "headers": [
             {
               "key": "Content-Type",

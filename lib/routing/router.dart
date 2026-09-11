@@ -5,6 +5,7 @@ import 'package:gw_community/data/models/structs/index.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/domain/models/app_auth_user.dart';
 import 'package:gw_community/index.dart';
+import 'package:gw_community/routing/portal_app_links.dart';
 import 'package:gw_community/ui/community/community_guidelines_edit_page/community_guidelines_edit_page.dart';
 import 'package:gw_community/ui/community/community_guidelines_page/community_guidelines_page.dart';
 import 'package:gw_community/ui/community/group_details_page/member_management_page/member_management_page.dart';
@@ -50,6 +51,18 @@ class AppStateNotifier extends ChangeNotifier {
   bool hasRedirect() => _redirectLocation != null;
   void setRedirectLocationIfUnset(String loc) => _redirectLocation ??= loc;
   void clearRedirectLocation() => _redirectLocation = null;
+
+  /// Stays set until the router actually reaches this location.
+  /// Prevents `/` → Home from winning the race against a just-opened event link.
+  String? pendingPortalLocation;
+
+  void setPendingPortalLocation(String location) {
+    pendingPortalLocation = location;
+  }
+
+  void clearPendingPortalLocation() {
+    pendingPortalLocation = null;
+  }
 
   /// Mark as not needing to notify on a sign in / out when we intend
   /// to perform subsequent actions (such as navigation) afterwards.
@@ -106,12 +119,34 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
 
         if (!loggedIn && !isPublicRoute) {
           debugPrint('ROUTER: User not logged in and on protected page ${state.uri.path}. Redirecting to Login.');
+          appStateNotifier.setRedirectLocationIfUnset(state.uri.toString());
           return LoginPage.routePath;
         }
 
         if (loggedIn && appStateNotifier.pendingPasswordRecovery) {
           debugPrint('ROUTER: Password recovery in progress — redirecting to ChangePasswordPage.');
           return ChangePasswordPage.routePath;
+        }
+
+        final pendingPortal = appStateNotifier.pendingPortalLocation;
+        if (loggedIn && pendingPortal != null) {
+          final pendingPath = Uri.tryParse(pendingPortal)?.path ?? pendingPortal;
+          if (state.uri.path == pendingPath) {
+            appStateNotifier.clearPendingPortalLocation();
+            appStateNotifier.clearRedirectLocation();
+            return null;
+          }
+          final onEntryRoute = isPublicRoute || state.uri.path == HomePage.routePath;
+          if (onEntryRoute) {
+            debugPrint('ROUTER: Honoring pending portal link $pendingPortal (was ${state.uri.path})');
+            return pendingPortal;
+          }
+        }
+
+        if (loggedIn && appStateNotifier.hasRedirect()) {
+          final redirectLocation = appStateNotifier.getRedirectLocation();
+          appStateNotifier.clearRedirectLocation();
+          return redirectLocation;
         }
 
         if (loggedIn && isPublicRoute) {
@@ -153,13 +188,12 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: LearnListPage.routeName,
           path: LearnListPage.routePath,
-          builder: (context, params) => params.isEmpty
-              ? const NavBarPage(initialPage: 'learnListPage')
-              : LearnListPage(
-                  journeyId: params.getParam('journeyId', ParamType.int),
-                  groupId: params.getParam('groupId', ParamType.int),
-                  customTitle: params.getParam('customTitle', ParamType.String),
-                ),
+          builder: (context, params) => LearnListPage(
+            journeyId: params.getParam('journeyId', ParamType.int),
+            groupId: params.getParam('groupId', ParamType.int),
+            customTitle: params.getParam('customTitle', ParamType.String),
+            autofocusSearch: params.getParam('autofocusSearch', ParamType.bool) ?? false,
+          ),
         ),
         FFRoute(
           name: LibraryHubPage.routeName,
@@ -191,15 +225,43 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: PortalEventDetailPage.routeName,
           path: PortalEventDetailPage.routePath,
           builder: (context, params) => PortalEventDetailPage(
-            eventId: params.getParam('id', ParamType.int) ?? 0,
+            eventId: PortalAppLinks.parseId(params.state.uri.queryParameters['id']) ??
+                params.getParam('id', ParamType.int) ??
+                0,
+          ),
+        ),
+        FFRoute(
+          name: 'portalEventLink',
+          path: PortalAppLinks.eventPath,
+          builder: (context, params) => NavBarPage(
+            initialPage: 'learnListPage',
+            page: PortalEventDetailPage(
+              eventId: PortalAppLinks.parseId(params.state.uri.queryParameters['id']) ??
+                  params.getParam('id', ParamType.int) ??
+                  0,
+            ),
           ),
         ),
         FFRoute(
           name: ContentViewPage.routeName,
           path: ContentViewPage.routePath,
           builder: (context, params) => ContentViewPage(
-            contentId: params.getParam('id', ParamType.int) ?? 0,
-            previewRow: params.state.extra is ViewContentRow ? params.state.extra as ViewContentRow : null,
+            contentId: PortalAppLinks.parseId(params.state.uri.queryParameters['id']) ??
+                params.getParam('id', ParamType.int) ??
+                0,
+            previewRow: params.getParam<ViewContentRow>('previewRow', ParamType.SupabaseRow),
+          ),
+        ),
+        FFRoute(
+          name: 'portalContentLink',
+          path: PortalAppLinks.contentPath,
+          builder: (context, params) => NavBarPage(
+            initialPage: 'learnListPage',
+            page: ContentViewPage(
+              contentId: PortalAppLinks.parseId(params.state.uri.queryParameters['id']) ??
+                  params.getParam('id', ParamType.int) ??
+                  0,
+            ),
           ),
         ),
         FFRoute(
@@ -546,7 +608,12 @@ extension GoRouterExtensions on GoRouter {
 }
 
 extension _GoRouterStateExtensions on GoRouterState {
-  Map<String, dynamic> get extraMap => extra != null ? extra as Map<String, dynamic> : {};
+  Map<String, dynamic> get extraMap {
+    final value = extra;
+    if (value is Map<String, dynamic>) return value;
+    if (value is Map) return Map<String, dynamic>.from(value);
+    return {};
+  }
   Map<String, dynamic> get allParams => <String, dynamic>{}
     ..addAll(pathParameters)
     ..addAll(uri.queryParameters)

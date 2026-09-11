@@ -75,6 +75,8 @@ String libraryActiveFiltersDescription({
   String? year,
   String? journey,
   String? group,
+  String? location,
+  String? eventType,
   List<String> topics = const [],
 }) {
   final parts = <String>[];
@@ -92,6 +94,12 @@ String libraryActiveFiltersDescription({
   }
   if (group != null && group.trim().isNotEmpty) {
     parts.add(l10n.filterByGroup(group));
+  }
+  if (location != null && location.trim().isNotEmpty) {
+    parts.add(l10n.filterByLocation(location));
+  }
+  if (eventType != null && eventType.trim().isNotEmpty) {
+    parts.add(l10n.filterByEventType(eventType));
   }
   if (topics.isNotEmpty) {
     parts.add(l10n.filterByTopics(topics.join(', ')));

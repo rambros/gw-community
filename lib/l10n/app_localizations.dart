@@ -1808,6 +1808,42 @@ abstract class AppLocalizations {
   /// **'Apply Filters'**
   String get applyFilters;
 
+  /// No description provided for @sortBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort by'**
+  String get sortBy;
+
+  /// No description provided for @sortByRelevance.
+  ///
+  /// In en, this message translates to:
+  /// **'Relevance'**
+  String get sortByRelevance;
+
+  /// No description provided for @sortByDateNewest.
+  ///
+  /// In en, this message translates to:
+  /// **'Date (newest first)'**
+  String get sortByDateNewest;
+
+  /// No description provided for @sortByDateOldest.
+  ///
+  /// In en, this message translates to:
+  /// **'Date (oldest first)'**
+  String get sortByDateOldest;
+
+  /// No description provided for @sortByTitleAZ.
+  ///
+  /// In en, this message translates to:
+  /// **'Title (A-Z)'**
+  String get sortByTitleAZ;
+
+  /// No description provided for @sortByTitleZA.
+  ///
+  /// In en, this message translates to:
+  /// **'Title (Z-A)'**
+  String get sortByTitleZA;
+
   /// No description provided for @clearNamedFilter.
   ///
   /// In en, this message translates to:
@@ -1891,6 +1927,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Event contents'**
   String get portalEventContents;
+
+  /// No description provided for @searchForADialogue.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for a dialogue...'**
+  String get searchForADialogue;
+
+  /// No description provided for @searchForAConversation.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for a conversation...'**
+  String get searchForAConversation;
+
+  /// No description provided for @searchForAMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for a message...'**
+  String get searchForAMessage;
+
+  /// No description provided for @searchForAMeditation.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for a meditation...'**
+  String get searchForAMeditation;
+
+  /// No description provided for @searchForContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for content...'**
+  String get searchForContent;
+
+  /// No description provided for @speakers.
+  ///
+  /// In en, this message translates to:
+  /// **'Speakers: {names}'**
+  String speakers(String names);
+
+  /// No description provided for @mainSpeakers.
+  ///
+  /// In en, this message translates to:
+  /// **'Main Speakers: {names}'**
+  String mainSpeakers(String names);
+
+  /// No description provided for @locationValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Location: {value}'**
+  String locationValue(String value);
+
+  /// No description provided for @eventStartEnd.
+  ///
+  /// In en, this message translates to:
+  /// **'Start {start} - End {end}'**
+  String eventStartEnd(String start, String end);
+
+  /// No description provided for @listOfRecordings.
+  ///
+  /// In en, this message translates to:
+  /// **'List of Recordings'**
+  String get listOfRecordings;
+
+  /// No description provided for @eventFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Event Filter'**
+  String get eventFilter;
+
+  /// No description provided for @messageYear.
+  ///
+  /// In en, this message translates to:
+  /// **'Message - {year}'**
+  String messageYear(String year);
+
+  /// No description provided for @fromAuthors.
+  ///
+  /// In en, this message translates to:
+  /// **'From {names}'**
+  String fromAuthors(String names);
+
+  /// No description provided for @filterByLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Location: {value}'**
+  String filterByLocation(String value);
+
+  /// No description provided for @filterByEventType.
+  ///
+  /// In en, this message translates to:
+  /// **'Event type: {value}'**
+  String filterByEventType(String value);
 
   /// No description provided for @messageFromAuthors.
   ///

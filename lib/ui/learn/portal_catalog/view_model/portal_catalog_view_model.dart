@@ -4,11 +4,13 @@ import 'package:gw_community/data/repositories/learn_repository.dart';
 import 'package:gw_community/data/repositories/portal_meditation_repository.dart';
 import 'package:gw_community/data/repositories/portal_message_repository.dart';
 import 'package:gw_community/data/services/portal/portal_hybrid_search.dart';
+import 'package:gw_community/data/services/portal/portal_year_filter.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/l10n/app_localizations.dart';
 import 'package:gw_community/l10n/l10n_format.dart';
 import 'package:gw_community/ui/learn/portal_catalog/portal_catalog_kind.dart';
 import 'package:gw_community/ui/learn/utils/portal_content_mapper.dart';
+import 'package:gw_community/ui/learn/widgets/portal_list_sort.dart';
 
 class PortalCatalogViewModel extends ChangeNotifier {
   PortalCatalogViewModel({
@@ -26,8 +28,13 @@ class PortalCatalogViewModel extends ChangeNotifier {
   final PortalMeditationRepository _meditationRepository;
   final LearnRepository _learnRepository;
 
-  List<ViewContentRow> _items = [];
-  List<ViewContentRow> get items => _items;
+  List<ViewContentRow> _allItems = [];
+  final _sortedItems = PortalSortedList<ViewContentRow>(
+    titleOf: (item) => item.title ?? '',
+    dateOf: (item) => item.datePublished,
+  );
+  List<ViewContentRow> get items => _sortedItems.items;
+  PortalListSort get sort => _sortedItems.sort;
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
@@ -47,18 +54,29 @@ class PortalCatalogViewModel extends ChangeNotifier {
   List<AuthorWithContentRow> _authors = [];
   List<AuthorWithContentRow> get authors => _authors;
 
-  List<YearsWithContentRow> _years = [];
-  List<YearsWithContentRow> get years => _years;
+  List<YearsWithContentRow> get years {
+    final unique = <int>{};
+    for (final item in _allItems) {
+      final year = item.yearPublished?.toInt() ?? item.datePublished?.year;
+      if (year != null) unique.add(year);
+    }
+    final sorted = unique.toList()..sort((a, b) => b.compareTo(a));
+    return [for (final year in sorted) YearsWithContentRow({'year': year.toDouble()})];
+  }
 
   int get filterByAuthorId => _filterByAuthorId;
   String get filterByYear => _filterByYear;
+
+  void setSort(PortalListSort sort) {
+    if (!_sortedItems.setSort(sort)) return;
+    notifyListeners();
+  }
 
   Future<void> init() async {
     _setLoading(true);
     try {
       await Future.wait([
         _loadAuthors(),
-        _loadYears(),
         _loadItems(),
       ]);
     } finally {
@@ -74,24 +92,16 @@ class PortalCatalogViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> _loadYears() async {
-    try {
-      _years = await _learnRepository.getYears();
-    } catch (e) {
-      debugPrint('Error loading years: $e');
-    }
-  }
-
   Future<void> _loadItems() async {
     switch (_kind) {
       case PortalCatalogKind.messages:
-        _items = (await _messageRepository.getAll()).map(viewContentFromMessages).toList();
+        _allItems = (await _messageRepository.getAll()).map(viewContentFromMessages).toList();
       case PortalCatalogKind.meditations:
-        _items = (await _meditationRepository.getAll()).map(viewContentFromMeditations).toList();
+        _allItems = (await _meditationRepository.getAll()).map(viewContentFromMeditations).toList();
       case PortalCatalogKind.dadiJanki:
-        _items = await _learnRepository.getByAuthorId(LearnRepository.dadiJankiAuthorId);
+        _allItems = await _learnRepository.getByAuthorId(LearnRepository.dadiJankiAuthorId);
     }
-    notifyListeners();
+    _applyLocalFilters();
   }
 
   Future<void> search(String query) async {
@@ -104,6 +114,7 @@ class PortalCatalogViewModel extends ChangeNotifier {
     _searchQuery = query;
     _isSearchActive = true;
     _isFilterActive = false;
+    _sortedItems.setSort(PortalListSort.relevance);
 
     try {
       switch (_kind) {
@@ -113,9 +124,11 @@ class PortalCatalogViewModel extends ChangeNotifier {
             contentTypeIds: const [3, 4, 5],
           );
           if (hybrid.isNotEmpty) {
-            _items = hybrid.map((r) => r.toViewContentRow()).toList();
+            _sortedItems.replace(hybrid.map((r) => r.toViewContentRow()).toList());
           } else {
-            _items = (await _messageRepository.textSearch(query)).map(viewContentFromMessages).toList();
+            _sortedItems.replace(
+              (await _messageRepository.textSearch(query)).map(viewContentFromMessages).toList(),
+            );
           }
         case PortalCatalogKind.meditations:
           final hybrid = await PortalHybridSearch.search(
@@ -123,9 +136,11 @@ class PortalCatalogViewModel extends ChangeNotifier {
             contentTypeIds: const [6, 9],
           );
           if (hybrid.isNotEmpty) {
-            _items = hybrid.map((r) => r.toViewContentRow()).toList();
+            _sortedItems.replace(hybrid.map((r) => r.toViewContentRow()).toList());
           } else {
-            _items = (await _meditationRepository.textSearch(query)).map(viewContentFromMeditations).toList();
+            _sortedItems.replace(
+              (await _meditationRepository.textSearch(query)).map(viewContentFromMeditations).toList(),
+            );
           }
         case PortalCatalogKind.dadiJanki:
           final hybrid = await PortalHybridSearch.search(
@@ -133,12 +148,14 @@ class PortalCatalogViewModel extends ChangeNotifier {
             authorIds: const [LearnRepository.dadiJankiAuthorId],
           );
           if (hybrid.isNotEmpty) {
-            _items = hybrid.map((r) => r.toViewContentRow()).toList();
+            _sortedItems.replace(hybrid.map((r) => r.toViewContentRow()).toList());
           } else {
-            _items = await _learnRepository.searchContent(
-              query,
-              filterByAuthorId: LearnRepository.dadiJankiAuthorId,
-              useHybridSearch: false,
+            _sortedItems.replace(
+              await _learnRepository.searchContent(
+                query,
+                filterByAuthorId: LearnRepository.dadiJankiAuthorId,
+                useHybridSearch: false,
+              ),
             );
           }
       }
@@ -150,51 +167,35 @@ class PortalCatalogViewModel extends ChangeNotifier {
   }
 
   Future<void> applyFilters({int? authorId, String? year}) async {
-    _setLoading(true);
     if (authorId != null) _filterByAuthorId = authorId;
     if (year != null) _filterByYear = year;
     _isFilterActive = _filterByAuthorId != 0 || _filterByYear.trim().isNotEmpty;
     _isSearchActive = false;
     _searchQuery = '';
-
-    try {
-      switch (_kind) {
-        case PortalCatalogKind.messages:
-          _items = (await _messageRepository.filter(
-            authorId: _filterByAuthorId,
-            year: _filterByYear,
-          ))
-              .map(viewContentFromMessages)
-              .toList();
-        case PortalCatalogKind.meditations:
-          _items = (await _meditationRepository.filter(
-            authorId: _filterByAuthorId,
-            year: _filterByYear,
-          ))
-              .map(viewContentFromMeditations)
-              .toList();
-        case PortalCatalogKind.dadiJanki:
-          _items = await _learnRepository.filterContent(
-            filterByAuthorId: LearnRepository.dadiJankiAuthorId,
-            filterByYear: _filterByYear,
-            ascending: true,
-          );
-      }
-    } catch (e) {
-      debugPrint('Error filtering catalog: $e');
-    } finally {
-      _setLoading(false);
+    if (_sortedItems.sort.isRelevance) {
+      _sortedItems.setSort(PortalListSort.dateNewest);
     }
+
+    if (_allItems.isEmpty) {
+      _setLoading(true);
+      try {
+        await _loadItems();
+      } finally {
+        _setLoading(false);
+      }
+      return;
+    }
+
+    _applyLocalFilters();
   }
 
   void clearSearch() {
     _searchQuery = '';
     _isSearchActive = false;
-    if (_isFilterActive) {
-      applyFilters();
-    } else {
-      _reload();
+    if (_sortedItems.sort.isRelevance) {
+      _sortedItems.setSort(PortalListSort.dateNewest);
     }
+    _applyLocalFilters();
   }
 
   void clearFilters() {
@@ -204,17 +205,26 @@ class PortalCatalogViewModel extends ChangeNotifier {
     if (_isSearchActive) {
       search(_searchQuery);
     } else {
-      _reload();
+      _applyLocalFilters();
     }
   }
 
-  Future<void> _reload() async {
-    _setLoading(true);
-    try {
-      await _loadItems();
-    } finally {
-      _setLoading(false);
+  void _applyLocalFilters() {
+    _sortedItems.replace(
+      _isFilterActive ? _allItems.where(_matchesFilters).toList() : List.of(_allItems),
+    );
+    notifyListeners();
+  }
+
+  bool _matchesFilters(ViewContentRow item) {
+    if (_filterByAuthorId != 0 && !item.authors.contains(_filterByAuthorId)) {
+      return false;
     }
+    return matchesPublishedYear(
+      year: _filterByYear,
+      datePublished: item.datePublished,
+      yearPublished: item.yearPublished,
+    );
   }
 
   String localizedFilterDescription(AppLocalizations l10n) {

@@ -964,6 +964,24 @@ class AppLocalizationsPt extends AppLocalizations {
   String get applyFilters => 'Aplicar filtros';
 
   @override
+  String get sortBy => 'Ordenar por';
+
+  @override
+  String get sortByRelevance => 'Relevância';
+
+  @override
+  String get sortByDateNewest => 'Data (mais recente)';
+
+  @override
+  String get sortByDateOldest => 'Data (mais antiga)';
+
+  @override
+  String get sortByTitleAZ => 'Título (A-Z)';
+
+  @override
+  String get sortByTitleZA => 'Título (Z-A)';
+
+  @override
   String clearNamedFilter(String label) {
     return 'Limpar filtro de $label';
   }
@@ -1008,6 +1026,67 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get portalEventContents => 'Conteúdos do evento';
+
+  @override
+  String get searchForADialogue => 'Pesquisar um diálogo...';
+
+  @override
+  String get searchForAConversation => 'Pesquisar uma conversa...';
+
+  @override
+  String get searchForAMessage => 'Pesquisar uma mensagem...';
+
+  @override
+  String get searchForAMeditation => 'Pesquisar uma meditação...';
+
+  @override
+  String get searchForContent => 'Pesquisar conteúdo...';
+
+  @override
+  String speakers(String names) {
+    return 'Palestrantes: $names';
+  }
+
+  @override
+  String mainSpeakers(String names) {
+    return 'Palestrantes principais: $names';
+  }
+
+  @override
+  String locationValue(String value) {
+    return 'Local: $value';
+  }
+
+  @override
+  String eventStartEnd(String start, String end) {
+    return 'Início $start - Fim $end';
+  }
+
+  @override
+  String get listOfRecordings => 'Lista de gravações';
+
+  @override
+  String get eventFilter => 'Filtro de evento';
+
+  @override
+  String messageYear(String year) {
+    return 'Mensagem - $year';
+  }
+
+  @override
+  String fromAuthors(String names) {
+    return 'De $names';
+  }
+
+  @override
+  String filterByLocation(String value) {
+    return 'Local: $value';
+  }
+
+  @override
+  String filterByEventType(String value) {
+    return 'Tipo de evento: $value';
+  }
 
   @override
   String messageFromAuthors(String authors) {

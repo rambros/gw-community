@@ -964,6 +964,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get applyFilters => 'Apply Filters';
 
   @override
+  String get sortBy => 'Sort by';
+
+  @override
+  String get sortByRelevance => 'Relevance';
+
+  @override
+  String get sortByDateNewest => 'Date (newest first)';
+
+  @override
+  String get sortByDateOldest => 'Date (oldest first)';
+
+  @override
+  String get sortByTitleAZ => 'Title (A-Z)';
+
+  @override
+  String get sortByTitleZA => 'Title (Z-A)';
+
+  @override
   String clearNamedFilter(String label) {
     return 'Clear $label filter';
   }
@@ -1007,6 +1025,67 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get portalEventContents => 'Event contents';
+
+  @override
+  String get searchForADialogue => 'Search for a dialogue...';
+
+  @override
+  String get searchForAConversation => 'Search for a conversation...';
+
+  @override
+  String get searchForAMessage => 'Search for a message...';
+
+  @override
+  String get searchForAMeditation => 'Search for a meditation...';
+
+  @override
+  String get searchForContent => 'Search for content...';
+
+  @override
+  String speakers(String names) {
+    return 'Speakers: $names';
+  }
+
+  @override
+  String mainSpeakers(String names) {
+    return 'Main Speakers: $names';
+  }
+
+  @override
+  String locationValue(String value) {
+    return 'Location: $value';
+  }
+
+  @override
+  String eventStartEnd(String start, String end) {
+    return 'Start $start - End $end';
+  }
+
+  @override
+  String get listOfRecordings => 'List of Recordings';
+
+  @override
+  String get eventFilter => 'Event Filter';
+
+  @override
+  String messageYear(String year) {
+    return 'Message - $year';
+  }
+
+  @override
+  String fromAuthors(String names) {
+    return 'From $names';
+  }
+
+  @override
+  String filterByLocation(String value) {
+    return 'Location: $value';
+  }
+
+  @override
+  String filterByEventType(String value) {
+    return 'Event type: $value';
+  }
 
   @override
   String messageFromAuthors(String authors) {

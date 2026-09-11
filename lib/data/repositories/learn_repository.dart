@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:gw_community/data/services/portal/portal_hybrid_search.dart';
+import 'package:gw_community/data/services/portal/portal_year_filter.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 
 class LearnRepository {
@@ -49,9 +51,13 @@ class LearnRepository {
     int? offset,
   }) async {
     if (useHybridSearch && filterByJourneyId == 0 && filterByGroupId == 0) {
-      final hybridResults = await hybridSearch(searchString);
-      if (hybridResults.isNotEmpty) {
-        return hybridResults;
+      try {
+        final hybridResults = await hybridSearch(searchString);
+        if (hybridResults.isNotEmpty) {
+          return _sortContent(hybridResults, sortColumn: sortColumn, ascending: ascending);
+        }
+      } catch (e) {
+        debugPrint('Hybrid search failed, falling back to text search: $e');
       }
     }
 
@@ -59,22 +65,25 @@ class LearnRepository {
     finalString = finalString.trim();
     finalString = finalString.replaceAll(' ', '&');
 
+    final groupContentIds = filterByGroupId != 0 ? await _contentIdsForGroup(filterByGroupId) : null;
+    final journeyContentIds = filterByJourneyId != 0 ? await _contentIdsForJourney(filterByJourneyId) : null;
+
     dynamic query = SupaFlow.client
         .from('view_content')
         .select(_listColumns)
         .eq('is_published', true)
         .textSearch('content_search_string', finalString);
 
-    query = await _applyFilters(
+    query = _applyFilters(
       query,
       filterByAuthorId: filterByAuthorId,
       filterByYear: filterByYear,
       filterByEventId: filterByEventId,
       filterByTopics: filterByTopics,
-      filterByJourneyId: filterByJourneyId,
-      filterByGroupId: filterByGroupId,
       filterByLocalId: filterByLocalId,
       filterByEventTypeId: filterByEventTypeId,
+      groupContentIds: groupContentIds,
+      journeyContentIds: journeyContentIds,
     );
 
     query = query.order(sortColumn, ascending: ascending);
@@ -104,18 +113,21 @@ class LearnRepository {
     int? limit,
     int? offset,
   }) async {
+    final groupContentIds = filterByGroupId != 0 ? await _contentIdsForGroup(filterByGroupId) : null;
+    final journeyContentIds = filterByJourneyId != 0 ? await _contentIdsForJourney(filterByJourneyId) : null;
+
     dynamic query = SupaFlow.client.from('view_content').select(_listColumns).eq('is_published', true);
 
-    query = await _applyFilters(
+    query = _applyFilters(
       query,
       filterByAuthorId: filterByAuthorId,
       filterByYear: filterByYear,
       filterByEventId: filterByEventId,
       filterByTopics: filterByTopics,
-      filterByJourneyId: filterByJourneyId,
-      filterByGroupId: filterByGroupId,
       filterByLocalId: filterByLocalId,
       filterByEventTypeId: filterByEventTypeId,
+      groupContentIds: groupContentIds,
+      journeyContentIds: journeyContentIds,
     );
 
     query = query.order(sortColumn, ascending: ascending);
@@ -132,8 +144,8 @@ class LearnRepository {
   }
 
   Future<List<ViewContentRow>> getAllContent({
-    bool ascending = false,
-    String sortColumn = 'date_published',
+    bool ascending = true,
+    String sortColumn = 'title',
     int? limit,
     int? offset,
     bool excludeExclusive = true,
@@ -182,17 +194,19 @@ class LearnRepository {
     return (response as List).map((row) => ViewContentRow(row)).toList();
   }
 
-  Future<dynamic> _applyFilters(
+  /// Must stay synchronous: Postgrest builders are Futures, so returning one
+  /// from an `async` method executes the request before order/limit are applied.
+  dynamic _applyFilters(
     dynamic query, {
     required int filterByAuthorId,
     required String filterByYear,
     required int filterByEventId,
     required List<String> filterByTopics,
-    required int filterByJourneyId,
-    required int filterByGroupId,
     required int filterByLocalId,
     required int filterByEventTypeId,
-  }) async {
+    List<int>? groupContentIds,
+    List<int>? journeyContentIds,
+  }) {
     if (filterByAuthorId != 0) {
       query = query.contains('authors', [filterByAuthorId]);
     }
@@ -203,7 +217,7 @@ class LearnRepository {
       query = query.eq('cott_event_id', filterByEventId);
     }
     if (filterByYear.trim().isNotEmpty) {
-      query = query.eq('year_published', filterByYear);
+      query = applyDatePublishedYearFilter(query, filterByYear);
     }
     if (filterByLocalId != 0) {
       query = query.eq('local_id', filterByLocalId);
@@ -211,25 +225,56 @@ class LearnRepository {
     if (filterByEventTypeId != 0) {
       query = query.eq('event_type_id', filterByEventTypeId);
     }
-    if (filterByGroupId != 0) {
-      final res = await SupaFlow.client
-          .from('cc_group_resources')
-          .select('portal_item_id')
-          .eq('group_id', filterByGroupId)
-          .isFilter('deleted_at', null);
-      final ids = (res as List).map((row) => row['portal_item_id'] as int).toList();
-      query = ids.isNotEmpty ? query.filter('content_id', 'in', ids) : query.eq('content_id', -1);
+    if (groupContentIds != null) {
+      query = groupContentIds.isNotEmpty
+          ? query.inFilter('content_id', groupContentIds)
+          : query.eq('content_id', -1);
     }
-    if (filterByJourneyId != 0) {
-      final res = await SupaFlow.client
-          .from('cc_journey_resources')
-          .select('item_id')
-          .eq('journey_id', filterByJourneyId)
-          .isFilter('deleted_at', null);
-      final ids = (res as List).map((row) => row['item_id'] as int).toList();
-      query = ids.isNotEmpty ? query.filter('content_id', 'in', ids) : query.eq('content_id', -1);
+    if (journeyContentIds != null) {
+      query = journeyContentIds.isNotEmpty
+          ? query.inFilter('content_id', journeyContentIds)
+          : query.eq('content_id', -1);
     }
     return query;
+  }
+
+  Future<List<int>> _contentIdsForGroup(int groupId) async {
+    final res = await SupaFlow.client
+        .from('cc_group_resources')
+        .select('portal_item_id')
+        .eq('group_id', groupId)
+        .isFilter('deleted_at', null);
+    return (res as List).map((row) => row['portal_item_id'] as int).toList();
+  }
+
+  Future<List<int>> _contentIdsForJourney(int journeyId) async {
+    final res = await SupaFlow.client
+        .from('cc_journey_resources')
+        .select('item_id')
+        .eq('journey_id', journeyId)
+        .isFilter('deleted_at', null);
+    return (res as List).map((row) => row['item_id'] as int).toList();
+  }
+
+  List<ViewContentRow> _sortContent(
+    List<ViewContentRow> items, {
+    required String sortColumn,
+    required bool ascending,
+  }) {
+    final sorted = List<ViewContentRow>.from(items);
+    sorted.sort((a, b) {
+      if (sortColumn == 'title') {
+        final cmp = (a.title ?? '').toLowerCase().compareTo((b.title ?? '').toLowerCase());
+        return ascending ? cmp : -cmp;
+      }
+      final dateA = a.datePublished;
+      final dateB = b.datePublished;
+      if (dateA == null && dateB == null) return 0;
+      if (dateA == null) return 1;
+      if (dateB == null) return -1;
+      return ascending ? dateA.compareTo(dateB) : dateB.compareTo(dateA);
+    });
+    return sorted;
   }
 
   Future<List<int>> _exclusiveContentIds() async {

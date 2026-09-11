@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gw_community/data/repositories/portal_event_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/ui/learn/widgets/portal_list_sort.dart';
 
 class PortalEventDetailViewModel extends ChangeNotifier {
   PortalEventDetailViewModel({
@@ -12,8 +13,17 @@ class PortalEventDetailViewModel extends ChangeNotifier {
   ViewEventsRow? _event;
   ViewEventsRow? get event => _event;
 
-  List<ViewContentRow> _contents = [];
-  List<ViewContentRow> get contents => _contents;
+  final _sortedContents = PortalSortedList<ViewContentRow>(
+    titleOf: (item) => item.title ?? '',
+    dateOf: (item) => item.datePublished,
+  );
+  List<ViewContentRow> get contents => _sortedContents.items;
+  PortalListSort get sort => _sortedContents.sort;
+
+  void setSort(PortalListSort sort) {
+    if (!_sortedContents.setSort(sort)) return;
+    notifyListeners();
+  }
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
@@ -30,7 +40,7 @@ class PortalEventDetailViewModel extends ChangeNotifier {
       if (_event == null) {
         _error = 'Event not found';
       } else {
-        _contents = await _repository.getEventContents(eventId);
+        _sortedContents.replace(await _repository.getEventContents(eventId));
       }
     } catch (e) {
       _error = 'Error loading event: $e';

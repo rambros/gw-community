@@ -4,13 +4,15 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
+import 'package:gw_community/ui/core/ui/form_field_controller.dart';
 import 'package:gw_community/ui/core/widgets/screen_hint.dart';
 import 'package:gw_community/ui/learn/learn_list_page/view_model/learn_list_view_model.dart';
 import 'package:gw_community/ui/learn/widgets/content_card.dart';
-import 'package:gw_community/ui/learn/widgets/content_filter.dart';
+import 'package:gw_community/ui/learn/widgets/portal_filter_sheet.dart';
+import 'package:gw_community/ui/learn/widgets/portal_list_sort.dart';
+import 'package:gw_community/ui/learn/widgets/portal_search_bar.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
-import 'package:webviewx_plus/webviewx_plus.dart';
 
 class LearnListPage extends StatefulWidget {
   const LearnListPage({
@@ -18,11 +20,13 @@ class LearnListPage extends StatefulWidget {
     this.journeyId,
     this.groupId,
     this.customTitle,
+    this.autofocusSearch = false,
   });
 
   final int? journeyId;
   final int? groupId;
   final String? customTitle;
+  final bool autofocusSearch;
 
   static String routeName = 'learnListPage';
   static String routePath = '/learnListPage';
@@ -44,7 +48,7 @@ class _LearnListPageState extends State<LearnListPage> {
     _textFieldFocusNode = FocusNode();
 
     // Load initial data
-    SchedulerBinding.instance.addPostFrameCallback((_) {
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
       final viewModel = context.read<LearnListViewModel>();
 
       // Se journeyId ou groupId fornecido, aplicar filtro imediatamente
@@ -55,6 +59,13 @@ class _LearnListPageState extends State<LearnListPage> {
       } else {
         // Limpar filtros ao acessar Library pela navegação principal
         viewModel.clearFilters();
+      }
+
+      if (widget.autofocusSearch) {
+        await Future<void>.delayed(const Duration(milliseconds: 250));
+        if (mounted) {
+          _textFieldFocusNode.requestFocus();
+        }
       }
     });
 
@@ -73,6 +84,109 @@ class _LearnListPageState extends State<LearnListPage> {
     super.dispose();
   }
 
+  Future<void> _showFilterSheet(BuildContext context, LearnListViewModel viewModel) async {
+    int authorId = viewModel.filterByAuthorId;
+    int eventId = viewModel.filterByEventId;
+    String year = viewModel.filterByYear;
+    var topics = List<String>.from(viewModel.filterByTopics);
+    final authorController = FormFieldController<int>(authorId == 0 ? null : authorId);
+    final eventController = FormFieldController<int>(eventId == 0 ? null : eventId);
+    final yearController = FormFieldController<String>(year.isEmpty ? null : year);
+    final topicsController = FormListFieldController<String>(List<String>.from(topics));
+
+    await showPortalFilterSheet(
+      context: context,
+      title: context.l10n.contentFilter,
+      onApply: () async {
+        await viewModel.applyFilters(
+          authorId: authorId,
+          year: year,
+          eventId: eventId,
+          topics: topics,
+          journeyId: 0,
+          groupId: 0,
+        );
+      },
+      buildFields: (context, setModalState) {
+        final authors = viewModel.authors.where((author) => author.id != null).toList();
+        final events = viewModel.events.where((event) => event.eventId != null).toList();
+        final years = viewModel.years.where((year) => year.year != null).toList();
+        final topicNames = viewModel.topics
+            .map((topic) => topic.topicName ?? '')
+            .where((name) => name.isNotEmpty)
+            .toList();
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            PortalFilterDropdown<int>(
+              label: context.l10n.author,
+              controller: authorController,
+              options: authors.map((e) => e.id!).toList(),
+              optionLabels: authors.map((e) => e.name ?? context.l10n.author).toList(),
+              hintText: context.l10n.selectAuthor,
+              searchHintText: context.l10n.searchAuthor,
+              isSearchable: true,
+              hasValue: authorId != 0,
+              onClear: () => setModalState(() {
+                authorId = 0;
+                authorController.value = null;
+              }),
+              onChanged: (val) => setModalState(() => authorId = val ?? 0),
+            ),
+            PortalFilterDropdown<int>(
+              label: context.l10n.event,
+              controller: eventController,
+              options: events.map((e) => e.eventId!).toList(),
+              optionLabels: events.map((e) => e.eventName ?? context.l10n.event).toList(),
+              hintText: context.l10n.selectEvent,
+              searchHintText: context.l10n.searchEvent,
+              isSearchable: true,
+              hasValue: eventId != 0,
+              onClear: () => setModalState(() {
+                eventId = 0;
+                eventController.value = null;
+              }),
+              onChanged: (val) => setModalState(() => eventId = val ?? 0),
+            ),
+            PortalFilterDropdown<String>(
+              label: context.l10n.year,
+              controller: yearController,
+              options: years.map((e) => e.year!.toInt().toString()).toList(),
+              optionLabels: years.map((e) => e.year!.toInt().toString()).toList(),
+              hintText: context.l10n.selectYear,
+              searchHintText: context.l10n.searchYear,
+              isSearchable: true,
+              hasValue: year.isNotEmpty,
+              onClear: () => setModalState(() {
+                year = '';
+                yearController.value = null;
+              }),
+              onChanged: (val) => setModalState(() => year = val ?? ''),
+            ),
+            PortalFilterDropdown<String>(
+              label: context.l10n.topics,
+              multiSelectController: topicsController,
+              options: topicNames,
+              optionLabels: topicNames,
+              hintText: context.l10n.selectTopics,
+              searchHintText: context.l10n.searchTapOutsideToClose,
+              isSearchable: true,
+              isMultiSelect: true,
+              hasValue: topics.isNotEmpty,
+              onClear: () => setModalState(() {
+                topics = [];
+                topicsController.value = [];
+              }),
+              onMultiSelectChanged: (val) => setModalState(() {
+                topics = List<String>.from(val ?? []);
+              }),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -85,13 +199,11 @@ class _LearnListPageState extends State<LearnListPage> {
         backgroundColor: AppTheme.of(context).primaryBackground,
         appBar: AppBar(
           backgroundColor: AppTheme.of(context).primary,
-          automaticallyImplyLeading: widget.journeyId != null || widget.groupId != null,
-          leading: widget.journeyId != null || widget.groupId != null
-              ? IconButton(
-                  icon: const Icon(Icons.arrow_back, color: Colors.white),
-                  onPressed: () => Navigator.of(context).pop(),
-                )
-              : null,
+          automaticallyImplyLeading: true,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => context.safePop(),
+          ),
           title: Text(
             widget.customTitle ?? context.l10n.library,
             style: AppTheme.of(context).headlineMedium.override(
@@ -144,153 +256,41 @@ class _LearnListPageState extends State<LearnListPage> {
                                 ),
                               ),
 
-                            // Search Bar
                             if (widget.journeyId == null && widget.groupId == null)
-                              Padding(
-                                padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 16.0, 0.0),
-                                child: Container(
-                                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsetsDirectional.fromSTEB(16.0, 8.0, 4.0, 8.0),
-                                          child: SizedBox(
-                                            width: MediaQuery.sizeOf(context).width * 0.6,
-                                            child: TextFormField(
-                                              controller: _textController,
-                                              focusNode: _textFieldFocusNode,
-                                              onFieldSubmitted: (val) {
-                                                viewModel.searchContent(val);
-                                              },
-                                              textCapitalization: TextCapitalization.words,
-                                              textInputAction: TextInputAction.search,
-                                              decoration: InputDecoration(
-                                                labelText: context.l10n.searchAllContent,
-                                                labelStyle: AppTheme.of(context)
-                                                    .labelMedium
-                                                    .copyWith(color: AppTheme.of(context).primary),
-                                                hintStyle: AppTheme.of(context)
-                                                    .labelMedium
-                                                    .copyWith(color: AppTheme.of(context).primary),
-                                                enabledBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                    color: AppTheme.of(context).alternate,
-                                                    width: 2.0,
-                                                  ),
-                                                  borderRadius: BorderRadius.circular(12.0),
-                                                ),
-                                                focusedBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                    color: AppTheme.of(context).primary,
-                                                    width: 2.0,
-                                                  ),
-                                                  borderRadius: BorderRadius.circular(12.0),
-                                                ),
-                                                contentPadding:
-                                                    const EdgeInsetsDirectional.fromSTEB(20.0, 0.0, 0.0, 0.0),
-                                                suffixIcon: Icon(
-                                                  Icons.search_rounded,
-                                                  color: AppTheme.of(context).primary,
-                                                ),
-                                              ),
-                                              style: AppTheme.of(context).bodyMedium.override(
-                                                    color: AppTheme.of(context).primary,
-                                                  ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Text(
-                                        '${context.l10n.orSeparator} ',
-                                        style: AppTheme.of(context).bodyMedium.override(
-                                              color: AppTheme.of(context).primary,
-                                              fontSize: 18.0,
-                                            ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
-                                        child: FFButtonWidget(
-                                          onPressed: () async {
-                                            await showModalBottomSheet(
-                                              isScrollControlled: true,
-                                              backgroundColor: Colors.transparent,
-                                              enableDrag: false,
-                                              context: context,
-                                              builder: (context) {
-                                                return WebViewAware(
-                                                  child: GestureDetector(
-                                                    onTap: () {
-                                                      FocusScope.of(context).unfocus();
-                                                    },
-                                                    child: Padding(
-                                                      padding: MediaQuery.viewInsetsOf(context),
-                                                      child: ChangeNotifierProvider.value(
-                                                        value: viewModel,
-                                                        child: const ContentFilter(),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                            );
-                                          },
-                                          text: context.l10n.filter,
-                                          icon: const Icon(
-                                            Icons.filter_alt,
-                                            size: 15.0,
-                                          ),
-                                          options: FFButtonOptions(
-                                            height: 44.0,
-                                            padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-                                            color: AppTheme.of(context).primary,
-                                            textStyle: AppTheme.of(context).labelLarge.override(
-                                                  color: AppTheme.of(context).primaryBackground,
-                                                ),
-                                            elevation: 1.0,
-                                            borderRadius: BorderRadius.circular(20.0),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                              PortalSearchBar(
+                                controller: _textController,
+                                focusNode: _textFieldFocusNode,
+                                autofocus: widget.autofocusSearch,
+                                hintText: context.l10n.searchAllContent,
+                                onSubmitted: viewModel.searchContent,
+                                onFilter: () => _showFilterSheet(context, viewModel),
                               ),
 
-                            // List Header & Clear Filter
                             Padding(
-                              padding: const EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 16.0, 0.0),
+                              padding: const EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 8.0, 0.0),
                               child: Row(
                                 mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Expanded(
-                                    flex: 3,
                                     child: Padding(
-                                      padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 4.0, 0.0),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsetsDirectional.fromSTEB(24.0, 1.0, 12.0, 4.0),
-                                            child: Text(
-                                              (viewModel.isSearchActive || viewModel.isFilterActive)
-                                                  ? context.l10n.listOfContents
-                                                  : context.l10n.listOfAllContent,
-                                              style: AppTheme.of(context).labelLarge.override(
-                                                    fontWeight: FontWeight.w600,
-                                                    color: AppTheme.of(context).primary,
-                                                  ),
+                                      padding: const EdgeInsetsDirectional.fromSTEB(24.0, 1.0, 12.0, 4.0),
+                                      child: Text(
+                                        (viewModel.isSearchActive || viewModel.isFilterActive)
+                                            ? context.l10n.listOfContents
+                                            : context.l10n.listOfAllContent,
+                                        style: AppTheme.of(context).labelLarge.override(
+                                              fontWeight: FontWeight.w600,
+                                              color: AppTheme.of(context).primary,
                                             ),
-                                          ),
-                                        ],
                                       ),
                                     ),
                                   ),
-                                  // Clear Filter Button
+                                  PortalSortButton(
+                                    value: viewModel.sort,
+                                    onChanged: viewModel.setSort,
+                                    showRelevance: viewModel.isSearchActive,
+                                  ),
                                   if ((viewModel.isSearchActive || viewModel.isFilterActive) &&
                                       widget.journeyId == null &&
                                       widget.groupId == null)

@@ -26,6 +26,9 @@ class ViewMeditationsRow extends SupabaseDataRow {
   String? get midiaType => getField<String>('midia_type');
   set midiaType(String? value) => setField<String>('midia_type', value);
 
+  List<int> get authors => getListField<int>('authors');
+  set authors(List<int>? value) => setListField<int>('authors', value);
+
   List<String> get authorsNames => getListField<String>('authors_names');
   set authorsNames(List<String>? value) => setListField<String>('authors_names', value);
 

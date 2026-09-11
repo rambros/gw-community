@@ -67,33 +67,37 @@ class PortalHybridSearch {
       return [];
     }
 
-    final response = await SupaFlow.client.functions.invoke(
-      'hybrid-search-portal-items',
-      body: {
-        'search': trimmed,
-        'content_type_ids': contentTypeIds,
-        'author_ids': authorIds,
-      },
-    );
+    try {
+      final response = await SupaFlow.client.functions.invoke(
+        'hybrid-search-portal-items',
+        body: {
+          'search': trimmed,
+          'content_type_ids': contentTypeIds,
+          'author_ids': authorIds,
+        },
+      );
 
-    if (response.status != 200 || response.data == null) {
+      if (response.status != 200 || response.data == null) {
+        return [];
+      }
+
+      final data = response.data;
+      if (data is! Map) {
+        return [];
+      }
+
+      final results = data['result'];
+      if (results is! List) {
+        return [];
+      }
+
+      return results
+          .whereType<Map>()
+          .map((row) => PortalHybridSearchResult.fromMap(row.cast<String, dynamic>()))
+          .where((item) => item.contentId != 0)
+          .toList();
+    } catch (_) {
       return [];
     }
-
-    final data = response.data;
-    if (data is! Map) {
-      return [];
-    }
-
-    final results = data['result'];
-    if (results is! List) {
-      return [];
-    }
-
-    return results
-        .whereType<Map>()
-        .map((row) => PortalHybridSearchResult.fromMap(row.cast<String, dynamic>()))
-        .where((item) => item.contentId != 0)
-        .toList();
   }
 }

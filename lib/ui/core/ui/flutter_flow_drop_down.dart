@@ -229,7 +229,7 @@ class _FlutterFlowDropDownState<T> extends State<FlutterFlowDropDown<T>> {
             value: option,
             child: Builder(builder: (_) {
               final child = Padding(
-                padding: horizontalMargin,
+                padding: EdgeInsets.zero,
                 child: Text(optionLabels[option] ?? '', style: widget.textStyle),
               );
               if (kIsWeb) {
@@ -303,18 +303,22 @@ class _FlutterFlowDropDownState<T> extends State<FlutterFlowDropDown<T>> {
       ),
       menuItemStyleData: MenuItemStyleData(
         overlayColor: overlayColor,
-        padding: EdgeInsets.zero,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
       ),
       dropdownStyleData: DropdownStyleData(
-        elevation: widget.elevation.toInt(),
+        elevation: 8,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(4.0),
-          color: widget.fillColor,
+          borderRadius: BorderRadius.circular(12.0),
+          color: widget.fillColor ?? Colors.white,
         ),
         isOverButton: widget.isOverButton,
-        offset: widget.menuOffset ?? Offset.zero,
-        maxHeight: widget.maxHeight,
-        padding: EdgeInsets.zero,
+        offset: widget.menuOffset ?? (widget.isOverButton ? Offset.zero : const Offset(0, 8)),
+        maxHeight: widget.maxHeight ?? 280,
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        scrollbarTheme: ScrollbarThemeData(
+          radius: const Radius.circular(8),
+          thickness: WidgetStateProperty.all(4),
+        ),
       ),
       onChanged: widget.disabled ? null : (isMultiSelect ? (_) {} : (val) => widget.controller!.value = val),
       isExpanded: true,

@@ -30,8 +30,10 @@ import 'package:gw_community/data/services/auth/supabase_auth_service.dart';
 import 'package:gw_community/data/services/push/push_notification_service.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/l10n/app_localizations.dart';
+import 'package:gw_community/routing/portal_app_links.dart';
 import 'package:gw_community/ui/auth/change_password_page/view_model/change_password_view_model.dart';
 import 'package:gw_community/ui/auth/forgot_password_page/view_model/forgot_password_view_model.dart';
+import 'package:gw_community/ui/auth/login_page/login_page.dart';
 import 'package:gw_community/ui/auth/login_page/view_model/login_view_model.dart';
 import 'package:gw_community/ui/auth/on_boarding_page/view_model/on_boarding_view_model.dart';
 import 'package:gw_community/ui/community/experience_view_page/view_model/experience_view_view_model.dart';
@@ -201,6 +203,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   static const _consumedAuthTokensKey = 'consumed_auth_token_hashes';
+  static const _pendingPortalLinkKey = 'pending_portal_deep_link';
 
   final _appLinks = AppLinks();
   StreamSubscription<Uri>? _linkSubscription;
@@ -281,6 +284,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   Future<void> _initDeepLinks() async {
     await _loadConsumedAuthTokens();
+    await _restorePendingPortalLink();
 
     // Track whether the stream already handled a link so getInitialLink()
     // does not override it with a stale cached URL (Android caches the very
@@ -399,7 +403,67 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
     if (_isLoginCallbackUri(uri)) {
       await _completeLoginCallbackAuth(uri);
+      return;
     }
+
+    final portalLocation = PortalAppLinks.inAppLocation(uri);
+    if (portalLocation != null) {
+      await _openPortalLocation(portalLocation);
+    }
+  }
+
+  Future<void> _openPortalLocation(String location) async {
+    AppStateNotifier.instance.setPendingPortalLocation(location);
+    AppStateNotifier.instance.setRedirectLocationIfUnset(location);
+    await _persistPendingPortalLink(location);
+    if (_hasActiveSession) {
+      _goWhenReady(location);
+      return;
+    }
+    _goWhenReady(LoginPage.routePath);
+  }
+
+  Future<void> _persistPendingPortalLink(String location) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      if (location.isEmpty) {
+        await prefs.remove(_pendingPortalLinkKey);
+        return;
+      }
+      await prefs.setString(_pendingPortalLinkKey, location);
+    } catch (e) {
+      debugPrint('🔗 Failed to persist portal link: $e');
+    }
+  }
+
+  Future<void> _restorePendingPortalLink() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final location = prefs.getString(_pendingPortalLinkKey);
+      if (location == null || location.isEmpty) return;
+      await prefs.remove(_pendingPortalLinkKey);
+      AppStateNotifier.instance.setRedirectLocationIfUnset(location);
+      if (_hasActiveSession) {
+        _goWhenReady(location);
+      }
+    } catch (e) {
+      debugPrint('🔗 Failed to restore portal link: $e');
+    }
+  }
+
+  void _goWhenReady(String location, [int attempt = 0]) {
+    final ctx = appNavigatorKey.currentContext;
+    final routerNotReady = ctx == null || !ctx.mounted || AppStateNotifier.instance.loading;
+    if (routerNotReady) {
+      if (attempt < 30) {
+        Future.delayed(const Duration(milliseconds: 300), () {
+          _goWhenReady(location, attempt + 1);
+        });
+      }
+      return;
+    }
+    debugPrint('🔗 Opening portal location: $location');
+    ctx.go(location);
   }
 
   /// Universal links open /access-link in the app before the web page can run.
@@ -478,9 +542,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     Future.delayed(const Duration(milliseconds: 300), () {
       final ctx = appNavigatorKey.currentContext;
       if (ctx == null || !ctx.mounted) return;
-      if (AppStateNotifier.instance.loggedIn) {
-        ctx.go(HomePage.routePath);
+      if (!AppStateNotifier.instance.loggedIn) return;
+      if (AppStateNotifier.instance.hasRedirect()) {
+        final location = AppStateNotifier.instance.getRedirectLocation();
+        AppStateNotifier.instance.clearRedirectLocation();
+        unawaited(_persistPendingPortalLink(''));
+        ctx.go(location);
+        return;
       }
+      ctx.go(HomePage.routePath);
     });
   }
 
