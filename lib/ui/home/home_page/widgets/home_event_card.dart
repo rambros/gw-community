@@ -25,8 +25,9 @@ class HomeEventCard extends StatelessWidget {
       final endStr = eventRow.endDate != null
           ? dateTimeFormat('MMMd', eventRow.endDate, locale: locale)
           : '';
-      if (startStr.isNotEmpty && endStr.isNotEmpty)
+      if (startStr.isNotEmpty && endStr.isNotEmpty) {
         return '$startStr – $endStr';
+      }
       if (startStr.isNotEmpty) return startStr;
       return '';
     }

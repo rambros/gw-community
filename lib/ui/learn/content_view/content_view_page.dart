@@ -9,6 +9,7 @@ import 'package:gw_community/ui/core/ui/flutter_flow_pdf_viewer.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_youtube_player.dart';
 import 'package:gw_community/ui/core/widgets/audio_player_widget.dart';
 import 'package:gw_community/ui/core/widgets/favorite_button.dart';
+import 'package:gw_community/ui/core/widgets/transcript_markdown.dart';
 import 'package:gw_community/ui/learn/content_view/view_model/content_view_model.dart';
 import 'package:gw_community/utils/context_extensions.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
@@ -191,11 +192,9 @@ class _ContentViewPageState extends State<ContentViewPage> {
                         Padding(
                           padding: const EdgeInsets.only(bottom: 12),
                           child: SelectionArea(
-                            child: Text(
-                              row.transcript!,
-                              style: AppTheme.of(context).bodyMedium.override(
-                                    color: AppTheme.of(context).secondary,
-                                  ),
+                            child: TranscriptMarkdown(
+                              data: row.transcript!,
+                              textColor: AppTheme.of(context).secondary,
                             ),
                           ),
                         ),

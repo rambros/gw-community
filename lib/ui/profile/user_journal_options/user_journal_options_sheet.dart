@@ -4,11 +4,11 @@ import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
+import 'package:gw_community/ui/core/widgets/confirmation_dialog.dart';
 import 'package:gw_community/ui/profile/user_journal_edit/user_journal_edit_page.dart';
 import 'package:gw_community/ui/profile/user_journal_options/view_model/user_journal_options_view_model.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
-import 'package:webviewx_plus/webviewx_plus.dart';
 
 class UserJournalOptionsSheet extends StatefulWidget {
   const UserJournalOptionsSheet({
@@ -103,61 +103,40 @@ class _UserJournalOptionsSheetState extends State<UserJournalOptionsSheet> {
                 onPressed: viewModel.isLoading
                     ? null
                     : () async {
-                        var confirmDialogResponse = await showDialog<bool>(
-                              context: context,
-                              builder: (alertDialogContext) {
-                                return WebViewAware(
-                                  child: AlertDialog(
-                                    title: Text(context.l10n.deletionOfJournalEntry),
-                                    content: Text(context.l10n.confirmDeleteJournalEntry),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () => Navigator.pop(alertDialogContext, false),
-                                        child: Text(context.l10n.cancel),
-                                      ),
-                                      TextButton(
-                                        onPressed: () => Navigator.pop(alertDialogContext, true),
-                                        child: Text(context.l10n.confirm),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ) ??
-                            false;
-                        if (confirmDialogResponse) {
-                          if (widget.journalEntryRow?.userActivityId != null) {
-                            await viewModel.clearJournalEntry(widget.journalEntryRow!.userActivityId!);
-                            if (!context.mounted) return;
-                            if (viewModel.errorMessage == null) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    context.l10n.journalSaved,
-                                    style: TextStyle(
-                                      color: AppTheme.of(context).primaryText,
-                                    ),
-                                  ),
-                                  duration: const Duration(milliseconds: 4000),
-                                  backgroundColor: AppTheme.of(context).secondary,
+                        final confirmed = await ConfirmationDialog.show(
+                          context: context,
+                          title: context.l10n.deletionOfJournalEntry,
+                          message: context.l10n.confirmDeleteJournalEntry,
+                          confirmLabel: context.l10n.confirm,
+                          cancelLabel: context.l10n.cancel,
+                          confirmColor: AppTheme.of(context).error,
+                        );
+                        if (!confirmed || !context.mounted) return;
+
+                        final activityId =
+                            widget.journalEntryRow?.userActivityId;
+                        if (activityId == null) return;
+
+                        final cleared =
+                            await viewModel.clearJournalEntry(activityId);
+                        if (!context.mounted) return;
+
+                        if (cleared) {
+                          Navigator.of(context).pop(true);
+                        } else if (viewModel.errorMessage != null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                viewModel.errorMessage!,
+                                style: TextStyle(
+                                  color: AppTheme.of(context).error,
                                 ),
-                              );
-                              context.safePop();
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    viewModel.errorMessage!,
-                                    style: TextStyle(
-                                      color: AppTheme.of(context).error,
-                                    ),
-                                  ),
-                                  duration: const Duration(milliseconds: 4000),
-                                  backgroundColor: AppTheme.of(context).secondary,
-                                ),
-                              );
-                            }
-                          }
+                              ),
+                              duration: const Duration(milliseconds: 4000),
+                              backgroundColor:
+                                  AppTheme.of(context).secondary,
+                            ),
+                          );
                         }
                       },
                 text: viewModel.isLoading ? context.l10n.clearing : context.l10n.clearEntry,

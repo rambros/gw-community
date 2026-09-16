@@ -161,7 +161,7 @@ class _UserJournalViewPageState extends State<UserJournalViewPage> {
                             hoverColor: Colors.transparent,
                             highlightColor: Colors.transparent,
                             onTap: () async {
-                              await showModalBottomSheet(
+                              final cleared = await showModalBottomSheet<bool>(
                                 isScrollControlled: true,
                                 backgroundColor: Colors.transparent,
                                 enableDrag: false,
@@ -177,7 +177,13 @@ class _UserJournalViewPageState extends State<UserJournalViewPage> {
                                     ),
                                   );
                                 },
-                              ).then((value) => safeSetState(() {}));
+                              );
+                              if (!context.mounted) return;
+                              if (cleared == true) {
+                                context.pop();
+                              } else {
+                                safeSetState(() {});
+                              }
                             },
                             child: Icon(
                               Icons.keyboard_control_outlined,

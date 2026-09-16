@@ -258,7 +258,6 @@ class JourneysRepository {
           'user_id': userId,
           'date_started': nowIsoString,
           'activity_status': 'open',
-          'journal_saved': activity.journal,
         });
       }
 

@@ -82,7 +82,7 @@ class _JourneyPageState extends State<JourneyPage> {
         builder: (context, viewModel, _) {
           return JourneyLocaleScope(
             fixedLanguage: viewModel.fixedLanguage,
-            child: Scaffold(
+            builder: (context) => Scaffold(
         backgroundColor: AppTheme.of(context).secondary,
         appBar: AppBar(
           backgroundColor: AppTheme.of(context).primary,
@@ -450,6 +450,8 @@ class _JourneyPageState extends State<JourneyPage> {
             step,
             ParamType.SupabaseRow,
           ),
+          if (viewModel.fixedLanguage != null)
+            'fixedLanguage': serializeParam(viewModel.fixedLanguage, ParamType.String),
         }.withoutNulls,
         extra: <String, dynamic>{
           kTransitionInfoKey: const TransitionInfo(
@@ -495,7 +497,7 @@ class _JourneyPageState extends State<JourneyPage> {
             return WebViewAware(
               child: JourneyLocaleScope(
                 fixedLanguage: viewModel.fixedLanguage,
-                child: ConfirmProfileActionDialog(
+                builder: (context) => ConfirmProfileActionDialog(
                   title: context.l10n.resetJourneyTitle,
                   description: context.l10n.resetJourneyDescription,
                   confirmLabel: context.l10n.resetJourneyConfirm,
@@ -565,7 +567,7 @@ class _JourneyPageState extends State<JourneyPage> {
         return WebViewAware(
           child: JourneyLocaleScope(
             fixedLanguage: viewModel.fixedLanguage,
-            child: JourneyAboutDialog(
+            builder: (context) => JourneyAboutDialog(
               title: title,
               description: description,
             ),

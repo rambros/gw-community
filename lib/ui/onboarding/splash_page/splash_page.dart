@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_animations.dart';
 import 'package:gw_community/ui/onboarding/splash_page/view_model/splash_view_model.dart';
@@ -182,7 +183,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
             Padding(
               padding: const EdgeInsetsDirectional.fromSTEB(0.0, 24.0, 0.0, 0.0),
               child: Text(
-                'Welcome to GoodWishes',
+                context.l10n.splashWelcomeTitle,
                 textAlign: TextAlign.center,
                 style: AppTheme.of(context).displaySmall.override(
                       font: GoogleFonts.lexendDeca(
@@ -196,7 +197,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
             Padding(
               padding: const EdgeInsetsDirectional.fromSTEB(0.0, 12.0, 0.0, 120.0),
               child: Text(
-                'A community of well wishers\nfor a new world',
+                context.l10n.splashWelcomeSubtitle,
                 textAlign: TextAlign.center,
                 style: AppTheme.of(context).headlineSmall.override(
                       font: GoogleFonts.lexendDeca(

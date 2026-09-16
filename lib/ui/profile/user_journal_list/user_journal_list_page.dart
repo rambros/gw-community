@@ -142,7 +142,7 @@ class _UserJournalListPageState extends State<UserJournalListPage> {
             hoverColor: Colors.transparent,
             highlightColor: Colors.transparent,
             onTap: () async {
-              context.pushNamed(
+              await context.pushNamed(
                 UserJournalViewPage.routeName,
                 queryParameters: {
                   'userActivitiesId': serializeParam(
@@ -158,6 +158,9 @@ class _UserJournalListPageState extends State<UserJournalListPage> {
                   ),
                 },
               );
+              if (context.mounted) {
+                viewModel.loadJournalEntries();
+              }
             },
             child: Row(
               mainAxisSize: MainAxisSize.max,

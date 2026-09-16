@@ -99,7 +99,9 @@
   "confirm": "Confirm",
   "groupDeleted": "Group deleted with success",
   "welcomeComma": "Welcome,",
-  "communityTagline": "A community of well-wishers\ncreating a new world together",
+  "communityTagline": "A community that shares good wishes\nto create a better world",
+  "splashWelcomeTitle": "Welcome to Good Wishes",
+  "splashWelcomeSubtitle": "A community that shares good wishes\nto create a better world",
   "myGroups": "My Groups",
   "otherGroups": "Other Groups",
   "upcomingEvents": "Upcoming Events",
@@ -371,6 +373,15 @@
       "title": { "type": "String" }
     }
   },
+  "journeyStepHeader": "Step {number}",
+  "@journeyStepHeader": {
+    "placeholders": {
+      "number": { "type": "int" }
+    }
+  },
+  "journeyActivityInspiration": "Inspiration",
+  "journeyActivityMeditation": "Meditation",
+  "journeyActivityPractices": "Practices",
   "mediaAudio": "Audio",
   "mediaVideo": "Video",
   "mediaText": "Text",

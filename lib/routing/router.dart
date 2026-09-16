@@ -361,7 +361,10 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: StepDetailsPage.routeName,
           path: StepDetailsPage.routePath,
           builder: (context, params) =>
-              StepDetailsPage(userStepRow: params.getParam<CcViewUserStepsRow>('userStepRow', ParamType.SupabaseRow)),
+              StepDetailsPage(
+                userStepRow: params.getParam<CcViewUserStepsRow>('userStepRow', ParamType.SupabaseRow),
+                fixedLanguage: params.getParam('fixedLanguage', ParamType.String),
+              ),
         ),
         FFRoute(
           name: StepTextViewPage.routeName,
@@ -370,6 +373,8 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
             stepTextTitle: params.getParam('stepTextTitle', ParamType.String),
             stepTextContent: params.getParam('stepTextContent', ParamType.String),
             activityId: params.getParam('activityId', ParamType.int),
+            activityLabel: params.getParam('activityLabel', ParamType.String),
+            fixedLanguage: params.getParam('fixedLanguage', ParamType.String),
           ),
         ),
         FFRoute(
@@ -384,6 +389,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
             transcript: params.getParam('transcript', ParamType.String),
             animationUrl: params.getParam('animationUrl', ParamType.String),
             animationMediaType: params.getParam('animationMediaType', ParamType.String),
+            fixedLanguage: params.getParam('fixedLanguage', ParamType.String),
           ),
         ),
         FFRoute(
@@ -400,7 +406,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: StepJournalPage.routeName,
           path: StepJournalPage.routePath,
           builder: (context, params) => StepJournalPage(
-              activityRow: params.getParam<CcViewUserActivitiesRow>('activityRow', ParamType.SupabaseRow)),
+            activityRow: params.getParam<CcViewUserActivitiesRow>('activityRow', ParamType.SupabaseRow),
+            fixedLanguage: params.getParam('fixedLanguage', ParamType.String),
+          ),
         ),
         FFRoute(
           name: JourneyPage.routeName,

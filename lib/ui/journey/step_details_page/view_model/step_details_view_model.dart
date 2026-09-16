@@ -170,6 +170,7 @@ class StepDetailsViewModel extends ChangeNotifier {
         'stepTextTitle': activity.activityPrompt,
         'stepTextContent': activity.text,
         'activityId': activity.stepActivityId,
+        'activityLabel': activity.activityLabel,
       });
     } else if (activity.activityType == 'video') {
       navigateToActivity('stepVideoPlayerPage', {

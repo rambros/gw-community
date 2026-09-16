@@ -3,10 +3,12 @@ import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/favorites_repository.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/ui/core/widgets/favorite_button.dart';
 import 'package:gw_community/ui/journey/themes/journey_theme_extension.dart';
+import 'package:gw_community/ui/journey/widgets/journey_locale_scope.dart';
 import 'package:gw_community/utils/context_extensions.dart';
 
 class StepTextViewPage extends StatelessWidget {
@@ -15,11 +17,15 @@ class StepTextViewPage extends StatelessWidget {
     this.stepTextTitle,
     this.stepTextContent,
     this.activityId,
+    this.activityLabel,
+    this.fixedLanguage,
   });
 
   final String? stepTextTitle;
   final String? stepTextContent;
   final int? activityId;
+  final String? activityLabel;
+  final String? fixedLanguage;
 
   static String routeName = 'stepTextViewPage';
   static String routePath = '/stepTextViewPage';
@@ -30,6 +36,8 @@ class StepTextViewPage extends StatelessWidget {
     String? title,
     String? content,
     int? activityId,
+    String? activityLabel,
+    String? fixedLanguage,
   }) {
     return router.pushNamed(
       routeName,
@@ -37,13 +45,25 @@ class StepTextViewPage extends StatelessWidget {
         'stepTextTitle': title,
         'stepTextContent': content ?? '',
         'activityId': activityId,
+        'activityLabel': activityLabel,
+        if (fixedLanguage != null) 'fixedLanguage': fixedLanguage,
       },
     );
   }
 
+  String _appBarTitle(BuildContext context) {
+    final label = activityLabel?.trim();
+    if (label != null && label.isNotEmpty) {
+      return localizedJourneyActivityLabel(context.l10n, label);
+    }
+    return context.l10n.journeyActivityPractices;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return JourneyLocaleScope(
+      fixedLanguage: fixedLanguage,
+      builder: (context) => GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
         FocusManager.instance.primaryFocus?.unfocus();
@@ -68,7 +88,7 @@ class StepTextViewPage extends StatelessWidget {
             },
           ),
           title: Text(
-            'Daily Practice',
+            _appBarTitle(context),
             style: AppTheme.of(context).journey.pageTitle,
           ),
           actions: [
@@ -171,6 +191,7 @@ class StepTextViewPage extends StatelessWidget {
           ),
         ),
       ),
+    ),
     );
   }
 }

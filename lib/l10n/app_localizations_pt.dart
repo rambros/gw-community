@@ -186,7 +186,14 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get communityTagline =>
-      'Uma comunidade de bem-intencionados\ncriando um mundo novo juntos';
+      'Uma comunidade que compartilha\nbons votos para criar um mundo melhor';
+
+  @override
+  String get splashWelcomeTitle => 'Bem-vindo ao Good Wishes';
+
+  @override
+  String get splashWelcomeSubtitle =>
+      'Uma comunidade que compartilha\nbons votos para criar um mundo melhor';
 
   @override
   String get myGroups => 'Meus grupos';
@@ -826,6 +833,20 @@ class AppLocalizationsPt extends AppLocalizations {
   String stepWithTitle(int number, String title) {
     return 'Etapa $number: $title';
   }
+
+  @override
+  String journeyStepHeader(int number) {
+    return 'Etapa $number';
+  }
+
+  @override
+  String get journeyActivityInspiration => 'Inspiração';
+
+  @override
+  String get journeyActivityMeditation => 'Meditação';
+
+  @override
+  String get journeyActivityPractices => 'Práticas';
 
   @override
   String get mediaAudio => 'Áudio';

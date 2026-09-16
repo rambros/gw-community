@@ -199,7 +199,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildWelcomeMessage(BuildContext context, HomeViewModel viewModel) {
     return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(0.0, 36.0, 0.0, 18.0),
+      padding: const EdgeInsetsDirectional.fromSTEB(0.0, 24.0, 0.0, 8.0),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -222,19 +222,20 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildCommunityMessage(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(_hPad, 0.0, _hPad, 0.0),
+      child: SizedBox(
+        width: double.infinity,
+        child: Text(
           context.l10n.communityTagline,
           textAlign: TextAlign.center,
           style: AppTheme.of(context).bodyMedium.override(
                 color: Colors.black,
-                fontSize: 16.0,
+                fontSize: 15.0,
+                lineHeight: 1.4,
               ),
         ),
-      ],
+      ),
     );
   }
 

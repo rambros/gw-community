@@ -377,8 +377,20 @@ abstract class AppLocalizations {
   /// No description provided for @communityTagline.
   ///
   /// In en, this message translates to:
-  /// **'A community of well-wishers\ncreating a new world together'**
+  /// **'A community that shares good wishes\nto create a better world'**
   String get communityTagline;
+
+  /// No description provided for @splashWelcomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to Good Wishes'**
+  String get splashWelcomeTitle;
+
+  /// No description provided for @splashWelcomeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A community that shares good wishes\nto create a better world'**
+  String get splashWelcomeSubtitle;
 
   /// No description provided for @myGroups.
   ///
@@ -1549,6 +1561,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Step {number}: {title}'**
   String stepWithTitle(int number, String title);
+
+  /// No description provided for @journeyStepHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Step {number}'**
+  String journeyStepHeader(int number);
+
+  /// No description provided for @journeyActivityInspiration.
+  ///
+  /// In en, this message translates to:
+  /// **'Inspiration'**
+  String get journeyActivityInspiration;
+
+  /// No description provided for @journeyActivityMeditation.
+  ///
+  /// In en, this message translates to:
+  /// **'Meditation'**
+  String get journeyActivityMeditation;
+
+  /// No description provided for @journeyActivityPractices.
+  ///
+  /// In en, this message translates to:
+  /// **'Practices'**
+  String get journeyActivityPractices;
 
   /// No description provided for @mediaAudio.
   ///

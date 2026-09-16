@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/journey/themes/journey_theme_extension.dart';
 
@@ -37,7 +38,7 @@ class ActivityItemWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    activity.activityLabel ?? 'activity',
+                    localizedJourneyActivityLabel(context.l10n, activity.activityLabel),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: AppTheme.of(context).journey.stepTitle.override(

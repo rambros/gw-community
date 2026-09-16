@@ -4,6 +4,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/step_activities_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/ui/journey/step_audio_player_page/step_audio_player_page.dart';
@@ -13,6 +14,7 @@ import 'package:gw_community/ui/journey/step_journal_page/step_journal_page.dart
 import 'package:gw_community/ui/journey/step_text_view_page/step_text_view_page.dart';
 import 'package:gw_community/ui/journey/step_video_player_page/step_video_player_page.dart';
 import 'package:gw_community/ui/journey/themes/journey_theme_extension.dart';
+import 'package:gw_community/ui/journey/widgets/journey_locale_scope.dart';
 import 'package:gw_community/utils/context_extensions.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
@@ -21,9 +23,11 @@ class StepDetailsPage extends StatefulWidget {
   const StepDetailsPage({
     super.key,
     required this.userStepRow,
+    this.fixedLanguage,
   });
 
   final CcViewUserStepsRow? userStepRow;
+  final String? fixedLanguage;
 
   static String routeName = 'stepDetailsPage';
   static String routePath = '/stepDetailsPage';
@@ -71,40 +75,44 @@ class _StepDetailsPageState extends State<StepDetailsPage> {
       );
     }
 
-    return ChangeNotifierProvider.value(
-      value: _viewModel!,
-      child: Scaffold(
-        backgroundColor: AppTheme.of(context).secondary,
-        appBar: AppBar(
-          backgroundColor: AppTheme.of(context).primary,
-          automaticallyImplyLeading: false,
-          leading: FlutterFlowIconButton(
-            borderColor: Colors.transparent,
-            borderRadius: 30.0,
-            borderWidth: 1.0,
-            buttonSize: 60.0,
-            icon: const Icon(
-              Icons.arrow_back_rounded,
-              color: Colors.white,
-              size: 30.0,
+    return JourneyLocaleScope(
+      fixedLanguage: widget.fixedLanguage,
+      builder: (context) => ChangeNotifierProvider.value(
+        value: _viewModel!,
+        child: Scaffold(
+          backgroundColor: AppTheme.of(context).secondary,
+          appBar: AppBar(
+            backgroundColor: AppTheme.of(context).primary,
+            automaticallyImplyLeading: false,
+            leading: FlutterFlowIconButton(
+              borderColor: Colors.transparent,
+              borderRadius: 30.0,
+              borderWidth: 1.0,
+              buttonSize: 60.0,
+              icon: const Icon(
+                Icons.arrow_back_rounded,
+                color: Colors.white,
+                size: 30.0,
+              ),
+              onPressed: () async {
+                context.pop();
+              },
             ),
-            onPressed: () async {
-              context.pop();
-            },
+            title: Text(
+              context.l10n
+                  .journeyStepHeader(widget.userStepRow?.stepNumber ?? 0),
+              style: AppTheme.of(context).journey.pageTitle.override(
+                    color: Colors.white,
+                  ),
+            ),
+            actions: const [],
+            centerTitle: true,
+            elevation: 2.0,
           ),
-          title: Text(
-            'Step ${widget.userStepRow?.stepNumber?.toString()}',
-            style: AppTheme.of(context).journey.pageTitle.override(
-                  color: Colors.white,
-                ),
+          body: SafeArea(
+            top: true,
+            child: _buildBody(context),
           ),
-          actions: const [],
-          centerTitle: true,
-          elevation: 2.0,
-        ),
-        body: SafeArea(
-          top: true,
-          child: _buildBody(context),
         ),
       ),
     );
@@ -125,7 +133,8 @@ class _StepDetailsPageState extends State<StepDetailsPage> {
                 children: [
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsetsDirectional.fromSTEB(2.0, 16.0, 2.0, 0.0),
+                      padding: const EdgeInsetsDirectional.fromSTEB(
+                          2.0, 16.0, 2.0, 0.0),
                       child: Text(
                         widget.userStepRow?.title ?? 'step',
                         textAlign: TextAlign.center,
@@ -145,7 +154,8 @@ class _StepDetailsPageState extends State<StepDetailsPage> {
                 children: [
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsetsDirectional.fromSTEB(4.0, 16.0, 4.0, 0.0),
+                      padding: const EdgeInsetsDirectional.fromSTEB(
+                          4.0, 16.0, 4.0, 0.0),
                       child: MarkdownBody(
                         data: widget.userStepRow?.description ?? 'description',
                         shrinkWrap: true,
@@ -176,7 +186,8 @@ class _StepDetailsPageState extends State<StepDetailsPage> {
             Align(
               alignment: const AlignmentDirectional(0.0, 0.0),
               child: Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(4.0, 32.0, 4.0, 0.0),
+                padding:
+                    const EdgeInsetsDirectional.fromSTEB(4.0, 32.0, 4.0, 0.0),
                 child: _buildActivitiesList(context),
               ),
             ),
@@ -256,6 +267,7 @@ class _StepDetailsPageState extends State<StepDetailsPage> {
             transcript: params['transcript'] as String?,
             animationUrl: params['animationUrl'] as String?,
             animationMediaType: params['animationMediaType'] as String?,
+            fixedLanguage: widget.fixedLanguage,
           );
         } else if (routeName == 'stepTextViewPage') {
           StepTextViewPage.open(
@@ -263,13 +275,16 @@ class _StepDetailsPageState extends State<StepDetailsPage> {
             title: params['stepTextTitle'] as String?,
             content: params['stepTextContent'] as String?,
             activityId: params['activityId'] as int?,
+            activityLabel: params['activityLabel'] as String?,
+            fixedLanguage: widget.fixedLanguage,
           );
         } else if (routeName == 'stepVideoPlayerPage') {
           router.pushNamed(
             StepVideoPlayerPage.routeName,
             queryParameters: {
               'videoUrl': serializeParam(params['videoUrl'], ParamType.String),
-              'videoTitle': serializeParam(params['videoTitle'], ParamType.String),
+              'videoTitle':
+                  serializeParam(params['videoTitle'], ParamType.String),
               'typeStep': serializeParam(params['typeStep'], ParamType.String),
               'activityId': serializeParam(params['activityId'], ParamType.int),
             }.withoutNulls,
@@ -285,7 +300,11 @@ class _StepDetailsPageState extends State<StepDetailsPage> {
           router.pushNamed(
             StepJournalPage.routeName,
             queryParameters: {
-              'activityRow': serializeParam(params['activityRow'], ParamType.SupabaseRow),
+              'activityRow':
+                  serializeParam(params['activityRow'], ParamType.SupabaseRow),
+              if (widget.fixedLanguage != null)
+                'fixedLanguage':
+                    serializeParam(widget.fixedLanguage, ParamType.String),
             }.withoutNulls,
             extra: <String, dynamic>{
               kTransitionInfoKey: const TransitionInfo(

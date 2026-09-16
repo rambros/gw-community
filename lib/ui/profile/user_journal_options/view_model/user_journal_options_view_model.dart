@@ -15,15 +15,17 @@ class UserJournalOptionsViewModel extends ChangeNotifier {
     required UserProfileRepository repository,
   }) : _repository = repository;
 
-  Future<void> clearJournalEntry(int userActivityId) async {
+  Future<bool> clearJournalEntry(int userActivityId) async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
 
     try {
       await _repository.updateJournalEntry(userActivityId, '');
+      return true;
     } catch (e) {
       _errorMessage = 'Failed to clear journal entry: ${e.toString()}';
+      return false;
     } finally {
       _isLoading = false;
       notifyListeners();
