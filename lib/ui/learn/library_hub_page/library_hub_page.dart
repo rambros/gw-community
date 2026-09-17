@@ -14,6 +14,10 @@ class LibraryHubPage extends StatelessWidget {
 
   static String routeName = 'libraryHubPage';
   static String routePath = '/libraryHubPage';
+  static const List<Color> _cardGradient = [
+    Color(0xFF8A55B8),
+    Color(0xFFA072C8),
+  ];
 
   void _openGlobalSearch(BuildContext context) {
     context.pushNamed(
@@ -63,7 +67,12 @@ class LibraryHubPage extends StatelessWidget {
               children: [
                 _SearchField(onTap: () => _openGlobalSearch(context)),
                 const SizedBox(height: 28.0),
-                Expanded(child: _HubGrid(cards: _cards(context))),
+                Expanded(
+                  child: _HubContent(
+                    cards: _cards(context),
+                    featuredCard: _meditationsCard(context),
+                  ),
+                ),
               ],
             ),
           ),
@@ -78,7 +87,7 @@ class LibraryHubPage extends StatelessWidget {
       LibraryHubCardData(
         title: l10n.portalDialoguesRetreats,
         glyph: LibraryHubGlyph.dialogues,
-        gradient: const [Color(0xFF3B1468), Color(0xFF5C2A8A)],
+        gradient: _cardGradient,
         onTap: () => context.pushNamed(
           PortalEventsPage.routeName,
           queryParameters: {'dashboardGroupId': '1'}.withoutNulls,
@@ -87,31 +96,46 @@ class LibraryHubPage extends StatelessWidget {
       LibraryHubCardData(
         title: l10n.portalHeartToHeart,
         glyph: LibraryHubGlyph.heartToHeart,
-        gradient: const [Color(0xFF6B3398), Color(0xFF8750B4)],
+        gradient: _cardGradient,
         onTap: () => context.pushNamed(
           PortalEventsPage.routeName,
           queryParameters: {'dashboardGroupId': '2'}.withoutNulls,
         ),
       ),
       LibraryHubCardData(
-        title: l10n.portalDadiJanki,
-        glyph: LibraryHubGlyph.dadiJanki,
-        gradient: const [Color(0xFF8A55B8), Color(0xFFA072C8)],
+        title: l10n.wordsOfWisdom,
+        glyph: LibraryHubGlyph.wordsOfWisdom,
+        gradient: _cardGradient,
         onTap: () => context.pushNamed(
           PortalCatalogPage.routeName,
-          queryParameters: {'kind': PortalCatalogKind.dadiJanki.name}.withoutNulls,
+          queryParameters:
+              {'kind': PortalCatalogKind.messages.name}.withoutNulls,
         ),
       ),
       LibraryHubCardData(
-        title: l10n.portalMeditations,
-        glyph: LibraryHubGlyph.meditations,
-        gradient: const [Color(0xFFB48AD4), Color(0xFFC9A8E0)],
+        title: l10n.portalDadiJanki,
+        glyph: LibraryHubGlyph.dadiJanki,
+        gradient: _cardGradient,
         onTap: () => context.pushNamed(
           PortalCatalogPage.routeName,
-          queryParameters: {'kind': PortalCatalogKind.meditations.name}.withoutNulls,
+          queryParameters:
+              {'kind': PortalCatalogKind.dadiJanki.name}.withoutNulls,
         ),
       ),
     ];
+  }
+
+  LibraryHubCardData _meditationsCard(BuildContext context) {
+    return LibraryHubCardData(
+      title: context.l10n.libraryHeaderMeditation,
+      glyph: LibraryHubGlyph.meditations,
+      gradient: _cardGradient,
+      onTap: () => context.pushNamed(
+        PortalCatalogPage.routeName,
+        queryParameters:
+            {'kind': PortalCatalogKind.meditations.name}.withoutNulls,
+      ),
+    );
   }
 }
 
@@ -138,7 +162,8 @@ class _SearchField extends StatelessWidget {
             filled: true,
             fillColor: Colors.white,
             prefixIcon: Icon(Icons.search_rounded, color: theme.primary),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(color: theme.alternate, width: 1.5),
               borderRadius: BorderRadius.circular(16.0),
@@ -154,23 +179,40 @@ class _SearchField extends StatelessWidget {
   }
 }
 
-class _HubGrid extends StatelessWidget {
-  const _HubGrid({required this.cards});
+class _HubContent extends StatelessWidget {
+  const _HubContent({
+    required this.cards,
+    required this.featuredCard,
+  });
 
   final List<LibraryHubCardData> cards;
+  final LibraryHubCardData featuredCard;
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      padding: const EdgeInsets.only(bottom: 16.0),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 14.0,
-        mainAxisSpacing: 14.0,
-        childAspectRatio: 0.82,
-      ),
-      itemCount: cards.length,
-      itemBuilder: (context, index) => LibraryHubCard(data: cards[index]),
+    return CustomScrollView(
+      slivers: [
+        SliverGrid(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 14.0,
+            mainAxisSpacing: 14.0,
+            childAspectRatio: 0.96,
+          ),
+          delegate: SliverChildBuilderDelegate(
+            (context, index) => LibraryHubCard(data: cards[index]),
+            childCount: cards.length,
+          ),
+        ),
+        const SliverToBoxAdapter(child: SizedBox(height: 14.0)),
+        SliverToBoxAdapter(
+          child: SizedBox(
+            height: 120.0,
+            child: LibraryHubCard(data: featuredCard, isWide: true),
+          ),
+        ),
+        const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
+      ],
     );
   }
 }

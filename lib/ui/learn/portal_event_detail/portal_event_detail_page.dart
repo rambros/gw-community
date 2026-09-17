@@ -5,6 +5,7 @@ import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/learn/portal_event_detail/view_model/portal_event_detail_view_model.dart';
 import 'package:gw_community/ui/learn/widgets/content_card.dart';
+import 'package:gw_community/ui/learn/utils/portal_content_mapper.dart';
 import 'package:gw_community/ui/learn/widgets/portal_list_sort.dart';
 import 'package:gw_community/ui/learn/widgets/portal_search_bar.dart';
 import 'package:intl/intl.dart';
@@ -34,7 +35,10 @@ class _PortalEventDetailPageState extends State<PortalEventDetailPage> {
         builder: (context, viewModel, _) {
           final theme = AppTheme.of(context);
           final event = viewModel.event;
-          final speakers = event?.authorNames.where((name) => name.trim().isNotEmpty).join(', ') ?? '';
+          final speakers = event?.authorNames
+                  .where((name) => name.trim().isNotEmpty)
+                  .join(', ') ??
+              '';
           final location = [
             event?.local,
             event?.region,
@@ -47,7 +51,8 @@ class _PortalEventDetailPageState extends State<PortalEventDetailPage> {
               backgroundColor: theme.primary,
               title: Text(
                 context.l10n.event,
-                style: theme.headlineMedium.override(color: Colors.white, fontSize: 18),
+                style: theme.headlineMedium
+                    .override(color: Colors.white, fontSize: 18),
               ),
               centerTitle: true,
             ),
@@ -98,24 +103,32 @@ class _PortalEventDetailPageState extends State<PortalEventDetailPage> {
                                   const SizedBox(height: 10),
                                   Text(
                                     context.l10n.locationValue(location),
-                                    style: theme.bodyMedium.override(color: theme.secondary, fontSize: 14),
+                                    style: theme.bodyMedium.override(
+                                        color: theme.secondary, fontSize: 14),
                                   ),
                                 ],
-                                if (event?.start != null || event?.end != null) ...[
+                                if (event?.start != null ||
+                                    event?.end != null) ...[
                                   const SizedBox(height: 4),
                                   Text(
                                     context.l10n.eventStartEnd(
-                                      event?.start != null ? dateFormat.format(event!.start!) : '—',
-                                      event?.end != null ? dateFormat.format(event!.end!) : '—',
+                                      event?.start != null
+                                          ? dateFormat.format(event!.start!)
+                                          : '—',
+                                      event?.end != null
+                                          ? dateFormat.format(event!.end!)
+                                          : '—',
                                     ),
-                                    style: theme.bodyMedium.override(color: theme.secondary, fontSize: 14),
+                                    style: theme.bodyMedium.override(
+                                        color: theme.secondary, fontSize: 14),
                                   ),
                                 ],
                                 if (speakers.isNotEmpty) ...[
                                   const SizedBox(height: 4),
                                   Text(
                                     context.l10n.mainSpeakers(speakers),
-                                    style: theme.bodyMedium.override(color: theme.secondary, fontSize: 14),
+                                    style: theme.bodyMedium.override(
+                                        color: theme.secondary, fontSize: 14),
                                   ),
                                 ],
                               ],
@@ -138,7 +151,14 @@ class _PortalEventDetailPageState extends State<PortalEventDetailPage> {
                               ],
                             ),
                           ),
-                          ...viewModel.contents.map((row) => ContentCard(contentRow: row)),
+                          ...viewModel.contents.map(
+                            (row) => ContentCard(
+                              contentRow: row,
+                              librarySection: event?.dashboardGroupId == 2
+                                  ? LibraryContentSection.heartToHeart
+                                  : LibraryContentSection.dialoguesRetreats,
+                            ),
+                          ),
                         ],
                       ),
           );

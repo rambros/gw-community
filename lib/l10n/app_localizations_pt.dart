@@ -1020,7 +1020,16 @@ class AppLocalizationsPt extends AppLocalizations {
   String get portalHeartToHeart => 'Heart to Heart Conversations';
 
   @override
+  String get libraryHeaderHeartToHeart => 'Heart to Heart';
+
+  @override
+  String get libraryHeaderMeditation => 'Meditation';
+
+  @override
   String get portalMessages => 'Mensagens';
+
+  @override
+  String get wordsOfWisdom => 'Words of Wisdom';
 
   @override
   String get portalDadiJanki => 'Dadi Janki';

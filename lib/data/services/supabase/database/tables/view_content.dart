@@ -103,6 +103,10 @@ class ViewContentRow extends SupabaseDataRow {
   int? get numViews => getField<int>('num_views');
   set numViews(int? value) => setField<int>('num_views', value);
 
+  int? get dashboardGroupId => getField<int>('dashboard_group_id');
+  set dashboardGroupId(int? value) =>
+      setField<int>('dashboard_group_id', value);
+
   String? get description => getField<String>('description');
   set description(String? value) => setField<String>('description', value);
 

@@ -11,6 +11,7 @@ import 'package:gw_community/ui/core/widgets/audio_player_widget.dart';
 import 'package:gw_community/ui/core/widgets/favorite_button.dart';
 import 'package:gw_community/ui/core/widgets/transcript_markdown.dart';
 import 'package:gw_community/ui/learn/content_view/view_model/content_view_model.dart';
+import 'package:gw_community/ui/learn/utils/portal_content_mapper.dart';
 import 'package:gw_community/utils/context_extensions.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
@@ -20,10 +21,12 @@ class ContentViewPage extends StatefulWidget {
     super.key,
     required this.contentId,
     this.previewRow,
+    this.librarySection,
   });
 
   final int contentId;
   final ViewContentRow? previewRow;
+  final LibraryContentSection? librarySection;
 
   static String routeName = 'contentViewPage';
   static String routePath = '/contentViewPage';
@@ -39,20 +42,24 @@ class _ContentViewPageState extends State<ContentViewPage> {
       create: (_) => ContentViewModel(
         contentId: widget.contentId,
         viewContentRow: widget.previewRow,
+        librarySection: widget.librarySection,
       )..load(),
       child: Consumer<ContentViewModel>(
         builder: (context, viewModel, _) {
           if (viewModel.isLoading && viewModel.viewContentRow == null) {
             return Scaffold(
               appBar: AppBar(backgroundColor: AppTheme.of(context).primary),
-              body: Center(child: SpinKitRipple(color: AppTheme.of(context).primary, size: 50)),
+              body: Center(
+                  child: SpinKitRipple(
+                      color: AppTheme.of(context).primary, size: 50)),
             );
           }
 
           if (viewModel.error != null || viewModel.viewContentRow == null) {
             return Scaffold(
               appBar: AppBar(backgroundColor: AppTheme.of(context).primary),
-              body: Center(child: Text(viewModel.error ?? context.l10n.noContentFound)),
+              body: Center(
+                  child: Text(viewModel.error ?? context.l10n.noContentFound)),
             );
           }
 
@@ -64,12 +71,15 @@ class _ContentViewPageState extends State<ContentViewPage> {
             appBar: AppBar(
               backgroundColor: AppTheme.of(context).primary,
               title: Text(
-                valueOrDefault<String>(row.title, context.l10n.untitled),
-                style: AppTheme.of(context).headlineMedium.override(color: Colors.white, fontSize: 18),
+                _headerTitle(context, viewModel, row),
+                style: AppTheme.of(context)
+                    .headlineMedium
+                    .override(color: Colors.white, fontSize: 18),
               ),
               centerTitle: true,
               actions: [
-                if (context.currentUserIdOrEmpty.isNotEmpty && row.contentId != null)
+                if (context.currentUserIdOrEmpty.isNotEmpty &&
+                    row.contentId != null)
                   Padding(
                     padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 12, 0),
                     child: FavoriteButton(
@@ -89,7 +99,8 @@ class _ContentViewPageState extends State<ContentViewPage> {
                 children: [
                   if (viewModel.isMessageType)
                     Text(
-                      context.l10n.messageFromAuthors(row.authorsNames.join(', ')),
+                      context.l10n
+                          .messageFromAuthors(row.authorsNames.join(', ')),
                       style: AppTheme.of(context).bodyLarge.override(
                             fontWeight: FontWeight.w600,
                             color: AppTheme.of(context).secondary,
@@ -133,7 +144,8 @@ class _ContentViewPageState extends State<ContentViewPage> {
                       ),
                     ),
                   ],
-                  if (mediaType == 'audio' && (row.audioUrl ?? '').isNotEmpty) ...[
+                  if (mediaType == 'audio' &&
+                      (row.audioUrl ?? '').isNotEmpty) ...[
                     const SizedBox(height: 16),
                     SizedBox(
                       height: 320,
@@ -147,7 +159,8 @@ class _ContentViewPageState extends State<ContentViewPage> {
                       ),
                     ),
                   ],
-                  if (mediaType == 'video' && (row.midiaFileUrl ?? '').isNotEmpty) ...[
+                  if (mediaType == 'video' &&
+                      (row.midiaFileUrl ?? '').isNotEmpty) ...[
                     const SizedBox(height: 16),
                     FlutterFlowYoutubePlayer(
                       url: row.midiaFileUrl!,
@@ -208,5 +221,22 @@ class _ContentViewPageState extends State<ContentViewPage> {
         },
       ),
     );
+  }
+
+  String _headerTitle(
+    BuildContext context,
+    ContentViewModel viewModel,
+    ViewContentRow row,
+  ) {
+    return switch (viewModel.librarySection) {
+      LibraryContentSection.wordsOfWisdom => context.l10n.wordsOfWisdom,
+      LibraryContentSection.dadiJanki => context.l10n.portalDadiJanki,
+      LibraryContentSection.meditations => context.l10n.libraryHeaderMeditation,
+      LibraryContentSection.dialoguesRetreats =>
+        context.l10n.portalDialoguesRetreats,
+      LibraryContentSection.heartToHeart =>
+        context.l10n.libraryHeaderHeartToHeart,
+      null => valueOrDefault<String>(row.title, context.l10n.untitled),
+    };
   }
 }

@@ -1910,11 +1910,29 @@ abstract class AppLocalizations {
   /// **'Heart to Heart Conversations'**
   String get portalHeartToHeart;
 
+  /// No description provided for @libraryHeaderHeartToHeart.
+  ///
+  /// In en, this message translates to:
+  /// **'Heart to Heart'**
+  String get libraryHeaderHeartToHeart;
+
+  /// No description provided for @libraryHeaderMeditation.
+  ///
+  /// In en, this message translates to:
+  /// **'Meditation'**
+  String get libraryHeaderMeditation;
+
   /// No description provided for @portalMessages.
   ///
   /// In en, this message translates to:
   /// **'Messages'**
   String get portalMessages;
+
+  /// No description provided for @wordsOfWisdom.
+  ///
+  /// In en, this message translates to:
+  /// **'Words of Wisdom'**
+  String get wordsOfWisdom;
 
   /// No description provided for @portalDadiJanki.
   ///

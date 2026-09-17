@@ -7,8 +7,8 @@ class LearnRepository {
   static const int dadiJankiAuthorId = 1;
 
   static final String _listColumns =
-      'content_id, title, description, content_type_id, authors_names, midia_type, is_published, '
-      'cott_event_id, event_name, audio_url, midia_file_url, date_published, year_published, transcript';
+      'content_id, title, description, content_type_id, authors, authors_names, midia_type, is_published, '
+      'cott_event_id, event_type_id, event_name, audio_url, midia_file_url, date_published, year_published, transcript';
 
   Future<ViewContentRow?> getById(int contentId) async {
     final data = await SupaFlow.client
@@ -54,7 +54,8 @@ class LearnRepository {
       try {
         final hybridResults = await hybridSearch(searchString);
         if (hybridResults.isNotEmpty) {
-          return _sortContent(hybridResults, sortColumn: sortColumn, ascending: ascending);
+          return _sortContent(hybridResults,
+              sortColumn: sortColumn, ascending: ascending);
         }
       } catch (e) {
         debugPrint('Hybrid search failed, falling back to text search: $e');
@@ -65,8 +66,12 @@ class LearnRepository {
     finalString = finalString.trim();
     finalString = finalString.replaceAll(' ', '&');
 
-    final groupContentIds = filterByGroupId != 0 ? await _contentIdsForGroup(filterByGroupId) : null;
-    final journeyContentIds = filterByJourneyId != 0 ? await _contentIdsForJourney(filterByJourneyId) : null;
+    final groupContentIds = filterByGroupId != 0
+        ? await _contentIdsForGroup(filterByGroupId)
+        : null;
+    final journeyContentIds = filterByJourneyId != 0
+        ? await _contentIdsForJourney(filterByJourneyId)
+        : null;
 
     dynamic query = SupaFlow.client
         .from('view_content')
@@ -113,10 +118,17 @@ class LearnRepository {
     int? limit,
     int? offset,
   }) async {
-    final groupContentIds = filterByGroupId != 0 ? await _contentIdsForGroup(filterByGroupId) : null;
-    final journeyContentIds = filterByJourneyId != 0 ? await _contentIdsForJourney(filterByJourneyId) : null;
+    final groupContentIds = filterByGroupId != 0
+        ? await _contentIdsForGroup(filterByGroupId)
+        : null;
+    final journeyContentIds = filterByJourneyId != 0
+        ? await _contentIdsForJourney(filterByJourneyId)
+        : null;
 
-    dynamic query = SupaFlow.client.from('view_content').select(_listColumns).eq('is_published', true);
+    dynamic query = SupaFlow.client
+        .from('view_content')
+        .select(_listColumns)
+        .eq('is_published', true);
 
     query = _applyFilters(
       query,
@@ -150,9 +162,13 @@ class LearnRepository {
     int? offset,
     bool excludeExclusive = true,
   }) async {
-    final exclusiveIds = excludeExclusive ? await _exclusiveContentIds() : <int>[];
+    final exclusiveIds =
+        excludeExclusive ? await _exclusiveContentIds() : <int>[];
 
-    dynamic query = SupaFlow.client.from('view_content').select(_listColumns).eq('is_published', true);
+    dynamic query = SupaFlow.client
+        .from('view_content')
+        .select(_listColumns)
+        .eq('is_published', true);
 
     if (exclusiveIds.isNotEmpty) {
       query = query.not('content_id', 'in', exclusiveIds);
@@ -180,8 +196,8 @@ class LearnRepository {
         .from('view_content')
         .select(_listColumns)
         .eq('is_published', true)
-        .contains('authors', [authorId])
-        .order('date_published', ascending: false);
+        .contains('authors', [authorId]).order('date_published',
+            ascending: false);
 
     if (limit != null) {
       query = query.limit(limit);
@@ -264,7 +280,9 @@ class LearnRepository {
     final sorted = List<ViewContentRow>.from(items);
     sorted.sort((a, b) {
       if (sortColumn == 'title') {
-        final cmp = (a.title ?? '').toLowerCase().compareTo((b.title ?? '').toLowerCase());
+        final cmp = (a.title ?? '')
+            .toLowerCase()
+            .compareTo((b.title ?? '').toLowerCase());
         return ascending ? cmp : -cmp;
       }
       final dateA = a.datePublished;
@@ -283,11 +301,14 @@ class LearnRepository {
         .select('portal_item_id')
         .eq('visibility', 'exclusive');
 
-    return (exclusiveResponse as List).map((row) => row['portal_item_id'] as int).toList();
+    return (exclusiveResponse as List)
+        .map((row) => row['portal_item_id'] as int)
+        .toList();
   }
 
   Future<List<AuthorWithContentRow>> getAuthors() async {
-    return AuthorWithContentTable().queryRows(queryFn: (q) => q.order('name', ascending: true));
+    return AuthorWithContentTable()
+        .queryRows(queryFn: (q) => q.order('name', ascending: true));
   }
 
   Future<List<ViewEventsRow>> getEvents() async {
@@ -300,23 +321,38 @@ class LearnRepository {
 
   Future<List<CcJourneysRow>> getJourneys() async {
     return CcJourneysTable().queryRows(
-      queryFn: (q) => q.inFilter('status', ['published', 'Published']).order('title', ascending: true),
+      queryFn: (q) => q.inFilter(
+          'status', ['published', 'Published']).order('title', ascending: true),
     );
   }
 
   Future<List<CcGroupsRow>> getGroups() async {
-    return CcGroupsTable().queryRows(queryFn: (q) => q.order('name', ascending: true));
+    return CcGroupsTable()
+        .queryRows(queryFn: (q) => q.order('name', ascending: true));
   }
 
   Future<List<TopicsWithContentRow>> getTopics() async {
-    return TopicsWithContentTable().queryRows(queryFn: (q) => q.order('topic_name', ascending: true));
+    return TopicsWithContentTable()
+        .queryRows(queryFn: (q) => q.order('topic_name', ascending: true));
   }
 
   Future<List<LocalWithEventRow>> getLocations() async {
-    return LocalWithEventTable().queryRows(queryFn: (q) => q.order('local', ascending: true));
+    return LocalWithEventTable()
+        .queryRows(queryFn: (q) => q.order('local', ascending: true));
   }
 
   Future<List<EventTypeRow>> getEventTypes() async {
-    return EventTypeTable().queryRows(queryFn: (q) => q.order('name', ascending: true));
+    return EventTypeTable()
+        .queryRows(queryFn: (q) => q.order('name', ascending: true));
+  }
+
+  Future<int?> getDashboardGroupIdForEvent(int eventId) async {
+    final data = await SupaFlow.client
+        .from('view_events')
+        .select('dashboard_group_id')
+        .eq('event_id', eventId)
+        .maybeSingle();
+    if (data == null) return null;
+    return ViewEventsRow(data).dashboardGroupId;
   }
 }

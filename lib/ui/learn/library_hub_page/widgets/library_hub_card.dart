@@ -3,7 +3,13 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 
-enum LibraryHubGlyph { dialogues, heartToHeart, dadiJanki, meditations }
+enum LibraryHubGlyph {
+  dialogues,
+  heartToHeart,
+  dadiJanki,
+  meditations,
+  wordsOfWisdom,
+}
 
 class LibraryHubCardData {
   const LibraryHubCardData({
@@ -20,9 +26,14 @@ class LibraryHubCardData {
 }
 
 class LibraryHubCard extends StatelessWidget {
-  const LibraryHubCard({super.key, required this.data});
+  const LibraryHubCard({
+    super.key,
+    required this.data,
+    this.isWide = false,
+  });
 
   final LibraryHubCardData data;
+  final bool isWide;
 
   @override
   Widget build(BuildContext context) {
@@ -55,10 +66,19 @@ class LibraryHubCard extends StatelessWidget {
             child: LayoutBuilder(
               builder: (context, constraints) {
                 final baseIconSize = constraints.biggest.shortestSide * 0.42;
-                final iconSize = data.glyph == LibraryHubGlyph.dadiJanki ||
-                        data.glyph == LibraryHubGlyph.meditations
-                    ? baseIconSize * 1.25
-                    : baseIconSize;
+                final iconSize = isWide
+                    ? constraints.maxHeight *
+                        (data.glyph == LibraryHubGlyph.meditations
+                            ? 0.78
+                            : 0.52)
+                    : data.glyph == LibraryHubGlyph.dadiJanki ||
+                            data.glyph == LibraryHubGlyph.meditations
+                        ? baseIconSize * 1.25
+                        : data.glyph == LibraryHubGlyph.heartToHeart
+                            ? baseIconSize * 1.12
+                            : data.glyph == LibraryHubGlyph.wordsOfWisdom
+                                ? baseIconSize * 1.10
+                                : baseIconSize;
                 return ClipRRect(
                   borderRadius: BorderRadius.circular(16.0),
                   child: Stack(
@@ -67,35 +87,59 @@ class LibraryHubCard extends StatelessWidget {
                       CustomPaint(
                         painter: _HubBackgroundPainter(data.glyph),
                       ),
-                      Padding(
-                        padding:
-                            const EdgeInsets.fromLTRB(12.0, 24.0, 12.0, 18.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: iconSize,
-                              height: iconSize,
-                              child: CustomPaint(
-                                painter: _HubGlyphPainter(data.glyph),
-                              ),
+                      if (isWide)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 28.0),
+                          child: Transform.translate(
+                            offset: Offset(
+                              data.glyph == LibraryHubGlyph.meditations
+                                  ? 8.0
+                                  : 0.0,
+                              0.0,
                             ),
-                            SizedBox(height: iconSize * 0.16),
-                            Text(
-                              data.title,
-                              textAlign: TextAlign.center,
-                              maxLines: 3,
-                              overflow: TextOverflow.ellipsis,
-                              style: AppTheme.of(context).titleMedium.override(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 16.0,
-                                    lineHeight: 1.2,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                _CardGlyph(glyph: data.glyph, size: iconSize),
+                                const SizedBox(width: 24.0),
+                                Flexible(child: _CardTitle(title: data.title)),
+                              ],
+                            ),
+                          ),
+                        )
+                      else
+                        Padding(
+                          padding:
+                              const EdgeInsets.fromLTRB(12.0, 24.0, 12.0, 18.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                height: baseIconSize * 1.25,
+                                child: Align(
+                                  alignment:
+                                      data.glyph == LibraryHubGlyph.heartToHeart
+                                          ? Alignment.bottomCenter
+                                          : Alignment.center,
+                                  child: Transform.translate(
+                                    offset: Offset(
+                                      0,
+                                      data.glyph == LibraryHubGlyph.heartToHeart
+                                          ? baseIconSize * 0.08
+                                          : 0,
+                                    ),
+                                    child: _CardGlyph(
+                                      glyph: data.glyph,
+                                      size: iconSize,
+                                    ),
                                   ),
-                            ),
-                          ],
+                                ),
+                              ),
+                              SizedBox(height: baseIconSize * 0.16),
+                              _CardTitle(title: data.title),
+                            ],
+                          ),
                         ),
-                      ),
                     ],
                   ),
                 );
@@ -108,6 +152,44 @@ class LibraryHubCard extends StatelessWidget {
   }
 }
 
+class _CardGlyph extends StatelessWidget {
+  const _CardGlyph({required this.glyph, required this.size});
+
+  final LibraryHubGlyph glyph;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: size,
+      height: size,
+      child: CustomPaint(painter: _HubGlyphPainter(glyph)),
+    );
+  }
+}
+
+class _CardTitle extends StatelessWidget {
+  const _CardTitle({required this.title});
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      title,
+      textAlign: TextAlign.center,
+      maxLines: 3,
+      overflow: TextOverflow.ellipsis,
+      style: AppTheme.of(context).titleMedium.override(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+            fontSize: 16.0,
+            lineHeight: 1.2,
+          ),
+    );
+  }
+}
+
 class _HubGlyphPainter extends CustomPainter {
   const _HubGlyphPainter(this.glyph);
 
@@ -115,7 +197,11 @@ class _HubGlyphPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final strokeScale = glyph == LibraryHubGlyph.dadiJanki ? 0.8 : 1.0;
+    final strokeScale = switch (glyph) {
+      LibraryHubGlyph.dadiJanki => 0.8,
+      LibraryHubGlyph.meditations => 0.72,
+      _ => 1.0,
+    };
     final stroke = Paint()
       ..color = Colors.white
       ..style = PaintingStyle.stroke
@@ -133,6 +219,8 @@ class _HubGlyphPainter extends CustomPainter {
         _paintPerson(canvas, size, stroke);
       case LibraryHubGlyph.meditations:
         _paintLotus(canvas, size, stroke);
+      case LibraryHubGlyph.wordsOfWisdom:
+        _paintWisdom(canvas, size, stroke);
     }
   }
 
@@ -321,23 +409,6 @@ class _HubGlyphPainter extends CustomPainter {
     final h = size.height;
     final cx = w / 2;
 
-    final rayPaint = Paint()
-      ..color = paint.color.withValues(alpha: 0.72)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = paint.strokeWidth * 0.55
-      ..strokeCap = StrokeCap.round
-      ..isAntiAlias = true;
-    _paintRays(
-      canvas,
-      Offset(cx, h * 0.40),
-      rayPaint,
-      count: 5,
-      inner: h * 0.25,
-      outer: h * 0.35,
-      startAngle: -math.pi * 0.76,
-      sweep: math.pi * 0.52,
-    );
-
     final centerPetal = Path()
       ..moveTo(cx, h * 0.80)
       ..cubicTo(w * 0.39, h * 0.62, w * 0.41, h * 0.40, cx, h * 0.23)
@@ -376,6 +447,37 @@ class _HubGlyphPainter extends CustomPainter {
         false,
         paint,
       );
+  }
+
+  void _paintWisdom(Canvas canvas, Size size, Paint paint) {
+    final w = size.width;
+    final h = size.height;
+    final bubble = Path()
+      ..moveTo(w * 0.50, h * 0.10)
+      ..cubicTo(w * 0.73, h * 0.10, w * 0.89, h * 0.26, w * 0.89, h * 0.49)
+      ..cubicTo(w * 0.89, h * 0.72, w * 0.72, h * 0.87, w * 0.49, h * 0.87)
+      ..cubicTo(w * 0.42, h * 0.87, w * 0.36, h * 0.86, w * 0.31, h * 0.83)
+      ..lineTo(w * 0.14, h * 0.92)
+      ..lineTo(w * 0.18, h * 0.72)
+      ..cubicTo(w * 0.13, h * 0.65, w * 0.11, h * 0.57, w * 0.11, h * 0.49)
+      ..cubicTo(w * 0.11, h * 0.26, w * 0.27, h * 0.10, w * 0.50, h * 0.10)
+      ..close();
+    canvas.drawPath(bubble, paint);
+
+    final sparkle = Path()
+      ..moveTo(w * 0.50, h * 0.36)
+      ..cubicTo(w * 0.51, h * 0.44, w * 0.54, h * 0.48, w * 0.61, h * 0.49)
+      ..cubicTo(w * 0.54, h * 0.50, w * 0.51, h * 0.54, w * 0.50, h * 0.62)
+      ..cubicTo(w * 0.49, h * 0.54, w * 0.46, h * 0.50, w * 0.39, h * 0.49)
+      ..cubicTo(w * 0.46, h * 0.48, w * 0.49, h * 0.44, w * 0.50, h * 0.36)
+      ..close();
+    canvas.drawPath(sparkle, paint);
+
+    canvas
+      ..drawLine(Offset(w * 0.50, h * 0.20), Offset(w * 0.50, h * 0.25), paint)
+      ..drawLine(Offset(w * 0.50, h * 0.73), Offset(w * 0.50, h * 0.78), paint)
+      ..drawLine(Offset(w * 0.22, h * 0.49), Offset(w * 0.27, h * 0.49), paint)
+      ..drawLine(Offset(w * 0.73, h * 0.49), Offset(w * 0.78, h * 0.49), paint);
   }
 
   @override
@@ -442,6 +544,13 @@ class _HubBackgroundPainter extends CustomPainter {
           startY: 0.73,
           secondAlpha: 0.075,
         );
+      case LibraryHubGlyph.wordsOfWisdom:
+        canvas.drawCircle(
+          Offset(size.width * 0.22, size.height * 0.35),
+          size.height * 0.34,
+          soft,
+        );
+        _paintWaves(canvas, size, softer, startY: 0.72);
     }
   }
 

@@ -12,6 +12,7 @@ import 'package:gw_community/ui/community/group_details_page/member_management_p
 import 'package:gw_community/ui/community/group_moderation_page/group_moderation_page.dart';
 import 'package:gw_community/ui/core/nav_bar/nav_bar_page.dart';
 import 'package:gw_community/ui/journey/journey_list_page/journey_list_page.dart';
+import 'package:gw_community/ui/learn/utils/portal_content_mapper.dart';
 import 'package:gw_community/ui/notifications/set_notifications_page/set_notifications_page.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
@@ -71,7 +72,8 @@ class AppStateNotifier extends ChangeNotifier {
   bool pendingPasswordRecovery = false;
 
   void update(AppAuthUser newUser) {
-    final shouldUpdate = user?.uid == null || newUser.uid == null || user?.uid != newUser.uid;
+    final shouldUpdate =
+        user?.uid == null || newUser.uid == null || user?.uid != newUser.uid;
     initialUser ??= newUser;
     user = newUser;
     // Refresh the app on auth change unless explicitly marked otherwise.
@@ -88,7 +90,6 @@ class AppStateNotifier extends ChangeNotifier {
     showSplashImage = false;
     notifyListeners();
   }
-
 }
 
 GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
@@ -96,7 +97,8 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
       debugLogDiagnostics: false,
       refreshListenable: appStateNotifier,
       navigatorKey: appNavigatorKey,
-      errorBuilder: (context, state) => appStateNotifier.loggedIn ? const NavBarPage() : const LoginPage(),
+      errorBuilder: (context, state) =>
+          appStateNotifier.loggedIn ? const NavBarPage() : const LoginPage(),
       redirect: (context, state) {
         if (appStateNotifier.loading) {
           return null;
@@ -118,27 +120,32 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         }
 
         if (!loggedIn && !isPublicRoute) {
-          debugPrint('ROUTER: User not logged in and on protected page ${state.uri.path}. Redirecting to Login.');
+          debugPrint(
+              'ROUTER: User not logged in and on protected page ${state.uri.path}. Redirecting to Login.');
           appStateNotifier.setRedirectLocationIfUnset(state.uri.toString());
           return LoginPage.routePath;
         }
 
         if (loggedIn && appStateNotifier.pendingPasswordRecovery) {
-          debugPrint('ROUTER: Password recovery in progress — redirecting to ChangePasswordPage.');
+          debugPrint(
+              'ROUTER: Password recovery in progress — redirecting to ChangePasswordPage.');
           return ChangePasswordPage.routePath;
         }
 
         final pendingPortal = appStateNotifier.pendingPortalLocation;
         if (loggedIn && pendingPortal != null) {
-          final pendingPath = Uri.tryParse(pendingPortal)?.path ?? pendingPortal;
+          final pendingPath =
+              Uri.tryParse(pendingPortal)?.path ?? pendingPortal;
           if (state.uri.path == pendingPath) {
             appStateNotifier.clearPendingPortalLocation();
             appStateNotifier.clearRedirectLocation();
             return null;
           }
-          final onEntryRoute = isPublicRoute || state.uri.path == HomePage.routePath;
+          final onEntryRoute =
+              isPublicRoute || state.uri.path == HomePage.routePath;
           if (onEntryRoute) {
-            debugPrint('ROUTER: Honoring pending portal link $pendingPortal (was ${state.uri.path})');
+            debugPrint(
+                'ROUTER: Honoring pending portal link $pendingPortal (was ${state.uri.path})');
             return pendingPortal;
           }
         }
@@ -150,7 +157,8 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         }
 
         if (loggedIn && isPublicRoute) {
-          debugPrint('ROUTER: User logged in and on public route ${state.uri.path}. Redirecting to Home.');
+          debugPrint(
+              'ROUTER: User logged in and on public route ${state.uri.path}. Redirecting to Home.');
           return HomePage.routePath;
         }
 
@@ -164,12 +172,19 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
             if (appStateNotifier.loading) {
               return const SplashPage();
             }
-            return appStateNotifier.loggedIn ? const NavBarPage() : const LoginPage();
+            return appStateNotifier.loggedIn
+                ? const NavBarPage()
+                : const LoginPage();
           },
         ),
         FFRoute(
-            name: SplashPage.routeName, path: SplashPage.routePath, builder: (context, params) => const SplashPage()),
-        FFRoute(name: LoginPage.routeName, path: LoginPage.routePath, builder: (context, params) => const LoginPage()),
+            name: SplashPage.routeName,
+            path: SplashPage.routePath,
+            builder: (context, params) => const SplashPage()),
+        FFRoute(
+            name: LoginPage.routeName,
+            path: LoginPage.routePath,
+            builder: (context, params) => const LoginPage()),
         FFRoute(
           name: UserCreateProfilePage.routeName,
           path: UserCreateProfilePage.routePath,
@@ -183,7 +198,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: HomePage.routeName,
           path: HomePage.routePath,
-          builder: (context, params) => params.isEmpty ? const NavBarPage(initialPage: 'homePage') : const HomePage(),
+          builder: (context, params) => params.isEmpty
+              ? const NavBarPage(initialPage: 'homePage')
+              : const HomePage(),
         ),
         FFRoute(
           name: LearnListPage.routeName,
@@ -192,7 +209,8 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
             journeyId: params.getParam('journeyId', ParamType.int),
             groupId: params.getParam('groupId', ParamType.int),
             customTitle: params.getParam('customTitle', ParamType.String),
-            autofocusSearch: params.getParam('autofocusSearch', ParamType.bool) ?? false,
+            autofocusSearch:
+                params.getParam('autofocusSearch', ParamType.bool) ?? false,
           ),
         ),
         FFRoute(
@@ -206,14 +224,16 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: PortalEventsPage.routeName,
           path: PortalEventsPage.routePath,
           builder: (context, params) => PortalEventsPage(
-            dashboardGroupId: params.getParam('dashboardGroupId', ParamType.int) ?? 1,
+            dashboardGroupId:
+                params.getParam('dashboardGroupId', ParamType.int) ?? 1,
           ),
         ),
         FFRoute(
           name: PortalCatalogPage.routeName,
           path: PortalCatalogPage.routePath,
           builder: (context, params) {
-            final kindName = params.getParam('kind', ParamType.String) ?? PortalCatalogKind.messages.name;
+            final kindName = params.getParam('kind', ParamType.String) ??
+                PortalCatalogKind.messages.name;
             final kind = PortalCatalogKind.values.firstWhere(
               (value) => value.name == kindName,
               orElse: () => PortalCatalogKind.messages,
@@ -225,7 +245,8 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: PortalEventDetailPage.routeName,
           path: PortalEventDetailPage.routePath,
           builder: (context, params) => PortalEventDetailPage(
-            eventId: PortalAppLinks.parseId(params.state.uri.queryParameters['id']) ??
+            eventId: PortalAppLinks.parseId(
+                    params.state.uri.queryParameters['id']) ??
                 params.getParam('id', ParamType.int) ??
                 0,
           ),
@@ -236,7 +257,8 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           builder: (context, params) => NavBarPage(
             initialPage: 'learnListPage',
             page: PortalEventDetailPage(
-              eventId: PortalAppLinks.parseId(params.state.uri.queryParameters['id']) ??
+              eventId: PortalAppLinks.parseId(
+                      params.state.uri.queryParameters['id']) ??
                   params.getParam('id', ParamType.int) ??
                   0,
             ),
@@ -246,10 +268,15 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: ContentViewPage.routeName,
           path: ContentViewPage.routePath,
           builder: (context, params) => ContentViewPage(
-            contentId: PortalAppLinks.parseId(params.state.uri.queryParameters['id']) ??
+            contentId: PortalAppLinks.parseId(
+                    params.state.uri.queryParameters['id']) ??
                 params.getParam('id', ParamType.int) ??
                 0,
-            previewRow: params.getParam<ViewContentRow>('previewRow', ParamType.SupabaseRow),
+            previewRow: params.getParam<ViewContentRow>(
+                'previewRow', ParamType.SupabaseRow),
+            librarySection: librarySectionFromName(
+              params.getParam('librarySection', ParamType.String),
+            ),
           ),
         ),
         FFRoute(
@@ -258,7 +285,8 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           builder: (context, params) => NavBarPage(
             initialPage: 'learnListPage',
             page: ContentViewPage(
-              contentId: PortalAppLinks.parseId(params.state.uri.queryParameters['id']) ??
+              contentId: PortalAppLinks.parseId(
+                      params.state.uri.queryParameters['id']) ??
                   params.getParam('id', ParamType.int) ??
                   0,
             ),
@@ -272,14 +300,16 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: UserProfilePage.routeName,
           path: UserProfilePage.routePath,
-          builder: (context, params) =>
-              params.isEmpty ? const NavBarPage(initialPage: 'userProfilePage') : const UserProfilePage(),
+          builder: (context, params) => params.isEmpty
+              ? const NavBarPage(initialPage: 'userProfilePage')
+              : const UserProfilePage(),
         ),
         FFRoute(
           name: EventDetailsPage.routeName,
           path: EventDetailsPage.routePath,
           builder: (context, params) => EventDetailsPage(
-            eventRow: params.getParam<CcEventsRow>('eventRow', ParamType.SupabaseRow),
+            eventRow:
+                params.getParam<CcEventsRow>('eventRow', ParamType.SupabaseRow),
             groupId: params.getParam('groupId', ParamType.int),
           ),
         ),
@@ -301,14 +331,15 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: CommunityPage.routeName,
           path: CommunityPage.routePath,
-          builder: (context, params) =>
-              params.isEmpty ? const NavBarPage(initialPage: 'communityPage') : const CommunityPage(),
+          builder: (context, params) => params.isEmpty
+              ? const NavBarPage(initialPage: 'communityPage')
+              : const CommunityPage(),
         ),
         FFRoute(
           name: ExperienceViewPage.routeName,
           path: ExperienceViewPage.routePath,
-          builder: (context, params) =>
-              ExperienceViewPage(experienceId: params.getParam('experienceId', ParamType.int)),
+          builder: (context, params) => ExperienceViewPage(
+              experienceId: params.getParam('experienceId', ParamType.int)),
         ),
         FFRoute(
           name: ExperienceAddPage.routeName,
@@ -323,20 +354,23 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: ExperienceEditPage.routeName,
           path: ExperienceEditPage.routePath,
           builder: (context, params) => ExperienceEditPage(
-            experienceRow: params.getParam<CcViewSharingsUsersRow>('experienceRow', ParamType.SupabaseRow),
+            experienceRow: params.getParam<CcViewSharingsUsersRow>(
+                'experienceRow', ParamType.SupabaseRow),
           ),
         ),
         FFRoute(
           name: GroupDetailsPage.routeName,
           path: GroupDetailsPage.routePath,
-          builder: (context, params) =>
-              GroupDetailsPage(groupRow: params.getParam<CcGroupsRow>('groupRow', ParamType.SupabaseRow)),
+          builder: (context, params) => GroupDetailsPage(
+              groupRow: params.getParam<CcGroupsRow>(
+                  'groupRow', ParamType.SupabaseRow)),
         ),
         FFRoute(
           name: GroupInvitationPage.routeName,
           path: GroupInvitationPage.routePath,
-          builder: (context, params) =>
-              GroupInvitationPage(groupRow: params.getParam<CcGroupsRow>('groupRow', ParamType.SupabaseRow)),
+          builder: (context, params) => GroupInvitationPage(
+              groupRow: params.getParam<CcGroupsRow>(
+                  'groupRow', ParamType.SupabaseRow)),
         ),
         FFRoute(
           name: EventAddPage.routeName,
@@ -349,29 +383,32 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: EventEditPage.routeName,
           path: EventEditPage.routePath,
-          builder: (context, params) =>
-              EventEditPage(eventRow: params.getParam<CcEventsRow>('eventRow', ParamType.SupabaseRow)),
+          builder: (context, params) => EventEditPage(
+              eventRow: params.getParam<CcEventsRow>(
+                  'eventRow', ParamType.SupabaseRow)),
         ),
         FFRoute(
           name: JourneyStepDetailsPage.routeName,
           path: JourneyStepDetailsPage.routePath,
-          builder: (context, params) => JourneyStepDetailsPage(journeyId: params.getParam('journeyId', ParamType.int)),
+          builder: (context, params) => JourneyStepDetailsPage(
+              journeyId: params.getParam('journeyId', ParamType.int)),
         ),
         FFRoute(
           name: StepDetailsPage.routeName,
           path: StepDetailsPage.routePath,
-          builder: (context, params) =>
-              StepDetailsPage(
-                userStepRow: params.getParam<CcViewUserStepsRow>('userStepRow', ParamType.SupabaseRow),
-                fixedLanguage: params.getParam('fixedLanguage', ParamType.String),
-              ),
+          builder: (context, params) => StepDetailsPage(
+            userStepRow: params.getParam<CcViewUserStepsRow>(
+                'userStepRow', ParamType.SupabaseRow),
+            fixedLanguage: params.getParam('fixedLanguage', ParamType.String),
+          ),
         ),
         FFRoute(
           name: StepTextViewPage.routeName,
           path: StepTextViewPage.routePath,
           builder: (context, params) => StepTextViewPage(
             stepTextTitle: params.getParam('stepTextTitle', ParamType.String),
-            stepTextContent: params.getParam('stepTextContent', ParamType.String),
+            stepTextContent:
+                params.getParam('stepTextContent', ParamType.String),
             activityId: params.getParam('activityId', ParamType.int),
             activityLabel: params.getParam('activityLabel', ParamType.String),
             fixedLanguage: params.getParam('fixedLanguage', ParamType.String),
@@ -388,7 +425,8 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
             activityId: params.getParam('activityId', ParamType.int),
             transcript: params.getParam('transcript', ParamType.String),
             animationUrl: params.getParam('animationUrl', ParamType.String),
-            animationMediaType: params.getParam('animationMediaType', ParamType.String),
+            animationMediaType:
+                params.getParam('animationMediaType', ParamType.String),
             fixedLanguage: params.getParam('fixedLanguage', ParamType.String),
           ),
         ),
@@ -406,7 +444,8 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: StepJournalPage.routeName,
           path: StepJournalPage.routePath,
           builder: (context, params) => StepJournalPage(
-            activityRow: params.getParam<CcViewUserActivitiesRow>('activityRow', ParamType.SupabaseRow),
+            activityRow: params.getParam<CcViewUserActivitiesRow>(
+                'activityRow', ParamType.SupabaseRow),
             fixedLanguage: params.getParam('fixedLanguage', ParamType.String),
           ),
         ),
@@ -417,13 +456,15 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               ? const NavBarPage(initialPage: 'journeyPage')
               : NavBarPage(
                   initialPage: 'journeyPage',
-                  page: JourneyPage(journeyId: params.getParam('journeyId', ParamType.int)),
+                  page: JourneyPage(
+                      journeyId: params.getParam('journeyId', ParamType.int)),
                 ),
         ),
         FFRoute(
           name: JourneyListPage.routeName,
           path: JourneyListPage.routePath,
-          builder: (context, params) => const NavBarPage(initialPage: 'journeyPage'),
+          builder: (context, params) =>
+              const NavBarPage(initialPage: 'journeyPage'),
         ),
         FFRoute(
           name: GroupAddPage.routeName,
@@ -433,8 +474,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: GroupEditPage.routeName,
           path: GroupEditPage.routePath,
-          builder: (context, params) =>
-              GroupEditPage(groupRow: params.getParam<CcGroupsRow>('groupRow', ParamType.SupabaseRow)),
+          builder: (context, params) => GroupEditPage(
+              groupRow: params.getParam<CcGroupsRow>(
+                  'groupRow', ParamType.SupabaseRow)),
         ),
         FFRoute(
           name: AnnouncementAddPage.routeName,
@@ -444,8 +486,8 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
             groupName: params.getParam('groupName', ParamType.String),
             privacy: params.getParam('privacy', ParamType.String),
             groupMembers: params.getParam<CcMembersRow>(
-                  'groupMembers', ParamType.SupabaseRow,
-                  isList: true) ??
+                    'groupMembers', ParamType.SupabaseRow,
+                    isList: true) ??
                 [],
           ),
         ),
@@ -453,7 +495,8 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: AnnouncementEditPage.routeName,
           path: AnnouncementEditPage.routePath,
           builder: (context, params) => AnnouncementEditPage(
-            experienceRow: params.getParam<CcViewNotificationsUsersRow>('experienceRow', ParamType.SupabaseRow),
+            experienceRow: params.getParam<CcViewNotificationsUsersRow>(
+                'experienceRow', ParamType.SupabaseRow),
           ),
         ),
         FFRoute(
@@ -461,7 +504,8 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           path: AnnouncementViewPage.routePath,
           builder: (context, params) => AnnouncementViewPage(
             announcementId: params.getParam('announcementId', ParamType.int),
-            groupModerators: params.getParam<int>('groupModerators', ParamType.int, isList: true),
+            groupModerators: params
+                .getParam<int>('groupModerators', ParamType.int, isList: true),
           ),
         ),
         FFRoute(
@@ -472,14 +516,16 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: UserJournalViewPage.routeName,
           path: UserJournalViewPage.routePath,
-          builder: (context, params) =>
-              UserJournalViewPage(userActivitiesId: params.getParam('userActivitiesId', ParamType.int)),
+          builder: (context, params) => UserJournalViewPage(
+              userActivitiesId:
+                  params.getParam('userActivitiesId', ParamType.int)),
         ),
         FFRoute(
           name: UserJournalEditPage.routeName,
           path: UserJournalEditPage.routePath,
-          builder: (context, params) =>
-              UserJournalEditPage(userJournalEntryRow: params.getParam('userJournalEntryRow', ParamType.SupabaseRow)),
+          builder: (context, params) => UserJournalEditPage(
+              userJournalEntryRow: params.getParam(
+                  'userJournalEntryRow', ParamType.SupabaseRow)),
         ),
         FFRoute(
           name: UserJourneysViewPage.routeName,
@@ -533,7 +579,8 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: RequestChatPage.routeName,
           path: RequestChatPage.routePath,
-          builder: (context, params) => RequestChatPage(requestId: params.getParam('id', ParamType.int) ?? 0),
+          builder: (context, params) => RequestChatPage(
+              requestId: params.getParam('id', ParamType.int) ?? 0),
         ),
         FFRoute(
           name: GroupModerationPage.routeName,
@@ -566,8 +613,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
     );
 
 extension NavParamExtensions on Map<String, String?> {
-  Map<String, String> get withoutNulls =>
-      Map.fromEntries(entries.where((e) => e.value != null).map((e) => MapEntry(e.key, e.value!)));
+  Map<String, String> get withoutNulls => Map.fromEntries(entries
+      .where((e) => e.value != null)
+      .map((e) => MapEntry(e.key, e.value!)));
 }
 
 extension NavigationExtensions on BuildContext {
@@ -581,7 +629,10 @@ extension NavigationExtensions on BuildContext {
   }) =>
       !mounted || GoRouter.of(this).shouldRedirect(ignoreRedirect)
           ? null
-          : goNamed(name, pathParameters: pathParameters, queryParameters: queryParameters, extra: extra);
+          : goNamed(name,
+              pathParameters: pathParameters,
+              queryParameters: queryParameters,
+              extra: extra);
 
   void pushNamedAuth(
     String name,
@@ -593,7 +644,10 @@ extension NavigationExtensions on BuildContext {
   }) =>
       !mounted || GoRouter.of(this).shouldRedirect(ignoreRedirect)
           ? null
-          : pushNamed(name, pathParameters: pathParameters, queryParameters: queryParameters, extra: extra);
+          : pushNamed(name,
+              pathParameters: pathParameters,
+              queryParameters: queryParameters,
+              extra: extra);
 
   void safePop() {
     // If there is only one route on the stack, navigate to the initial
@@ -609,10 +663,14 @@ extension NavigationExtensions on BuildContext {
 extension GoRouterExtensions on GoRouter {
   AppStateNotifier get appState => AppStateNotifier.instance;
   void prepareAuthEvent([bool ignoreRedirect = false]) =>
-      appState.hasRedirect() && !ignoreRedirect ? null : appState.updateNotifyOnAuthChange(false);
-  bool shouldRedirect(bool ignoreRedirect) => !ignoreRedirect && appState.hasRedirect();
+      appState.hasRedirect() && !ignoreRedirect
+          ? null
+          : appState.updateNotifyOnAuthChange(false);
+  bool shouldRedirect(bool ignoreRedirect) =>
+      !ignoreRedirect && appState.hasRedirect();
   void clearRedirectLocation() => appState.clearRedirectLocation();
-  void setRedirectLocationIfUnset(String location) => appState.updateNotifyOnAuthChange(false);
+  void setRedirectLocationIfUnset(String location) =>
+      appState.updateNotifyOnAuthChange(false);
 }
 
 extension _GoRouterStateExtensions on GoRouterState {
@@ -622,6 +680,7 @@ extension _GoRouterStateExtensions on GoRouterState {
     if (value is Map) return Map<String, dynamic>.from(value);
     return {};
   }
+
   Map<String, dynamic> get allParams => <String, dynamic>{}
     ..addAll(pathParameters)
     ..addAll(uri.queryParameters)
@@ -642,12 +701,16 @@ class FFParameters {
   // Parameters are empty if the params map is empty or if the only parameter
   // present is the special extra parameter reserved for the transition info.
   bool get isEmpty =>
-      state.allParams.isEmpty || (state.allParams.length == 1 && state.extraMap.containsKey(kTransitionInfoKey));
-  bool isAsyncParam(MapEntry<String, dynamic> param) => asyncParams.containsKey(param.key) && param.value is String;
+      state.allParams.isEmpty ||
+      (state.allParams.length == 1 &&
+          state.extraMap.containsKey(kTransitionInfoKey));
+  bool isAsyncParam(MapEntry<String, dynamic> param) =>
+      asyncParams.containsKey(param.key) && param.value is String;
   bool get hasFutures => state.allParams.entries.any(isAsyncParam);
   Future<bool> completeFutures() => Future.wait(
         state.allParams.entries.where(isAsyncParam).map((param) async {
-          final doc = await asyncParams[param.key]!(param.value).onError((_, __) => null);
+          final doc = await asyncParams[param.key]!(param.value)
+              .onError((_, __) => null);
           if (doc != null) {
             futureParamValues[param.key] = doc;
             return true;
@@ -656,7 +719,8 @@ class FFParameters {
         }),
       ).onError((_, __) => [false]).then((v) => v.every((e) => e));
 
-  dynamic getParam<T>(String paramName, ParamType type, {bool isList = false, StructBuilder<T>? structBuilder}) {
+  dynamic getParam<T>(String paramName, ParamType type,
+      {bool isList = false, StructBuilder<T>? structBuilder}) {
     if (futureParamValues.containsKey(paramName)) {
       return futureParamValues[paramName];
     }
@@ -669,7 +733,8 @@ class FFParameters {
       return param;
     }
     // Return serialized value.
-    return deserializeParam<T>(param, type, isList, structBuilder: structBuilder);
+    return deserializeParam<T>(param, type, isList,
+        structBuilder: structBuilder);
   }
 }
 
@@ -710,7 +775,9 @@ class FFRoute {
           fixStatusBarOniOS16AndBelow(context);
           final ffParams = FFParameters(state, asyncParams);
           final page = ffParams.hasFutures
-              ? FutureBuilder(future: ffParams.completeFutures(), builder: (context, _) => builder(context, ffParams))
+              ? FutureBuilder(
+                  future: ffParams.completeFutures(),
+                  builder: (context, _) => builder(context, ffParams))
               : builder(context, ffParams);
           final child = page;
 
@@ -720,13 +787,16 @@ class FFRoute {
                   key: state.pageKey,
                   child: child,
                   transitionDuration: transitionInfo.duration,
-                  transitionsBuilder: (context, animation, secondaryAnimation, child) => PageTransition(
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) =>
+                          PageTransition(
                     type: transitionInfo.transitionType,
                     duration: transitionInfo.duration,
                     reverseDuration: transitionInfo.duration,
                     alignment: transitionInfo.alignment,
                     child: child,
-                  ).buildTransitions(context, animation, secondaryAnimation, child),
+                  ).buildTransitions(
+                              context, animation, secondaryAnimation, child),
                 )
               : MaterialPage(key: state.pageKey, child: child);
         },
@@ -747,7 +817,8 @@ class TransitionInfo {
   final Duration duration;
   final Alignment? alignment;
 
-  static TransitionInfo appDefault() => const TransitionInfo(hasTransition: false);
+  static TransitionInfo appDefault() =>
+      const TransitionInfo(hasTransition: false);
 }
 
 class RootPageContext {
@@ -759,7 +830,9 @@ class RootPageContext {
     final rootPageContext = context.read<RootPageContext?>();
     final isRootPage = rootPageContext?.isRootPage ?? false;
     final location = GoRouterState.of(context).uri.toString();
-    return isRootPage && location != '/' && location != rootPageContext?.errorRoute;
+    return isRootPage &&
+        location != '/' &&
+        location != rootPageContext?.errorRoute;
   }
 
   static Widget wrap(Widget child, {String? errorRoute}) =>
@@ -769,8 +842,9 @@ class RootPageContext {
 extension GoRouterLocationExtension on GoRouter {
   String getCurrentLocation() {
     final RouteMatch lastMatch = routerDelegate.currentConfiguration.last;
-    final RouteMatchList matchList =
-        lastMatch is ImperativeRouteMatch ? lastMatch.matches : routerDelegate.currentConfiguration;
+    final RouteMatchList matchList = lastMatch is ImperativeRouteMatch
+        ? lastMatch.matches
+        : routerDelegate.currentConfiguration;
     return matchList.uri.toString();
   }
 }

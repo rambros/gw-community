@@ -7,6 +7,7 @@ import 'package:gw_community/ui/core/ui/form_field_controller.dart';
 import 'package:gw_community/ui/learn/portal_catalog/portal_catalog_kind.dart';
 import 'package:gw_community/ui/learn/portal_catalog/view_model/portal_catalog_view_model.dart';
 import 'package:gw_community/ui/learn/widgets/content_card.dart';
+import 'package:gw_community/ui/learn/utils/portal_content_mapper.dart';
 import 'package:gw_community/ui/learn/widgets/portal_filter_sheet.dart';
 import 'package:gw_community/ui/learn/widgets/portal_list_sort.dart';
 import 'package:gw_community/ui/learn/widgets/portal_search_bar.dart';
@@ -44,9 +45,9 @@ class _PortalCatalogPageState extends State<PortalCatalogPage> {
 
   String _title(BuildContext context) {
     return switch (widget.kind) {
-      PortalCatalogKind.messages => context.l10n.portalMessages,
+      PortalCatalogKind.messages => context.l10n.wordsOfWisdom,
       PortalCatalogKind.dadiJanki => context.l10n.portalDadiJanki,
-      PortalCatalogKind.meditations => context.l10n.portalMeditations,
+      PortalCatalogKind.meditations => context.l10n.libraryHeaderMeditation,
     };
   }
 
@@ -59,7 +60,8 @@ class _PortalCatalogPageState extends State<PortalCatalogPage> {
   }
 
   String _listTitle(BuildContext context, PortalCatalogViewModel vm) {
-    if (vm.isSearchActive || vm.isFilterActive) return context.l10n.listOfContents;
+    if (vm.isSearchActive || vm.isFilterActive)
+      return context.l10n.listOfContents;
     return switch (widget.kind) {
       PortalCatalogKind.messages => context.l10n.portalListOfAllMessages,
       PortalCatalogKind.dadiJanki => context.l10n.portalListOfAllDadiJanki,
@@ -67,12 +69,15 @@ class _PortalCatalogPageState extends State<PortalCatalogPage> {
     };
   }
 
-  Future<void> _showFilterSheet(BuildContext context, PortalCatalogViewModel viewModel) async {
+  Future<void> _showFilterSheet(
+      BuildContext context, PortalCatalogViewModel viewModel) async {
     int authorId = viewModel.filterByAuthorId;
     String year = viewModel.filterByYear;
     PortalListSort sort = viewModel.sort.forBrowse;
-    final authorController = FormFieldController<int>(authorId == 0 ? null : authorId);
-    final yearController = FormFieldController<String>(year.isEmpty ? null : year);
+    final authorController =
+        FormFieldController<int>(authorId == 0 ? null : authorId);
+    final yearController =
+        FormFieldController<String>(year.isEmpty ? null : year);
     final sortController = FormFieldController<PortalListSort>(sort);
 
     await showPortalFilterSheet(
@@ -81,7 +86,8 @@ class _PortalCatalogPageState extends State<PortalCatalogPage> {
       onApply: () async {
         viewModel.setSort(sort);
         await viewModel.applyFilters(
-          authorId: widget.kind == PortalCatalogKind.dadiJanki ? null : authorId,
+          authorId:
+              widget.kind == PortalCatalogKind.dadiJanki ? null : authorId,
           year: year,
         );
       },
@@ -96,7 +102,8 @@ class _PortalCatalogPageState extends State<PortalCatalogPage> {
                 label: context.l10n.author,
                 controller: authorController,
                 options: authors.map((e) => e.id!).toList(),
-                optionLabels: authors.map((e) => e.name ?? context.l10n.author).toList(),
+                optionLabels:
+                    authors.map((e) => e.name ?? context.l10n.author).toList(),
                 hintText: context.l10n.selectAuthor,
                 searchHintText: context.l10n.searchAuthor,
                 isSearchable: true,
@@ -106,7 +113,8 @@ class _PortalCatalogPageState extends State<PortalCatalogPage> {
               label: context.l10n.year,
               controller: yearController,
               options: years.map((e) => e.year!.toInt().toString()).toList(),
-              optionLabels: years.map((e) => e.year!.toInt().toString()).toList(),
+              optionLabels:
+                  years.map((e) => e.year!.toInt().toString()).toList(),
               hintText: context.l10n.selectYear,
               isSearchable: true,
               searchHintText: context.l10n.searchYear,
@@ -134,7 +142,9 @@ class _PortalCatalogPageState extends State<PortalCatalogPage> {
               backgroundColor: AppTheme.of(context).primary,
               title: Text(
                 _title(context),
-                style: AppTheme.of(context).headlineMedium.override(color: Colors.white, fontSize: 18),
+                style: AppTheme.of(context)
+                    .headlineMedium
+                    .override(color: Colors.white, fontSize: 18),
               ),
               centerTitle: true,
             ),
@@ -148,7 +158,8 @@ class _PortalCatalogPageState extends State<PortalCatalogPage> {
                     onFilter: () => _showFilterSheet(context, viewModel),
                   ),
                   Padding(
-                    padding: const EdgeInsetsDirectional.fromSTEB(24, 16, 16, 0),
+                    padding:
+                        const EdgeInsetsDirectional.fromSTEB(24, 16, 16, 0),
                     child: Row(
                       children: [
                         Expanded(
@@ -162,7 +173,8 @@ class _PortalCatalogPageState extends State<PortalCatalogPage> {
                           onChanged: viewModel.setSort,
                           showRelevance: viewModel.isSearchActive,
                         ),
-                        if (viewModel.isSearchActive || viewModel.isFilterActive)
+                        if (viewModel.isSearchActive ||
+                            viewModel.isFilterActive)
                           FFButtonWidget(
                             onPressed: () {
                               _searchController.clear();
@@ -173,9 +185,10 @@ class _PortalCatalogPageState extends State<PortalCatalogPage> {
                             options: FFButtonOptions(
                               height: 36,
                               color: AppTheme.of(context).primaryBackground,
-                              textStyle: AppTheme.of(context).labelLarge.override(
-                                    color: AppTheme.of(context).secondary,
-                                  ),
+                              textStyle:
+                                  AppTheme.of(context).labelLarge.override(
+                                        color: AppTheme.of(context).secondary,
+                                      ),
                             ),
                           ),
                       ],
@@ -183,7 +196,8 @@ class _PortalCatalogPageState extends State<PortalCatalogPage> {
                   ),
                   if (viewModel.isSearchActive || viewModel.isFilterActive)
                     Padding(
-                      padding: const EdgeInsetsDirectional.fromSTEB(24, 4, 16, 0),
+                      padding:
+                          const EdgeInsetsDirectional.fromSTEB(24, 4, 16, 0),
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
@@ -197,21 +211,37 @@ class _PortalCatalogPageState extends State<PortalCatalogPage> {
                     ),
                   Expanded(
                     child: viewModel.isLoading
-                        ? Center(child: SpinKitRipple(color: AppTheme.of(context).primary, size: 50))
+                        ? Center(
+                            child: SpinKitRipple(
+                                color: AppTheme.of(context).primary, size: 50))
                         : viewModel.items.isEmpty
                             ? Center(
                                 child: Text(
                                   context.l10n.noContentFound,
-                                  style: AppTheme.of(context).bodyMedium.override(
-                                        color: AppTheme.of(context).secondaryText,
+                                  style: AppTheme.of(context)
+                                      .bodyMedium
+                                      .override(
+                                        color:
+                                            AppTheme.of(context).secondaryText,
                                       ),
                                 ),
                               )
                             : ListView.builder(
-                                padding: const EdgeInsets.only(top: 8, bottom: 16),
+                                padding:
+                                    const EdgeInsets.only(top: 8, bottom: 16),
                                 itemCount: viewModel.items.length,
                                 itemBuilder: (context, index) {
-                                  return ContentCard(contentRow: viewModel.items[index]);
+                                  return ContentCard(
+                                    contentRow: viewModel.items[index],
+                                    librarySection: switch (widget.kind) {
+                                      PortalCatalogKind.messages =>
+                                        LibraryContentSection.wordsOfWisdom,
+                                      PortalCatalogKind.dadiJanki =>
+                                        LibraryContentSection.dadiJanki,
+                                      PortalCatalogKind.meditations =>
+                                        LibraryContentSection.meditations,
+                                    },
+                                  );
                                 },
                               ),
                   ),

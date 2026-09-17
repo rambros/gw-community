@@ -17,9 +17,11 @@ class ContentCard extends StatefulWidget {
   const ContentCard({
     super.key,
     required this.contentRow,
+    this.librarySection,
   });
 
   final ViewContentRow contentRow;
+  final LibraryContentSection? librarySection;
 
   @override
   State<ContentCard> createState() => _ContentCardState();
@@ -32,8 +34,13 @@ class _ContentCardState extends State<ContentCard> {
     if (widget.contentRow.contentId == null) return;
     context.pushNamed(
       ContentViewPage.routeName,
-      queryParameters: {'id': widget.contentRow.contentId.toString()}.withoutNulls,
-      extra: {'previewRow': widget.contentRow},
+      queryParameters:
+          {'id': widget.contentRow.contentId.toString()}.withoutNulls,
+      extra: {
+        'previewRow': widget.contentRow,
+        if (widget.librarySection != null)
+          'librarySection': widget.librarySection!.name,
+      },
     ).then((_) {
       if (mounted) setState(() => _favoriteVersion++);
     });
@@ -43,7 +50,9 @@ class _ContentCardState extends State<ContentCard> {
     final isMessage = isMessageContentType(widget.contentRow.contentTypeId);
     if (isMessage) {
       final year = widget.contentRow.yearPublished?.toInt();
-      return year != null ? context.l10n.messageYear('$year') : context.l10n.portalMessages;
+      return year != null
+          ? context.l10n.messageYear('$year')
+          : context.l10n.portalMessages;
     }
 
     return widget.contentRow.eventName ?? '';
@@ -56,8 +65,10 @@ class _ContentCardState extends State<ContentCard> {
     }
 
     final date = widget.contentRow.datePublished;
-    final formattedDate = date != null ? DateFormat('M/d/yyyy').format(date) : '';
-    if (formattedDate.isNotEmpty && authors.isNotEmpty) return '$formattedDate - $authors';
+    final formattedDate =
+        date != null ? DateFormat('M/d/yyyy').format(date) : '';
+    if (formattedDate.isNotEmpty && authors.isNotEmpty)
+      return '$formattedDate - $authors';
     if (formattedDate.isNotEmpty) return formattedDate;
     return authors;
   }
@@ -65,23 +76,29 @@ class _ContentCardState extends State<ContentCard> {
   Widget _mediaIcon(BuildContext context) {
     final type = (widget.contentRow.midiaType ?? '').toLowerCase();
     if (type.contains('audio')) {
-      return Icon(Icons.headphones_outlined, color: AppTheme.of(context).primary, size: 24);
+      return Icon(Icons.headphones_outlined,
+          color: AppTheme.of(context).primary, size: 24);
     }
     if (type.contains('video')) {
-      return Icon(Icons.ondemand_video, color: AppTheme.of(context).primary, size: 24);
+      return Icon(Icons.ondemand_video,
+          color: AppTheme.of(context).primary, size: 24);
     }
     if (type.contains('text')) {
-      return Icon(Icons.article_outlined, color: AppTheme.of(context).primary, size: 24);
+      return Icon(Icons.article_outlined,
+          color: AppTheme.of(context).primary, size: 24);
     }
-    return Icon(Icons.help_outline, color: AppTheme.of(context).primary, size: 22);
+    return Icon(Icons.help_outline,
+        color: AppTheme.of(context).primary, size: 22);
   }
 
   Widget? _favoriteButton() {
-    if (context.currentUserIdOrEmpty.isEmpty || widget.contentRow.contentId == null) {
+    if (context.currentUserIdOrEmpty.isEmpty ||
+        widget.contentRow.contentId == null) {
       return null;
     }
     return FavoriteButton(
-      key: ValueKey('favorite_${widget.contentRow.contentId}_$_favoriteVersion'),
+      key:
+          ValueKey('favorite_${widget.contentRow.contentId}_$_favoriteVersion'),
       contentType: FavoritesRepository.typeRecording,
       contentId: widget.contentRow.contentId!,
       authUserId: context.currentUserIdOrEmpty,
@@ -119,7 +136,8 @@ class _ContentCardState extends State<ContentCard> {
                     children: [
                       Expanded(
                         child: Text(
-                          valueOrDefault<String>(widget.contentRow.title, context.l10n.untitled),
+                          valueOrDefault<String>(
+                              widget.contentRow.title, context.l10n.untitled),
                           style: theme.titleMedium.override(
                             color: theme.secondary,
                             fontSize: 16.0,
@@ -128,7 +146,8 @@ class _ContentCardState extends State<ContentCard> {
                       ),
                       if (canLink)
                         _ActionsMenu(
-                          onLinkToGroups: () => showGroupLinkSheet(context, widget.contentRow),
+                          onLinkToGroups: () =>
+                              showGroupLinkSheet(context, widget.contentRow),
                         ),
                     ],
                   ),
@@ -151,7 +170,8 @@ class _ContentCardState extends State<ContentCard> {
                                 ),
                               ),
                             if (authorsLine.isNotEmpty) ...[
-                              if (eventLine.isNotEmpty) const SizedBox(height: 2),
+                              if (eventLine.isNotEmpty)
+                                const SizedBox(height: 2),
                               Text(
                                 authorsLine,
                                 maxLines: 2,
@@ -223,7 +243,8 @@ class _ActionsMenu extends StatelessWidget {
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         visualDensity: VisualDensity.compact,
       ),
-      icon: Icon(Icons.more_vert, size: 18, color: AppTheme.of(context).secondaryText),
+      icon: Icon(Icons.more_vert,
+          size: 18, color: AppTheme.of(context).secondaryText),
       onSelected: (value) {
         if (value == 'link') onLinkToGroups();
       },
