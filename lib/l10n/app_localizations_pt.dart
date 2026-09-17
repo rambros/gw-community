@@ -1014,10 +1014,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get portalHubTitle => 'The Call of the Time Portal';
 
   @override
-  String get portalDialoguesRetreats => 'Diálogos e Retiros';
+  String get portalDialoguesRetreats => 'Dialogues & Retreats';
 
   @override
-  String get portalHeartToHeart => 'Conversas de Coração a Coração';
+  String get portalHeartToHeart => 'Heart to Heart Conversations';
 
   @override
   String get portalMessages => 'Mensagens';
@@ -1043,7 +1043,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get portalListOfAllHeartToHeart =>
-      'Lista de todas as Conversas de Coração a Coração';
+      'List of All Heart to Heart Conversations';
 
   @override
   String get portalEventContents => 'Conteúdos do evento';

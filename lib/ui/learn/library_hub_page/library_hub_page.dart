@@ -3,24 +3,19 @@ import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/widgets/screen_hint.dart';
 import 'package:gw_community/ui/learn/learn_list_page/learn_list_page.dart';
+import 'package:gw_community/ui/learn/library_hub_page/widgets/library_hub_card.dart';
 import 'package:gw_community/ui/learn/portal_catalog/portal_catalog_kind.dart';
 import 'package:gw_community/ui/learn/portal_catalog/portal_catalog_page.dart';
 import 'package:gw_community/ui/learn/portal_events/portal_events_page.dart';
-import 'package:gw_community/ui/learn/widgets/portal_search_bar.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 
-class LibraryHubPage extends StatefulWidget {
+class LibraryHubPage extends StatelessWidget {
   const LibraryHubPage({super.key});
 
   static String routeName = 'libraryHubPage';
   static String routePath = '/libraryHubPage';
 
-  @override
-  State<LibraryHubPage> createState() => _LibraryHubPageState();
-}
-
-class _LibraryHubPageState extends State<LibraryHubPage> {
-  void _openGlobalSearch() {
+  void _openGlobalSearch(BuildContext context) {
     context.pushNamed(
       LearnListPage.routeName,
       queryParameters: {'autofocusSearch': 'true'}.withoutNulls,
@@ -35,6 +30,15 @@ class _LibraryHubPageState extends State<LibraryHubPage> {
       backgroundColor: AppTheme.of(context).primaryBackground,
       appBar: AppBar(
         backgroundColor: AppTheme.of(context).primary,
+        flexibleSpace: const DecoratedBox(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+              colors: [Color(0xFF73449B), Color(0xFF9A61B5)],
+            ),
+          ),
+        ),
         automaticallyImplyLeading: false,
         title: Text(
           l10n.library,
@@ -53,11 +57,13 @@ class _LibraryHubPageState extends State<LibraryHubPage> {
         pointerFraction: 0.3,
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(8.0, 16.0, 8.0, 0.0),
+            padding: const EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 0.0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildSearchField(context),
-                Expanded(child: _buildGrid(context)),
+                _SearchField(onTap: () => _openGlobalSearch(context)),
+                const SizedBox(height: 28.0),
+                Expanded(child: _HubGrid(cards: _cards(context))),
               ],
             ),
           ),
@@ -66,141 +72,105 @@ class _LibraryHubPageState extends State<LibraryHubPage> {
     );
   }
 
-  Widget _buildSearchField(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 8.0, 16.0),
-      child: GestureDetector(
-        onTap: _openGlobalSearch,
-        behavior: HitTestBehavior.opaque,
-        child: AbsorbPointer(
-          child: TextFormField(
-            readOnly: true,
-            canRequestFocus: false,
-            decoration: InputDecoration(
-              hintText: context.l10n.searchAllContent,
-              hintStyle: AppTheme.of(context).bodyMedium.override(
-                    color: AppTheme.of(context).secondaryText,
-                  ),
-              suffixIcon: Icon(Icons.search_rounded, color: AppTheme.of(context).primary),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: AppTheme.of(context).alternate, width: 2.0),
-                borderRadius: BorderRadius.circular(12.0),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: AppTheme.of(context).primary, width: 2.0),
-                borderRadius: BorderRadius.circular(12.0),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildGrid(BuildContext context) {
-    final theme = AppTheme.of(context);
-    final cards = [
-      _HubCardData(
-        title: context.l10n.portalDialoguesRetreats,
-        color: theme.secondary,
+  List<LibraryHubCardData> _cards(BuildContext context) {
+    final l10n = context.l10n;
+    return [
+      LibraryHubCardData(
+        title: l10n.portalDialoguesRetreats,
+        glyph: LibraryHubGlyph.dialogues,
+        gradient: const [Color(0xFF3B1468), Color(0xFF5C2A8A)],
         onTap: () => context.pushNamed(
           PortalEventsPage.routeName,
           queryParameters: {'dashboardGroupId': '1'}.withoutNulls,
         ),
       ),
-      _HubCardData(
-        title: context.l10n.portalHeartToHeart,
-        color: GWPalette.rebeccaPurple,
+      LibraryHubCardData(
+        title: l10n.portalHeartToHeart,
+        glyph: LibraryHubGlyph.heartToHeart,
+        gradient: const [Color(0xFF6B3398), Color(0xFF8750B4)],
         onTap: () => context.pushNamed(
           PortalEventsPage.routeName,
           queryParameters: {'dashboardGroupId': '2'}.withoutNulls,
         ),
       ),
-      _HubCardData(
-        title: context.l10n.portalMessages,
-        color: theme.primary,
-        onTap: () => context.pushNamed(
-          PortalCatalogPage.routeName,
-          queryParameters: {'kind': PortalCatalogKind.messages.name}.withoutNulls,
-        ),
-      ),
-      _HubCardData(
-        title: context.l10n.portalDadiJanki,
-        color: Color.lerp(theme.primary, theme.alternate, 0.35)!,
+      LibraryHubCardData(
+        title: l10n.portalDadiJanki,
+        glyph: LibraryHubGlyph.dadiJanki,
+        gradient: const [Color(0xFF8A55B8), Color(0xFFA072C8)],
         onTap: () => context.pushNamed(
           PortalCatalogPage.routeName,
           queryParameters: {'kind': PortalCatalogKind.dadiJanki.name}.withoutNulls,
         ),
       ),
-      _HubCardData(
-        title: context.l10n.portalMeditations,
-        color: Color.lerp(theme.primary, theme.alternate, 0.65)!,
+      LibraryHubCardData(
+        title: l10n.portalMeditations,
+        glyph: LibraryHubGlyph.meditations,
+        gradient: const [Color(0xFFB48AD4), Color(0xFFC9A8E0)],
         onTap: () => context.pushNamed(
           PortalCatalogPage.routeName,
           queryParameters: {'kind': PortalCatalogKind.meditations.name}.withoutNulls,
         ),
       ),
     ];
-
-    return GridView.builder(
-      padding: const EdgeInsets.fromLTRB(8, 4, 8, 16),
-      clipBehavior: Clip.none,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 16.0,
-        mainAxisSpacing: 16.0,
-        childAspectRatio: 1.8,
-      ),
-      itemCount: cards.length,
-      itemBuilder: (context, index) {
-        final card = cards[index];
-        return _HubCard(data: card);
-      },
-    );
   }
 }
 
-class _HubCardData {
-  const _HubCardData({
-    required this.title,
-    required this.color,
-    required this.onTap,
-  });
+class _SearchField extends StatelessWidget {
+  const _SearchField({required this.onTap});
 
-  final String title;
-  final Color color;
   final VoidCallback onTap;
-}
-
-class _HubCard extends StatelessWidget {
-  const _HubCard({required this.data});
-
-  final _HubCardData data;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: portalCardDecoration(context, color: data.color),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(12.0),
-          onTap: data.onTap,
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Text(
-                data.title,
-                textAlign: TextAlign.center,
-                style: AppTheme.of(context).titleMedium.override(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                    ),
-              ),
+    final theme = AppTheme.of(context);
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: AbsorbPointer(
+        child: TextFormField(
+          readOnly: true,
+          canRequestFocus: false,
+          decoration: InputDecoration(
+            hintText: context.l10n.searchAllContent,
+            hintStyle: theme.bodyMedium.override(
+              color: theme.secondaryText,
+            ),
+            filled: true,
+            fillColor: Colors.white,
+            prefixIcon: Icon(Icons.search_rounded, color: theme.primary),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: theme.alternate, width: 1.5),
+              borderRadius: BorderRadius.circular(16.0),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: theme.primary, width: 1.5),
+              borderRadius: BorderRadius.circular(16.0),
             ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class _HubGrid extends StatelessWidget {
+  const _HubGrid({required this.cards});
+
+  final List<LibraryHubCardData> cards;
+
+  @override
+  Widget build(BuildContext context) {
+    return GridView.builder(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 14.0,
+        mainAxisSpacing: 14.0,
+        childAspectRatio: 0.82,
+      ),
+      itemCount: cards.length,
+      itemBuilder: (context, index) => LibraryHubCard(data: cards[index]),
     );
   }
 }
