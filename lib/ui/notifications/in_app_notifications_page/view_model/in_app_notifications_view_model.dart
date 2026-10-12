@@ -39,7 +39,7 @@ class UnifiedNotificationItem {
         id = a.id!,
         title = a.title ?? 'Message',
         message = a.text,
-        createdAt = a.updatedAt ?? DateTime.now(),
+        createdAt = a.createdAt ?? a.updatedAt ?? DateTime.now(),
         systemNotification = null,
         announcement = a,
         groupName = a.groupName,

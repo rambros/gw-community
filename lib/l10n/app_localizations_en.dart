@@ -48,6 +48,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get startUpper => 'START';
 
   @override
+  String get learnMore => 'Learn more';
+
+  @override
   String get resumeUpper => 'RESUME';
 
   @override
@@ -846,6 +849,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get journeyActivityPractices => 'Practices';
+
+  @override
+  String get optionalActivity => 'Optional';
 
   @override
   String get mediaAudio => 'Audio';

@@ -16,7 +16,8 @@ class JourneysRepository {
     }
 
     final res = await CcJourneysTable().queryRows(
-      queryFn: (q) => q.inFilter('status', ['published', 'Published']).select('id'),
+      queryFn: (q) =>
+          q.inFilter('status', ['published', 'Published']).select('id'),
     );
     _publishedJourneyIdsCache = res.map((e) => e.id).whereType<int>().toList();
     _lastCacheTime = now;
@@ -28,17 +29,20 @@ class JourneysRepository {
     if (publishedIds.isEmpty) return [];
 
     final result = await CcViewUserJourneysTable().queryRows(
-      queryFn: (q) => q.eqOrNull('user_id', userId).inFilter('journey_id', publishedIds),
+      queryFn: (q) =>
+          q.eqOrNull('user_id', userId).inFilter('journey_id', publishedIds),
     );
     return result;
   }
 
-  Future<List<CcViewAvailJourneysRow>> getAvailableJourneys(String userId) async {
+  Future<List<CcViewAvailJourneysRow>> getAvailableJourneys(
+      String userId) async {
     final publishedIds = await getPublishedJourneyIds();
     if (publishedIds.isEmpty) return [];
 
     final result = await CcViewAvailJourneysTable().queryRows(
-      queryFn: (q) => q.eqOrNull('user_id', userId).inFilter('id', publishedIds),
+      queryFn: (q) =>
+          q.eqOrNull('user_id', userId).inFilter('id', publishedIds),
     );
     return result;
   }
@@ -50,17 +54,22 @@ class JourneysRepository {
     return results.isNotEmpty ? results.first : null;
   }
 
-  Future<CcViewUserJourneysRow?> getUserJourney(String userId, int journeyId) async {
+  Future<CcViewUserJourneysRow?> getUserJourney(
+      String userId, int journeyId) async {
     final results = await CcViewUserJourneysTable().querySingleRow(
-      queryFn: (q) => q.eqOrNull('user_id', userId).eqOrNull('journey_id', journeyId),
+      queryFn: (q) =>
+          q.eqOrNull('user_id', userId).eqOrNull('journey_id', journeyId),
     );
     return results.isNotEmpty ? results.first : null;
   }
 
-  Future<List<CcViewUserStepsRow>> getUserSteps(String userId, int journeyId) async {
+  Future<List<CcViewUserStepsRow>> getUserSteps(
+      String userId, int journeyId) async {
     final result = await CcViewUserStepsTable().queryRows(
-      queryFn: (q) =>
-          q.eqOrNull('user_id', userId).eqOrNull('journey_id', journeyId).order('step_number', ascending: true),
+      queryFn: (q) => q
+          .eqOrNull('user_id', userId)
+          .eqOrNull('journey_id', journeyId)
+          .order('step_number', ascending: true),
     );
 
     // Clean up duplicates if found
@@ -87,7 +96,8 @@ class JourneysRepository {
     final ordered = List<CcViewUserStepsRow>.from(steps)
       ..sort((a, b) => (a.stepNumber ?? 0).compareTo(b.stepNumber ?? 0));
 
-    final firstIncompleteIndex = ordered.indexWhere((s) => s.stepStatus != 'completed');
+    final firstIncompleteIndex =
+        ordered.indexWhere((s) => s.stepStatus != 'completed');
     if (firstIncompleteIndex == -1) return false;
 
     var changed = false;
@@ -120,7 +130,8 @@ class JourneysRepository {
     return changed;
   }
 
-  Future<void> _cleanUpDuplicateUserSteps(List<CcViewUserStepsRow> userSteps) async {
+  Future<void> _cleanUpDuplicateUserSteps(
+      List<CcViewUserStepsRow> userSteps) async {
     // Group steps by journey_step_id
     final stepsByJourneyStepId = <int, List<CcViewUserStepsRow>>{};
     for (final step in userSteps) {
@@ -152,18 +163,21 @@ class JourneysRepository {
 
   Future<List<CcJourneyStepsRow>> getJourneySteps(int journeyId) async {
     final result = await CcJourneyStepsTable().queryRows(
-      queryFn: (q) => q.eq('journey_id', journeyId).order('step_number', ascending: true),
+      queryFn: (q) =>
+          q.eq('journey_id', journeyId).order('step_number', ascending: true),
     );
     return result;
   }
 
   Future<List<CcJourneySectionsRow>> getJourneySections(int journeyId) async {
     return await CcJourneySectionsTable().queryRows(
-      queryFn: (q) => q.eq('journey_id', journeyId).order('section_order', ascending: true),
+      queryFn: (q) =>
+          q.eq('journey_id', journeyId).order('section_order', ascending: true),
     );
   }
 
-  Future<void> updateUserStartedJourneys(String authUserId, List<int> startedJourneys) async {
+  Future<void> updateUserStartedJourneys(
+      String authUserId, List<int> startedJourneys) async {
     await CcMembersTable().update(
       data: {
         'started_journeys': startedJourneys,
@@ -172,19 +186,36 @@ class JourneysRepository {
     );
   }
 
-  Future<CcUserJourneysRow?> startJourney(String userId, int journeyId) async {
+  /// Creates the user journey, steps, and activities.
+  /// Returns true when this call created them.
+  Future<bool> startJourney(String userId, int journeyId) async {
     if (userId.isEmpty) {
-      return null;
+      return false;
     }
 
+    try {
+      final created = await SupaFlow.client.rpc(
+        'start_user_journey',
+        params: {'p_journey_id': journeyId},
+      );
+      return created == true;
+    } on PostgrestException catch (error) {
+      final missingFunction = error.code == 'PGRST202' ||
+          error.message.contains('start_user_journey');
+      if (!missingFunction) rethrow;
+      return _startJourneyWithSeparateRequests(userId, journeyId);
+    }
+  }
+
+  Future<bool> _startJourneyWithSeparateRequests(
+      String userId, int journeyId) async {
     // Check if user has already started this journey
     final existingUserJourney = await CcUserJourneysTable().queryRows(
       queryFn: (q) => q.eq('user_id', userId).eq('journey_id', journeyId),
     );
 
     if (existingUserJourney.isNotEmpty) {
-      // Journey already started, return existing record
-      return existingUserJourney.first;
+      return false;
     }
 
     final now = getCurrentTimestamp;
@@ -199,11 +230,12 @@ class JourneysRepository {
     });
 
     final journeySteps = await CcJourneyStepsTable().queryRows(
-      queryFn: (q) => q.eq('journey_id', journeyId).order('step_number', ascending: true),
+      queryFn: (q) =>
+          q.eq('journey_id', journeyId).order('step_number', ascending: true),
     );
 
     if (journeySteps.isEmpty) {
-      return userJourneyRow;
+      return true;
     }
 
     final userStepsPayload = <Map<String, dynamic>>[];
@@ -220,8 +252,12 @@ class JourneysRepository {
 
     final userStepByJourneyStepId = <int, int>{};
     if (userStepsPayload.isNotEmpty) {
-      final insertedUserStepsResponse = await SupaFlow.client.from('cc_user_steps').insert(userStepsPayload).select();
-      final insertedUserSteps = List<Map<String, dynamic>>.from(insertedUserStepsResponse as List<dynamic>);
+      final insertedUserStepsResponse = await SupaFlow.client
+          .from('cc_user_steps')
+          .insert(userStepsPayload)
+          .select();
+      final insertedUserSteps = List<Map<String, dynamic>>.from(
+          insertedUserStepsResponse as List<dynamic>);
 
       for (final row in insertedUserSteps) {
         final journeyStepId = row['journey_step_id'];
@@ -233,12 +269,13 @@ class JourneysRepository {
     }
 
     if (userStepByJourneyStepId.isEmpty) {
-      return userJourneyRow;
+      return true;
     }
 
     final stepActivities = await CcStepActivitiesTable().queryRows(
-      queryFn: (q) =>
-          q.inFilterOrNull('step_id', userStepByJourneyStepId.keys.toList()).order('order_in_step', ascending: true),
+      queryFn: (q) => q
+          .inFilterOrNull('step_id', userStepByJourneyStepId.keys.toList())
+          .order('order_in_step', ascending: true),
     );
 
     if (stepActivities.isNotEmpty) {
@@ -262,11 +299,13 @@ class JourneysRepository {
       }
 
       if (userActivitiesPayload.isNotEmpty) {
-        await SupaFlow.client.from('cc_user_activities').insert(userActivitiesPayload);
+        await SupaFlow.client
+            .from('cc_user_activities')
+            .insert(userActivitiesPayload);
       }
     }
 
-    return userJourneyRow;
+    return true;
   }
 
   Future<void> resetJourney(String userId, int journeyId) async {
@@ -338,13 +377,19 @@ class JourneysRepository {
 
       if (userJourneys.isEmpty) return [];
 
-      final journeyIds = userJourneys.map((uj) => uj.journeyId).where((id) => id != null).cast<int>().toList();
+      final journeyIds = userJourneys
+          .map((uj) => uj.journeyId)
+          .where((id) => id != null)
+          .cast<int>()
+          .toList();
 
       if (journeyIds.isEmpty) return [];
 
       // Get journey details (exclude draft journeys)
       final journeys = await CcJourneysTable().queryRows(
-        queryFn: (q) => q.inFilter('id', journeyIds).inFilter('status', ['published', 'Published']),
+        queryFn: (q) => q
+            .inFilter('id', journeyIds)
+            .inFilter('status', ['published', 'Published']),
       );
 
       return journeys;
@@ -362,16 +407,24 @@ class JourneysRepository {
         queryFn: (q) => q.eq('user_id', userId),
       );
 
-      final startedJourneyIds = userJourneys.map((uj) => uj.journeyId).where((id) => id != null).cast<int>().toSet();
+      final startedJourneyIds = userJourneys
+          .map((uj) => uj.journeyId)
+          .where((id) => id != null)
+          .cast<int>()
+          .toSet();
 
       // Get all public journeys (exclude draft journeys)
       final publicJourneys = await CcJourneysTable().queryRows(
-        queryFn: (q) => q.eq('is_public', true).inFilter('status', ['published', 'Published']),
+        queryFn: (q) => q
+            .eq('is_public', true)
+            .inFilter('status', ['published', 'Published']),
       );
-      debugPrint('🔍 JourneyRepo: Found ${publicJourneys.length} public journeys');
+      debugPrint(
+          '🔍 JourneyRepo: Found ${publicJourneys.length} public journeys');
       debugPrint('🔍 JourneyRepo: Started journey IDs: $startedJourneyIds');
       for (final journey in publicJourneys) {
-        debugPrint('  - ${journey.title} (ID: ${journey.id}, is_public: ${journey.isPublic}, status: ${journey.status})');
+        debugPrint(
+            '  - ${journey.title} (ID: ${journey.id}, is_public: ${journey.isPublic}, status: ${journey.status})');
       }
 
       // Get private journeys via user's group memberships
@@ -384,13 +437,15 @@ class JourneysRepository {
       for (final journey in [...publicJourneys, ...privateJourneys]) {
         final journeyId = journey.id;
         final isStarted = startedJourneyIds.contains(journeyId);
-        debugPrint('  Checking ${journey.title} (ID: $journeyId): started=$isStarted');
+        debugPrint(
+            '  Checking ${journey.title} (ID: $journeyId): started=$isStarted');
         if (!startedJourneyIds.contains(journeyId) && seenIds.add(journeyId)) {
           allAvailable.add(journey);
         }
       }
 
-      debugPrint('📊 JourneyRepo: ${allAvailable.length} journeys available (not started)');
+      debugPrint(
+          '📊 JourneyRepo: ${allAvailable.length} journeys available (not started)');
       return allAvailable;
     } catch (e) {
       debugPrint('Error in getAvailableJourneysForList: $e');
@@ -408,7 +463,11 @@ class JourneysRepository {
 
       if (groupMembers.isEmpty) return [];
 
-      final groupIds = groupMembers.map((gm) => gm.groupId).where((id) => id != null).cast<int>().toList();
+      final groupIds = groupMembers
+          .map((gm) => gm.groupId)
+          .where((id) => id != null)
+          .cast<int>()
+          .toList();
 
       if (groupIds.isEmpty) return [];
 

@@ -26,149 +26,175 @@ class JourneyCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 10.0),
-      child: Container(
-        width: MediaQuery.sizeOf(context).width * 0.9,
-        height: 140.0,
-        decoration: BoxDecoration(
-          color: AppTheme.of(context).primaryBackground,
-          boxShadow: const [
-            BoxShadow(
-              blurRadius: 15.0,
-              color: Color(0x1A000000),
-              offset: Offset(0.0, 7.0),
-              spreadRadius: 3.0,
-            )
-          ],
-          borderRadius: BorderRadius.circular(12.0),
-          border: Border.all(
-            color: const Color(0xFFF5FBFB),
-          ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Journey Title - Full Width
-            Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 4.0),
-              child: Text(
-                journeyRow.title ?? context.l10n.untitledJourney,
-                style: AppTheme.of(context).titleMedium.override(
-                      color: AppTheme.of(context).secondary,
-                      fontSize: 18.0,
-                    ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
+      child: InkWell(
+        splashColor: Colors.transparent,
+        focusColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        borderRadius: BorderRadius.circular(12.0),
+        onTap: onTap,
+        child: Container(
+          width: MediaQuery.sizeOf(context).width * 0.9,
+          height: 140.0,
+          decoration: BoxDecoration(
+            color: AppTheme.of(context).primaryBackground,
+            boxShadow: const [
+              BoxShadow(
+                blurRadius: 15.0,
+                color: Color(0x1A000000),
+                offset: Offset(0.0, 7.0),
+                spreadRadius: 3.0,
+              )
+            ],
+            borderRadius: BorderRadius.circular(12.0),
+            border: Border.all(
+              color: const Color(0xFFF5FBFB),
             ),
-            // Bottom Info and Logo
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 12.0, 12.0),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Steps progress
-                          Text(
-                            isStarted
-                                ? context.l10n.stepsProgress(
-                                    journeyStatus == 'completed'
-                                        ? (journeyRow.stepsTotal ?? 0)
-                                        : (stepsCompleted ?? 0),
-                                    journeyRow.stepsTotal ?? 0,
-                                  )
-                                : context.l10n.stepsCount(journeyRow.stepsTotal ?? 0),
-                            style: AppTheme.of(context).bodySmall.override(
-                                  color: AppTheme.of(context).secondary,
-                                  fontSize: 12.0,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Journey Title - Full Width
+              Padding(
+                padding:
+                    const EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 4.0),
+                child: Text(
+                  journeyRow.title ?? context.l10n.untitledJourney,
+                  style: AppTheme.of(context).titleMedium.override(
+                        color: AppTheme.of(context).secondary,
+                        fontSize: 18.0,
+                      ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              // Bottom Info and Logo
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(
+                      16.0, 0.0, 12.0, 12.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Steps progress
+                            Text(
+                              isStarted
+                                  ? context.l10n.stepsProgress(
+                                      journeyStatus == 'completed'
+                                          ? (journeyRow.stepsTotal ?? 0)
+                                          : (stepsCompleted ?? 0),
+                                      journeyRow.stepsTotal ?? 0,
+                                    )
+                                  : context.l10n
+                                      .stepsCount(journeyRow.stepsTotal ?? 0),
+                              style: AppTheme.of(context).bodySmall.override(
+                                    color: AppTheme.of(context).secondary,
+                                    fontSize: 12.0,
+                                  ),
+                            ),
+                            // Privacy tag
+                            Padding(
+                              padding: const EdgeInsetsDirectional.fromSTEB(
+                                  0.0, 4.0, 0.0, 8.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: journeyRow.isPublic
+                                      ? AppTheme.of(context).accent4
+                                      : AppTheme.of(context).accent3,
+                                  borderRadius: BorderRadius.circular(16.0),
                                 ),
-                          ),
-                          // Privacy tag
-                          Padding(
-                            padding: const EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 8.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color:
-                                    journeyRow.isPublic ? AppTheme.of(context).accent4 : AppTheme.of(context).accent3,
-                                borderRadius: BorderRadius.circular(16.0),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsetsDirectional.fromSTEB(8.0, 2.0, 8.0, 2.0),
-                                child: Text(
-                                  journeyRow.isPublic
-                                      ? context.l10n.publicLabel
-                                      : context.l10n.privateLabel,
-                                  style: AppTheme.of(context).bodyMedium.override(
-                                        color: AppTheme.of(context).secondary,
-                                        fontSize: 10.0,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                child: Padding(
+                                  padding: const EdgeInsetsDirectional.fromSTEB(
+                                      8.0, 2.0, 8.0, 2.0),
+                                  child: Text(
+                                    journeyRow.isPublic
+                                        ? context.l10n.publicLabel
+                                        : context.l10n.privateLabel,
+                                    style: AppTheme.of(context)
+                                        .bodyMedium
+                                        .override(
+                                          color: AppTheme.of(context).secondary,
+                                          fontSize: 10.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          // Action button
-                          Builder(
-                            builder: (context) {
-                              String buttonText = context.l10n.startUpper;
-                              Color buttonColor = AppTheme.of(context).secondary;
-                              if (isStarted) {
-                                bool isCompleted = journeyStatus == 'completed' ||
-                                    (stepsCompleted != null &&
-                                        journeyRow.stepsTotal != null &&
-                                        stepsCompleted! >= journeyRow.stepsTotal!);
+                            // Action button
+                            Builder(
+                              builder: (context) {
+                                String buttonText = context.l10n.learnMore;
+                                Color buttonColor =
+                                    AppTheme.of(context).secondary;
+                                if (isStarted) {
+                                  bool isCompleted =
+                                      journeyStatus == 'completed' ||
+                                          (stepsCompleted != null &&
+                                              journeyRow.stepsTotal != null &&
+                                              stepsCompleted! >=
+                                                  journeyRow.stepsTotal!);
 
-                                if (isCompleted) {
-                                  buttonText = context.l10n.completedUpper;
-                                  buttonColor = AppTheme.of(context).tertiary;
-                                } else {
-                                  buttonText = context.l10n.resumeUpper;
-                                  buttonColor = AppTheme.of(context).primary;
+                                  if (isCompleted) {
+                                    buttonText = context.l10n.completedUpper;
+                                    buttonColor = AppTheme.of(context).tertiary;
+                                  } else {
+                                    buttonText = context.l10n.resumeUpper;
+                                    buttonColor = AppTheme.of(context).primary;
+                                  }
                                 }
-                              }
 
-                              return FFButtonWidget(
-                                onPressed: onTap,
-                                text: buttonText,
-                                options: FFButtonOptions(
-                                  width: 110.0,
-                                  height: 32.0,
-                                  padding: const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 8.0, 0.0),
-                                  iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                                  color: buttonColor,
-                                  textStyle: AppTheme.of(context).titleSmall.override(
-                                        fontWeight: FontWeight.bold,
-                                        color:
-                                            (buttonText == 'COMPLETED') ? AppTheme.of(context).secondary : Colors.white,
-                                        fontSize: 12.0,
-                                      ),
-                                  elevation: 2.0,
-                                  borderSide: const BorderSide(
-                                    color: Colors.transparent,
-                                    width: 1.0,
+                                return FFButtonWidget(
+                                  onPressed: onTap,
+                                  text: buttonText,
+                                  options: FFButtonOptions(
+                                    width: 128.0,
+                                    height: 32.0,
+                                    padding:
+                                        const EdgeInsetsDirectional.fromSTEB(
+                                            8.0, 0.0, 8.0, 0.0),
+                                    iconPadding:
+                                        const EdgeInsetsDirectional.fromSTEB(
+                                            0.0, 0.0, 0.0, 0.0),
+                                    color: buttonColor,
+                                    textStyle: AppTheme.of(context)
+                                        .titleSmall
+                                        .override(
+                                          fontWeight: FontWeight.bold,
+                                          color: (buttonText == 'COMPLETED')
+                                              ? AppTheme.of(context).secondary
+                                              : Colors.white,
+                                          fontSize: 12.0,
+                                        ),
+                                    elevation: 2.0,
+                                    borderSide: const BorderSide(
+                                      color: Colors.transparent,
+                                      width: 1.0,
+                                    ),
+                                    borderRadius: BorderRadius.circular(24.0),
                                   ),
-                                  borderRadius: BorderRadius.circular(24.0),
-                                ),
-                              );
-                            },
-                          ),
-                        ],
+                                );
+                              },
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    // Journey Image/Logo - Aligned to bottom right
-                    _buildLogo(context),
-                  ],
+                      // Journey Image/Logo - Aligned to bottom right
+                      _buildLogo(context),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -187,7 +213,8 @@ class JourneyCard extends StatelessWidget {
                 width: 74.0,
                 height: 74.0,
                 fit: BoxFit.cover,
-                errorWidget: (context, url, error) => _buildDefaultIcon(context),
+                errorWidget: (context, url, error) =>
+                    _buildDefaultIcon(context),
               )
             : _buildDefaultIcon(context),
       ),

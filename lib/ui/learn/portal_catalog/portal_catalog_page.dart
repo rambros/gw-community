@@ -60,8 +60,9 @@ class _PortalCatalogPageState extends State<PortalCatalogPage> {
   }
 
   String _listTitle(BuildContext context, PortalCatalogViewModel vm) {
-    if (vm.isSearchActive || vm.isFilterActive)
+    if (vm.isSearchActive || vm.isFilterActive) {
       return context.l10n.listOfContents;
+    }
     return switch (widget.kind) {
       PortalCatalogKind.messages => context.l10n.portalListOfAllMessages,
       PortalCatalogKind.dadiJanki => context.l10n.portalListOfAllDadiJanki,

@@ -46,4 +46,45 @@ void main() {
       expect(groups[1].steps, isEmpty);
     });
   });
+
+  group('expandedJourneySectionId', () {
+    const groups = [
+      JourneyStepGroup<int>(sectionId: 1, title: 'Fundamentos', steps: [1, 2]),
+      JourneyStepGroup<int>(sectionId: 2, title: 'Alma', steps: [6, 7]),
+      JourneyStepGroup<int>(sectionId: 3, title: 'Alma Suprema', steps: [10]),
+    ];
+
+    test('opens the section the user just left and leaves the others closed', () {
+      expect(
+        expandedJourneySectionId(
+          groups: groups,
+          preferredSectionId: 2,
+          currentStepSectionId: 1,
+        ),
+        2,
+      );
+    });
+
+    test('opens the current step section when nothing was just viewed', () {
+      expect(
+        expandedJourneySectionId(
+          groups: groups,
+          preferredSectionId: null,
+          currentStepSectionId: 2,
+        ),
+        2,
+      );
+    });
+
+    test('falls back to the first section that has steps', () {
+      expect(
+        expandedJourneySectionId(
+          groups: groups,
+          preferredSectionId: null,
+          currentStepSectionId: null,
+        ),
+        1,
+      );
+    });
+  });
 }

@@ -18,13 +18,33 @@ class HomeJourneyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _buildResumeCard(context);
+    return InkWell(
+      splashColor: Colors.transparent,
+      focusColor: Colors.transparent,
+      hoverColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+      borderRadius: BorderRadius.circular(12.0),
+      onTap: () => _openJourney(context),
+      child: _buildResumeCard(context),
+    );
+  }
+
+  void _openJourney(BuildContext context) {
+    context.pushNamed(
+      JourneyPage.routeName,
+      queryParameters: {
+        'journeyId': serializeParam(
+          userJourneyProgress.journeyId,
+          ParamType.int,
+        ),
+      }.withoutNulls,
+    );
   }
 
   Widget _buildResumeCard(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 118.0,
+      constraints: const BoxConstraints(minHeight: 118.0),
       decoration: BoxDecoration(
         color: AppTheme.of(context).primaryBackground,
         boxShadow: const [
@@ -42,52 +62,46 @@ class HomeJourneyCard extends StatelessWidget {
       ),
       child: Row(
         mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
             child: Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(8.0, 1.0, 1.0, 0.0),
+              padding: const EdgeInsetsDirectional.fromSTEB(8.0, 8.0, 4.0, 8.0),
               child: Column(
-                mainAxisSize: MainAxisSize.max,
+                mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
                     padding: const EdgeInsetsDirectional.fromSTEB(
                         0.0, 4.0, 0.0, 3.0),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Text(
-                          valueOrDefault<String>(
-                            userJourneyProgress.title,
-                            'title',
+                    child: Text(
+                      valueOrDefault<String>(
+                        userJourneyProgress.title,
+                        'title',
+                      ),
+                      softWrap: true,
+                      style: AppTheme.of(context).titleMedium.override(
+                            color: AppTheme.of(context).secondary,
+                            fontSize: 18.0,
                           ),
-                          style: AppTheme.of(context).titleMedium.override(
-                                color: AppTheme.of(context).secondary,
-                                fontSize: 18.0,
-                              ),
-                        ),
-                      ],
                     ),
                   ),
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsetsDirectional.fromSTEB(
-                            0.0, 0.0, 0.0, 12.0),
-                        child: Text(
-                          context.l10n.stepsProgress(
-                            userJourneyProgress.stepsCompleted ?? 0,
-                            userJourneyProgress.stepsTotal ?? 0,
-                          ),
-                          style: AppTheme.of(context).bodySmall.override(
-                                color: AppTheme.of(context).secondary,
-                                fontSize: 12.0,
-                              ),
-                        ),
+                  Padding(
+                    padding: const EdgeInsetsDirectional.fromSTEB(
+                        0.0, 0.0, 0.0, 12.0),
+                    child: Text(
+                      context.l10n.stepsProgress(
+                        userJourneyProgress.stepsCompleted ?? 0,
+                        userJourneyProgress.stepsTotal ?? 0,
                       ),
-                    ],
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTheme.of(context).bodySmall.override(
+                            color: AppTheme.of(context).secondary,
+                            fontSize: 12.0,
+                          ),
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsetsDirectional.fromSTEB(
@@ -99,17 +113,7 @@ class HomeJourneyCard extends StatelessWidget {
                           padding: const EdgeInsetsDirectional.fromSTEB(
                               0.0, 0.0, 8.0, 0.0),
                           child: FFButtonWidget(
-                            onPressed: () async {
-                              context.pushNamed(
-                                JourneyPage.routeName,
-                                queryParameters: {
-                                  'journeyId': serializeParam(
-                                    userJourneyProgress.journeyId,
-                                    ParamType.int,
-                                  ),
-                                }.withoutNulls,
-                              );
-                            },
+                            onPressed: () => _openJourney(context),
                             text: context.l10n.resumeUpper,
                             options: FFButtonOptions(
                               height: 36.0,
@@ -149,7 +153,7 @@ class HomeJourneyCard extends StatelessWidget {
   Widget _buildLogo() {
     final imageUrl = userJourneyProgress.imageUrl;
     return Column(
-      mainAxisSize: MainAxisSize.max,
+      mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Padding(

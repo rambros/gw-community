@@ -24,6 +24,10 @@ class CcStepActivitiesRow extends SupabaseDataRow {
   int? get orderInStep => getField<int>('order_in_step');
   set orderInStep(int? value) => setField<int>('order_in_step', value);
 
+  /// Required activities block the next step. Missing values stay required.
+  bool get isRequired => getField<bool>('is_required') ?? true;
+  set isRequired(bool value) => setField<bool>('is_required', value);
+
   String? get activityPrompt => getField<String>('activity_prompt');
   set activityPrompt(String? value) =>
       setField<String>('activity_prompt', value);

@@ -40,7 +40,8 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
   @override
   void initState() {
     super.initState();
-    logFirebaseEvent('screen_view', parameters: {'screen_name': 'announcementViewPage'});
+    logFirebaseEvent('screen_view',
+        parameters: {'screen_name': 'announcementViewPage'});
     _viewModel = AnnouncementViewViewModel(
       repository: context.read<AnnouncementRepository>(),
       currentUserUid: context.currentUserIdOrEmpty,
@@ -119,7 +120,8 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
     );
   }
 
-  Widget _buildContent(BuildContext context, AnnouncementViewViewModel viewModel) {
+  Widget _buildContent(
+      BuildContext context, AnnouncementViewViewModel viewModel) {
     final announcement = viewModel.announcement;
     if (announcement == null) {
       return Center(
@@ -148,7 +150,8 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
     );
   }
 
-  Widget _buildHeaderCard(BuildContext context, CcViewNotificationsUsersRow announcement) {
+  Widget _buildHeaderCard(
+      BuildContext context, CcViewNotificationsUsersRow announcement) {
     return Card(
       clipBehavior: Clip.antiAliasWithSaveLayer,
       color: AppTheme.of(context).primaryBackground,
@@ -164,13 +167,16 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
               children: [
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsetsDirectional.fromSTEB(0.0, 12.0, 0.0, 0.0),
+                    padding: const EdgeInsetsDirectional.fromSTEB(
+                        0.0, 12.0, 0.0, 0.0),
                     child: Text(
                       valueOrDefault<String>(announcement.title, 'title'),
                       style: AppTheme.of(context).titleMedium.override(
                             font: GoogleFonts.lexendDeca(
-                              fontWeight: AppTheme.of(context).titleMedium.fontWeight,
-                              fontStyle: AppTheme.of(context).titleMedium.fontStyle,
+                              fontWeight:
+                                  AppTheme.of(context).titleMedium.fontWeight,
+                              fontStyle:
+                                  AppTheme.of(context).titleMedium.fontStyle,
                             ),
                             color: AppTheme.of(context).secondary,
                             letterSpacing: 0.0,
@@ -187,10 +193,11 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
               children: [
                 Expanded(
                   child: Text(
-                    '${dateTimeFormat('MMM d', announcement.updatedAt)} - From ${valueOrDefault<String>(announcement.displayName, 'name')} - Facilitator',
+                    '${dateTimeFormat('MMM d, HH:mm', announcement.createdAt ?? announcement.updatedAt, locale: Localizations.localeOf(context).toString())} - From ${valueOrDefault<String>(announcement.displayName, 'name')} - Facilitator',
                     style: AppTheme.of(context).bodyMedium.override(
                           font: GoogleFonts.lexendDeca(
-                            fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                            fontWeight:
+                                AppTheme.of(context).bodyMedium.fontWeight,
                             fontStyle: FontStyle.italic,
                           ),
                           color: AppTheme.of(context).secondaryText,
@@ -309,7 +316,8 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
                               message: context.l10n.confirmDeleteThisMessage,
                             );
                             if (!confirm || !context.mounted) return;
-                            final success = await viewModel.deleteAnnouncement();
+                            final success =
+                                await viewModel.deleteAnnouncement();
                             if (!success || !context.mounted) return;
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
@@ -375,8 +383,9 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
                   buttonSize: 40.0,
                   icon: Icon(
                     Icons.comment_rounded,
-                    color:
-                        announcement.locked == true ? AppTheme.of(context).alternate : AppTheme.of(context).secondary,
+                    color: announcement.locked == true
+                        ? AppTheme.of(context).alternate
+                        : AppTheme.of(context).secondary,
                     size: 28.0,
                   ),
                   onPressed: !viewModel.canComment
@@ -387,13 +396,17 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
                         },
                 ),
                 Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 10.0, 0.0),
+                  padding:
+                      const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 10.0, 0.0),
                   child: Text(
-                    valueOrDefault<String>(announcement.comments?.toString(), '0'),
+                    valueOrDefault<String>(
+                        announcement.comments?.toString(), '0'),
                     style: AppTheme.of(context).bodyMedium.override(
                           font: GoogleFonts.lexendDeca(
-                            fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                            fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
+                            fontWeight:
+                                AppTheme.of(context).bodyMedium.fontWeight,
+                            fontStyle:
+                                AppTheme.of(context).bodyMedium.fontStyle,
                           ),
                           fontSize: 17.0,
                           letterSpacing: 0.0,
@@ -408,7 +421,8 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
     );
   }
 
-  Widget _buildCommentsList(BuildContext context, AnnouncementViewViewModel viewModel) {
+  Widget _buildCommentsList(
+      BuildContext context, AnnouncementViewViewModel viewModel) {
     if (viewModel.comments.isEmpty) {
       return Padding(
         padding: const EdgeInsetsDirectional.fromSTEB(0.0, 24.0, 0.0, 0.0),
@@ -474,7 +488,8 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
     return confirmDialogResponse;
   }
 
-  Future<void> _showAddCommentSheet(BuildContext context, {int? parentId}) async {
+  Future<void> _showAddCommentSheet(BuildContext context,
+      {int? parentId}) async {
     await showModalBottomSheet(
       isScrollControlled: true,
       backgroundColor: Colors.transparent,

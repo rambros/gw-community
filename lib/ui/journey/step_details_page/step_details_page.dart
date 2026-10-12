@@ -300,13 +300,12 @@ class _StepDetailsPageState extends State<StepDetailsPage> {
           router.pushNamed(
             StepJournalPage.routeName,
             queryParameters: {
-              'activityRow':
-                  serializeParam(params['activityRow'], ParamType.SupabaseRow),
               if (widget.fixedLanguage != null)
                 'fixedLanguage':
                     serializeParam(widget.fixedLanguage, ParamType.String),
             }.withoutNulls,
             extra: <String, dynamic>{
+              'activityRow': params['activityRow'],
               kTransitionInfoKey: const TransitionInfo(
                 hasTransition: true,
                 transitionType: PageTransitionType.fade,

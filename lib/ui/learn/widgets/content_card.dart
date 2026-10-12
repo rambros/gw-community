@@ -67,8 +67,9 @@ class _ContentCardState extends State<ContentCard> {
     final date = widget.contentRow.datePublished;
     final formattedDate =
         date != null ? DateFormat('M/d/yyyy').format(date) : '';
-    if (formattedDate.isNotEmpty && authors.isNotEmpty)
+    if (formattedDate.isNotEmpty && authors.isNotEmpty) {
       return '$formattedDate - $authors';
+    }
     if (formattedDate.isNotEmpty) return formattedDate;
     return authors;
   }

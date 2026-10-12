@@ -46,6 +46,10 @@ class CcViewUserActivitiesRow extends SupabaseDataRow {
   int? get orderInStep => getField<int>('order_in_step');
   set orderInStep(int? value) => setField<int>('order_in_step', value);
 
+  /// Required activities block the next step. Missing values stay required.
+  bool get isRequired => getField<bool>('is_required') ?? true;
+  set isRequired(bool? value) => setField<bool>('is_required', value);
+
   DateTime? get dateStarted => getField<DateTime>('date_started');
   set dateStarted(DateTime? value) => setField<DateTime>('date_started', value);
 

@@ -114,17 +114,6 @@ class GroupAnnouncementsTab extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                Text(
-                                  'You’re all caught up.',
-                                  textAlign: TextAlign.center,
-                                  style: AppTheme.of(context)
-                                      .headlineMedium
-                                      .override(
-                                        font: GoogleFonts.poppins(),
-                                        color: AppTheme.of(context).secondary,
-                                        fontSize: 22.0,
-                                      ),
-                                ),
                                 Padding(
                                   padding: const EdgeInsetsDirectional.fromSTEB(
                                       0.0, 8.0, 0.0, 0.0),
@@ -289,6 +278,19 @@ class GroupAnnouncementsTab extends StatelessWidget {
     );
   }
 
+  String _messageTime(
+    BuildContext context,
+    CcViewNotificationsUsersRow notification,
+  ) {
+    final date = notification.createdAt ?? notification.updatedAt;
+    if (date == null) return '';
+    return dateTimeFormat(
+      'MMM d, HH:mm',
+      date,
+      locale: Localizations.localeOf(context).toString(),
+    );
+  }
+
   Widget _buildPrivateBadge(
     BuildContext context,
     GroupDetailsViewModel viewModel,
@@ -303,7 +305,8 @@ class GroupAnnouncementsTab extends StatelessWidget {
         (m) => m.authUserId == notification.recipientUserId,
         orElse: () => CcMembersRow({}),
       );
-      final name = recipient.displayName ?? recipient.firstName ?? context.l10n.member;
+      final name =
+          recipient.displayName ?? recipient.firstName ?? context.l10n.member;
       label = 'Private → $name';
     } else {
       label = 'Private message';
@@ -312,7 +315,8 @@ class GroupAnnouncementsTab extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(Icons.lock_outline, size: 12.0, color: AppTheme.of(context).primary),
+        Icon(Icons.lock_outline,
+            size: 12.0, color: AppTheme.of(context).primary),
         const SizedBox(width: 4.0),
         Text(
           label,
@@ -449,13 +453,14 @@ class GroupAnnouncementsTab extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsetsDirectional.fromSTEB(
                           16.0, 0.0, 16.0, 6.0),
-                      child: _buildPrivateBadge(context, viewModel, notification),
+                      child:
+                          _buildPrivateBadge(context, viewModel, notification),
                     ),
                   Padding(
                     padding: const EdgeInsetsDirectional.fromSTEB(
                         16.0, 0.0, 16.0, 12.0),
                     child: Text(
-                      '${dateTimeFormat('MMM d', notification.updatedAt)} - From ${notification.displayName ?? context.l10n.userFallback} - ${context.l10n.facilitator}',
+                      '${_messageTime(context, notification)} - From ${notification.displayName ?? context.l10n.userFallback} - ${context.l10n.facilitator}',
                       style: AppTheme.of(context).labelSmall.override(
                             font: GoogleFonts.lexendDeca(),
                             color: AppTheme.of(context).secondary,

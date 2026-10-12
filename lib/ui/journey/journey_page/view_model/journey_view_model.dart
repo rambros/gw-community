@@ -1,20 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:gw_community/data/repositories/journeys_repository.dart';
+import 'package:gw_community/data/repositories/step_activities_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/domain/models/journey_step_group.dart';
 
 class JourneyViewModel extends ChangeNotifier {
   final JourneysRepository _repository;
+  final StepActivitiesRepository _stepActivitiesRepository;
   final String currentUserUid;
   final int journeyId;
   List<int> _startedJourneys;
 
   JourneyViewModel({
     required JourneysRepository repository,
+    StepActivitiesRepository? stepActivitiesRepository,
     required this.currentUserUid,
     required this.journeyId,
     required List<int> startedJourneys,
   })  : _repository = repository,
+        _stepActivitiesRepository =
+            stepActivitiesRepository ?? StepActivitiesRepository(),
         _startedJourneys = List<int>.from(startedJourneys) {
     loadJourneyData();
   }
@@ -71,27 +76,40 @@ class JourneyViewModel extends ChangeNotifier {
         stepNumberOf: (step) => step.stepNumber,
       );
 
-  bool get isJourneyStarted => _userJourney != null || _startedJourneys.contains(journeyId);
+  bool get isJourneyStarted =>
+      _userJourney != null || _startedJourneys.contains(journeyId);
 
   String? get fixedLanguage => _journey?.fixedLanguage;
 
   // ========== COMMANDS ==========
 
-  Future<void> loadJourneyData() async {
+  Future<void> loadJourneyData({bool skipStepAdvance = false}) async {
     _setLoading(true);
     _clearError();
 
     try {
-      // Always load base journey info (static content like title, description)
-      _journey = await _repository.getJourneyById(journeyId);
-      _sections = await _repository.getJourneySections(journeyId);
+      final journeyFuture = _repository.getJourneyById(journeyId);
+      final sectionsFuture = _repository.getJourneySections(journeyId);
+      final userJourneyFuture =
+          _repository.getUserJourney(currentUserUid, journeyId);
 
-      // Always check if user has started this journey (from database, not just app state)
-      _userJourney = await _repository.getUserJourney(currentUserUid, journeyId);
+      _journey = await journeyFuture;
+      _sections = await sectionsFuture;
+      _userJourney = await userJourneyFuture;
 
       if (_userJourney != null) {
         // Journey has been started - load user steps
-        final steps = await _repository.getUserSteps(currentUserUid, journeyId);
+        var steps = await _repository.getUserSteps(currentUserUid, journeyId);
+        if (!skipStepAdvance) {
+          final advanced = await _stepActivitiesRepository
+              .advanceOpenStepsWhenRequiredActivitiesDone(
+            userId: currentUserUid,
+            journeyId: journeyId,
+          );
+          if (advanced) {
+            steps = await _repository.getUserSteps(currentUserUid, journeyId);
+          }
+        }
 
         // Remove duplicates based on journey_step_id using a Map
         // Keep the most recent user_step for each journey_step
@@ -101,12 +119,16 @@ class JourneyViewModel extends ChangeNotifier {
           if (journeyStepId != null) {
             final existing = stepsMap[journeyStepId];
             // Keep the most recent step (higher id means more recent)
-            if (existing == null || (step.id != null && existing.id != null && step.id! > existing.id!)) {
+            if (existing == null ||
+                (step.id != null &&
+                    existing.id != null &&
+                    step.id! > existing.id!)) {
               stepsMap[journeyStepId] = step;
             }
           }
         }
-        _userSteps = stepsMap.values.toList()..sort((a, b) => (a.stepNumber ?? 0).compareTo(b.stepNumber ?? 0));
+        _userSteps = stepsMap.values.toList()
+          ..sort((a, b) => (a.stepNumber ?? 0).compareTo(b.stepNumber ?? 0));
 
         // Sync app state if needed
         if (!_startedJourneys.contains(journeyId)) {
@@ -118,7 +140,8 @@ class JourneyViewModel extends ChangeNotifier {
 
         // Clean up app state if needed
         if (_startedJourneys.contains(journeyId)) {
-          _startedJourneys = _startedJourneys.where((id) => id != journeyId).toList();
+          _startedJourneys =
+              _startedJourneys.where((id) => id != journeyId).toList();
         }
       }
 
@@ -136,28 +159,17 @@ class JourneyViewModel extends ChangeNotifier {
   ) async {
     _setLoading(true);
     try {
-      // Check if journey is already started (from database)
-      final existingUserJourney = await _repository.getUserJourney(currentUserUid, journeyId);
+      final created = await _repository.startJourney(currentUserUid, journeyId);
 
-      if (existingUserJourney != null) {
-        // Journey already started, just reload data and sync state
-        await loadJourneyData();
-
-        if (!_startedJourneys.contains(journeyId)) {
-          _startedJourneys = [..._startedJourneys, journeyId];
-          await _repository.updateUserStartedJourneys(currentUserUid, _startedJourneys);
-          onUpdateStartedJourneys(_startedJourneys);
-        }
-        return;
+      if (!_startedJourneys.contains(journeyId)) {
+        _startedJourneys = [..._startedJourneys, journeyId];
       }
-
-      // Start the journey
-      await _repository.startJourney(currentUserUid, journeyId);
-
-      _startedJourneys = [..._startedJourneys, journeyId];
-      await _repository.updateUserStartedJourneys(currentUserUid, _startedJourneys);
       onUpdateStartedJourneys(_startedJourneys);
-      notifyListeners();
+
+      await Future.wait([
+        _repository.updateUserStartedJourneys(currentUserUid, _startedJourneys),
+        loadJourneyData(skipStepAdvance: created),
+      ]);
 
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -167,9 +179,6 @@ class JourneyViewModel extends ChangeNotifier {
           ),
         );
       }
-
-      // Reload data to show started journey
-      await loadJourneyData();
     } catch (e) {
       _setError('Error starting journey: $e');
     } finally {
@@ -189,7 +198,8 @@ class JourneyViewModel extends ChangeNotifier {
       await _repository.resetJourney(currentUserUid, journeyId);
 
       // Atualizar lista de journeys iniciadas
-      final updatedList = _startedJourneys.where((id) => id != journeyId).toList();
+      final updatedList =
+          _startedJourneys.where((id) => id != journeyId).toList();
       _startedJourneys = updatedList;
 
       // Atualizar no banco de dados
@@ -214,7 +224,8 @@ class JourneyViewModel extends ChangeNotifier {
 
     if (step.stepStatus == 'open') {
       // Encontra o índice do primeiro step 'open' (step atual)
-      final currentStepIndex = _userSteps.indexWhere((s) => s.stepStatus == 'open');
+      final currentStepIndex =
+          _userSteps.indexWhere((s) => s.stepStatus == 'open');
 
       // Só o step atual (primeiro open) pode ser acessado
       if (stepIndex != currentStepIndex) return false;
@@ -230,7 +241,8 @@ class JourneyViewModel extends ChangeNotifier {
       if (!enableDateControl) return true;
 
       // If date control is enabled, check if enough days have passed
-      return step.dateStarted != null && DateTime.now().difference(step.dateStarted!).inDays >= daysToWait;
+      return step.dateStarted != null &&
+          DateTime.now().difference(step.dateStarted!).inDays >= daysToWait;
     }
 
     return false;

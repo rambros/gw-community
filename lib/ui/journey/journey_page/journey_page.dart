@@ -38,6 +38,9 @@ class JourneyPage extends StatefulWidget {
 
 class _JourneyPageState extends State<JourneyPage> {
   JourneyViewModel? _viewModel;
+  final GlobalKey _expandedSectionKey = GlobalKey();
+  int? _lastViewedSectionId;
+  bool _scrollToExpandedSection = false;
 
   @override
   void initState() {
@@ -374,6 +377,12 @@ class _JourneyPageState extends State<JourneyPage> {
     }
 
     final groups = viewModel.groupedUserSteps;
+    final currentStep = currentStepIndex >= 0 ? viewModel.userSteps[currentStepIndex] : null;
+    final expandedSectionId = expandedJourneySectionId(
+      groups: groups,
+      preferredSectionId: _lastViewedSectionId,
+      currentStepSectionId: currentStep?.sectionId,
+    );
     return ListView.builder(
       padding: EdgeInsets.zero,
       primary: false,
@@ -395,15 +404,27 @@ class _JourneyPageState extends State<JourneyPage> {
           );
         }
 
-        final containsCurrent = group.steps.any(
-          (step) => viewModel.userSteps.indexOf(step) == currentStepIndex,
-        );
+        final expanded = group.sectionId == expandedSectionId;
+        if (expanded && _scrollToExpandedSection) {
+          _scrollToExpandedSection = false;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            final target = _expandedSectionKey.currentContext;
+            if (target == null || !target.mounted) return;
+            Scrollable.ensureVisible(
+              target,
+              alignment: 0.05,
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.easeOut,
+            );
+          });
+        }
         return Theme(
           data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
           child: Material(
             color: Colors.transparent,
             child: ExpansionTile(
-              initiallyExpanded: containsCurrent || groupIndex == 0,
+              key: expanded ? _expandedSectionKey : ValueKey('section-${group.sectionId}'),
+              initiallyExpanded: expanded,
               tilePadding: const EdgeInsets.symmetric(horizontal: 8.0),
               title: Text(
                 group.title!,
@@ -443,6 +464,8 @@ class _JourneyPageState extends State<JourneyPage> {
 
   Future<void> _handleStepTap(BuildContext context, JourneyViewModel viewModel, CcViewUserStepsRow step) async {
     if (viewModel.canNavigateToStep(step, viewModel.userSteps.indexOf(step))) {
+      _lastViewedSectionId = step.sectionId;
+      _scrollToExpandedSection = true;
       await context.pushNamed(
         StepDetailsPage.routeName,
         queryParameters: {

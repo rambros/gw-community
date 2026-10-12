@@ -37,8 +37,29 @@ class ActivityItemWidget extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    localizedJourneyActivityLabel(context.l10n, activity.activityLabel),
+                  Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                          text: localizedJourneyActivityLabel(
+                            context.l10n,
+                            activity.activityLabel,
+                          ),
+                        ),
+                        if (!activity.isRequired)
+                          TextSpan(
+                            text: ' · ${context.l10n.optionalActivity}',
+                            style: AppTheme.of(context)
+                                .journey
+                                .stepDescription
+                                .override(
+                                  color: activity.activityStatus == 'open'
+                                      ? AppTheme.of(context).primaryText
+                                      : AppTheme.of(context).alternate,
+                                ),
+                          ),
+                      ],
+                    ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: AppTheme.of(context).journey.stepTitle.override(
@@ -52,11 +73,12 @@ class ActivityItemWidget extends StatelessWidget {
                     activity.activityPrompt ?? 'prompt',
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
-                    style: AppTheme.of(context).journey.stepDescription.override(
-                          color: activity.activityStatus == 'open'
-                              ? AppTheme.of(context).primaryText
-                              : AppTheme.of(context).alternate,
-                        ),
+                    style:
+                        AppTheme.of(context).journey.stepDescription.override(
+                              color: activity.activityStatus == 'open'
+                                  ? AppTheme.of(context).primaryText
+                                  : AppTheme.of(context).alternate,
+                            ),
                   ),
                 ],
               ),

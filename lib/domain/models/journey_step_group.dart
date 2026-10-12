@@ -63,6 +63,31 @@ List<JourneyStepGroup<T>> groupJourneySteps<T>({
   return groups;
 }
 
+/// Section that should start expanded.
+///
+/// Prefers the section the user just left. Otherwise uses the section of the
+/// current step. Otherwise the first section that still has steps.
+int? expandedJourneySectionId<T>({
+  required List<JourneyStepGroup<T>> groups,
+  int? preferredSectionId,
+  int? currentStepSectionId,
+}) {
+  bool hasSteps(int? sectionId) => groups.any(
+        (group) => group.sectionId == sectionId && group.steps.isNotEmpty,
+      );
+
+  if (preferredSectionId != null && hasSteps(preferredSectionId)) {
+    return preferredSectionId;
+  }
+  if (currentStepSectionId != null && hasSteps(currentStepSectionId)) {
+    return currentStepSectionId;
+  }
+  for (final group in groups) {
+    if (group.steps.isNotEmpty) return group.sectionId;
+  }
+  return null;
+}
+
 /// 1-based index of the first step in [groups] at [groupIndex], counting
 /// through the whole journey instead of restarting in each section.
 int firstNumberOfGroup<T>(List<JourneyStepGroup<T>> groups, int groupIndex) {

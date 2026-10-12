@@ -176,6 +176,12 @@ abstract class AppLocalizations {
   /// **'START'**
   String get startUpper;
 
+  /// No description provided for @learnMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Learn more'**
+  String get learnMore;
+
   /// No description provided for @resumeUpper.
   ///
   /// In en, this message translates to:
@@ -1585,6 +1591,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Practices'**
   String get journeyActivityPractices;
+
+  /// No description provided for @optionalActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional'**
+  String get optionalActivity;
 
   /// No description provided for @mediaAudio.
   ///

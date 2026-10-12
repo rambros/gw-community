@@ -31,8 +31,8 @@ class StepDetailsViewModel extends ChangeNotifier {
 
   // ========== COMMANDS ==========
 
-  Future<void> loadActivities() async {
-    _setLoading(true);
+  Future<void> loadActivities({bool showLoading = true}) async {
+    if (showLoading) _setLoading(true);
     _clearError();
 
     try {
@@ -66,18 +66,26 @@ class StepDetailsViewModel extends ChangeNotifier {
       }
       _activities = activitiesMap.values.toList()
         ..sort((a, b) {
-          final order =
-              (a.orderInStep ?? 0).compareTo(b.orderInStep ?? 0);
+          final order = (a.orderInStep ?? 0).compareTo(b.orderInStep ?? 0);
           if (order != 0) return order;
           return (a.stepActivityId ?? a.id ?? 0)
               .compareTo(b.stepActivityId ?? b.id ?? 0);
         });
 
+      final userJourneyId = userStepRow.userJourneyId;
+      if (userStepRow.id != null && userJourneyId != null) {
+        await _repository.advanceStepIfRequiredActivitiesDone(
+          userId: currentUserUid,
+          userStepId: userStepRow.id!,
+          userJourneyId: userJourneyId,
+        );
+      }
+
       notifyListeners();
     } catch (e, stackTrace) {
       _setError('Error loading activities: $e\n$stackTrace');
     } finally {
-      _setLoading(false);
+      if (showLoading) _setLoading(false);
     }
   }
 
@@ -90,62 +98,21 @@ class StepDetailsViewModel extends ChangeNotifier {
     _isNavigating = true;
     notifyListeners();
 
+    // Abre a atividade na hora. A conclusão segue sem segurar a transição.
+    _navigateToActivityPage(activity, navigateToActivity);
+
     if (activity.activityStatus != 'completed') {
       try {
-        // Complete the activity
         await _repository.completeActivity(activity.id!);
-
-        // Check if all activities are completed
-        final openActivities = await _repository.getOpenActivities(
-          currentUserUid,
-          activity.userStepId!,
-        );
-
-        if (openActivities.isEmpty) {
-          // Complete the step
-          await _repository.completeUserStep(activity.userStepId!);
-
-          // Get closed steps
-          final closedSteps = await _repository.getClosedSteps(
-            currentUserUid,
-            userStepRow.userJourneyId!,
-          );
-
-          if (closedSteps.isNotEmpty) {
-            // Open next step
-            await _repository.openNextStep(closedSteps.first.id!);
-
-            // Update journey progress
-            final completedSteps = await _repository.getCompletedSteps(
-              currentUserUid,
-              userStepRow.userJourneyId!,
-            );
-
-            await _repository.updateUserJourney(
-              userStepRow.userJourneyId!,
-              completedSteps.length,
-            );
-          } else {
-            // Complete the journey
-            await _repository.completeUserJourney(userStepRow.userJourneyId!);
-          }
-        }
-
-        // Reload activities to reflect changes
-        await loadActivities();
+        // Reload also advances the step when every required activity is done.
+        await loadActivities(showLoading: false);
       } catch (e) {
         _setError('Error completing activity: $e');
       }
     }
 
-    // Navigate based on activity type
-    _navigateToActivityPage(activity, navigateToActivity);
-
-    // Reset navigation flag after a short delay to allow transition to start/finish
-    Future.delayed(const Duration(milliseconds: 500), () {
-      _isNavigating = false;
-      notifyListeners();
-    });
+    _isNavigating = false;
+    notifyListeners();
   }
 
   void _navigateToActivityPage(

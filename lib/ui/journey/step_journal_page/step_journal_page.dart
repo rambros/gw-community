@@ -43,34 +43,27 @@ class _StepJournalPageState extends State<StepJournalPage> {
       return;
     }
 
-    // Se não há conteúdo do usuário, inicializa com a pergunta.
     final template = (widget.activityRow?.journal ?? '').trim();
+    final prompt = (widget.activityRow?.activityPrompt ?? '').trim();
     var savedContent = (widget.activityRow?.journalSaved ?? '').trim();
     if (template.isNotEmpty && savedContent == template) {
       savedContent = '';
     }
-    final prompt = (widget.activityRow?.activityPrompt ?? '').trim();
-    final initialContent = savedContent.isEmpty ? '$prompt\n\n' : savedContent;
+    if (prompt.isNotEmpty && savedContent == prompt) {
+      savedContent = '';
+    }
 
     _viewModel = StepJournalViewModel(
       repository: context.read<JournalRepository>(),
       activityId: widget.activityRow!.id!,
-      initialContent: initialContent,
+      initialContent: savedContent,
     );
 
     _textController = TextEditingController(text: _viewModel!.journalContent);
     _focusNode = FocusNode();
-
-    // Move o cursor para o final (após a quebra de linha)
-    if (savedContent.isEmpty) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          _textController.selection = TextSelection.fromPosition(
-            TextPosition(offset: _textController.text.length),
-          );
-        }
-      });
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _focusNode.requestFocus();
+    });
   }
 
   @override
@@ -123,14 +116,14 @@ class _StepJournalPageState extends State<StepJournalPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    context.l10n.myJournal,
+                    context.l10n.mediaJournal,
                     style: AppTheme.of(context).journey.pageTitle,
                   ),
                   Text(
                     context.l10n.journalEntriesPrivate,
                     style: AppTheme.of(context).bodySmall.override(
-                          color: Colors.white.withValues(alpha: 0.8),
-                          fontSize: 11.0,
+                          color: Colors.white.withValues(alpha: 0.9),
+                          fontSize: 14.0,
                           letterSpacing: 0.0,
                         ),
                   ),
@@ -138,6 +131,7 @@ class _StepJournalPageState extends State<StepJournalPage> {
               ),
               actions: const [],
               centerTitle: true,
+              toolbarHeight: 68.0,
               elevation: 2.0,
             ),
             body: SafeArea(
@@ -190,7 +184,7 @@ class _StepJournalPageState extends State<StepJournalPage> {
                               child: TextFormField(
                                 controller: _textController,
                                 focusNode: _focusNode,
-                                autofocus: true,
+                                textAlignVertical: TextAlignVertical.top,
                                 obscureText: false,
                                 textCapitalization:
                                     TextCapitalization.sentences,
@@ -210,7 +204,8 @@ class _StepJournalPageState extends State<StepJournalPage> {
                                     .override(
                                       color: AppTheme.of(context).secondary,
                                     ),
-                                maxLines: 50,
+                                maxLines: null,
+                                expands: true,
                                 onChanged: (value) =>
                                     _viewModel?.updateJournalContent(value),
                               ),

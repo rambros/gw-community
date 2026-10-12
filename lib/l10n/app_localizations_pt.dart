@@ -48,6 +48,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get startUpper => 'COMEÇAR';
 
   @override
+  String get learnMore => 'Saiba Mais';
+
+  @override
   String get resumeUpper => 'CONTINUAR';
 
   @override
@@ -847,6 +850,9 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get journeyActivityPractices => 'Práticas';
+
+  @override
+  String get optionalActivity => 'Opcional';
 
   @override
   String get mediaAudio => 'Áudio';
