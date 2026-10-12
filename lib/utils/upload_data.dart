@@ -263,30 +263,32 @@ Future<List<SelectedFile>?> selectFiles({
   List<String>? allowedExtensions,
   bool multiFile = false,
 }) async {
-  final pickedFiles = await FilePicker.pickFiles(
-    type: allowedExtensions != null ? FileType.custom : FileType.any,
-    allowedExtensions: allowedExtensions,
-    withData: true,
-    allowMultiple: multiFile,
-  );
-  if (pickedFiles == null || pickedFiles.files.isEmpty) {
-    return null;
-  }
+  final type = allowedExtensions != null ? FileType.custom : FileType.any;
   if (multiFile) {
-    return Future.wait(pickedFiles.files.asMap().entries.map((e) async {
+    final pickedFiles = await FilePicker.pickFiles(
+      type: type,
+      allowedExtensions: allowedExtensions,
+    );
+    if (pickedFiles.isEmpty) {
+      return null;
+    }
+    return Future.wait(pickedFiles.asMap().entries.map((e) async {
       final index = e.key;
       final file = e.value;
       final storagePath = _getStoragePath(storageFolderPath, file.name, false, index);
       return SelectedFile(
         storagePath: storagePath,
         filePath: isWeb ? null : file.path,
-        bytes: file.bytes!,
+        bytes: await file.readAsBytes(),
         originalFilename: file.name,
       );
     }));
   }
-  final file = pickedFiles.files.first;
-  if (file.bytes == null) {
+  final file = await FilePicker.pickFile(
+    type: type,
+    allowedExtensions: allowedExtensions,
+  );
+  if (file == null) {
     return null;
   }
   final storagePath = _getStoragePath(storageFolderPath, file.name, false);
@@ -294,7 +296,7 @@ Future<List<SelectedFile>?> selectFiles({
     SelectedFile(
       storagePath: storagePath,
       filePath: isWeb ? null : file.path,
-      bytes: file.bytes!,
+      bytes: await file.readAsBytes(),
       originalFilename: file.name,
     )
   ];
