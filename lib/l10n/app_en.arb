@@ -636,6 +636,11 @@
       "name": { "type": "String" }
     }
   },
+  "likedShareExperience": "How about sharing your experience?",
+  "shareInGroups": "Share in",
+  "chooseGroups": "Choose groups",
+  "chooseOneOrMoreGroups": "Choose one or more groups where you want to share your experience.",
+  "noGroupsToShare": "Join a group to share your experience.",
   "shareYourExperience": "Share your experience",
   "writeAboutExperience": "Write about your experience...",
   "enableComments": "Enable comments",

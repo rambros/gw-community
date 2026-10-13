@@ -13,4 +13,15 @@ class JourneyLanguage {
     if (dbValue == null || dbValue.isEmpty) return null;
     return AppLocale.parse(dbValue);
   }
+
+  /// Language shared by every locked journey. Mixed or unset values follow the app.
+  static String? sharedFixedLanguage(Iterable<String?> codes) {
+    final unique = codes
+        .map((code) => code?.trim())
+        .whereType<String>()
+        .where((code) => code.isNotEmpty)
+        .toSet();
+    if (unique.length == 1) return unique.first;
+    return null;
+  }
 }

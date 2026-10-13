@@ -126,7 +126,7 @@ class GroupExperiencesTab extends StatelessWidget {
           bottom: 16.0,
           right: 16.0,
           child: FloatingActionButton.extended(
-            onPressed: () async {
+            onPressed: () {
               context.pushNamed(
                 ExperienceAddPage.routeName,
                 queryParameters: {

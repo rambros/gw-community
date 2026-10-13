@@ -54,6 +54,25 @@ class JourneysRepository {
     return results.isNotEmpty ? results.first : null;
   }
 
+  /// `cc_journeys.fixed_language` for the journey that owns this step activity.
+  Future<String?> fixedLanguageForStepActivity(int stepActivityId) async {
+    final activities = await CcStepActivitiesTable().querySingleRow(
+      queryFn: (q) => q.eqOrNull('id', stepActivityId),
+    );
+    final stepId = activities.isNotEmpty ? activities.first.stepId : null;
+    if (stepId == null) return null;
+
+    final steps = await CcJourneyStepsTable().querySingleRow(
+      queryFn: (q) => q.eqOrNull('id', stepId),
+    );
+    final journeyId = steps.isNotEmpty ? steps.first.journeyId : null;
+    if (journeyId == null) return null;
+
+    final code = (await getJourneyById(journeyId))?.fixedLanguage?.trim();
+    if (code == null || code.isEmpty) return null;
+    return code;
+  }
+
   Future<CcViewUserJourneysRow?> getUserJourney(
       String userId, int journeyId) async {
     final results = await CcViewUserJourneysTable().querySingleRow(

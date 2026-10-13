@@ -839,7 +839,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String journeyStepHeader(int number) {
-    return 'Etapa $number';
+    return 'Step $number';
   }
 
   @override
@@ -1333,6 +1333,23 @@ class AppLocalizationsPt extends AppLocalizations {
   String fromGroup(String name) {
     return 'Do grupo $name';
   }
+
+  @override
+  String get likedShareExperience => 'Que tal compartilhar sua experiência?';
+
+  @override
+  String get shareInGroups => 'Compartilhar em';
+
+  @override
+  String get chooseGroups => 'Escolha os grupos';
+
+  @override
+  String get chooseOneOrMoreGroups =>
+      'Escolha um ou mais grupos para onde você quer compartilhar sua experiência.';
+
+  @override
+  String get noGroupsToShare =>
+      'Entre em um grupo para compartilhar sua experiência.';
 
   @override
   String get shareYourExperience => 'Compartilhe sua experiência';

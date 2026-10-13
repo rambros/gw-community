@@ -348,6 +348,8 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
             groupId: params.getParam('groupId', ParamType.int),
             groupName: params.getParam('groupName', ParamType.String),
             privacy: params.getParam('privacy', ParamType.String),
+            chooseGroups: params.getParam('chooseGroups', ParamType.bool) ?? false,
+            fixedLanguage: params.getParam('fixedLanguage', ParamType.String),
           ),
         ),
         FFRoute(

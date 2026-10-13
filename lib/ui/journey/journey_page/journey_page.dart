@@ -477,6 +477,8 @@ class _JourneyPageState extends State<JourneyPage> {
             'fixedLanguage': serializeParam(viewModel.fixedLanguage, ParamType.String),
         }.withoutNulls,
         extra: <String, dynamic>{
+          if (viewModel.fixedLanguage != null)
+            'fixedLanguage': viewModel.fixedLanguage,
           kTransitionInfoKey: const TransitionInfo(
             hasTransition: true,
             transitionType: PageTransitionType.fade,

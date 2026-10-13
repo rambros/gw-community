@@ -98,6 +98,7 @@ class ExperienceRepository {
     required String privacy,
     int? groupId,
     bool keepAsDraft = false,
+    bool? locked,
   }) async {
     String moderationStatus;
     String? moderatedAt;
@@ -126,6 +127,7 @@ class ExperienceRepository {
         'moderation_reason': null,
         'moderated_by': moderatedAt != null ? 'auto' : null,
         'moderated_at': moderatedAt,
+        if (locked != null) 'locked': locked,
       },
       matchingRows: (rows) => rows.eqOrNull('id', id),
     );

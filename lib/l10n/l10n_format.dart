@@ -25,24 +25,29 @@ String relativeLastPostLabel({
 }
 
 String localizedJourneyActivityLabel(AppLocalizations l10n, String? label) {
-  final normalized = label?.trim().toLowerCase() ?? '';
-  switch (normalized) {
-    case 'inspiration':
-      return l10n.journeyActivityInspiration;
-    case 'meditation':
-      return l10n.journeyActivityMeditation;
-    case 'practices':
-    case 'practice':
-    case 'práticas':
-    case 'pratica':
-    case 'praticas':
-    case 'daily practice':
-      return l10n.journeyActivityPractices;
-    case 'journal':
-      return l10n.mediaJournal;
-    default:
-      return label?.trim().isNotEmpty == true ? label! : l10n.activityFallback;
+  final raw = label?.trim() ?? '';
+  final normalized = raw.toLowerCase();
+  final numbered = RegExp(r'^(.*?)(?:\s+(\d+))?$').firstMatch(normalized);
+  final base = numbered?.group(1)?.trim() ?? normalized;
+  final number = numbered?.group(2);
+  final translated = switch (base) {
+    'inspiration' || 'inspiração' || 'inspiracao' => l10n.journeyActivityInspiration,
+    'meditation' || 'meditação' || 'meditacao' => l10n.journeyActivityMeditation,
+    'practices' ||
+    'practice' ||
+    'práticas' ||
+    'pratica' ||
+    'praticas' ||
+    'daily practice' =>
+      l10n.journeyActivityPractices,
+    'journal' => l10n.mediaJournal,
+    _ => null,
+  };
+  if (translated == null) {
+    return raw.isNotEmpty ? raw : l10n.activityFallback;
   }
+  if (number == null) return translated;
+  return '$translated $number';
 }
 
 String localizedMediaType(AppLocalizations l10n, String? type) {

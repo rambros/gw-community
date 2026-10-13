@@ -4,6 +4,7 @@
 
 // Imports other custom widgets
 
+import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
@@ -196,6 +197,7 @@ class AudioPlayerWidget extends StatefulWidget {
     required this.audioUrl,
     required this.audioArt,
     this.colorButton,
+    this.onCompleted,
   });
 
   final double? width;
@@ -204,6 +206,7 @@ class AudioPlayerWidget extends StatefulWidget {
   final String audioTitle;
   final String? audioArt;
   final Color? colorButton;
+  final VoidCallback? onCompleted;
 
   @override
   State<AudioPlayerWidget> createState() => _AudioPlayerWidgetState();
@@ -219,6 +222,8 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
   late AudioPlayer _player;
   bool _isOwner = false;
   bool _loadFailed = false;
+  bool _reportedCompletion = false;
+  StreamSubscription<PlayerState>? _completionSub;
 
   @override
   void initState() {
@@ -240,6 +245,35 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
     ));
     if (_isOwner) {
       _init();
+    }
+    _listenForCompletion();
+  }
+
+  @override
+  void didUpdateWidget(covariant AudioPlayerWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.onCompleted != null && _completionSub == null) {
+      _listenForCompletion();
+    }
+  }
+
+  void _listenForCompletion() {
+    if (widget.onCompleted == null) return;
+    _completionSub = _player.playerStateStream.listen(_onPlayerState);
+    _onPlayerState(_player.playerState);
+  }
+
+  void _onPlayerState(PlayerState state) {
+    if (state.processingState == ProcessingState.completed) {
+      if (_reportedCompletion) return;
+      _reportedCompletion = true;
+      final onCompleted = widget.onCompleted;
+      if (onCompleted == null) return;
+      WidgetsBinding.instance.addPostFrameCallback((_) => onCompleted());
+      return;
+    }
+    if (state.playing) {
+      _reportedCompletion = false;
     }
   }
 
@@ -307,6 +341,7 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
 
   @override
   void dispose() {
+    _completionSub?.cancel();
     // Only dispose if this widget instance owns the player
     if (_isOwner) {
       _player.dispose();

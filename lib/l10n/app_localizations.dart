@@ -2444,6 +2444,36 @@ abstract class AppLocalizations {
   /// **'From group {name}'**
   String fromGroup(String name);
 
+  /// No description provided for @likedShareExperience.
+  ///
+  /// In en, this message translates to:
+  /// **'How about sharing your experience?'**
+  String get likedShareExperience;
+
+  /// No description provided for @shareInGroups.
+  ///
+  /// In en, this message translates to:
+  /// **'Share in'**
+  String get shareInGroups;
+
+  /// No description provided for @chooseGroups.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose groups'**
+  String get chooseGroups;
+
+  /// No description provided for @chooseOneOrMoreGroups.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose one or more groups where you want to share your experience.'**
+  String get chooseOneOrMoreGroups;
+
+  /// No description provided for @noGroupsToShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Join a group to share your experience.'**
+  String get noGroupsToShare;
+
   /// No description provided for @shareYourExperience.
   ///
   /// In en, this message translates to:

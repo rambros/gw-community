@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/favorites_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/l10n/l10n.dart';
+import 'package:gw_community/ui/community/experience_add_page/experience_add_page.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_pdf_viewer.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_youtube_player.dart';
@@ -147,16 +148,11 @@ class _ContentViewPageState extends State<ContentViewPage> {
                   if (mediaType == 'audio' &&
                       (row.audioUrl ?? '').isNotEmpty) ...[
                     const SizedBox(height: 16),
-                    SizedBox(
-                      height: 320,
-                      child: AudioPlayerWidget(
-                        width: double.infinity,
-                        height: 320,
-                        audioUrl: row.audioUrl!,
-                        audioTitle: row.title ?? '',
-                        audioArt: ' ',
-                        colorButton: AppTheme.of(context).primary,
-                      ),
+                    _ContentAudioPlayer(
+                      audioUrl: row.audioUrl!,
+                      audioTitle: row.title ?? '',
+                      offerShare: viewModel.librarySection ==
+                          LibraryContentSection.meditations,
                     ),
                   ],
                   if (mediaType == 'video' &&
@@ -238,5 +234,78 @@ class _ContentViewPageState extends State<ContentViewPage> {
         context.l10n.libraryHeaderHeartToHeart,
       null => valueOrDefault<String>(row.title, context.l10n.untitled),
     };
+  }
+}
+
+class _ContentAudioPlayer extends StatefulWidget {
+  const _ContentAudioPlayer({
+    required this.audioUrl,
+    required this.audioTitle,
+    required this.offerShare,
+  });
+
+  final String audioUrl;
+  final String audioTitle;
+  final bool offerShare;
+
+  @override
+  State<_ContentAudioPlayer> createState() => _ContentAudioPlayerState();
+}
+
+class _ContentAudioPlayerState extends State<_ContentAudioPlayer> {
+  bool _finished = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(
+          height: 320,
+          child: AudioPlayerWidget(
+            width: double.infinity,
+            height: 320,
+            audioUrl: widget.audioUrl,
+            audioTitle: widget.audioTitle,
+            audioArt: ' ',
+            colorButton: AppTheme.of(context).primary,
+            onCompleted: widget.offerShare
+                ? () {
+                    if (!_finished && mounted) {
+                      setState(() => _finished = true);
+                    }
+                  }
+                : null,
+          ),
+        ),
+        if (_finished) ...[
+          const SizedBox(height: 20),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton(
+              style: FilledButton.styleFrom(
+                backgroundColor: AppTheme.of(context).primary,
+                foregroundColor: Colors.white,
+                minimumSize: const Size.fromHeight(48),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24),
+                ),
+              ),
+              onPressed: () {
+                context.pushNamed(
+                  ExperienceAddPage.routeName,
+                  queryParameters: {
+                    'chooseGroups': serializeParam(true, ParamType.bool),
+                  }.withoutNulls,
+                );
+              },
+              child: Text(
+                context.l10n.likedShareExperience,
+                style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
   }
 }

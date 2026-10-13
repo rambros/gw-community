@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/data/repositories/community_repository.dart';
 import 'package:gw_community/data/repositories/experience_repository.dart';
 import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/experience_add_page/view_model/experience_add_view_model.dart';
@@ -8,6 +9,7 @@ import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
 import 'package:gw_community/ui/core/widgets/user_avatar.dart';
+import 'package:gw_community/ui/journey/widgets/journey_locale_scope.dart';
 import 'package:gw_community/utils/context_extensions.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
@@ -20,27 +22,38 @@ class ExperienceAddPage extends StatelessWidget {
     this.groupId,
     this.groupName,
     String? privacy,
+    this.chooseGroups = false,
+    this.fixedLanguage,
   }) : privacy = privacy ?? 'public';
 
   final int? groupId;
   final String? groupName;
   final String privacy;
+  final bool chooseGroups;
+  final String? fixedLanguage;
 
   static String routeName = 'experienceAddPage';
   static String routePath = '/experienceAddPage';
 
   @override
   Widget build(BuildContext context) {
-    // Provider local para o formulário
-    return ChangeNotifierProvider(
-      create: (_) => ExperienceAddViewModel(
-        repository: context.read<ExperienceRepository>(),
-        currentUserUid: context.currentUserIdOrEmpty,
-        groupId: groupId,
-        groupName: groupName,
-        privacy: privacy,
-      ),
-      child: const _ExperienceAddPageContent(),
+    return JourneyLocaleScope(
+      fixedLanguage: fixedLanguage,
+      builder: (context) {
+        return ChangeNotifierProvider(
+          create: (_) => ExperienceAddViewModel(
+            repository: context.read<ExperienceRepository>(),
+            communityRepository: context.read<CommunityRepository>(),
+            currentUserUid: context.currentUserIdOrEmpty,
+            groupId: groupId,
+            groupName: groupName,
+            privacy: privacy,
+            chooseGroups: chooseGroups,
+            fixedLanguage: fixedLanguage,
+          ),
+          child: const _ExperienceAddPageContent(),
+        );
+      },
     );
   }
 }
@@ -127,6 +140,8 @@ class _ExperienceAddPageContent extends StatelessWidget {
               // Header com avatar e informações do usuário
               _buildHeader(context, viewModel),
 
+              if (viewModel.chooseGroups) _buildGroupSelector(context, viewModel),
+
               // Campo de texto/experiência
               _buildTextField(context, viewModel),
 
@@ -199,6 +214,106 @@ class _ExperienceAddPageContent extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildGroupSelector(BuildContext context, ExperienceAddViewModel viewModel) {
+    final label = _selectedGroupsLabel(context, viewModel);
+    return Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(4.0, 0.0, 4.0, 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            context.l10n.shareInGroups,
+            style: AppTheme.of(context).labelLarge.override(
+                  font: GoogleFonts.poppins(),
+                  color: AppTheme.of(context).primary,
+                  fontSize: 16.0,
+                  letterSpacing: 0.0,
+                ),
+          ),
+          const SizedBox(height: 8.0),
+          InkWell(
+            onTap: viewModel.availableGroups.isEmpty
+                ? null
+                : () => _openGroupPicker(context, viewModel),
+            borderRadius: BorderRadius.circular(16.0),
+            child: InputDecorator(
+              decoration: InputDecoration(
+                hintText: context.l10n.chooseGroups,
+                hintStyle: AppTheme.of(context).bodySmall.override(
+                      font: GoogleFonts.lexendDeca(),
+                      color: AppTheme.of(context).alternate,
+                      letterSpacing: 0.0,
+                    ),
+                suffixIcon: Icon(
+                  Icons.arrow_drop_down,
+                  color: AppTheme.of(context).primary,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: AppTheme.of(context).alternate,
+                    width: 1.0,
+                  ),
+                  borderRadius: BorderRadius.circular(16.0),
+                ),
+                filled: true,
+                fillColor: const Color(0xFFF9FAFB),
+              ),
+              child: Text(
+                label,
+                style: AppTheme.of(context).bodyMedium.override(
+                      font: GoogleFonts.lexendDeca(),
+                      color: label == context.l10n.chooseGroups
+                          ? AppTheme.of(context).alternate
+                          : AppTheme.of(context).secondary,
+                      letterSpacing: 0.0,
+                    ),
+              ),
+            ),
+          ),
+          if (viewModel.availableGroups.isEmpty) ...[
+            const SizedBox(height: 6.0),
+            Text(
+              context.l10n.noGroupsToShare,
+              style: AppTheme.of(context).bodySmall.override(
+                    font: GoogleFonts.lexendDeca(),
+                    color: AppTheme.of(context).secondaryText,
+                    letterSpacing: 0.0,
+                  ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  String _selectedGroupsLabel(BuildContext context, ExperienceAddViewModel viewModel) {
+    if (viewModel.selectedGroups.isEmpty) return context.l10n.chooseGroups;
+    if (viewModel.allGroupsSelected) return context.l10n.allGroups;
+    return viewModel.selectedGroups.map((group) => group.name ?? '').where((name) => name.isNotEmpty).join(', ');
+  }
+
+  Future<void> _openGroupPicker(BuildContext context, ExperienceAddViewModel viewModel) async {
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppTheme.of(context).primaryBackground,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (sheetContext) {
+        return JourneyLocaleScope(
+          fixedLanguage: viewModel.fixedLanguage,
+          builder: (context) {
+            return ChangeNotifierProvider.value(
+              value: viewModel,
+              child: const _GroupPickerSheet(),
+            );
+          },
+        );
+      },
     );
   }
 
@@ -421,6 +536,72 @@ class _ExperienceAddPageContent extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _GroupPickerSheet extends StatelessWidget {
+  const _GroupPickerSheet();
+
+  @override
+  Widget build(BuildContext context) {
+    final viewModel = context.watch<ExperienceAddViewModel>();
+    final maxHeight = MediaQuery.sizeOf(context).height * 0.6;
+
+    return SafeArea(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxHeight: maxHeight),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 8),
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: AppTheme.of(context).alternate,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            CheckboxListTile(
+              value: viewModel.allGroupsSelected,
+              title: Text(
+                context.l10n.allGroups,
+                style: AppTheme.of(context).bodyLarge.override(
+                      font: GoogleFonts.lexendDeca(fontWeight: FontWeight.w600),
+                      color: AppTheme.of(context).secondary,
+                      letterSpacing: 0.0,
+                    ),
+              ),
+              activeColor: AppTheme.of(context).primary,
+              onChanged: viewModel.availableGroups.isEmpty
+                  ? null
+                  : (value) => viewModel.setAllGroups(value ?? false),
+            ),
+            Flexible(
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  for (final group in viewModel.availableGroups)
+                    CheckboxListTile(
+                      value: viewModel.isGroupSelected(group.id),
+                      title: Text(
+                        group.name ?? '',
+                        style: AppTheme.of(context).bodyMedium.override(
+                              font: GoogleFonts.lexendDeca(),
+                              color: AppTheme.of(context).secondary,
+                              letterSpacing: 0.0,
+                            ),
+                      ),
+                      activeColor: AppTheme.of(context).primary,
+                      onChanged: (_) => viewModel.toggleGroup(group.id),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -1334,6 +1334,22 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get likedShareExperience => 'How about sharing your experience?';
+
+  @override
+  String get shareInGroups => 'Share in';
+
+  @override
+  String get chooseGroups => 'Choose groups';
+
+  @override
+  String get chooseOneOrMoreGroups =>
+      'Choose one or more groups where you want to share your experience.';
+
+  @override
+  String get noGroupsToShare => 'Join a group to share your experience.';
+
+  @override
   String get shareYourExperience => 'Share your experience';
 
   @override
