@@ -13,6 +13,8 @@ import 'package:gw_community/data/repositories/home_repository.dart';
 import 'package:gw_community/data/repositories/journeys_repository.dart';
 import 'package:gw_community/data/repositories/learn_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/domain/community/reply_attention.dart';
+import 'package:gw_community/ui/core/view_as/view_as_session.dart';
 
 class GroupDetailsViewModel extends ChangeNotifier {
   final GroupRepository _groupRepository;
@@ -21,7 +23,8 @@ class GroupDetailsViewModel extends ChangeNotifier {
   final AnnouncementRepository _announcementRepository;
   final JourneysRepository _journeysRepository;
   final LearnRepository _learnRepository;
-  final FileResourceRepository _fileResourceRepository = FileResourceRepository();
+  final FileResourceRepository _fileResourceRepository =
+      FileResourceRepository();
   CcGroupsRow _group;
   CcGroupsRow get group => _group;
   final String? currentUserId;
@@ -53,7 +56,8 @@ class GroupDetailsViewModel extends ChangeNotifier {
   bool get isLoadingMembers => _isLoadingMembers;
 
   Stream<List<CcViewSharingsUsersRow>> get experiencesStream {
-    return _experienceRepository.getExperiencesStream(group.id, currentUserId: currentUserId);
+    return _experienceRepository.getExperiencesStream(group.id,
+        currentUserId: currentUserId);
   }
 
   Stream<List<CcEventsRow>> get eventsStream {
@@ -63,10 +67,12 @@ class GroupDetailsViewModel extends ChangeNotifier {
   Stream<List<CcViewNotificationsUsersRow>> get notificationsStream {
     return _announcementRepository.getAnnouncementsStream(group.id).map((list) {
       // Filtra mensagens privadas: exibe broadcast + privadas para/do usuário atual
-      return list.where((n) =>
-          n.recipientUserId == null ||
-          n.recipientUserId == currentUserId ||
-          n.userId == currentUserId).toList();
+      return list
+          .where((n) =>
+              n.recipientUserId == null ||
+              n.recipientUserId == currentUserId ||
+              n.userId == currentUserId)
+          .toList();
     });
   }
 
@@ -78,17 +84,49 @@ class GroupDetailsViewModel extends ChangeNotifier {
   Set<int> _readNotificationIds = {};
   Set<int> get readNotificationIds => _readNotificationIds;
 
+  /// sharing id -> replies from other people after this facilitator last opened it.
+  /// Empty for members.
+  Map<int, int> _newReplyCounts = {};
+  Map<int, int> _commentCounts = {};
+  int replyCountFor(int notificationId) => _newReplyCounts[notificationId] ?? 0;
+  int commentCountFor(int notificationId) =>
+      _commentCounts[notificationId] ?? 0;
+
+  DateTime? _memberJoinDate;
+
+  bool messageNeedsAttention(int notificationId) {
+    return announcementNeedsAttention(
+      hasRead: _readNotificationIds.contains(notificationId),
+      publishedAfterJoin: _publishedAfterJoin(notificationId),
+      newReplies: replyCountFor(notificationId),
+    );
+  }
+
+  bool _publishedAfterJoin(int notificationId) {
+    final join = _memberJoinDate;
+    if (join == null) return true;
+    for (final message in _latestNotifications) {
+      if (message.id != notificationId) continue;
+      final published = message.updatedAt ?? message.createdAt;
+      if (published == null) return true;
+      return published.isAfter(join);
+    }
+    return true;
+  }
+
+  List<CcViewNotificationsUsersRow> _latestNotifications = [];
+
   // Contador de experiences pendentes de moderação
   int _pendingModerationCount = 0;
   int get pendingModerationCount => _pendingModerationCount;
 
   Future<List<CcJourneysRow>>? _groupJourneysFuture;
-  Future<List<CcJourneysRow>> get groupJourneys =>
-      _groupJourneysFuture ??= _journeysRepository.getJourneysForGroup(group.id);
+  Future<List<CcJourneysRow>> get groupJourneys => _groupJourneysFuture ??=
+      _journeysRepository.getJourneysForGroup(group.id);
 
   Future<List<ViewContentRow>>? _groupLibraryFuture;
-  Future<List<ViewContentRow>> get groupLibrary =>
-      _groupLibraryFuture ??= _learnRepository.filterContent(filterByGroupId: group.id);
+  Future<List<ViewContentRow>> get groupLibrary => _groupLibraryFuture ??=
+      _learnRepository.filterContent(filterByGroupId: group.id);
 
   // File resources
   List<CcFileResourcesRow> _groupFileResources = [];
@@ -96,7 +134,10 @@ class GroupDetailsViewModel extends ChangeNotifier {
   bool _isLoadingResources = false;
   bool get isLoadingResources => _isLoadingResources;
 
-  StreamSubscription<List<CcViewNotificationsUsersRow>>? _notificationsSubscription;
+  StreamSubscription<List<CcViewNotificationsUsersRow>>?
+      _notificationsSubscription;
+  Timer? _replyPollTimer;
+  bool _disposed = false;
 
   void init(TickerProvider vsync) {
     _vsync = vsync;
@@ -139,7 +180,8 @@ class GroupDetailsViewModel extends ChangeNotifier {
 
     // Still perform the check, but it won't block the UI with a spinner
     try {
-      _isMember = await _groupRepository.isUserMemberOfGroup(group.id, currentUserId!);
+      _isMember =
+          await _groupRepository.isUserMemberOfGroup(group.id, currentUserId!);
     } catch (e) {
       debugPrint('Error checking membership: $e');
       _isMember = false;
@@ -165,7 +207,8 @@ class GroupDetailsViewModel extends ChangeNotifier {
     tabController = TabController(
       length: targetLength,
       vsync: _vsync!,
-      initialIndex: shouldShowOnlyAbout ? 0 : (oldIndex < targetLength ? oldIndex : 0),
+      initialIndex:
+          shouldShowOnlyAbout ? 0 : (oldIndex < targetLength ? oldIndex : 0),
     );
 
     oldController?.removeListener(_onTabChanged);
@@ -185,6 +228,7 @@ class GroupDetailsViewModel extends ChangeNotifier {
   }
 
   Future<void> joinGroup() async {
+    if (viewAsBlocksWrite()) return;
     if (currentUserId == null) return;
 
     _isJoining = true;
@@ -240,14 +284,19 @@ class GroupDetailsViewModel extends ChangeNotifier {
     notifyListeners();
     try {
       // 1. Fetch the relationships (roles)
-      final groupMembersLinks = await _groupRepository.getGroupMembers(group.id);
+      final groupMembersLinks =
+          await _groupRepository.getGroupMembers(group.id);
 
       // 2. Fetch the user profiles
-      final membersUsers = await _groupRepository.getGroupMembersAsUsers(group.id);
+      final membersUsers =
+          await _groupRepository.getGroupMembersAsUsers(group.id);
 
       // 3. Identify managers based on group-specific role
       _groupManagerIds = groupMembersLinks
-          .where((m) => m.userRole == 'GROUP_MANAGER' || m.userRole == 'Manager' || m.userRole == 'group_manager')
+          .where((m) =>
+              m.userRole == 'GROUP_MANAGER' ||
+              m.userRole == 'Manager' ||
+              m.userRole == 'group_manager')
           .map((m) => m.userId)
           .where((id) => id != null)
           .cast<String>()
@@ -262,17 +311,27 @@ class GroupDetailsViewModel extends ChangeNotifier {
     }
   }
 
+  Future<DateTime?> announcementReadAt(int notificationId) {
+    final userId = currentUserId;
+    if (userId == null || userId.isEmpty) return Future.value(null);
+    return _announcementRepository.getAnnouncementReadAt(
+        notificationId, userId);
+  }
+
   Future<void> markNotificationAsRead(int notificationId) async {
+    if (viewAsBlocksWrite()) return;
     if (currentUserId == null || currentUserId!.isEmpty) {
       return;
     }
 
     try {
-      await _announcementRepository.markAnnouncementAsRead(notificationId, currentUserId!);
+      final wasNeedingAttention = messageNeedsAttention(notificationId);
+      await _announcementRepository.markAnnouncementAsRead(
+          notificationId, currentUserId!);
       _readNotificationIds.add(notificationId);
+      _newReplyCounts.remove(notificationId);
 
-      // Atualiza o contador
-      if (_unreadNotificationCount > 0) {
+      if (wasNeedingAttention && _unreadNotificationCount > 0) {
         _unreadNotificationCount--;
       }
 
@@ -290,12 +349,15 @@ class GroupDetailsViewModel extends ChangeNotifier {
     }
 
     try {
-      _readNotificationIds = await _announcementRepository.getReadAnnouncementIds(group.id, currentUserId!);
-      // Força atualização do contador buscando as notificações atuais
+      _memberJoinDate = await _announcementRepository.memberJoinDate(
+          group.id, currentUserId!);
+      _readNotificationIds = await _announcementRepository
+          .getReadAnnouncementIds(group.id, currentUserId!);
       final notifications = await CcViewNotificationsUsersTable().queryRows(
         queryFn: (q) => q.eq('group_id', group.id),
       );
-      _updateUnreadCount(notifications);
+      _latestNotifications = _visibleNotifications(notifications);
+      await _reloadReplyCounts();
       notifyListeners();
     } catch (e) {
       debugPrint('Error refreshing read notifications: $e');
@@ -313,35 +375,101 @@ class GroupDetailsViewModel extends ChangeNotifier {
 
     try {
       // First load existing read status
-      _readNotificationIds = await _announcementRepository.getReadAnnouncementIds(group.id, currentUserId!);
+      _memberJoinDate = await _announcementRepository.memberJoinDate(
+          group.id, currentUserId!);
+      _readNotificationIds = await _announcementRepository
+          .getReadAnnouncementIds(group.id, currentUserId!);
 
       // Cancel previous subscription if exists
       await _notificationsSubscription?.cancel();
 
       // Subscribe to stream to keep count updated
       // Also refresh read status when stream updates (handles edited announcements)
-      _notificationsSubscription =
-          _announcementRepository.getAnnouncementsStream(group.id).listen((notifications) async {
-        // Recarrega os IDs lidos do banco para detectar anúncios editados
-        // (que tiveram seus registros de leitura deletados)
-        final newReadIds = await _announcementRepository.getReadAnnouncementIds(group.id, currentUserId!);
-        final readIdsChanged = !_setEquals(_readNotificationIds, newReadIds);
+      _notificationsSubscription = _announcementRepository
+          .getAnnouncementsStream(group.id)
+          .listen((notifications) async {
+        if (_disposed || currentUserId == null || currentUserId!.isEmpty) {
+          return;
+        }
+        final joinDate = await _announcementRepository.memberJoinDate(
+            group.id, currentUserId!);
+        if (_disposed) return;
+        final newReadIds = await _announcementRepository.getReadAnnouncementIds(
+            group.id, currentUserId!);
+        if (_disposed) return;
+        final readIdsChanged = !_setEquals(_readNotificationIds, newReadIds) ||
+            joinDate != _memberJoinDate;
+        _memberJoinDate = joinDate;
         _readNotificationIds = newReadIds;
-        _updateUnreadCount(notifications, forceNotify: readIdsChanged);
+        _latestNotifications = notifications;
+        await _reloadReplyCounts(forceNotify: readIdsChanged);
+      });
+
+      _replyPollTimer?.cancel();
+      _replyPollTimer = Timer.periodic(const Duration(seconds: 20), (_) {
+        if (_disposed) return;
+        _reloadReplyCounts();
       });
     } catch (e) {
       debugPrint('Error loading read notifications: $e');
     }
   }
 
-  void _updateUnreadCount(List<CcViewNotificationsUsersRow> notifications, {bool forceNotify = false}) {
+  List<CcViewNotificationsUsersRow> _visibleNotifications(
+    List<CcViewNotificationsUsersRow> notifications,
+  ) {
+    return notifications
+        .where((n) =>
+            n.recipientUserId == null ||
+            n.recipientUserId == currentUserId ||
+            n.userId == currentUserId)
+        .toList();
+  }
+
+  Future<void> _reloadReplyCounts({bool forceNotify = false}) async {
+    if (_disposed) return;
+    final userId = currentUserId;
+    if (userId == null || userId.isEmpty) return;
+
+    final visible = _visibleNotifications(_latestNotifications);
+    final sharingGroupIds = <int, int>{
+      for (final message in visible)
+        if (message.id != null) message.id!: group.id,
+    };
+    final attention = await _announcementRepository.getReplyAttention(
+      userId: userId,
+      sharingGroupIds: sharingGroupIds,
+    );
+    final nextCounts = {
+      for (final entry in attention.unseen.entries)
+        entry.key: entry.value.count,
+    };
+    final repliesChanged = !_replyCountsEqual(_newReplyCounts, nextCounts) ||
+        !_replyCountsEqual(_commentCounts, attention.totals);
+    if (_disposed) return;
+    _newReplyCounts = nextCounts;
+    _commentCounts = attention.totals;
+    _updateUnreadCount(visible, forceNotify: forceNotify || repliesChanged);
+  }
+
+  bool _replyCountsEqual(Map<int, int> a, Map<int, int> b) {
+    if (a.length != b.length) return false;
+    for (final entry in a.entries) {
+      if (b[entry.key] != entry.value) return false;
+    }
+    return true;
+  }
+
+  void _updateUnreadCount(List<CcViewNotificationsUsersRow> notifications,
+      {bool forceNotify = false}) {
+    if (_disposed) return;
     // Só conta broadcast + privadas para/do usuário atual
     final visible = notifications.where((n) =>
         n.recipientUserId == null ||
         n.recipientUserId == currentUserId ||
         n.userId == currentUserId);
     final ids = visible.map((n) => n.id!).toSet();
-    final unreadCount = ids.where((id) => !_readNotificationIds.contains(id)).length;
+    final unreadCount = ids.where(messageNeedsAttention).length;
 
     if (_unreadNotificationCount != unreadCount || forceNotify) {
       _unreadNotificationCount = unreadCount;
@@ -356,7 +484,8 @@ class GroupDetailsViewModel extends ChangeNotifier {
 
   Future<void> _loadPendingModerationCount() async {
     try {
-      _pendingModerationCount = await ExperienceModerationRepository().getPendingCountForGroup(group.id);
+      _pendingModerationCount = await ExperienceModerationRepository()
+          .getPendingCountForGroup(group.id);
       notifyListeners();
     } catch (e) {
       debugPrint('Error loading pending moderation count: $e');
@@ -372,9 +501,11 @@ class GroupDetailsViewModel extends ChangeNotifier {
     _isLoadingResources = true;
     notifyListeners();
     try {
-      final publishedOnly = !currentUserIsGroupManager &&
-          !FFAppState().loginUser.roles.hasAdminOrGroupManager;
-      _groupFileResources = await _fileResourceRepository.getFileResourcesForGroup(
+      final staffSeesDrafts = !viewAsBlocksWrite() &&
+          FFAppState().loginUser.roles.hasAdminOrGroupManager;
+      final publishedOnly = !currentUserIsGroupManager && !staffSeesDrafts;
+      _groupFileResources =
+          await _fileResourceRepository.getFileResourcesForGroup(
         group.id,
         publishedOnly: publishedOnly,
       );
@@ -392,6 +523,7 @@ class GroupDetailsViewModel extends ChangeNotifier {
     required String url,
     required String type,
   }) async {
+    if (viewAsBlocksWrite()) return false;
     if (currentUserId == null) return false;
     final ok = await _fileResourceRepository.createFileResource(
       title: title,
@@ -406,19 +538,25 @@ class GroupDetailsViewModel extends ChangeNotifier {
   }
 
   Future<bool> deleteFileResource(int resourceId) async {
-    final ok = await _fileResourceRepository.deleteFileResource(resourceId, group.id);
+    if (viewAsBlocksWrite()) return false;
+    final ok =
+        await _fileResourceRepository.deleteFileResource(resourceId, group.id);
     if (ok) await loadFileResources();
     return ok;
   }
 
-  Future<bool> toggleFileResourceStatus(int resourceId, String currentStatus) async {
+  Future<bool> toggleFileResourceStatus(
+      int resourceId, String currentStatus) async {
+    if (viewAsBlocksWrite()) return false;
     final newStatus = currentStatus == 'published' ? 'draft' : 'published';
-    final ok = await _fileResourceRepository.updateFileResource(resourceId, status: newStatus);
+    final ok = await _fileResourceRepository.updateFileResource(resourceId,
+        status: newStatus);
     if (ok) await loadFileResources();
     return ok;
   }
 
   Future<bool> unlinkFileResource(int resourceId, int portalItemId) async {
+    if (viewAsBlocksWrite()) return false;
     final ok = await _fileResourceRepository.unlinkPortalItemFromGroup(
       resourceId: resourceId,
       groupId: group.id,
@@ -429,7 +567,15 @@ class GroupDetailsViewModel extends ChangeNotifier {
   }
 
   @override
+  void notifyListeners() {
+    if (_disposed) return;
+    super.notifyListeners();
+  }
+
+  @override
   void dispose() {
+    _disposed = true;
+    _replyPollTimer?.cancel();
     _notificationsSubscription?.cancel();
     tabController?.removeListener(_onTabChanged);
     tabController?.dispose();
@@ -437,26 +583,31 @@ class GroupDetailsViewModel extends ChangeNotifier {
   }
 
   Future<void> deleteExperience(int id) async {
+    if (viewAsBlocksWrite()) return;
     await _experienceRepository.deleteExperience(id);
     notifyListeners();
   }
 
   Future<void> unpublishExperience(int id) async {
+    if (viewAsBlocksWrite()) return;
     await _experienceRepository.unpublishExperience(id);
     notifyListeners();
   }
 
   Future<void> deleteEvent(int id) async {
+    if (viewAsBlocksWrite()) return;
     await _eventRepository.deleteEvent(id);
     notifyListeners();
   }
 
   Future<void> deleteNotification(int id) async {
+    if (viewAsBlocksWrite()) return;
     await _announcementRepository.deleteAnnouncement(id);
     notifyListeners();
   }
 
   Future<bool> leaveGroup(BuildContext context) async {
+    if (viewAsBlocksWrite()) return false;
     if (currentUserId == null || currentUserId!.isEmpty) return false;
 
     // Optional: Add loading state if needed for UI feedback
@@ -488,6 +639,7 @@ class GroupDetailsViewModel extends ChangeNotifier {
 
   /// Adds a user directly to the group (status: Active)
   Future<bool> addMember(String userId) async {
+    if (viewAsBlocksWrite()) return false;
     try {
       await _groupRepository.addUserToGroup(group.id, userId);
       await refreshMembers();
@@ -506,6 +658,7 @@ class GroupDetailsViewModel extends ChangeNotifier {
 
   /// Removes a member from the group
   Future<bool> removeMember(String userId) async {
+    if (viewAsBlocksWrite()) return false;
     try {
       await _groupRepository.removeUserFromGroup(group.id, userId);
       await refreshMembers();

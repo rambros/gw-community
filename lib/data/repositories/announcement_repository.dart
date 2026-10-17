@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/domain/community/reply_attention.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 
 class AnnouncementRepository {
@@ -19,6 +20,7 @@ class AnnouncementRepository {
     int? groupId,
     String visibility = 'group_only',
     String? recipientUserId,
+    bool isPinned = false,
   }) async {
     await CcSharingsTable().insert({
       'title': title,
@@ -29,6 +31,8 @@ class AnnouncementRepository {
       'updated_at': supaSerialize<DateTime>(getCurrentTimestamp),
       'visibility': visibility,
       'type': ExperienceType.notification.name,
+      'is_pinned': isPinned,
+      if (isPinned) 'pinned_at': supaSerialize<DateTime>(getCurrentTimestamp),
       if (recipientUserId != null) 'recipient_user_id': recipientUserId,
     });
   }
@@ -55,6 +59,9 @@ class AnnouncementRepository {
     required String text,
     required String privacy,
     required String visibility,
+    required bool isPinned,
+    required bool wasPinned,
+    bool resetReads = true,
   }) async {
     await CcSharingsTable().update(
       data: {
@@ -63,12 +70,17 @@ class AnnouncementRepository {
         'updated_at': supaSerialize<DateTime>(getCurrentTimestamp),
         'privacy': privacy,
         'visibility': visibility,
+        'is_pinned': isPinned,
+        if (isPinned && !wasPinned) 'pinned_at': supaSerialize<DateTime>(getCurrentTimestamp),
+        if (!isPinned) 'pinned_at': null,
       },
       matchingRows: (rows) => rows.eqOrNull('id', id),
     );
 
-    // Reset read status for all users so it shows as new
-    await CcSharingReadsTable().delete(matchingRows: (rows) => rows.eq('sharing_id', id));
+    // A content edit shows the message as new. Pinning alone does not.
+    if (resetReads) {
+      await CcSharingReadsTable().delete(matchingRows: (rows) => rows.eq('sharing_id', id));
+    }
   }
 
   Future<void> toggleLock(int id, bool locked) async {
@@ -116,31 +128,41 @@ class AnnouncementRepository {
     return controller.stream.asBroadcastStream();
   }
 
-  /// Marca um anúncio como lido para o usuário atual
-  Future<void> markAnnouncementAsRead(int announcementId, String userId) async {
+  /// Horário em que esta pessoa abriu a mensagem pela última vez.
+  /// Nulo se ela nunca abriu.
+  Future<DateTime?> getAnnouncementReadAt(int announcementId, String userId) async {
     try {
-      // Verifica se já existe um registro
-      final existing = await CcSharingReadsTable().queryRows(
+      final rows = await CcSharingReadsTable().queryRows(
         queryFn: (q) => q.eq('sharing_id', announcementId).eq('user_id', userId),
       );
+      if (rows.isEmpty) return null;
+      return rows.first.readAt;
+    } catch (e) {
+      debugPrint('Error fetching announcement read time: $e');
+      return null;
+    }
+  }
 
-      if (existing.isEmpty) {
-        // Se não existe, cria um novo registro
-        await CcSharingReadsTable().insert({
+  /// Marca um anúncio como visto agora. Reabrir atualiza [read_at], para que
+  /// respostas anteriores deixem de contar como novas.
+  Future<void> markAnnouncementAsRead(int announcementId, String userId) async {
+    try {
+      await SupaFlow.client.from('cc_sharing_reads').upsert(
+        {
           'sharing_id': announcementId,
           'user_id': userId,
-          'read_at': supaSerialize<DateTime>(getCurrentTimestamp),
-        });
-      }
+          'read_at': supaSerialize<DateTime>(getCurrentTimestamp.toUtc()),
+        },
+        onConflict: 'sharing_id,user_id',
+      );
     } catch (e) {
-      // Ignora erro silenciosamente - se falhar não deve impedir o fluxo
       debugPrint('Error marking notification as read: $e');
     }
   }
 
   /// Busca a data de entrada do usuário no grupo.
   /// Retorna null se o usuário não for membro.
-  Future<DateTime?> _getMemberJoinDate(int groupId, String userId) async {
+  Future<DateTime?> memberJoinDate(int groupId, String userId) async {
     try {
       final rows = await CcGroupMembersTable().queryRows(
         queryFn: (q) => q.eq('group_id', groupId).eq('user_id', userId),
@@ -152,12 +174,11 @@ class AnnouncementRepository {
   }
 
   /// Busca os IDs de anúncios lidos pelo usuário no grupo.
-  /// Apenas anúncios publicados APÓS a entrada do usuário no grupo são considerados.
-  /// Mensagens privadas só são consideradas se forem para o usuário ou enviadas por ele.
+  /// Uma leitura já gravada permanece, mesmo se a mensagem for anterior à
+  /// entrada no grupo. Mensagens privadas só entram se forem para o usuário
+  /// ou enviadas por ele.
   Future<Set<int>> getReadAnnouncementIds(int groupId, String userId) async {
     try {
-      final joinDate = await _getMemberJoinDate(groupId, userId);
-
       final notifications = await CcViewNotificationsUsersTable().queryRows(
         queryFn: (q) => q.eq('group_id', groupId),
       );
@@ -165,9 +186,6 @@ class AnnouncementRepository {
       final relevantIds = notifications
           .where((n) =>
               n.id != null &&
-              // Só mensagens após a entrada do membro
-              (joinDate == null || (n.updatedAt != null && n.updatedAt!.isAfter(joinDate))) &&
-              // Broadcast ou privado endereçado a / enviado por este usuário
               (n.recipientUserId == null || n.recipientUserId == userId || n.userId == userId))
           .map((n) => n.id!)
           .toList();
@@ -190,7 +208,8 @@ class AnnouncementRepository {
   /// Mensagens privadas só contam se forem para o usuário ou enviadas por ele.
   Future<int> getUnreadAnnouncementCount(int groupId, String userId) async {
     try {
-      final joinDate = await _getMemberJoinDate(groupId, userId);
+      final membership = await _membership(groupId, userId);
+      final joinDate = membership?.createdAt;
 
       final notifications = await CcViewNotificationsUsersTable().queryRows(
         queryFn: (q) => q.eq('group_id', groupId),
@@ -209,7 +228,17 @@ class AnnouncementRepository {
       );
 
       final readIds = reads.map((r) => r.experienceId).toSet();
-      return relevantIds.where((id) => !readIds.contains(id)).length;
+      final replyCounts = await _replyCountsFor(
+        userId: userId,
+        isFacilitator: _isFacilitatorRole(membership?.userRole),
+        sharingIds: relevantIds,
+        reads: reads,
+      );
+      return messagesNeedingAttention(
+        messageIds: relevantIds,
+        readIds: readIds,
+        replyCounts: replyCounts,
+      );
     } catch (e) {
       debugPrint('Error fetching unread announcement count: $e');
       return 0;
@@ -251,8 +280,18 @@ class AnnouncementRepository {
           queryFn: (q) => q.eq('user_id', userId).inFilter('sharing_id', relevantIds),
         );
         final readIds = reads.map((r) => r.experienceId).toSet();
+        final replyCounts = await _replyCountsFor(
+          userId: userId,
+          isFacilitator: _isFacilitatorRole(membership.userRole),
+          sharingIds: relevantIds,
+          reads: reads,
+        );
 
-        total += relevantIds.where((id) => !readIds.contains(id)).length;
+        total += messagesNeedingAttention(
+          messageIds: relevantIds,
+          readIds: readIds,
+          replyCounts: replyCounts,
+        );
       }
 
       return total;
@@ -277,6 +316,135 @@ class AnnouncementRepository {
       debugPrint('Error fetching latest post date: $e');
       return null;
     }
+  }
+
+  /// Replies from other people after this facilitator last opened each message.
+  /// Members get an empty snapshot. Keys are sharing ids the caller can see.
+  Future<FacilitatorCommentSnapshot> getReplyAttention({
+    required String userId,
+    required Map<int, int> sharingGroupIds,
+  }) async {
+    if (sharingGroupIds.isEmpty) return FacilitatorCommentSnapshot.empty;
+    try {
+      final groupIds = sharingGroupIds.values.toSet().toList();
+      final memberships = await CcGroupMembersTable().queryRows(
+        queryFn: (q) => q.eq('user_id', userId).inFilter('group_id', groupIds),
+      );
+      final facilitatorGroups = memberships
+          .where((m) => m.groupId != null && _isFacilitatorRole(m.userRole))
+          .map((m) => m.groupId!)
+          .toSet();
+      if (facilitatorGroups.isEmpty) return FacilitatorCommentSnapshot.empty;
+
+      final sharingIds = [
+        for (final entry in sharingGroupIds.entries)
+          if (facilitatorGroups.contains(entry.value)) entry.key,
+      ];
+      if (sharingIds.isEmpty) return FacilitatorCommentSnapshot.empty;
+
+      final reads = await CcSharingReadsTable().queryRows(
+        queryFn: (q) => q.eq('user_id', userId).inFilter('sharing_id', sharingIds),
+      );
+      return await _replyAttention(
+        userId: userId,
+        sharingIds: sharingIds,
+        readAtBySharing: {
+          for (final read in reads) read.experienceId: read.readAt,
+        },
+      );
+    } catch (e) {
+      debugPrint('Error fetching reply attention: $e');
+      return FacilitatorCommentSnapshot.empty;
+    }
+  }
+
+  /// True when [userId] is a facilitator of this group, not merely an app admin.
+  Future<bool> isGroupFacilitator({
+    required int? groupId,
+    required String userId,
+  }) async {
+    if (groupId == null || userId.isEmpty) return false;
+    try {
+      final membership = await _membership(groupId, userId);
+      return _isFacilitatorRole(membership?.userRole);
+    } catch (e) {
+      debugPrint('Error checking group facilitator: $e');
+      return false;
+    }
+  }
+
+  Future<CcGroupMembersRow?> _membership(int groupId, String userId) async {
+    final rows = await CcGroupMembersTable().queryRows(
+      queryFn: (q) => q.eq('group_id', groupId).eq('user_id', userId),
+    );
+    return rows.isNotEmpty ? rows.first : null;
+  }
+
+  bool _isFacilitatorRole(String? role) =>
+      UserRole.fromString(role) == UserRole.groupManager;
+
+  Future<Map<int, int>> _replyCountsFor({
+    required String userId,
+    required bool isFacilitator,
+    required List<int> sharingIds,
+    required List<CcExperienceReadsRow> reads,
+  }) async {
+    if (!isFacilitator || sharingIds.isEmpty) return {};
+    final attention = await _replyAttention(
+      userId: userId,
+      sharingIds: sharingIds,
+      readAtBySharing: {
+        for (final read in reads) read.experienceId: read.readAt,
+      },
+    );
+    return {
+      for (final entry in attention.unseen.entries) entry.key: entry.value.count,
+    };
+  }
+
+  Future<FacilitatorCommentSnapshot> _replyAttention({
+    required String userId,
+    required List<int> sharingIds,
+    required Map<int, DateTime> readAtBySharing,
+  }) async {
+    if (sharingIds.isEmpty) return FacilitatorCommentSnapshot.empty;
+    final rows = await SupaFlow.client
+        .from('cc_comments')
+        .select('sharing_id, user_id, created_at')
+        .inFilter('sharing_id', sharingIds);
+
+    final comments = <SharingComment>[];
+    for (final row in rows) {
+      final sharingId = _asInt(row['sharing_id']);
+      final createdAt = _asDateTime(row['created_at']);
+      if (sharingId == null || createdAt == null) continue;
+      comments.add(SharingComment(
+        sharingId: sharingId,
+        createdAt: createdAt,
+        userId: row['user_id']?.toString(),
+      ));
+    }
+
+    return FacilitatorCommentSnapshot(
+      unseen: replyAttentionBySharing(
+        viewerId: userId,
+        readAtBySharing: readAtBySharing,
+        comments: comments,
+      ),
+      totals: commentCountBySharing(comments),
+    );
+  }
+
+  int? _asInt(dynamic value) {
+    if (value is int) return value;
+    if (value is num) return value.toInt();
+    return null;
+  }
+
+  DateTime? _asDateTime(dynamic value) {
+    if (value is DateTime) return value;
+    if (value is String && value.isNotEmpty) return DateTime.tryParse(value);
+    return null;
   }
 
   // ==========================================================================

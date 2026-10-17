@@ -4,6 +4,8 @@ import 'package:gw_community/app_state.dart';
 import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:gw_community/data/repositories/announcement_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/domain/community/reply_attention.dart';
+import 'package:gw_community/ui/core/view_as/view_as_session.dart';
 
 class AnnouncementViewViewModel extends ChangeNotifier {
   AnnouncementViewViewModel({
@@ -11,6 +13,8 @@ class AnnouncementViewViewModel extends ChangeNotifier {
     required this.currentUserUid,
     required this.appState,
     this.groupModerators,
+    this.commentsReadAt,
+    this.highlightNewComments = false,
   }) : _repository = repository;
 
   final AnnouncementRepository _repository;
@@ -18,15 +22,48 @@ class AnnouncementViewViewModel extends ChangeNotifier {
   final FFAppState appState;
   final List<int>? groupModerators;
 
+  /// Last open, captured before this visit marks the message as read.
+  final DateTime? commentsReadAt;
+  final bool highlightNewComments;
+
   int? _announcementId;
   CcViewNotificationsUsersRow? _announcement;
   List<CcViewOrderedCommentsRow> _comments = [];
+  CommentListOrder _commentOrder = CommentListOrder.conversation;
+  bool _canSeeAllComments = false;
   bool _isLoading = false;
   bool _isActionInProgress = false;
   String? _errorMessage;
 
   CcViewNotificationsUsersRow? get announcement => _announcement;
-  List<CcViewOrderedCommentsRow> get comments => _comments;
+
+  /// Facilitators see every comment. Members see only what they wrote.
+  bool get canSeeAllComments => _canSeeAllComments;
+  CommentListOrder get commentOrder => _commentOrder;
+
+  bool get showCommentThread => canSeeAllComments || comments.isNotEmpty;
+
+  String get _viewerId =>
+      ViewAsSession.instance.subjectUserId(currentUserUid);
+
+  List<CcViewOrderedCommentsRow> get comments {
+    final visible = _canSeeAllComments
+        ? _comments
+        : _comments.where((comment) => comment.userId == _viewerId);
+    final list = List<CcViewOrderedCommentsRow>.of(visible);
+    if (_commentOrder == CommentListOrder.oldestFirst) {
+      list.sort((a, b) => _commentTime(a).compareTo(_commentTime(b)));
+    } else if (_commentOrder == CommentListOrder.newestFirst) {
+      list.sort((a, b) => _commentTime(b).compareTo(_commentTime(a)));
+    }
+    return list;
+  }
+
+  void cycleCommentOrder() {
+    _commentOrder = cycleCommentListOrder(_commentOrder);
+    notifyListeners();
+  }
+
   bool get isLoading => _isLoading;
   bool get isActionInProgress => _isActionInProgress;
   String? get errorMessage => _errorMessage;
@@ -42,6 +79,10 @@ class AnnouncementViewViewModel extends ChangeNotifier {
     _setLoading(true);
     try {
       _announcement = await _repository.getAnnouncementById(_announcementId!);
+      _canSeeAllComments = await _repository.isGroupFacilitator(
+        groupId: _announcement?.groupId,
+        userId: _viewerId,
+      );
       _comments = await _repository.getComments(_announcementId!);
       _clearError();
     } catch (e) {
@@ -70,6 +111,16 @@ class AnnouncementViewViewModel extends ChangeNotifier {
   bool get canEditAnnouncement => canDeleteAnnouncement;
 
   bool get _isAdmin => appState.loginUser.roles.hasAdmin;
+
+  bool isNewComment(CcViewOrderedCommentsRow comment) {
+    if (!highlightNewComments) return false;
+    return commentIsNewSinceRead(
+      authorId: comment.userId,
+      viewerId: currentUserUid,
+      createdAt: comment.createdAt,
+      readAt: commentsReadAt,
+    );
+  }
 
   bool canDeleteComment(String? userId) {
     if (userId == null) return _isAdmin;
@@ -142,5 +193,9 @@ class AnnouncementViewViewModel extends ChangeNotifier {
 
   void _clearError() {
     _errorMessage = null;
+  }
+
+  DateTime _commentTime(CcViewOrderedCommentsRow comment) {
+    return comment.createdAt ?? DateTime.fromMillisecondsSinceEpoch(0);
   }
 }

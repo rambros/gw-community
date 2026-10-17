@@ -64,4 +64,10 @@ class CcViewNotificationsUsersRow extends SupabaseDataRow {
   String? get recipientUserId => getField<String>('recipient_user_id');
   set recipientUserId(String? value) =>
       setField<String>('recipient_user_id', value);
+
+  bool get isPinned => getField<bool>('is_pinned') ?? false;
+  set isPinned(bool value) => setField<bool>('is_pinned', value);
+
+  DateTime? get pinnedAt => getField<DateTime>('pinned_at');
+  set pinnedAt(DateTime? value) => setField<DateTime>('pinned_at', value);
 }

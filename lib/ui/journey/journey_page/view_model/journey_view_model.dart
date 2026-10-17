@@ -3,6 +3,7 @@ import 'package:gw_community/data/repositories/journeys_repository.dart';
 import 'package:gw_community/data/repositories/step_activities_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/domain/models/journey_step_group.dart';
+import 'package:gw_community/ui/core/view_as/view_as_session.dart';
 
 class JourneyViewModel extends ChangeNotifier {
   final JourneysRepository _repository;
@@ -28,6 +29,8 @@ class JourneyViewModel extends ChangeNotifier {
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
+
+  bool _isDisposed = false;
 
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
@@ -145,7 +148,7 @@ class JourneyViewModel extends ChangeNotifier {
         }
       }
 
-      notifyListeners();
+      _notify();
     } catch (e) {
       _setError('Error loading journey: $e');
     } finally {
@@ -157,6 +160,7 @@ class JourneyViewModel extends ChangeNotifier {
     BuildContext context,
     Function(List<int>) onUpdateStartedJourneys,
   ) async {
+    if (viewAsBlocksWrite()) return;
     _setLoading(true);
     try {
       final created = await _repository.startJourney(currentUserUid, journeyId);
@@ -190,6 +194,7 @@ class JourneyViewModel extends ChangeNotifier {
     BuildContext context,
     Function(List<int>) onUpdateStartedJourneys,
   ) async {
+    if (viewAsBlocksWrite()) return;
     _setLoading(true);
     _clearError();
 
@@ -208,7 +213,7 @@ class JourneyViewModel extends ChangeNotifier {
       // Notificar caller para atualizar app state
       onUpdateStartedJourneys(updatedList);
 
-      notifyListeners();
+      _notify();
     } catch (e) {
       _setError('Error resetting journey: $e');
       rethrow;
@@ -250,14 +255,26 @@ class JourneyViewModel extends ChangeNotifier {
 
   // ========== HELPER METHODS ==========
 
+  @override
+  void dispose() {
+    _isDisposed = true;
+    super.dispose();
+  }
+
+  void _notify() {
+    if (!_isDisposed) notifyListeners();
+  }
+
   void _setLoading(bool value) {
+    if (_isDisposed) return;
     _isLoading = value;
-    notifyListeners();
+    _notify();
   }
 
   void _setError(String message) {
+    if (_isDisposed) return;
     _errorMessage = message;
-    notifyListeners();
+    _notify();
   }
 
   void _clearError() {

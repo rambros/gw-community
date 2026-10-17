@@ -5,6 +5,9 @@ import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/community_page/community_page.dart';
 import 'package:gw_community/ui/core/nav_bar/view_model/nav_bar_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
+import 'package:gw_community/ui/core/view_as/view_as_actions.dart';
+import 'package:gw_community/ui/core/view_as/view_as_banner.dart';
+import 'package:gw_community/ui/core/view_as/view_as_session.dart';
 import 'package:gw_community/ui/home/home_page/home_page.dart';
 import 'package:gw_community/ui/journey/journey_list_page/journey_list_page.dart';
 import 'package:gw_community/ui/journey/journey_page/journey_page.dart';
@@ -40,13 +43,24 @@ class _NavBarPageState extends State<NavBarPage> {
       create: (context) => NavBarViewModel()..setInitialPage(widget.initialPage, widget.page),
       child: Consumer<NavBarViewModel>(
         builder: (context, viewModel, child) {
+          final viewAs = context.watch<ViewAsSession>();
           // Build tabs based on configuration and per-group module flags
-          final tabs = _buildTabs(appState, config);
+          final tabs = _buildTabs(appState, config, viewAs.target?.authUserId);
           final currentIndex = tabs.keys.toList().indexOf(viewModel.currentPageName);
+          final page = viewModel.currentPage ?? tabs[viewModel.currentPageName];
 
           return Scaffold(
             resizeToAvoidBottomInset: !widget.disableResizeToAvoidBottomInset,
-            body: viewModel.currentPage ?? tabs[viewModel.currentPageName],
+            body: Column(
+              children: [
+                if (viewAs.isActive)
+                  ViewAsBanner(
+                    displayName: viewAs.target?.displayName ?? '',
+                    onExit: () => ViewAsActions.exit(context),
+                  ),
+                Expanded(child: page ?? const SizedBox.shrink()),
+              ],
+            ),
             bottomNavigationBar: _FittingBottomNavBar(
               currentIndex: currentIndex,
               onTap: (i) => viewModel.selectTab(tabs.keys.toList()[i]),
@@ -61,9 +75,10 @@ class _NavBarPageState extends State<NavBarPage> {
   }
 
   /// Build tabs map based on app configuration and per-group module flags
-  Map<String, Widget> _buildTabs(FFAppState appState, AppConfig config) {
+  Map<String, Widget> _buildTabs(FFAppState appState, AppConfig config, String? viewAsUserId) {
+    final subjectKey = viewAsUserId ?? 'self';
     final tabs = <String, Widget>{
-      'homePage': const HomePage(),
+      'homePage': HomePage(key: ValueKey('home-$subjectKey')),
     };
 
     // Library tab - only include if enabled for the user's group
@@ -74,15 +89,15 @@ class _NavBarPageState extends State<NavBarPage> {
     // Journey tab - only include if enabled for the user's group
     if (appState.enableJourneyModule) {
       if (config.enableJourneyList) {
-        tabs['journeyPage'] = const JourneyListPage();
+        tabs['journeyPage'] = JourneyListPage(key: ValueKey('journeys-$subjectKey'));
       } else {
-        tabs['journeyPage'] = const JourneyPage(journeyId: 1);
+        tabs['journeyPage'] = JourneyPage(key: ValueKey('journey-$subjectKey'), journeyId: 1);
       }
     }
 
     // Community tab - enabled globally AND per-group
     if (config.enableCommunityModule && appState.enableCommunityModule) {
-      tabs['communityPage'] = const CommunityPage();
+      tabs['communityPage'] = CommunityPage(key: ValueKey('community-$subjectKey'));
     }
 
     tabs['userProfilePage'] = const UserProfilePage();

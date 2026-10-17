@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gw_community/data/repositories/step_activities_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/ui/core/view_as/view_as_session.dart';
 
 class StepDetailsViewModel extends ChangeNotifier {
   final StepActivitiesRepository _repository;
@@ -43,7 +44,7 @@ class StepDetailsViewModel extends ChangeNotifier {
       }
 
       // Sync missing activities (for activities added after journey started)
-      if (userStepRow.journeyStepId != null) {
+      if (!viewAsBlocksWrite() && userStepRow.journeyStepId != null) {
         await _repository.syncMissingActivities(
           currentUserUid,
           userStepRow.id!,
@@ -73,7 +74,9 @@ class StepDetailsViewModel extends ChangeNotifier {
         });
 
       final userJourneyId = userStepRow.userJourneyId;
-      if (userStepRow.id != null && userJourneyId != null) {
+      if (!viewAsBlocksWrite() &&
+          userStepRow.id != null &&
+          userJourneyId != null) {
         await _repository.advanceStepIfRequiredActivitiesDone(
           userId: currentUserUid,
           userStepId: userStepRow.id!,
@@ -101,7 +104,7 @@ class StepDetailsViewModel extends ChangeNotifier {
     // Abre a atividade na hora. A conclusão segue sem segurar a transição.
     _navigateToActivityPage(activity, navigateToActivity);
 
-    if (activity.activityStatus != 'completed') {
+    if (!viewAsBlocksWrite() && activity.activityStatus != 'completed') {
       try {
         await _repository.completeActivity(activity.id!);
         // Reload also advances the step when every required activity is done.
@@ -138,6 +141,14 @@ class StepDetailsViewModel extends ChangeNotifier {
         'stepTextContent': activity.text,
         'activityId': activity.stepActivityId,
         'activityLabel': activity.activityLabel,
+      });
+    } else if (activity.activityType == 'image') {
+      navigateToActivity('stepImagePage', {
+        'activityRow': activity,
+      });
+    } else if (activity.activityType == 'pdf') {
+      navigateToActivity('stepPdfPage', {
+        'activityRow': activity,
       });
     } else if (activity.activityType == 'video') {
       navigateToActivity('stepVideoPlayerPage', {

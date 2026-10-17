@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/event_repository.dart';
+import 'package:gw_community/data/repositories/group_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/event_edit_page/view_model/event_edit_view_model.dart';
+import 'package:gw_community/ui/community/widgets/event_recurrence_fields.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_drop_down.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
@@ -38,6 +40,7 @@ class _EventEditPageState extends State<EventEditPage> {
     if (viewModel == null && widget.eventRow != null) {
       viewModel = EventEditViewModel(
         repository: context.read<EventRepository>(),
+        groupRepository: context.read<GroupRepository>(),
         currentUserUid: context.currentUserIdOrEmpty,
         event: widget.eventRow!,
       );
@@ -138,10 +141,11 @@ class _EventEditFormState extends State<_EventEditForm> {
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(4.0, 8.0, 4.0, 16.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
             context.l10n.eventHeaderImage,
+            textAlign: TextAlign.center,
             style: AppTheme.of(context).labelLarge.override(
                   font: GoogleFonts.poppins(
                     fontWeight: AppTheme.of(context).labelLarge.fontWeight,
@@ -150,22 +154,45 @@ class _EventEditFormState extends State<_EventEditForm> {
                   color: AppTheme.of(context).primary,
                 ),
           ),
+          Text(
+            context.l10n.eventHeaderImageSize,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+            style: AppTheme.of(context).bodySmall.override(
+                  font: GoogleFonts.poppins(),
+                  color: AppTheme.of(context).secondaryText,
+                ),
+          ),
           const SizedBox(height: 8.0),
+          if (vm.isUsingGroupImage)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: Text(
+                context.l10n.usingGroupImage,
+                style: AppTheme.of(context).bodySmall.override(
+                      font: GoogleFonts.poppins(),
+                      color: AppTheme.of(context).secondaryText,
+                    ),
+              ),
+            ),
           if (hasImage)
             Container(
-              width: double.infinity,
-              height: 140.0,
+              width: 120.0,
+              height: 120.0,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.0),
+                borderRadius: BorderRadius.circular(16.0),
                 border: Border.all(
                   color: AppTheme.of(context).alternate,
                   width: 1.0,
                 ),
               ),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(8.0),
+                borderRadius: BorderRadius.circular(16.0),
                 child: Image.network(
                   imageUrl,
+                  width: 120.0,
+                  height: 120.0,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
                     return Container(
@@ -208,6 +235,11 @@ class _EventEditFormState extends State<_EventEditForm> {
               borderRadius: BorderRadius.circular(12.0),
             ),
           ),
+          if (vm.hasCustomImage && vm.groupImageUrl != null && vm.groupImageUrl!.isNotEmpty)
+            TextButton(
+              onPressed: vm.isSaving ? null : vm.useGroupImage,
+              child: Text(context.l10n.useGroupImage),
+            ),
         ],
       ),
     );
@@ -285,6 +317,12 @@ class _EventEditFormState extends State<_EventEditForm> {
                   _buildDateField(context, vm, label: context.l10n.startDate),
                   _buildEndDateField(context, vm),
                 ],
+                EventRecurrenceFields(
+                  recurrence: vm.recurrence,
+                  until: vm.recurrenceUntil,
+                  onRecurrenceChanged: vm.setRecurrence,
+                  onUntilChanged: vm.setRecurrenceUntil,
+                ),
                 _buildTextField(
                   context,
                   vm.urlRegistrationController,

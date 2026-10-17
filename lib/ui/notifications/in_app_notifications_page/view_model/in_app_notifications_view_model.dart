@@ -19,6 +19,7 @@ class UnifiedNotificationItem {
   final CcViewNotificationsUsersRow? announcement;
   final String? groupName;
   final int? groupId;
+  final int newReplyCount;
 
   UnifiedNotificationItem.fromSystem(CcNotificationsRow n)
       : source = 'system',
@@ -30,16 +31,19 @@ class UnifiedNotificationItem {
         systemNotification = n,
         announcement = null,
         groupName = null,
-        groupId = n.groupId;
+        groupId = n.groupId,
+        newReplyCount = 0;
 
   UnifiedNotificationItem.fromAnnouncement(
     CcViewNotificationsUsersRow a, {
     required this.isRead,
+    this.newReplyCount = 0,
+    DateTime? activityAt,
   })  : source = 'announcement',
         id = a.id!,
         title = a.title ?? 'Message',
         message = a.text,
-        createdAt = a.createdAt ?? a.updatedAt ?? DateTime.now(),
+        createdAt = activityAt ?? a.createdAt ?? a.updatedAt ?? DateTime.now(),
         systemNotification = null,
         announcement = a,
         groupName = a.groupName,
@@ -112,12 +116,27 @@ class InAppNotificationsViewModel extends ChangeNotifier {
                     q.eq('user_id', userId).inFilter('sharing_id', visibleIds),
               );
               final readIds = reads.map((r) => r.experienceId).toSet();
+              final sharingGroupIds = <int, int>{
+                for (final announcement in visible)
+                  if (announcement.id != null && announcement.groupId != null)
+                    announcement.id!: announcement.groupId!,
+              };
+              final replies = await _announcementRepository.getReplyAttention(
+                userId: userId,
+                sharingGroupIds: sharingGroupIds,
+              );
 
               announcementItems = visible
-                  .map((a) => UnifiedNotificationItem.fromAnnouncement(
-                        a,
-                        isRead: readIds.contains(a.id),
-                      ))
+                  .map((a) {
+                    final attention = replies.unseen[a.id];
+                    final newReplies = attention?.count ?? 0;
+                    return UnifiedNotificationItem.fromAnnouncement(
+                      a,
+                      isRead: readIds.contains(a.id) && newReplies == 0,
+                      newReplyCount: newReplies,
+                      activityAt: attention?.latestAt,
+                    );
+                  })
                   .toList();
             }
           }
@@ -135,6 +154,12 @@ class InAppNotificationsViewModel extends ChangeNotifier {
       _isLoading = false;
       _safeNotifyListeners();
     }
+  }
+
+  Future<DateTime?> announcementReadAt(int announcementId) {
+    final userId = SupaFlow.client.auth.currentUser?.id;
+    if (userId == null) return Future.value(null);
+    return _announcementRepository.getAnnouncementReadAt(announcementId, userId);
   }
 
   Future<void> markAsRead(UnifiedNotificationItem item) async {

@@ -21,6 +21,7 @@ import 'package:gw_community/ui/community/group_edit_page/group_edit_page.dart';
 import 'package:gw_community/ui/community/group_moderation_page/group_moderation_page.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
+import 'package:gw_community/ui/core/view_as/view_as_session.dart';
 import 'package:gw_community/utils/context_extensions.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
@@ -52,7 +53,7 @@ class _GroupDetailsPageState extends State<GroupDetailsPage> with TickerProvider
         context.read<JourneysRepository>(),
         context.read<LearnRepository>(),
         widget.groupRow,
-        currentUserId: context.currentUserIdOrEmpty,
+        currentUserId: context.effectiveUserIdOrEmpty,
       )..init(this),
       child: const GroupDetailsPageView(),
     );
@@ -121,7 +122,7 @@ class GroupDetailsPageView extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             // Member management button (ADMIN or GROUP_MANAGER only)
-                            if (FFAppState().loginUser.roles.hasAdminOrGroupManager)
+                            if (!viewAsBlocksWrite() && FFAppState().loginUser.roles.hasAdminOrGroupManager)
                               FlutterFlowIconButton(
                                 borderColor: Colors.transparent,
                                 borderRadius: 30.0,
@@ -144,7 +145,7 @@ class GroupDetailsPageView extends StatelessWidget {
                                 },
                               ),
                             // Moderation button (ADMIN or GROUP_MANAGER only)
-                            if (FFAppState().loginUser.roles.hasAdminOrGroupManager)
+                            if (!viewAsBlocksWrite() && FFAppState().loginUser.roles.hasAdminOrGroupManager)
                               Badge(
                                 label: Text(
                                   '${viewModel.pendingModerationCount}',
@@ -179,9 +180,13 @@ class GroupDetailsPageView extends StatelessWidget {
                                   },
                                 ),
                               ),
-                            if (viewModel.isMember || FFAppState().loginUser.roles.hasAdminOrGroupManager)
+                            if (viewModel.isMember ||
+                                (!viewAsBlocksWrite() &&
+                                    FFAppState().loginUser.roles.hasAdminOrGroupManager))
                               const SizedBox(width: 4),
-                            if (viewModel.isMember || FFAppState().loginUser.roles.hasAdminOrGroupManager)
+                            if (viewModel.isMember ||
+                                (!viewAsBlocksWrite() &&
+                                    FFAppState().loginUser.roles.hasAdminOrGroupManager))
                               PopupMenuButton<String>(
                                 icon: const Icon(
                                   Icons.more_vert,
@@ -274,7 +279,7 @@ class GroupDetailsPageView extends StatelessWidget {
                                         ],
                                       ),
                                     ),
-                                  if (FFAppState().loginUser.roles.hasAdminOrGroupManager)
+                                  if (!viewAsBlocksWrite() && FFAppState().loginUser.roles.hasAdminOrGroupManager)
                                     PopupMenuItem(
                                       value: 'edit',
                                       child: Row(
@@ -289,7 +294,7 @@ class GroupDetailsPageView extends StatelessWidget {
                                         ],
                                       ),
                                     ),
-                                  if (viewModel.isMember)
+                                  if (viewModel.isMember && !viewAsBlocksWrite())
                                     PopupMenuItem(
                                       value: 'leave',
                                       child: Row(

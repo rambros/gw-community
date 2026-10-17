@@ -17,12 +17,14 @@ class AddCommentWidget extends StatelessWidget {
     this.parentId,
     this.photoUrl,
     required this.fullName,
+    this.notifyFacilitators = false,
   });
 
   final int experienceId;
   final int? parentId;
   final String? photoUrl;
   final String? fullName;
+  final bool notifyFacilitators;
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +34,7 @@ class AddCommentWidget extends StatelessWidget {
         currentUserUid: context.currentUserIdOrEmpty,
         experienceId: experienceId,
         parentId: parentId,
+        notifyFacilitators: notifyFacilitators,
       ),
       child: _AddCommentView(
         fullName: fullName,

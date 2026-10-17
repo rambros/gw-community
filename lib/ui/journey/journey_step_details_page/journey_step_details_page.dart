@@ -47,7 +47,7 @@ class _JourneyStepDetailsPageState extends State<JourneyStepDetailsPage> {
       final appState = FFAppState();
       _viewModel = JourneyViewModel(
         repository: context.read<JourneysRepository>(),
-        currentUserUid: context.currentUserIdOrEmpty,
+        currentUserUid: context.effectiveUserIdOrEmpty,
         journeyId: widget.journeyId!,
         startedJourneys: appState.listStartedJourneys,
       );

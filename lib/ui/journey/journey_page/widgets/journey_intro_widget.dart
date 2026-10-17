@@ -17,12 +17,14 @@ class JourneyIntroWidget extends StatefulWidget {
     required this.groupedSteps,
     required this.onStart,
     this.isJourneyStarted = false,
+    this.showStartButton = true,
   });
 
   final CcJourneysRow journey;
   final List<JourneyStepGroup<CcJourneyStepsRow>> groupedSteps;
   final VoidCallback onStart;
   final bool isJourneyStarted;
+  final bool showStartButton;
 
   @override
   State<JourneyIntroWidget> createState() => _JourneyIntroWidgetState();
@@ -127,8 +129,9 @@ class _JourneyIntroWidgetState extends State<JourneyIntroWidget> {
             ),
           ),
         // Start Button - placed after Steps section
-        Padding(
-          padding: const EdgeInsets.all(32.0),
+        if (widget.showStartButton)
+          Padding(
+            padding: const EdgeInsets.all(32.0),
           child: Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,

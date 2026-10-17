@@ -7,6 +7,7 @@ import 'package:gw_community/ui/community/community_page/widgets/experience_card
 import 'package:gw_community/ui/community/experience_add_page/experience_add_page.dart';
 import 'package:gw_community/ui/community/group_details_page/view_model/group_details_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
+import 'package:gw_community/ui/core/view_as/view_as_session.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
 
@@ -122,7 +123,8 @@ class GroupExperiencesTab extends StatelessWidget {
             ],
           ),
         ),
-        Positioned(
+        if (!viewAsBlocksWrite())
+          Positioned(
           bottom: 16.0,
           right: 16.0,
           child: FloatingActionButton.extended(

@@ -1,8 +1,9 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
 
+import 'package:flutter/material.dart';
 import 'package:gw_community/data/repositories/group_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/ui/core/view_as/view_as_session.dart';
 import 'package:gw_community/utils/upload_data.dart';
 
 class GroupEditViewModel extends ChangeNotifier {
@@ -189,6 +190,7 @@ class GroupEditViewModel extends ChangeNotifier {
 
   // Update Group
   Future<bool> updateGroup(BuildContext context) async {
+    if (viewAsBlocksWrite()) return false;
     if (!formKey.currentState!.validate()) {
       return false;
     }

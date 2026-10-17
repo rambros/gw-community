@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/event_repository.dart';
+import 'package:gw_community/data/repositories/group_repository.dart';
 import 'package:gw_community/index.dart';
 import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/event_add_page/view_model/event_add_view_model.dart';
+import 'package:gw_community/ui/community/widgets/event_recurrence_fields.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_drop_down.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
@@ -40,6 +42,7 @@ class _EventAddPageState extends State<EventAddPage> {
     logFirebaseEvent('screen_view', parameters: {'screen_name': 'eventAddPage'});
     viewModel = EventAddViewModel(
       repository: context.read<EventRepository>(),
+      groupRepository: context.read<GroupRepository>(),
       currentUserUid: context.currentUserIdOrEmpty,
       groupId: widget.groupId,
       groupName: widget.groupName,
@@ -145,6 +148,7 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
           child: SingleChildScrollView(
             child: Column(
               children: [
+                _buildImageSection(context, vm),
                 Padding(
                   padding: const EdgeInsetsDirectional.fromSTEB(4.0, 8.0, 4.0, 8.0),
                   child: FlutterFlowDropDown<String>(
@@ -202,6 +206,12 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
                   _buildDateField(context, vm, label: context.l10n.startDate),
                   _buildEndDateField(context, vm),
                 ],
+                EventRecurrenceFields(
+                  recurrence: vm.recurrence,
+                  until: vm.recurrenceUntil,
+                  onRecurrenceChanged: vm.setRecurrence,
+                  onUntilChanged: vm.setRecurrenceUntil,
+                ),
                 _buildTextField(
                   context: context,
                   controller: vm.urlRegistrationController,
@@ -250,6 +260,117 @@ class _EventAddPageFormState extends State<_EventAddPageForm> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildImageSection(BuildContext context, EventAddViewModel vm) {
+    final imageUrl = vm.displayImageUrl;
+    final hasImage = imageUrl != null && imageUrl.isNotEmpty;
+
+    return Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(4.0, 8.0, 4.0, 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            context.l10n.eventHeaderImage,
+            textAlign: TextAlign.center,
+            style: AppTheme.of(context).labelLarge.override(
+                  font: GoogleFonts.poppins(
+                    fontWeight: AppTheme.of(context).labelLarge.fontWeight,
+                    fontStyle: AppTheme.of(context).labelLarge.fontStyle,
+                  ),
+                  color: AppTheme.of(context).primary,
+                ),
+          ),
+          Text(
+            context.l10n.eventHeaderImageSize,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+            style: AppTheme.of(context).bodySmall.override(
+                  font: GoogleFonts.poppins(),
+                  color: AppTheme.of(context).secondaryText,
+                ),
+          ),
+          const SizedBox(height: 8.0),
+          if (hasImage)
+            Container(
+              width: 120.0,
+              height: 120.0,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16.0),
+                border: Border.all(
+                  color: AppTheme.of(context).alternate,
+                  width: 1.0,
+                ),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16.0),
+                child: Image.network(
+                  imageUrl,
+                  width: 120.0,
+                  height: 120.0,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      color: AppTheme.of(context).alternate,
+                      child: Icon(
+                        Icons.broken_image,
+                        color: AppTheme.of(context).secondaryText,
+                        size: 40.0,
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          if (vm.isUsingGroupImage)
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Text(
+                context.l10n.usingGroupImage,
+                style: AppTheme.of(context).bodySmall.override(
+                      font: GoogleFonts.poppins(),
+                      color: AppTheme.of(context).secondaryText,
+                    ),
+              ),
+            ),
+          const SizedBox(height: 8.0),
+          FFButtonWidget(
+            onPressed: vm.isSaving ? null : () => vm.uploadImage(context),
+            text: hasImage ? context.l10n.changeImage : context.l10n.uploadImage,
+            icon: Icon(
+              hasImage ? Icons.edit : Icons.upload,
+              size: 20.0,
+              color: AppTheme.of(context).primaryBackground,
+            ),
+            options: FFButtonOptions(
+              height: 44.0,
+              padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+              color: AppTheme.of(context).primary,
+              textStyle: AppTheme.of(context).labelMedium.override(
+                    font: GoogleFonts.poppins(
+                      fontWeight: AppTheme.of(context).labelMedium.fontWeight,
+                      fontStyle: AppTheme.of(context).labelMedium.fontStyle,
+                    ),
+                    color: AppTheme.of(context).primaryBackground,
+                  ),
+              elevation: 1.0,
+              borderSide: BorderSide(
+                color: AppTheme.of(context).secondaryBackground,
+                width: 0.5,
+              ),
+              borderRadius: BorderRadius.circular(12.0),
+            ),
+          ),
+          if (vm.hasCustomImage && vm.groupImageUrl != null && vm.groupImageUrl!.isNotEmpty)
+            TextButton(
+              onPressed: vm.isSaving ? null : vm.useGroupImage,
+              child: Text(context.l10n.useGroupImage),
+            ),
+        ],
       ),
     );
   }

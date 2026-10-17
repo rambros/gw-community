@@ -2,6 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 
+/// Stored in `url` for text resources, which have no file.
+const textResourcePlaceholderUrl = 'text://inline';
+
 class FileResourceRepository {
   // ==========================================================================
   // QUERIES
@@ -270,6 +273,7 @@ class FileResourceRepository {
     required String type,
     required int groupId,
     required String createdBy,
+    String? body,
   }) async {
     try {
       final now = DateTime.now().toUtc().toIso8601String();
@@ -279,6 +283,7 @@ class FileResourceRepository {
           'description': description,
         'url': url,
         'type': type,
+        if (body != null && body.isNotEmpty) 'body': body,
         'status': 'draft',
         'created_by': createdBy,
         'created_at': now,
@@ -303,6 +308,7 @@ class FileResourceRepository {
     String? title,
     String? description,
     String? url,
+    String? body,
     String? status,
   }) async {
     try {
@@ -311,6 +317,7 @@ class FileResourceRepository {
       if (title != null) data['title'] = title;
       if (description != null) data['description'] = description;
       if (url != null) data['url'] = url;
+      if (body != null) data['body'] = body;
       if (status != null) {
         data['status'] = status;
         if (status == 'published') data['published_at'] = now;
@@ -337,7 +344,7 @@ class FileResourceRepository {
         );
       } else {
         final resource = await getResourceById(resourceId);
-        if (resource != null) {
+        if (resource != null && resource.type != 'text') {
           try {
             await deleteSupabaseFileFromPublicUrl(resource.url);
           } catch (e) {

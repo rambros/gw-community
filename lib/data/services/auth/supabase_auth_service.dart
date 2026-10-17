@@ -200,7 +200,6 @@ class SupabaseAuthService implements AuthService {
     }
   }
 
-  @override
   static const String authCallbackUrl =
       'https://invite.callofthetime.org/login-callback';
 

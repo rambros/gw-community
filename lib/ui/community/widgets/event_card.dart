@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/domain/community/event_recurrence.dart';
 import 'package:gw_community/index.dart';
 import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
@@ -18,6 +19,8 @@ class EventCardWidget extends StatelessWidget {
     required this.time,
     this.event,
     this.groupId,
+    this.fallbackImageUrl,
+    this.showNextOccurrence = true,
   });
 
   final bool? userRegistered;
@@ -27,12 +30,37 @@ class EventCardWidget extends StatelessWidget {
   final String time;
   final CcEventsRow? event;
   final int? groupId;
+  final String? fallbackImageUrl;
+  final bool showNextOccurrence;
+
+  EventWindow? get _window {
+    final row = event;
+    if (!showNextOccurrence || row == null || row.eventDate == null) return null;
+    if (!EventRecurrence.repeats(row.recurrence)) return null;
+    return upcomingEventWindow(
+      anchor: row.eventDate!,
+      end: row.endDate,
+      recurrence: row.recurrence,
+      until: row.recurrenceUntil,
+      now: DateTime.now(),
+    );
+  }
+
+  String? get _thumbnailUrl {
+    final custom = event?.eventImageUrl?.trim();
+    if (custom != null && custom.isNotEmpty) return custom;
+    final fallback = fallbackImageUrl?.trim();
+    if (fallback != null && fallback.isNotEmpty) return fallback;
+    return null;
+  }
 
   String _displayDateTime(BuildContext context) {
     if (event != null) {
+      final start = _window?.start ?? event!.eventDate;
+      final end = _window?.end ?? event!.endDate;
       if (event!.eventType == 'multi_day') {
-        final startStr = event!.eventDate != null ? dateTimeFormat('d/M/y', event!.eventDate) : '';
-        final endStr = event!.endDate != null ? dateTimeFormat('d/M/y', event!.endDate) : '';
+        final startStr = start != null ? dateTimeFormat('d/M/y', start) : '';
+        final endStr = end != null ? dateTimeFormat('d/M/y', end) : '';
         if (startStr.isNotEmpty && endStr.isNotEmpty) {
           return '$startStr - $endStr';
         } else if (startStr.isNotEmpty) {
@@ -40,7 +68,7 @@ class EventCardWidget extends StatelessWidget {
         }
         return context.l10n.noDate;
       } else {
-        final dateStr = event!.eventDate != null ? dateTimeFormat('d/M/y', event!.eventDate) : date;
+        final dateStr = start != null ? dateTimeFormat('d/M/y', start) : date;
         final timeStr = event!.eventTime != null ? event!.eventTime.toString().substring(0, 5) : time;
         return timeStr.isNotEmpty ? '$dateStr, $timeStr' : dateStr;
       }
@@ -165,7 +193,7 @@ class EventCardWidget extends StatelessWidget {
                     ],
                   ),
                 ),
-                if (event?.eventImageUrl != null && event!.eventImageUrl!.isNotEmpty)
+                if (_thumbnailUrl != null)
                   Padding(
                     padding: const EdgeInsets.only(left: 16.0),
                     child: Hero(
@@ -180,7 +208,7 @@ class EventCardWidget extends StatelessWidget {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(8.0),
                           child: CachedNetworkImage(
-                            imageUrl: event!.eventImageUrl!,
+                            imageUrl: _thumbnailUrl!,
                             width: 80.0,
                             height: 80.0,
                             fit: BoxFit.cover,

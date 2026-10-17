@@ -29,7 +29,8 @@ class ContentView extends StatefulWidget {
   State<ContentView> createState() => _ContentViewState();
 }
 
-class _ContentViewState extends State<ContentView> with TickerProviderStateMixin {
+class _ContentViewState extends State<ContentView>
+    with TickerProviderStateMixin {
   final animationsMap = <String, AnimationInfo>{};
 
   @override
@@ -75,13 +76,16 @@ class _ContentViewState extends State<ContentView> with TickerProviderStateMixin
             child: Container(
               width: double.infinity,
               height: double.infinity,
-              color: AppTheme.of(context).primaryBackground.withValues(alpha: 0.82),
+              color: AppTheme.of(context)
+                  .primaryBackground
+                  .withValues(alpha: 0.82),
               child: Align(
                 alignment: const AlignmentDirectional(0.0, 0.0),
                 child: GestureDetector(
                   onTap: () {}, // Prevents tap from propagating to parent
                   child: Padding(
-                    padding: const EdgeInsetsDirectional.fromSTEB(16.0, 80.0, 16.0, 80.0),
+                    padding: const EdgeInsetsDirectional.fromSTEB(
+                        16.0, 80.0, 16.0, 80.0),
                     child: Container(
                       width: double.infinity,
                       constraints: BoxConstraints(
@@ -108,28 +112,34 @@ class _ContentViewState extends State<ContentView> with TickerProviderStateMixin
                             Align(
                               alignment: const AlignmentDirectional(0.0, 0.0),
                               child: Padding(
-                                padding: const EdgeInsetsDirectional.fromSTEB(8.0, 16.0, 8.0, 0.0),
+                                padding: const EdgeInsetsDirectional.fromSTEB(
+                                    8.0, 16.0, 8.0, 0.0),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.max,
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     // Favorite button
-                                    if (context.currentUserIdOrEmpty.isNotEmpty &&
+                                    if (context
+                                            .currentUserIdOrEmpty.isNotEmpty &&
                                         row.contentId != null)
                                       Padding(
-                                        padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
+                                        padding: const EdgeInsetsDirectional
+                                            .fromSTEB(0.0, 0.0, 8.0, 0.0),
                                         child: Container(
                                           width: 40.0,
                                           height: 40.0,
                                           decoration: BoxDecoration(
-                                            color: AppTheme.of(context).secondaryBackground,
+                                            color: AppTheme.of(context)
+                                                .secondaryBackground,
                                             shape: BoxShape.circle,
                                           ),
                                           child: Center(
                                             child: FavoriteButton(
-                                              contentType: FavoritesRepository.typeRecording,
+                                              contentType: FavoritesRepository
+                                                  .typeRecording,
                                               contentId: row.contentId!,
-                                              authUserId: context.currentUserIdOrEmpty,
+                                              authUserId:
+                                                  context.currentUserIdOrEmpty,
                                               size: 24.0,
                                             ),
                                           ),
@@ -146,7 +156,8 @@ class _ContentViewState extends State<ContentView> with TickerProviderStateMixin
                                         width: 40.0,
                                         height: 40.0,
                                         decoration: BoxDecoration(
-                                          color: AppTheme.of(context).secondaryBackground,
+                                          color: AppTheme.of(context)
+                                              .secondaryBackground,
                                           shape: BoxShape.circle,
                                         ),
                                         child: Icon(
@@ -162,50 +173,67 @@ class _ContentViewState extends State<ContentView> with TickerProviderStateMixin
                             ),
 
                             Padding(
-                              padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
+                              padding: const EdgeInsetsDirectional.fromSTEB(
+                                  0.0, 0.0, 0.0, 16.0),
                               child: Column(
                                 mainAxisSize: MainAxisSize.max,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   // Title
                                   Padding(
-                                    padding: const EdgeInsetsDirectional.fromSTEB(16.0, 24.0, 16.0, 12.0),
+                                    padding:
+                                        const EdgeInsetsDirectional.fromSTEB(
+                                            16.0, 24.0, 16.0, 12.0),
                                     child: Text(
                                       valueOrDefault<String>(
                                         row.title,
                                         context.l10n.untitled,
                                       ),
-                                      style: AppTheme.of(context).bodyLarge.override(
+                                      style: AppTheme.of(context)
+                                          .bodyLarge
+                                          .override(
                                             font: GoogleFonts.poppins(
                                               fontWeight: FontWeight.bold,
-                                              fontStyle: AppTheme.of(context).bodyLarge.fontStyle,
+                                              fontStyle: AppTheme.of(context)
+                                                  .bodyLarge
+                                                  .fontStyle,
                                             ),
                                             color: AppTheme.of(context).primary,
                                             fontSize: 16.0,
                                             letterSpacing: 0.0,
                                             fontWeight: FontWeight.bold,
-                                            fontStyle: AppTheme.of(context).bodyLarge.fontStyle,
+                                            fontStyle: AppTheme.of(context)
+                                                .bodyLarge
+                                                .fontStyle,
                                           ),
                                     ),
                                   ),
 
                                   // Authors
                                   Padding(
-                                    padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 8.0),
+                                    padding:
+                                        const EdgeInsetsDirectional.fromSTEB(
+                                            16.0, 0.0, 16.0, 8.0),
                                     child: Text(
                                       context.l10n.withAuthors(
                                         row.authorsNames.join(', '),
                                       ),
-                                      style: AppTheme.of(context).bodyMedium.override(
+                                      style: AppTheme.of(context)
+                                          .bodyMedium
+                                          .override(
                                             font: GoogleFonts.lexendDeca(
                                               fontWeight: FontWeight.normal,
-                                              fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
+                                              fontStyle: AppTheme.of(context)
+                                                  .bodyMedium
+                                                  .fontStyle,
                                             ),
                                             color: AppTheme.of(context).primary,
                                             fontSize: 12.0,
                                             letterSpacing: 0.0,
                                             fontWeight: FontWeight.normal,
-                                            fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
+                                            fontStyle: AppTheme.of(context)
+                                                .bodyMedium
+                                                .fontStyle,
                                           ),
                                     ),
                                   ),
@@ -214,42 +242,60 @@ class _ContentViewState extends State<ContentView> with TickerProviderStateMixin
                                   if ((row.cottEventId != null) &&
                                       (row.cottEventId! > 0))
                                     Padding(
-                                      padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 8.0),
+                                      padding:
+                                          const EdgeInsetsDirectional.fromSTEB(
+                                              16.0, 0.0, 16.0, 8.0),
                                       child: Text(
-                                        context.l10n.atEvent(row.eventName ?? ''),
-                                        style: AppTheme.of(context).bodyMedium.override(
+                                        context.l10n
+                                            .atEvent(row.eventName ?? ''),
+                                        style: AppTheme.of(context)
+                                            .bodyMedium
+                                            .override(
                                               font: GoogleFonts.lexendDeca(
                                                 fontWeight: FontWeight.normal,
-                                                fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
+                                                fontStyle: AppTheme.of(context)
+                                                    .bodyMedium
+                                                    .fontStyle,
                                               ),
-                                              color: AppTheme.of(context).primary,
+                                              color:
+                                                  AppTheme.of(context).primary,
                                               fontSize: 12.0,
                                               letterSpacing: 0.0,
                                               fontWeight: FontWeight.normal,
-                                              fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
+                                              fontStyle: AppTheme.of(context)
+                                                  .bodyMedium
+                                                  .fontStyle,
                                             ),
                                       ),
                                     ),
 
                                   // Description
                                   Padding(
-                                    padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 8.0),
+                                    padding:
+                                        const EdgeInsetsDirectional.fromSTEB(
+                                            16.0, 0.0, 16.0, 8.0),
                                     child: SelectionArea(
                                         child: Text(
                                       valueOrDefault<String>(
                                         row.description,
                                         '',
                                       ),
-                                      style: AppTheme.of(context).bodyMedium.override(
+                                      style: AppTheme.of(context)
+                                          .bodyMedium
+                                          .override(
                                             font: GoogleFonts.lexendDeca(
                                               fontWeight: FontWeight.normal,
-                                              fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
+                                              fontStyle: AppTheme.of(context)
+                                                  .bodyMedium
+                                                  .fontStyle,
                                             ),
                                             color: AppTheme.of(context).primary,
                                             fontSize: 14.0,
                                             letterSpacing: 0.0,
                                             fontWeight: FontWeight.normal,
-                                            fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
+                                            fontStyle: AppTheme.of(context)
+                                                .bodyMedium
+                                                .fontStyle,
                                           ),
                                     )),
                                   ),
@@ -266,14 +312,19 @@ class _ContentViewState extends State<ContentView> with TickerProviderStateMixin
                                         audioUrl: row.audioUrl!,
                                         audioTitle: row.title!,
                                         audioArt: ' ',
-                                        colorButton: AppTheme.of(context).primary,
+                                        colorButton:
+                                            AppTheme.of(context).primary,
                                       ),
                                     ),
 
                                   // PDF
-                                  if (viewModel.midiaType == 'text' && row.midiaFileUrl != null)
+                                  if ((viewModel.midiaType == 'pdf' ||
+                                          viewModel.midiaType == 'text') &&
+                                      (row.midiaFileUrl ?? '').isNotEmpty)
                                     Padding(
-                                      padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+                                      padding:
+                                          const EdgeInsetsDirectional.fromSTEB(
+                                              16.0, 0.0, 16.0, 0.0),
                                       child: FlutterFlowPdfViewer(
                                         networkPath: row.midiaFileUrl!,
                                         height: 600.0,
@@ -282,9 +333,12 @@ class _ContentViewState extends State<ContentView> with TickerProviderStateMixin
                                     ),
 
                                   // Video
-                                  if (viewModel.midiaType == 'video' && row.midiaFileUrl != null)
+                                  if (viewModel.midiaType == 'video' &&
+                                      row.midiaFileUrl != null)
                                     Padding(
-                                      padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+                                      padding:
+                                          const EdgeInsetsDirectional.fromSTEB(
+                                              16.0, 0.0, 16.0, 0.0),
                                       child: FlutterFlowYoutubePlayer(
                                         url: row.midiaFileUrl!,
                                         autoPlay: false,
@@ -301,7 +355,8 @@ class _ContentViewState extends State<ContentView> with TickerProviderStateMixin
                           ],
                         ),
                       ),
-                    ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation']!),
+                    ).animateOnPageLoad(
+                        animationsMap['containerOnPageLoadAnimation']!),
                   ),
                 ),
               ),

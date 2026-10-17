@@ -3,6 +3,7 @@ import 'package:gw_community/data/repositories/community_repository.dart';
 import 'package:gw_community/data/repositories/experience_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/routing/router.dart';
+import 'package:gw_community/ui/core/view_as/view_as_session.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 
 /// ViewModel para a página de adicionar experience
@@ -189,6 +190,7 @@ class ExperienceAddViewModel extends ChangeNotifier {
 
   /// Método interno que salva o experience
   Future<bool> _save(BuildContext context, {required bool isDraft, required bool navigateAway}) async {
+    if (viewAsBlocksWrite()) return false;
     if (!canSave()) {
       _setError('Please fill in all required fields');
       return false;

@@ -63,7 +63,7 @@ class _CommunityPageState extends State<CommunityPage> with RouteAware {
     return ChangeNotifierProvider(
       create: (context) => CommunityViewModel(
         repository: CommunityRepository(),
-        currentUserUid: context.currentUserIdOrEmpty,
+        currentUserUid: context.effectiveUserIdOrEmpty,
       ),
       child: Consumer<CommunityViewModel>(
         builder: (context, viewModel, child) {

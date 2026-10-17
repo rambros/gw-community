@@ -6,6 +6,7 @@ import 'package:gw_community/domain/models/journey_step_group.dart';
 import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
+import 'package:gw_community/ui/core/view_as/view_as_session.dart';
 import 'package:gw_community/ui/journey/journey_page/view_model/journey_view_model.dart';
 import 'package:gw_community/ui/journey/journey_page/widgets/journey_about_dialog.dart';
 import 'package:gw_community/ui/journey/journey_page/widgets/journey_intro_widget.dart';
@@ -13,7 +14,6 @@ import 'package:gw_community/ui/journey/journey_page/widgets/journey_step_item_w
 import 'package:gw_community/ui/journey/step_details_page/step_details_page.dart';
 import 'package:gw_community/ui/journey/themes/journey_theme_extension.dart';
 import 'package:gw_community/ui/journey/widgets/journey_locale_scope.dart';
-import 'package:gw_community/ui/learn/learn_list_page/learn_list_page.dart';
 import 'package:gw_community/ui/onboarding/splash_page/splash_page.dart';
 import 'package:gw_community/ui/profile/widgets/confirm_profile_action_dialog.dart';
 import 'package:gw_community/utils/context_extensions.dart';
@@ -56,7 +56,7 @@ class _JourneyPageState extends State<JourneyPage> {
 
       _viewModel = JourneyViewModel(
         repository: context.read<JourneysRepository>(),
-        currentUserUid: context.currentUserIdOrEmpty,
+        currentUserUid: context.effectiveUserIdOrEmpty,
         journeyId: effectiveJourneyId,
         startedJourneys: appState.listStartedJourneys,
       );
@@ -102,30 +102,28 @@ class _JourneyPageState extends State<JourneyPage> {
                     color: Colors.white,
                   ),
                   onSelected: (value) async {
-                    if (value == 'support_documents') {
-                      await _handleSupportDocuments(context, viewModel);
+                    if (value == 'about') {
+                      await _handleAbout(context, viewModel);
                     } else if (value == 'restart_journey') {
                       await _handleRestartJourney(context, viewModel);
-                    } else if (value == 'about') {
-                      await _handleAbout(context, viewModel);
                     }
                   },
                   itemBuilder: (context) => [
                     PopupMenuItem(
-                      value: 'support_documents',
+                      value: 'about',
                       child: Row(
                         children: [
                           Icon(
-                            Icons.library_books_outlined,
+                            Icons.info_outline,
                             size: 20,
                             color: AppTheme.of(context).secondary,
                           ),
                           const SizedBox(width: 12),
-                          Text(context.l10n.journeyResources),
+                          Text(context.l10n.aboutThisJourney),
                         ],
                       ),
                     ),
-                    if (viewModel.isJourneyStarted) ...[
+                    if (viewModel.isJourneyStarted && !viewAsBlocksWrite()) ...[
                       const PopupMenuDivider(),
                       PopupMenuItem(
                         value: 'restart_journey',
@@ -142,21 +140,6 @@ class _JourneyPageState extends State<JourneyPage> {
                         ),
                       ),
                     ],
-                    const PopupMenuDivider(),
-                    PopupMenuItem(
-                      value: 'about',
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.info_outline,
-                            size: 20,
-                            color: AppTheme.of(context).secondary,
-                          ),
-                          const SizedBox(width: 12),
-                          Text(context.l10n.aboutThisJourney),
-                        ],
-                      ),
-                    ),
                   ],
                 );
               },
@@ -277,6 +260,7 @@ class _JourneyPageState extends State<JourneyPage> {
           groupedSteps: viewModel.groupedJourneySteps,
           onStart: () => _handleStartJourney(context, viewModel),
           isJourneyStarted: viewModel.isJourneyStarted,
+          showStartButton: !viewAsBlocksWrite(),
         ),
       ),
     );
@@ -492,25 +476,6 @@ class _JourneyPageState extends State<JourneyPage> {
         await viewModel.loadJourneyData();
       }
     }
-  }
-
-  Future<void> _handleSupportDocuments(BuildContext context, JourneyViewModel viewModel) async {
-    if (!context.mounted) return;
-
-    await context.pushNamed(
-      LearnListPage.routeName,
-      queryParameters: {
-        'journeyId': viewModel.journeyId.toString(),
-        'customTitle': context.l10n.journeyResources,
-      }.withoutNulls,
-      extra: <String, dynamic>{
-        kTransitionInfoKey: const TransitionInfo(
-          hasTransition: true,
-          transitionType: PageTransitionType.fade,
-          duration: Duration(milliseconds: 0),
-        ),
-      },
-    );
   }
 
   Future<void> _handleRestartJourney(BuildContext context, JourneyViewModel viewModel) async {

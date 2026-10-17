@@ -1,21 +1,27 @@
 import 'package:flutter/material.dart';
-
 import 'package:gw_community/data/repositories/event_repository.dart';
+import 'package:gw_community/data/repositories/group_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/domain/community/event_recurrence.dart';
+import 'package:gw_community/ui/core/view_as/view_as_session.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:gw_community/utils/upload_data.dart';
 
 class EventEditViewModel extends ChangeNotifier {
   EventEditViewModel({
     required EventRepository repository,
+    required GroupRepository groupRepository,
     required this.currentUserUid,
     required CcEventsRow event,
   })  : _repository = repository,
+        _groupRepository = groupRepository,
         _event = event {
     _initialize(event);
+    _loadGroupImage();
   }
 
   final EventRepository _repository;
+  final GroupRepository _groupRepository;
   final String currentUserUid;
   CcEventsRow _event;
   CcEventsRow get event => _event;
@@ -58,6 +64,12 @@ class EventEditViewModel extends ChangeNotifier {
   String _eventType = 'single_day';
   String get eventType => _eventType;
 
+  String _recurrence = EventRecurrence.none;
+  String get recurrence => _recurrence;
+
+  DateTime? _recurrenceUntil;
+  DateTime? get recurrenceUntil => _recurrenceUntil;
+
   bool _isSaving = false;
   bool get isSaving => _isSaving;
 
@@ -67,8 +79,34 @@ class EventEditViewModel extends ChangeNotifier {
   String? _uploadedImageUrl;
   String? get uploadedImageUrl => _uploadedImageUrl;
 
-  // Helper to get the display image URL (uploaded or existing)
-  String? get displayImageUrl => _uploadedImageUrl ?? _event.eventImageUrl;
+  String? _groupImageUrl;
+  String? get groupImageUrl => _groupImageUrl;
+
+  bool _useGroupImage = false;
+  bool _disposed = false;
+
+  /// Custom upload wins. A saved header is next. Otherwise the group image.
+  String? get displayImageUrl {
+    final uploaded = _uploadedImageUrl?.trim();
+    if (uploaded != null && uploaded.isNotEmpty) return uploaded;
+    if (!_useGroupImage) {
+      final saved = _event.eventImageUrl?.trim();
+      if (saved != null && saved.isNotEmpty) return saved;
+    }
+    final groupImage = _groupImageUrl?.trim();
+    if (groupImage != null && groupImage.isNotEmpty) return groupImage;
+    return null;
+  }
+
+  bool get hasCustomImage {
+    final uploaded = _uploadedImageUrl?.trim();
+    if (uploaded != null && uploaded.isNotEmpty) return true;
+    if (_useGroupImage) return false;
+    final saved = _event.eventImageUrl?.trim();
+    return saved != null && saved.isNotEmpty;
+  }
+
+  bool get isUsingGroupImage => !hasCustomImage && displayImageUrl != null;
 
   void _initialize(CcEventsRow eventRow) {
     titleController.text = eventRow.title ?? '';
@@ -79,6 +117,8 @@ class EventEditViewModel extends ChangeNotifier {
     _visibility = eventRow.visibility ?? 'group_only';
     _status = eventRow.eventStatus ?? 'scheduled';
     _eventType = eventRow.eventType ?? 'single_day';
+    _recurrence = EventRecurrence.repeats(eventRow.recurrence) ? eventRow.recurrence! : EventRecurrence.none;
+    _recurrenceUntil = eventRow.recurrenceUntil;
 
     if (eventRow.eventDate != null) {
       setEventDate(eventRow.eventDate!);
@@ -94,7 +134,28 @@ class EventEditViewModel extends ChangeNotifier {
   }
 
   void resetForm() {
+    _uploadedImageUrl = null;
+    _useGroupImage = false;
     _initialize(_event);
+    notifyListeners();
+  }
+
+  Future<void> _loadGroupImage() async {
+    final groupId = _event.groupId;
+    if (groupId == null) return;
+    try {
+      final group = await _groupRepository.getGroupById(groupId);
+      if (_disposed) return;
+      _groupImageUrl = group?.groupImageUrl;
+      notifyListeners();
+    } catch (_) {
+      // Editing still works if the group image cannot be loaded.
+    }
+  }
+
+  void useGroupImage() {
+    _uploadedImageUrl = null;
+    _useGroupImage = true;
     notifyListeners();
   }
 
@@ -146,6 +207,20 @@ class EventEditViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setRecurrence(String? value) {
+    if (value == null) return;
+    _recurrence = value;
+    if (!EventRecurrence.repeats(value)) {
+      _recurrenceUntil = null;
+    }
+    notifyListeners();
+  }
+
+  void setRecurrenceUntil(DateTime? date) {
+    _recurrenceUntil = date == null ? null : DateTime(date.year, date.month, date.day);
+    notifyListeners();
+  }
+
   bool validateForm() {
     final isValid = formKey.currentState?.validate() ?? false;
     if (!isValid) {
@@ -162,7 +237,7 @@ class EventEditViewModel extends ChangeNotifier {
       context: context,
       storageFolderPath: 'events',
       maxWidth: 800.00,
-      maxHeight: 400.00,
+      maxHeight: 800.00,
       allowPhoto: true,
       includeBlurHash: true,
     );
@@ -177,6 +252,7 @@ class EventEditViewModel extends ChangeNotifier {
 
         if (downloadUrls.isNotEmpty) {
           _uploadedImageUrl = downloadUrls.first;
+          _useGroupImage = false;
           notifyListeners();
         }
       } catch (e) {
@@ -193,6 +269,7 @@ class EventEditViewModel extends ChangeNotifier {
   }
 
   Future<bool> saveEvent() async {
+    if (viewAsBlocksWrite()) return false;
     if (!validateForm()) return false;
     if (_eventDate == null) {
       _setError('Please select date for the event.');
@@ -228,6 +305,11 @@ class EventEditViewModel extends ChangeNotifier {
       duration = null;
     }
 
+    if (_recurrenceUntil != null && _recurrenceUntil!.isBefore(_eventDate!)) {
+      _setError('Repeat until cannot be before the first date.');
+      return false;
+    }
+
     _setSaving(true);
     _clearError();
 
@@ -246,9 +328,12 @@ class EventEditViewModel extends ChangeNotifier {
         registrationUrl: urlRegistrationController.text.trim().isEmpty
             ? null
             : urlRegistrationController.text.trim(),
-        imageUrl: _uploadedImageUrl, // Only pass if new image uploaded, null otherwise
+        imageUrl: _uploadedImageUrl,
+        clearImage: _useGroupImage && _uploadedImageUrl == null,
         endDate: finalEndDate,
         eventType: _eventType,
+        recurrence: EventRecurrence.repeats(_recurrence) ? _recurrence : null,
+        recurrenceUntil: EventRecurrence.repeats(_recurrence) ? _recurrenceUntil : null,
       );
 
       final updated = await _repository.getEventById(_event.id);
@@ -281,6 +366,7 @@ class EventEditViewModel extends ChangeNotifier {
 
   @override
   void dispose() {
+    _disposed = true;
     titleController.dispose();
     facilitatorController.dispose();
     descriptionController.dispose();

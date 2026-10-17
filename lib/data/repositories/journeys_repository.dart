@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:gw_community/data/repositories/admin_view_as_queries.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 
@@ -27,6 +28,11 @@ class JourneysRepository {
   Future<List<CcViewUserJourneysRow>> getUserJourneys(String userId) async {
     final publishedIds = await getPublishedJourneyIds();
     if (publishedIds.isEmpty) return [];
+
+    if (AdminViewAsQueries.isOtherUser(userId)) {
+      final rows = await AdminViewAsQueries.journeys(userId);
+      return rows.where((row) => publishedIds.contains(row.journeyId)).toList();
+    }
 
     final result = await CcViewUserJourneysTable().queryRows(
       queryFn: (q) =>
@@ -75,6 +81,14 @@ class JourneysRepository {
 
   Future<CcViewUserJourneysRow?> getUserJourney(
       String userId, int journeyId) async {
+    if (AdminViewAsQueries.isOtherUser(userId)) {
+      final rows = await AdminViewAsQueries.journeys(userId);
+      for (final row in rows) {
+        if (row.journeyId == journeyId) return row;
+      }
+      return null;
+    }
+
     final results = await CcViewUserJourneysTable().querySingleRow(
       queryFn: (q) =>
           q.eqOrNull('user_id', userId).eqOrNull('journey_id', journeyId),
@@ -84,6 +98,12 @@ class JourneysRepository {
 
   Future<List<CcViewUserStepsRow>> getUserSteps(
       String userId, int journeyId) async {
+    if (AdminViewAsQueries.isOtherUser(userId)) {
+      final steps = await AdminViewAsQueries.steps(userId, journeyId: journeyId);
+      steps.sort((a, b) => (a.stepNumber ?? 0).compareTo(b.stepNumber ?? 0));
+      return steps;
+    }
+
     final result = await CcViewUserStepsTable().queryRows(
       queryFn: (q) => q
           .eqOrNull('user_id', userId)
@@ -421,16 +441,22 @@ class JourneysRepository {
   /// Returns public journeys + private journeys (via groups) that user has NOT started yet
   Future<List<CcJourneysRow>> getAvailableJourneysForList(String userId) async {
     try {
-      // Get journey IDs user has already started
-      final userJourneys = await CcUserJourneysTable().queryRows(
-        queryFn: (q) => q.eq('user_id', userId),
-      );
-
-      final startedJourneyIds = userJourneys
-          .map((uj) => uj.journeyId)
-          .where((id) => id != null)
-          .cast<int>()
-          .toSet();
+      final Set<int> startedJourneyIds;
+      if (AdminViewAsQueries.isOtherUser(userId)) {
+        final userJourneys = await AdminViewAsQueries.journeys(userId);
+        startedJourneyIds = userJourneys
+            .map((uj) => uj.journeyId)
+            .whereType<int>()
+            .toSet();
+      } else {
+        final userJourneys = await CcUserJourneysTable().queryRows(
+          queryFn: (q) => q.eq('user_id', userId),
+        );
+        startedJourneyIds = userJourneys
+            .map((uj) => uj.journeyId)
+            .whereType<int>()
+            .toSet();
+      }
 
       // Get all public journeys (exclude draft journeys)
       final publicJourneys = await CcJourneysTable().queryRows(

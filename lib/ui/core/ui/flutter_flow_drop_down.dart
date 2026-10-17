@@ -139,6 +139,26 @@ class _FlutterFlowDropDownState<T> extends State<FlutterFlowDropDown<T>> {
   }
 
   @override
+  void didUpdateWidget(covariant FlutterFlowDropDown<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (isMultiSelect) {
+      final previous = oldWidget.multiSelectController;
+      final next = widget.multiSelectController;
+      if (!identical(previous, next) && next != null) {
+        previous?.removeListener(_listener);
+        next.addListener(_listener);
+      }
+    } else {
+      final previous = oldWidget.controller;
+      final next = widget.controller;
+      if (!identical(previous, next) && next != null) {
+        previous?.removeListener(_listener);
+        next.addListener(_listener);
+      }
+    }
+  }
+
+  @override
   void dispose() {
     _multiDummyNotifier.dispose();
     if (isMultiSelect) {

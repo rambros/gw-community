@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gw_community/data/repositories/experience_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/routing/router.dart';
+import 'package:gw_community/ui/core/view_as/view_as_session.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 
 /// ViewModel para a página de edição de Experience
@@ -59,6 +60,7 @@ class ExperienceEditViewModel extends ChangeNotifier {
 
   /// Método interno para salvar
   Future<bool> _save(BuildContext context, {required bool keepAsDraft, required bool navigateAway}) async {
+    if (viewAsBlocksWrite()) return false;
     if (!canSave()) {
       _setError('Please fill in all required fields');
       return false;

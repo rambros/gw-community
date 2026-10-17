@@ -321,8 +321,10 @@ class LearnRepository {
 
   Future<List<CcJourneysRow>> getJourneys() async {
     return CcJourneysTable().queryRows(
-      queryFn: (q) => q.inFilter(
-          'status', ['published', 'Published']).order('title', ascending: true),
+      queryFn: (q) => q
+          .eq('is_public', true)
+          .inFilter('status', ['published', 'Published'])
+          .order('title', ascending: true),
     );
   }
 

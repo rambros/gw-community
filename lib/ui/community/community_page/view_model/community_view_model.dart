@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:gw_community/data/repositories/community_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/ui/core/view_as/view_as_session.dart';
 
 class CommunityViewModel extends ChangeNotifier {
   final CommunityRepository _repository;
@@ -35,17 +36,21 @@ class CommunityViewModel extends ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
+  bool _disposed = false;
+
   Future<void> _init() async {
     _isLoading = true;
     notifyListeners();
 
     // Primeiro resolvemos o memberId baseado no authUid
     _memberId = await _repository.getMemberIdByAuthUserId(currentUserUid);
+    if (_disposed) return;
 
     _refreshStreams();
 
     // Load groups on initialization since Community page only shows Groups tab
     await refreshGroupsList();
+    if (_disposed) return;
 
     _isLoading = false;
     notifyListeners();
@@ -63,6 +68,7 @@ class CommunityViewModel extends ChangeNotifier {
   /// Força refresh dos experiences (recria o stream)
   Future<void> refreshExperiences() async {
     _memberId ??= await _repository.getMemberIdByAuthUserId(currentUserUid);
+    if (_disposed) return;
     _refreshStreams();
     notifyListeners();
   }
@@ -81,6 +87,7 @@ class CommunityViewModel extends ChangeNotifier {
       listEvents = listRealEventsTab;
     }
 
+    if (_disposed) return;
     notifyListeners();
   }
 
@@ -94,10 +101,24 @@ class CommunityViewModel extends ChangeNotifier {
         myGroups = await _repository.getMyGroups(currentUserUid);
       }),
     ]);
+    if (_disposed) return;
     notifyListeners();
   }
 
+  @override
+  void notifyListeners() {
+    if (_disposed) return;
+    super.notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
+  }
+
   Future<void> deleteExperience(BuildContext context, int? id) async {
+    if (viewAsBlocksWrite()) return;
     if (id == null) return;
     await _repository.deleteExperience(id);
     // Notify UI or show snackbar here if needed, but ideally UI logic should be in View

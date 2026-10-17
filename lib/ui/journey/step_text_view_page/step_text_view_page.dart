@@ -6,6 +6,7 @@ import 'package:gw_community/data/repositories/favorites_repository.dart';
 import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
+import 'package:gw_community/ui/core/ui/reading_text_size.dart';
 import 'package:gw_community/ui/core/widgets/favorite_button.dart';
 import 'package:gw_community/ui/journey/themes/journey_theme_extension.dart';
 import 'package:gw_community/ui/journey/widgets/journey_locale_scope.dart';
@@ -64,134 +65,148 @@ class StepTextViewPage extends StatelessWidget {
     return JourneyLocaleScope(
       fixedLanguage: fixedLanguage,
       builder: (context) => GestureDetector(
-      onTap: () {
-        FocusScope.of(context).unfocus();
-        FocusManager.instance.primaryFocus?.unfocus();
-      },
-      child: Scaffold(
-        backgroundColor: AppTheme.of(context).secondary,
-        appBar: AppBar(
-          backgroundColor: AppTheme.of(context).primary,
-          automaticallyImplyLeading: false,
-          leading: FlutterFlowIconButton(
-            borderColor: Colors.transparent,
-            borderRadius: 30.0,
-            borderWidth: 1.0,
-            buttonSize: 60.0,
-            icon: const Icon(
-              Icons.arrow_back_rounded,
-              color: Colors.white,
-              size: 30.0,
-            ),
-            onPressed: () async {
-              Navigator.of(context).pop();
-            },
-          ),
-          title: Text(
-            _appBarTitle(context),
-            style: AppTheme.of(context).journey.pageTitle,
-          ),
-          actions: [
-            if (context.currentUserIdOrEmpty.isNotEmpty && activityId != null)
-              Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 12.0, 0.0),
-                child: FavoriteButton(
-                  contentType: FavoritesRepository.typeActivity,
-                  contentId: activityId!,
-                  authUserId: context.currentUserIdOrEmpty,
-                  size: 28.0,
-                  iconColor: Colors.white,
-                ),
+        onTap: () {
+          FocusScope.of(context).unfocus();
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
+        child: Scaffold(
+          backgroundColor: AppTheme.of(context).secondary,
+          appBar: AppBar(
+            backgroundColor: AppTheme.of(context).primary,
+            automaticallyImplyLeading: false,
+            leading: FlutterFlowIconButton(
+              borderColor: Colors.transparent,
+              borderRadius: 30.0,
+              borderWidth: 1.0,
+              buttonSize: 60.0,
+              icon: const Icon(
+                Icons.arrow_back_rounded,
+                color: Colors.white,
+                size: 30.0,
               ),
-          ],
-          centerTitle: true,
-          elevation: 2.0,
-        ),
-        body: SafeArea(
-          top: true,
-          child: Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: BoxDecoration(
-              color: AppTheme.of(context).secondary,
+              onPressed: () async {
+                Navigator.of(context).pop();
+              },
             ),
-            child: Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(24.0, 12.0, 24.0, 8.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 16.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            stepTextTitle ?? 'prompt',
-                            textAlign: TextAlign.center,
-                            style: AppTheme.of(context).journey.stepTitle.override(
-                                  color: AppTheme.of(context).tertiary,
-                                ),
-                          ),
-                        ],
+            title: Text(
+              _appBarTitle(context),
+              style: AppTheme.of(context).journey.pageTitle,
+            ),
+            actions: [
+              if (context.currentUserIdOrEmpty.isNotEmpty && activityId != null)
+                Padding(
+                  padding:
+                      const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 12.0, 0.0),
+                  child: FavoriteButton(
+                    contentType: FavoritesRepository.typeActivity,
+                    contentId: activityId!,
+                    authUserId: context.currentUserIdOrEmpty,
+                    size: 28.0,
+                    iconColor: Colors.white,
+                  ),
+                ),
+            ],
+            centerTitle: true,
+            elevation: 2.0,
+          ),
+          body: SafeArea(
+            top: true,
+            child: ReadingTextSize(
+              barColor: AppTheme.of(context).secondary,
+              buttonColor: Colors.white,
+              disabledButtonColor: Colors.white54,
+              builder: (context, fontSize, controls) => Column(
+                children: [
+                  controls,
+                  Expanded(
+                    child: Container(
+                      width: double.infinity,
+                      height: double.infinity,
+                      decoration: BoxDecoration(
+                        color: AppTheme.of(context).secondary,
                       ),
-                    ),
-                    SelectionArea(
-                      child: MarkdownBody(
-                        data: stepTextContent ?? 'text',
-                        selectable: true,
-                        softLineBreak: true,
-                        styleSheet: MarkdownStyleSheet(
-                          p: GoogleFonts.lexendDeca(
-                            color: AppTheme.of(context).primaryText,
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.normal,
-                            height: 1.5,
-                          ),
-                          strong: GoogleFonts.lexendDeca(
-                            color: AppTheme.of(context).primaryText,
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold,
-                            height: 1.5,
-                          ),
-                          em: GoogleFonts.lexendDeca(
-                            color: AppTheme.of(context).primaryText,
-                            fontSize: 16.0,
-                            fontStyle: FontStyle.italic,
-                            height: 1.5,
-                          ),
-                          h1: GoogleFonts.lexendDeca(
-                            color: AppTheme.of(context).tertiary,
-                            fontSize: 24.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          h2: GoogleFonts.lexendDeca(
-                            color: AppTheme.of(context).tertiary,
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          h3: GoogleFonts.lexendDeca(
-                            color: AppTheme.of(context).tertiary,
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          listBullet: GoogleFonts.lexendDeca(
-                            color: AppTheme.of(context).primaryText,
-                            fontSize: 16.0,
+                      child: Padding(
+                        padding: const EdgeInsetsDirectional.fromSTEB(
+                            24.0, 0.0, 24.0, 8.0),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsetsDirectional.fromSTEB(
+                                    0.0, 4.0, 0.0, 12.0),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      stepTextTitle ?? 'prompt',
+                                      textAlign: TextAlign.center,
+                                      style: AppTheme.of(context)
+                                          .journey
+                                          .stepTitle
+                                          .override(
+                                            color:
+                                                AppTheme.of(context).tertiary,
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SelectionArea(
+                                child: MarkdownBody(
+                                  data: stepTextContent ?? 'text',
+                                  selectable: true,
+                                  softLineBreak: true,
+                                  styleSheet:
+                                      _stepMarkdownStyle(context, fontSize),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
         ),
       ),
-    ),
     );
   }
+}
+
+MarkdownStyleSheet _stepMarkdownStyle(BuildContext context, double fontSize) {
+  final body = AppTheme.of(context).primaryText;
+  final heading = AppTheme.of(context).tertiary;
+  final paragraph = GoogleFonts.lexendDeca(
+    color: body,
+    fontSize: fontSize,
+    fontWeight: FontWeight.normal,
+    height: 1.5,
+  );
+  return MarkdownStyleSheet(
+    p: paragraph,
+    strong: paragraph.copyWith(fontWeight: FontWeight.bold),
+    em: paragraph.copyWith(fontStyle: FontStyle.italic),
+    h1: GoogleFonts.lexendDeca(
+      color: heading,
+      fontSize: readingMarkdownHeadingSize(fontSize, 1),
+      fontWeight: FontWeight.bold,
+    ),
+    h2: GoogleFonts.lexendDeca(
+      color: heading,
+      fontSize: readingMarkdownHeadingSize(fontSize, 2),
+      fontWeight: FontWeight.bold,
+    ),
+    h3: GoogleFonts.lexendDeca(
+      color: heading,
+      fontSize: readingMarkdownHeadingSize(fontSize, 3),
+      fontWeight: FontWeight.w600,
+    ),
+    listBullet: paragraph,
+  );
 }

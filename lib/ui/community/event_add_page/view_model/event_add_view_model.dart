@@ -1,19 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:gw_community/data/repositories/event_repository.dart';
+import 'package:gw_community/data/repositories/group_repository.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/domain/community/event_recurrence.dart';
+import 'package:gw_community/ui/core/view_as/view_as_session.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
+import 'package:gw_community/utils/upload_data.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class EventAddViewModel extends ChangeNotifier {
   EventAddViewModel({
     required EventRepository repository,
+    required GroupRepository groupRepository,
     required this.currentUserUid,
     this.groupId,
     this.groupName,
-  }) : _repository = repository {
+  })  : _repository = repository,
+        _groupRepository = groupRepository {
     _initializeDefaults();
+    _loadGroupImage();
   }
 
   final EventRepository _repository;
+  final GroupRepository _groupRepository;
   final String currentUserUid;
   final int? groupId;
   final String? groupName;
@@ -60,11 +69,41 @@ class EventAddViewModel extends ChangeNotifier {
   String _eventType = 'single_day';
   String get eventType => _eventType;
 
+  String _recurrence = EventRecurrence.none;
+  String get recurrence => _recurrence;
+
+  DateTime? _recurrenceUntil;
+  DateTime? get recurrenceUntil => _recurrenceUntil;
+
   bool _isSaving = false;
   bool get isSaving => _isSaving;
 
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
+
+  String? _groupImageUrl;
+  String? get groupImageUrl => _groupImageUrl;
+
+  String? _uploadedImageUrl;
+  String? get uploadedImageUrl => _uploadedImageUrl;
+
+  bool _disposed = false;
+
+  /// Custom upload wins. Otherwise the group's own image is the header.
+  String? get displayImageUrl {
+    final uploaded = _uploadedImageUrl?.trim();
+    if (uploaded != null && uploaded.isNotEmpty) return uploaded;
+    final groupImage = _groupImageUrl?.trim();
+    if (groupImage != null && groupImage.isNotEmpty) return groupImage;
+    return null;
+  }
+
+  bool get hasCustomImage {
+    final uploaded = _uploadedImageUrl?.trim();
+    return uploaded != null && uploaded.isNotEmpty;
+  }
+
+  bool get isUsingGroupImage => !hasCustomImage && displayImageUrl != null;
 
   void _initializeDefaults() {
     final now = DateTime.now();
@@ -89,6 +128,77 @@ class EventAddViewModel extends ChangeNotifier {
     if (value == null) return;
     _eventType = value;
     notifyListeners();
+  }
+
+  void setRecurrence(String? value) {
+    if (value == null) return;
+    _recurrence = value;
+    if (!EventRecurrence.repeats(value)) {
+      _recurrenceUntil = null;
+    }
+    notifyListeners();
+  }
+
+  void setRecurrenceUntil(DateTime? date) {
+    _recurrenceUntil = date == null ? null : DateTime(date.year, date.month, date.day);
+    notifyListeners();
+  }
+
+  Future<void> _loadGroupImage() async {
+    if (groupId == null) return;
+    try {
+      final group = await _groupRepository.getGroupById(groupId!);
+      if (_disposed) return;
+      _groupImageUrl = group?.groupImageUrl;
+      notifyListeners();
+    } catch (_) {
+      // The form still works without a default header.
+    }
+  }
+
+  void useGroupImage() {
+    _uploadedImageUrl = null;
+    notifyListeners();
+  }
+
+  Future<void> uploadImage(BuildContext context) async {
+    final selectedMedia = await selectMediaWithSourceBottomSheet(
+      context: context,
+      storageFolderPath: 'events',
+      maxWidth: 800.00,
+      maxHeight: 800.00,
+      allowPhoto: true,
+      includeBlurHash: true,
+    );
+
+    if (selectedMedia != null && selectedMedia.every((m) => validateFileFormat(m.storagePath, context))) {
+      if (!context.mounted) return;
+      _setSaving(true);
+      try {
+        showUploadMessage(context, 'Uploading file...', showLoading: true);
+
+        final downloadUrls = await uploadSupabaseStorageFiles(
+          bucketName: 'portal',
+          selectedFiles: selectedMedia,
+        );
+
+        if (downloadUrls.isNotEmpty) {
+          _uploadedImageUrl = downloadUrls.first;
+          notifyListeners();
+        }
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error uploading image: $e')),
+          );
+        }
+      } finally {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        }
+        _setSaving(false);
+      }
+    }
   }
 
   void setEventDate(DateTime date, {String? locale}) {
@@ -132,6 +242,7 @@ class EventAddViewModel extends ChangeNotifier {
   }
 
   Future<bool> saveEvent() async {
+    if (viewAsBlocksWrite()) return false;
     if (!validateForm()) {
       return false;
     }
@@ -170,6 +281,11 @@ class EventAddViewModel extends ChangeNotifier {
       duration = null;
     }
 
+    if (_recurrenceUntil != null && _recurrenceUntil!.isBefore(_eventDate!)) {
+      _setError('Repeat until cannot be before the first date.');
+      return false;
+    }
+
     _setSaving(true);
     _clearError();
 
@@ -190,6 +306,9 @@ class EventAddViewModel extends ChangeNotifier {
         groupId: groupId,
         endDate: finalEndDate,
         eventType: _eventType,
+        imageUrl: hasCustomImage ? _uploadedImageUrl : null,
+        recurrence: EventRecurrence.repeats(_recurrence) ? _recurrence : null,
+        recurrenceUntil: EventRecurrence.repeats(_recurrence) ? _recurrenceUntil : null,
       );
       return true;
     } catch (e) {
@@ -216,6 +335,7 @@ class EventAddViewModel extends ChangeNotifier {
 
   @override
   void dispose() {
+    _disposed = true;
     titleController.dispose();
     facilitatorController.dispose();
     descriptionController.dispose();

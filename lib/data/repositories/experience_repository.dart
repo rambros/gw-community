@@ -70,19 +70,19 @@ class ExperienceRepository {
   /// Cria um novo comentário para um experience específico
   ///
   /// [content] deve ser validado antes de chegar aqui
-  Future<void> createComment({
+  Future<int> createComment({
     required String userId,
     required int experienceId,
     required String content,
     int? parentId,
   }) async {
-    await CcCommentsTable().insert({
+    final row = await CcCommentsTable().insert({
       'user_id': userId,
       'parent_id': parentId,
       'content': content,
       'sharing_id': experienceId,
-      'created_at': supaSerialize<DateTime>(DateTime.now()),
     });
+    return row.id;
   }
 
   /// Atualiza um experience existente

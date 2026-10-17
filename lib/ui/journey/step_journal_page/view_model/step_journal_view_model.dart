@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gw_community/data/repositories/journal_repository.dart';
+import 'package:gw_community/ui/core/view_as/view_as_session.dart';
 
 class StepJournalViewModel extends ChangeNotifier {
   final JournalRepository _repository;
@@ -30,6 +31,7 @@ class StepJournalViewModel extends ChangeNotifier {
   // ========== COMMANDS ==========
 
   Future<void> saveJournalCommand(BuildContext context, VoidCallback onSuccess) async {
+    if (viewAsBlocksWrite()) return;
     _setSaving(true);
 
     try {

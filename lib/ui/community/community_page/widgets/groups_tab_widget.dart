@@ -75,6 +75,7 @@ class GroupsTabWidget extends StatelessWidget {
                         );
                       },
                       child: GroupCard(
+                        key: ValueKey('my-group-${myGroupsListItem.id}'),
                         groupRow: myGroupsListItem,
                       ),
                     );
@@ -146,6 +147,7 @@ class GroupsTabWidget extends StatelessWidget {
                         );
                       },
                       child: GroupCard(
+                        key: ValueKey('available-group-${availableGroupsListItem.id}'),
                         groupRow: availableGroupsListItem,
                       ),
                     );

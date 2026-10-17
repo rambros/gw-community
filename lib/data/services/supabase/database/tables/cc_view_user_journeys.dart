@@ -53,6 +53,6 @@ class CcViewUserJourneysRow extends SupabaseDataRow {
   int get daysToWaitBetweenSteps => getField<int>('days_to_wait_between_steps') ?? 1;
   set daysToWaitBetweenSteps(int value) => setField<int>('days_to_wait_between_steps', value);
 
-  bool get isPublic => getField<bool>('is_public') ?? true;
+  bool get isPublic => getField<bool>('is_public') ?? false;
   set isPublic(bool value) => setField<bool>('is_public', value);
 }

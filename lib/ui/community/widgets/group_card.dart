@@ -9,6 +9,7 @@ import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/group_edit_page/group_edit_page.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
+import 'package:gw_community/utils/context_extensions.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
 import 'package:webviewx_plus/webviewx_plus.dart';
@@ -29,31 +30,86 @@ class GroupCard extends StatefulWidget {
   State<GroupCard> createState() => _GroupCardState();
 }
 
-class _GroupCardState extends State<GroupCard> {
+class _GroupCardState extends State<GroupCard> with RouteAware {
   final _announcementRepo = AnnouncementRepository();
   int _unreadCount = 0;
   DateTime? _lastPostDate;
+  int _unreadRequest = 0;
+  int _postDateRequest = 0;
+  bool _subscribedRoute = false;
+  bool _didInitialLoad = false;
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route is PageRoute) {
+      routeObserver.subscribe(this, route);
+      _subscribedRoute = true;
+    }
+    if (!_didInitialLoad) {
+      _didInitialLoad = true;
+      _reload();
+    }
+  }
+
+  @override
+  void didUpdateWidget(GroupCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.groupRow.id != widget.groupRow.id) {
+      _unreadCount = 0;
+      _lastPostDate = null;
+      _reload();
+    }
+  }
+
+  /// The groups list stays mounted under the group page. Reading a message
+  /// updates the database, but this card would keep the previous count.
+  @override
+  void didPopNext() {
+    _reload();
+  }
+
+  @override
+  void dispose() {
+    if (_subscribedRoute) routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  void _reload() {
     _loadUnread();
     _loadLastPostDate();
   }
 
+  String? _subjectUserId() {
+    final effective = context.effectiveUserIdOrEmpty;
+    if (effective.isNotEmpty) return effective;
+    return SupaFlow.client.auth.currentUser?.id;
+  }
+
   Future<void> _loadUnread() async {
-    final userId = SupaFlow.client.auth.currentUser?.id;
-    if (userId == null) return;
+    final userId = _subjectUserId();
+    final groupId = widget.groupRow.id;
+    if (userId == null || userId.isEmpty) return;
+    final request = ++_unreadRequest;
     final count = await _announcementRepo.getUnreadAnnouncementCount(
-      widget.groupRow.id,
+      groupId,
       userId,
     );
-    if (mounted) setState(() => _unreadCount = count);
+    if (!mounted || request != _unreadRequest || widget.groupRow.id != groupId) {
+      return;
+    }
+    setState(() => _unreadCount = count);
   }
 
   Future<void> _loadLastPostDate() async {
-    final date = await _announcementRepo.getLatestPostDate(widget.groupRow.id);
-    if (mounted) setState(() => _lastPostDate = date);
+    final groupId = widget.groupRow.id;
+    final request = ++_postDateRequest;
+    final date = await _announcementRepo.getLatestPostDate(groupId);
+    if (!mounted || request != _postDateRequest || widget.groupRow.id != groupId) {
+      return;
+    }
+    setState(() => _lastPostDate = date);
   }
 
   String _relativeLastPost(BuildContext context) {

@@ -196,7 +196,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get splashWelcomeSubtitle =>
-      'A community that shares good wishes\nto create a better world';
+      'A community that shares good wishes to create a better world';
 
   @override
   String get myGroups => 'My Groups';
@@ -224,6 +224,30 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get editGuidelines => 'Edit Guidelines';
+
+  @override
+  String get viewAsUser => 'View as user';
+
+  @override
+  String get viewAsSearchHint => 'Name or email';
+
+  @override
+  String get viewAsSearchMin => 'Type at least 3 characters.';
+
+  @override
+  String get viewAsNoResults => 'No members found.';
+
+  @override
+  String get viewAsReadOnlyNote =>
+      'You can look at this member\'s groups and journeys. Nothing will be created or changed.';
+
+  @override
+  String viewingAs(String name) {
+    return 'Viewing as $name';
+  }
+
+  @override
+  String get exitViewAs => 'Exit';
 
   @override
   String get resetTips => 'Reset Tips';
@@ -1160,6 +1184,141 @@ class AppLocalizationsEn extends AppLocalizations {
   String get linkToGroups => 'Link to Groups';
 
   @override
+  String get linkToJourneys => 'Link to Journeys';
+
+  @override
+  String get activityLinkedToStep => 'Activity added to the step.';
+
+  @override
+  String get failedToLinkActivity => 'Could not add the activity.';
+
+  @override
+  String get couldNotLoadLinkActivity => 'Could not load.';
+
+  @override
+  String get noJourneysToLink =>
+      'No journeys are linked to the groups you manage.';
+
+  @override
+  String get noJourneysAvailable => 'No journeys available.';
+
+  @override
+  String noJourneysMatch(String query) {
+    return 'No journeys match \"$query\".';
+  }
+
+  @override
+  String get searchJourneys => 'Search journeys…';
+
+  @override
+  String get selectJourney => 'Select a journey';
+
+  @override
+  String get selectStep => 'Select a step';
+
+  @override
+  String get noStepsInJourney => 'This journey has no steps.';
+
+  @override
+  String noStepsMatch(String query) {
+    return 'No steps match \"$query\".';
+  }
+
+  @override
+  String get searchSteps => 'Search steps…';
+
+  @override
+  String get activityLabel => 'Activity label';
+
+  @override
+  String get activityLabelCustom => 'Custom label';
+
+  @override
+  String get customActivityLabel => 'Custom';
+
+  @override
+  String get activityTypeLabel => 'Type';
+
+  @override
+  String get activityTypeAudio => 'Audio';
+
+  @override
+  String get activityTypeVideo => 'Video';
+
+  @override
+  String get activityTypePdf => 'PDF';
+
+  @override
+  String get activityTypeText => 'Text';
+
+  @override
+  String get activityPromptLabel => 'Prompt';
+
+  @override
+  String get activityOrder => 'Order in step';
+
+  @override
+  String get activityRequiredHelp =>
+      'Must be finished before the next step can open.';
+
+  @override
+  String get activityOptionalHelp =>
+      'Optional. It does not count toward opening the next step.';
+
+  @override
+  String get activityAudioUrl => 'Audio URL';
+
+  @override
+  String get activityAudioFilename => 'File name';
+
+  @override
+  String get activityAudioDuration => 'Duration';
+
+  @override
+  String get activityVideoUrl => 'Video URL';
+
+  @override
+  String get activityPdfUrl => 'PDF URL';
+
+  @override
+  String get activityTextBody => 'Text';
+
+  @override
+  String get activityLibraryTextCopied =>
+      'The library text is copied into this activity.';
+
+  @override
+  String get activityLibraryTextMissing =>
+      'This library item has no text to copy.';
+
+  @override
+  String get activityMediaMissing =>
+      'Add the file or text for this activity type.';
+
+  @override
+  String get activityLabelRequired => 'Choose a label.';
+
+  @override
+  String get activityLabelTooLong => 'Label must be 40 characters or less.';
+
+  @override
+  String get activityPromptRequired => 'Write a prompt.';
+
+  @override
+  String get activityPromptTooLong => 'Prompt must be 130 characters or less.';
+
+  @override
+  String get activityOrderInvalid => 'Order must be 1 or more.';
+
+  @override
+  String get addActivity => 'Add activity';
+
+  @override
+  String stepNumberLabel(int number) {
+    return 'Step $number';
+  }
+
+  @override
   String get groupLinksUpdated => 'Group links updated.';
 
   @override
@@ -1486,6 +1645,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noEventsYet => 'No events yet.';
 
   @override
+  String get pastEvents => 'Past events';
+
+  @override
   String get noDate => 'No date';
 
   @override
@@ -1502,6 +1664,40 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get multiDay => 'Multi-day';
+
+  @override
+  String get repeats => 'Repeats';
+
+  @override
+  String get doesNotRepeat => 'Does not repeat';
+
+  @override
+  String get repeatsWeekly => 'Weekly';
+
+  @override
+  String get repeatsEveryTwoWeeks => 'Every 2 weeks';
+
+  @override
+  String get repeatsMonthly => 'Monthly';
+
+  @override
+  String get repeatUntilOptional => 'Repeat until (optional)';
+
+  @override
+  String get clearDate => 'Clear';
+
+  @override
+  String get recurrenceShowsNext =>
+      'The home and the event list show only the next date. When that day passes, the following one appears.';
+
+  @override
+  String get repeatsWeeklyDetail => 'Repeats every week';
+
+  @override
+  String get repeatsEveryTwoWeeksDetail => 'Repeats every 2 weeks';
+
+  @override
+  String get repeatsMonthlyDetail => 'Repeats every month';
 
   @override
   String get durationMinutes => 'Duration (minutes)';
@@ -1531,13 +1727,47 @@ class AppLocalizationsEn extends AppLocalizations {
   String get saveEvent => 'Save Event';
 
   @override
-  String get eventHeaderImage => 'Event Header Image';
+  String get eventHeaderImage => 'Event image';
+
+  @override
+  String get eventHeaderImageSize => 'Recommended: 600 × 600 px';
 
   @override
   String get changeImage => 'Change Image';
 
   @override
   String get uploadImage => 'Upload Image';
+
+  @override
+  String get activityImageTitle => 'Photo';
+
+  @override
+  String get activityPdfUnavailable => 'This PDF is not available.';
+
+  @override
+  String get pdfViewPage => 'Page';
+
+  @override
+  String get pdfViewReading => 'Reading';
+
+  @override
+  String get pdfReadingEmpty =>
+      'This PDF has no text that can be enlarged. Use the page view.';
+
+  @override
+  String get pdfReadingFailed => 'Could not read the text of this PDF.';
+
+  @override
+  String get pdfDecreaseTextSize => 'Decrease text size';
+
+  @override
+  String get pdfIncreaseTextSize => 'Increase text size';
+
+  @override
+  String get usingGroupImage => 'Using the group image';
+
+  @override
+  String get useGroupImage => 'Use group image';
 
   @override
   String get onlyThisGroup => 'Only this group';
@@ -1549,7 +1779,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get date => 'Date';
 
   @override
-  String get messagesByFacilitator => 'Messages shared by the facilitator.';
+  String get messagesByFacilitator =>
+      'Messages from facilitators. Replies viewed by facilitators only';
 
   @override
   String get newMessage => 'New message';
@@ -1583,6 +1814,49 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addMessage => 'Add Message';
+
+  @override
+  String get pinMessage => 'Pin message';
+
+  @override
+  String get pinMessageHint => 'Stays at the top, even after it has been read.';
+
+  @override
+  String get pinnedMessage => 'Pinned by the facilitator';
+
+  @override
+  String get newComment => 'New';
+
+  @override
+  String get commentsOldestFirst => 'Oldest first';
+
+  @override
+  String get commentsNewestFirst => 'Newest first';
+
+  @override
+  String get commentsConversationOrder => 'Conversation order';
+
+  @override
+  String newReplies(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count new replies',
+      one: '1 new reply',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String commentCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count comments',
+      one: '1 comment',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get confirmDeleteThisMessage => 'Confirm deletion of this message?';
@@ -1666,6 +1940,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fileRequired => 'File *';
+
+  @override
+  String get enterTextRequired => 'Enter text *';
+
+  @override
+  String get pleaseEnterText => 'Please enter the text.';
+
+  @override
+  String get preview => 'Preview';
+
+  @override
+  String get markdownPlaceholder => 'Write in Markdown...';
 
   @override
   String get noContentAvailable => 'No content available.';

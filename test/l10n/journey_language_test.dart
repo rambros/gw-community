@@ -29,12 +29,10 @@ void main() {
           supportedLocales: AppLocalizations.supportedLocales,
           home: JourneyLocaleScope(
             fixedLanguage: null,
-            child: Builder(
-              builder: (context) {
-                label = context.l10n.welcomeBack('Rodrigo');
-                return const SizedBox.shrink();
-              },
-            ),
+            builder: (context) {
+              label = context.l10n.welcomeBack('Rodrigo');
+              return const SizedBox.shrink();
+            },
           ),
         ),
       );
@@ -51,12 +49,10 @@ void main() {
           supportedLocales: AppLocalizations.supportedLocales,
           home: JourneyLocaleScope(
             fixedLanguage: 'en',
-            child: Builder(
-              builder: (context) {
-                label = context.l10n.welcomeBack('Rodrigo');
-                return Text(context.l10n.journeyResources);
-              },
-            ),
+            builder: (context) {
+              label = context.l10n.welcomeBack('Rodrigo');
+              return Text(context.l10n.journeyResources);
+            },
           ),
         ),
       );

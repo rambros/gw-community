@@ -6,6 +6,7 @@ import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_pdf_viewer.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_youtube_player.dart';
+import 'package:gw_community/ui/core/ui/reading_text_size.dart';
 import 'package:gw_community/ui/core/widgets/audio_player_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -30,7 +31,15 @@ class _ResourceViewPageState extends State<ResourceViewPage> {
     }
   }
 
+  String? get _authoredBody {
+    final body = widget.resource.body?.trim();
+    if (body == null || body.isEmpty) return null;
+    return body;
+  }
+
   Future<void> _loadTextContent() async {
+    if (_authoredBody != null) return;
+
     // Use description stored at link time if available
     if (widget.resource.description != null &&
         widget.resource.description!.isNotEmpty) {
@@ -177,12 +186,18 @@ class _ResourceViewPageState extends State<ResourceViewPage> {
     if (_loadingText) {
       return Center(
         child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(AppTheme.of(context).primary),
+          valueColor:
+              AlwaysStoppedAnimation<Color>(AppTheme.of(context).primary),
         ),
       );
     }
 
-    final content = _textContent ?? '';
+    final content = _authoredBody ?? _textContent ?? '';
+    final summary = widget.resource.description?.trim();
+    final showSummary = _authoredBody != null &&
+        summary != null &&
+        summary.isNotEmpty &&
+        summary != content;
     if (content.isEmpty) {
       return Center(
         child: Text(
@@ -195,63 +210,53 @@ class _ResourceViewPageState extends State<ResourceViewPage> {
       );
     }
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
-      child: MarkdownBody(
-        data: content,
-        onTapLink: (text, href, title) async {
-          if (href != null) {
-            final uri = Uri.tryParse(href);
-            if (uri != null) await launchUrl(uri, mode: LaunchMode.externalApplication);
-          }
-        },
-        styleSheet: MarkdownStyleSheet(
-          textAlign: WrapAlignment.start,
-          p: GoogleFonts.lexendDeca(
-            color: Colors.black87,
-            fontSize: 15.0,
-            fontWeight: FontWeight.normal,
-            height: 1.6,
-          ),
-          strong: GoogleFonts.lexendDeca(
-            color: Colors.black87,
-            fontSize: 15.0,
-            fontWeight: FontWeight.bold,
-            height: 1.6,
-          ),
-          em: GoogleFonts.lexendDeca(
-            color: Colors.black87,
-            fontSize: 15.0,
-            fontStyle: FontStyle.italic,
-            height: 1.6,
-          ),
-          h1: GoogleFonts.lexendDeca(
-            color: Colors.black,
-            fontSize: 22.0,
-            fontWeight: FontWeight.bold,
-          ),
-          h2: GoogleFonts.lexendDeca(
-            color: Colors.black,
-            fontSize: 19.0,
-            fontWeight: FontWeight.bold,
-          ),
-          h3: GoogleFonts.lexendDeca(
-            color: Colors.black,
-            fontSize: 17.0,
-            fontWeight: FontWeight.w600,
-          ),
-          a: GoogleFonts.lexendDeca(
-            color: AppTheme.of(context).primary,
-            fontSize: 15.0,
-            decoration: TextDecoration.underline,
-          ),
-          blockquote: GoogleFonts.lexendDeca(
-            color: Colors.black54,
-            fontSize: 15.0,
-            fontStyle: FontStyle.italic,
-          ),
-        ),
-      ),
+    return ReadingTextSize(
+      barColor: AppTheme.of(context).primaryBackground,
+      builder: (context, fontSize, controls) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            controls,
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (showSummary) ...[
+                      Text(
+                        summary,
+                        style: AppTheme.of(context).bodyMedium.override(
+                              font: GoogleFonts.openSans(),
+                              color: AppTheme.of(context).textColor,
+                              fontSize: 16,
+                              letterSpacing: 0,
+                            ),
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+                    MarkdownBody(
+                      data: content,
+                      onTapLink: (text, href, title) async {
+                        if (href != null) {
+                          final uri = Uri.tryParse(href);
+                          if (uri != null) {
+                            await launchUrl(
+                              uri,
+                              mode: LaunchMode.externalApplication,
+                            );
+                          }
+                        }
+                      },
+                      styleSheet: _resourceMarkdownStyle(context, fontSize),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -260,11 +265,55 @@ class _ResourceViewPageState extends State<ResourceViewPage> {
       child: ElevatedButton.icon(
         onPressed: () async {
           final uri = Uri.tryParse(widget.resource.url);
-          if (uri != null) await launchUrl(uri, mode: LaunchMode.externalApplication);
+          if (uri != null)
+            await launchUrl(uri, mode: LaunchMode.externalApplication);
         },
         icon: const Icon(Icons.open_in_new),
         label: const Text('Open Resource'),
       ),
     );
   }
+}
+
+MarkdownStyleSheet _resourceMarkdownStyle(
+  BuildContext context,
+  double fontSize,
+) {
+  final paragraph = GoogleFonts.lexendDeca(
+    color: Colors.black87,
+    fontSize: fontSize,
+    fontWeight: FontWeight.normal,
+    height: 1.6,
+  );
+  return MarkdownStyleSheet(
+    textAlign: WrapAlignment.start,
+    p: paragraph,
+    strong: paragraph.copyWith(fontWeight: FontWeight.bold),
+    em: paragraph.copyWith(fontStyle: FontStyle.italic),
+    h1: GoogleFonts.lexendDeca(
+      color: Colors.black,
+      fontSize: readingMarkdownHeadingSize(fontSize, 1),
+      fontWeight: FontWeight.bold,
+    ),
+    h2: GoogleFonts.lexendDeca(
+      color: Colors.black,
+      fontSize: readingMarkdownHeadingSize(fontSize, 2),
+      fontWeight: FontWeight.bold,
+    ),
+    h3: GoogleFonts.lexendDeca(
+      color: Colors.black,
+      fontSize: readingMarkdownHeadingSize(fontSize, 3),
+      fontWeight: FontWeight.w600,
+    ),
+    a: GoogleFonts.lexendDeca(
+      color: AppTheme.of(context).primary,
+      fontSize: fontSize,
+      decoration: TextDecoration.underline,
+    ),
+    blockquote: GoogleFonts.lexendDeca(
+      color: Colors.black54,
+      fontSize: fontSize,
+      fontStyle: FontStyle.italic,
+    ),
+  );
 }

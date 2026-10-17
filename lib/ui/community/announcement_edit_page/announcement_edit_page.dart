@@ -203,7 +203,47 @@ class _AnnouncementEditPageState extends State<AnnouncementEditPage> {
             maxLines: 12,
           ),
         ),
+        _pinSwitch(context, viewModel.pinMessage, viewModel.setPinMessage),
       ],
+    );
+  }
+
+  Widget _pinSwitch(
+    BuildContext context,
+    bool value,
+    ValueChanged<bool> onChanged,
+  ) {
+    return Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(4.0, 4.0, 4.0, 8.0),
+      child: Material(
+        color: const Color(0xFFF9FAFB),
+        clipBehavior: Clip.antiAlias,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.0),
+          side: BorderSide(
+            color: AppTheme.of(context).alternate,
+            width: 1.0,
+          ),
+        ),
+        child: SwitchListTile(
+          value: value,
+          onChanged: onChanged,
+          secondary: Icon(
+            Icons.push_pin_outlined,
+            color: AppTheme.of(context).primary,
+          ),
+          title: Text(
+            context.l10n.pinMessage,
+            style: AppTheme.of(context).bodyMedium.override(
+                  font: GoogleFonts.lexendDeca(),
+                  color: AppTheme.of(context).secondary,
+                ),
+          ),
+          activeThumbColor: AppTheme.of(context).primary,
+          activeTrackColor: AppTheme.of(context).primary.withValues(alpha: 0.5),
+          controlAffinity: ListTileControlAffinity.trailing,
+        ),
+      ),
     );
   }
 

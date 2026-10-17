@@ -15,12 +15,23 @@ class CommentItemWidget extends StatelessWidget {
     required this.onReply,
     this.onDelete,
     required this.canDelete,
+    this.isNew = false,
+    this.showReadState = false,
   });
 
   final CcViewOrderedCommentsRow comment;
   final VoidCallback onReply;
   final VoidCallback? onDelete;
   final bool canDelete;
+  final bool isNew;
+  final bool showReadState;
+
+  bool get _isUnread => showReadState && isNew;
+
+  Color _textColor(BuildContext context) {
+    if (showReadState && !isNew) return AppTheme.of(context).secondaryText;
+    return AppTheme.of(context).secondary;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,22 +89,25 @@ class CommentItemWidget extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
-        Padding(
-          padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
-          child: Text(
+        Flexible(
+          child: Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
+            child: Text(
             valueOrDefault<String>(
               comment.displayName,
               'display_name',
             ),
+            overflow: TextOverflow.ellipsis,
             style: AppTheme.of(context).bodyMedium.override(
                   font: GoogleFonts.lexendDeca(
-                    fontWeight: FontWeight.w600,
+                    fontWeight: _isUnread ? FontWeight.w700 : FontWeight.w600,
                   ),
-                  color: AppTheme.of(context).secondary,
+                  color: _textColor(context),
                   fontSize: 14.0,
                   letterSpacing: 0.0,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: _isUnread ? FontWeight.w700 : FontWeight.w600,
                 ),
+            ),
           ),
         ),
         Text(
@@ -104,7 +118,7 @@ class CommentItemWidget extends StatelessWidget {
           ),
           style: AppTheme.of(context).bodyMedium.override(
                 font: GoogleFonts.lexendDeca(),
-                color: AppTheme.of(context).secondary,
+                color: _textColor(context),
                 fontSize: 14.0,
                 letterSpacing: 0.0,
               ),
@@ -124,9 +138,12 @@ class CommentItemWidget extends StatelessWidget {
               'comment',
             ),
             style: AppTheme.of(context).bodyMedium.override(
-                  font: GoogleFonts.lexendDeca(),
-                  color: AppTheme.of(context).secondary,
+                  font: GoogleFonts.lexendDeca(
+                    fontWeight: _isUnread ? FontWeight.w600 : FontWeight.normal,
+                  ),
+                  color: _textColor(context),
                   letterSpacing: 0.0,
+                  fontWeight: _isUnread ? FontWeight.w600 : FontWeight.normal,
                 ),
           ),
         ),

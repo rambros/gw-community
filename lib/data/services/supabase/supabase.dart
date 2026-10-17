@@ -22,7 +22,7 @@ class SupaFlow {
       headers: {
         'X-Client-Info': 'flutterflow',
       },
-      anonKey: _kSupabaseAnonKey,
+      publishableKey: _kSupabaseAnonKey,
       // Use pkce flow for native apps (persists session)
       authOptions: const FlutterAuthClientOptions(authFlowType: AuthFlowType.pkce),
     );

@@ -75,4 +75,10 @@ class CcEventsRow extends SupabaseDataRow {
 
   String? get eventType => getField<String>('event_type');
   set eventType(String? value) => setField<String>('event_type', value);
+
+  String? get recurrence => getField<String>('recurrence');
+  set recurrence(String? value) => setField<String>('recurrence', value);
+
+  DateTime? get recurrenceUntil => getField<DateTime>('recurrence_until');
+  set recurrenceUntil(DateTime? value) => setField<DateTime>('recurrence_until', value);
 }

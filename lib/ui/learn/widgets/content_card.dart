@@ -6,6 +6,7 @@ import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/widgets/favorite_button.dart';
 import 'package:gw_community/ui/learn/content_view/content_view_page.dart';
+import 'package:gw_community/ui/learn/link_activity_page/link_activity_page.dart';
 import 'package:gw_community/ui/learn/utils/portal_content_mapper.dart';
 import 'package:gw_community/ui/learn/widgets/group_link_sheet.dart';
 import 'package:gw_community/ui/learn/widgets/portal_search_bar.dart';
@@ -84,6 +85,10 @@ class _ContentCardState extends State<ContentCard> {
       return Icon(Icons.ondemand_video,
           color: AppTheme.of(context).primary, size: 24);
     }
+    if (type.contains('pdf')) {
+      return Icon(Icons.picture_as_pdf_outlined,
+          color: AppTheme.of(context).primary, size: 24);
+    }
     if (type.contains('text')) {
       return Icon(Icons.article_outlined,
           color: AppTheme.of(context).primary, size: 24);
@@ -149,6 +154,8 @@ class _ContentCardState extends State<ContentCard> {
                         _ActionsMenu(
                           onLinkToGroups: () =>
                               showGroupLinkSheet(context, widget.contentRow),
+                          onLinkToJourneys: () =>
+                              openLinkActivityPage(context, widget.contentRow),
                         ),
                     ],
                   ),
@@ -228,9 +235,13 @@ class _TrailingActions extends StatelessWidget {
 }
 
 class _ActionsMenu extends StatelessWidget {
-  const _ActionsMenu({required this.onLinkToGroups});
+  const _ActionsMenu({
+    required this.onLinkToGroups,
+    required this.onLinkToJourneys,
+  });
 
   final VoidCallback onLinkToGroups;
+  final VoidCallback onLinkToJourneys;
 
   @override
   Widget build(BuildContext context) {
@@ -248,6 +259,7 @@ class _ActionsMenu extends StatelessWidget {
           size: 18, color: AppTheme.of(context).secondaryText),
       onSelected: (value) {
         if (value == 'link') onLinkToGroups();
+        if (value == 'journey') onLinkToJourneys();
       },
       itemBuilder: (_) => [
         PopupMenuItem(
@@ -257,6 +269,16 @@ class _ActionsMenu extends StatelessWidget {
               const Icon(Icons.link, size: 18),
               const SizedBox(width: 10),
               Text(context.l10n.linkToGroups),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: 'journey',
+          child: Row(
+            children: [
+              const Icon(Icons.route, size: 18),
+              const SizedBox(width: 10),
+              Text(context.l10n.linkToJourneys),
             ],
           ),
         ),

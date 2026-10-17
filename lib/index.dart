@@ -25,7 +25,9 @@ export 'package:gw_community/ui/journey/journey_step_details_page/journey_step_d
 export 'package:gw_community/ui/journey/journeys_list_page/journeys_list_page.dart' show JourneysListPage;
 export 'package:gw_community/ui/journey/step_audio_player_page/step_audio_player_page.dart' show StepAudioPlayerPage;
 export 'package:gw_community/ui/journey/step_details_page/step_details_page.dart' show StepDetailsPage;
+export 'package:gw_community/ui/journey/step_image_page/step_image_page.dart' show StepImagePage;
 export 'package:gw_community/ui/journey/step_journal_page/step_journal_page.dart' show StepJournalPage;
+export 'package:gw_community/ui/journey/step_pdf_page/step_pdf_page.dart' show StepPdfPage;
 export 'package:gw_community/ui/journey/step_text_view_page/step_text_view_page.dart' show StepTextViewPage;
 export 'package:gw_community/ui/journey/step_video_player_page/step_video_player_page.dart' show StepVideoPlayerPage;
 export 'package:gw_community/ui/learn/content_view/content_view_page.dart' show ContentViewPage;

@@ -63,8 +63,11 @@ class EventRepository {
     int? groupId,
     DateTime? endDate,
     String? eventType,
+    String? imageUrl,
+    String? recurrence,
+    DateTime? recurrenceUntil,
   }) async {
-    await CcEventsTable().insert({
+    final data = <String, dynamic>{
       'title': title,
       'description': description,
       'group_id': groupId,
@@ -79,7 +82,16 @@ class EventRepository {
       'visibility': visibility,
       'end_date': supaSerialize<DateTime>(endDate),
       'event_type': eventType,
-    });
+      'recurrence': recurrence,
+      'recurrence_until': supaSerialize<DateTime>(recurrenceUntil),
+    };
+
+    // Null keeps the group image as the live default at display time.
+    if (imageUrl != null && imageUrl.isNotEmpty) {
+      data['event_image_url'] = imageUrl;
+    }
+
+    await CcEventsTable().insert(data);
   }
 
   Future<void> updateEvent({
@@ -95,8 +107,11 @@ class EventRepository {
     required String visibility,
     String? registrationUrl,
     String? imageUrl,
+    bool clearImage = false,
     DateTime? endDate,
     String? eventType,
+    String? recurrence,
+    DateTime? recurrenceUntil,
   }) async {
     final data = {
       'title': title,
@@ -111,10 +126,13 @@ class EventRepository {
       'visibility': visibility,
       'end_date': supaSerialize<DateTime>(endDate),
       'event_type': eventType,
+      'recurrence': recurrence,
+      'recurrence_until': supaSerialize<DateTime>(recurrenceUntil),
     };
 
-    // Only add imageUrl if it's provided (null means don't update)
-    if (imageUrl != null) {
+    if (clearImage) {
+      data['event_image_url'] = null;
+    } else if (imageUrl != null && imageUrl.isNotEmpty) {
       data['event_image_url'] = imageUrl;
     }
 

@@ -26,6 +26,10 @@ class CcFileResourcesRow extends SupabaseDataRow {
   String get url => getField<String>('url')!;
   set url(String value) => setField<String>('url', value);
 
+  /// Markdown body for resources of type `text`.
+  String? get body => getField<String>('body');
+  set body(String? value) => setField<String>('body', value);
+
   String get type => getField<String>('type')!;
   set type(String value) => setField<String>('type', value);
 

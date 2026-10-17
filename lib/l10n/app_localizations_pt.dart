@@ -196,7 +196,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get splashWelcomeSubtitle =>
-      'Uma comunidade que compartilha\nbons votos para criar um mundo melhor';
+      'Uma comunidade que compartilha bons votos para criar um mundo melhor';
 
   @override
   String get myGroups => 'Meus grupos';
@@ -224,6 +224,30 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get editGuidelines => 'Editar diretrizes';
+
+  @override
+  String get viewAsUser => 'Ver como usuário';
+
+  @override
+  String get viewAsSearchHint => 'Nome ou e-mail';
+
+  @override
+  String get viewAsSearchMin => 'Digite pelo menos 3 caracteres.';
+
+  @override
+  String get viewAsNoResults => 'Nenhum membro encontrado.';
+
+  @override
+  String get viewAsReadOnlyNote =>
+      'Você vê os grupos e as jornadas deste membro. Nada será criado ou alterado.';
+
+  @override
+  String viewingAs(String name) {
+    return 'Vendo como $name';
+  }
+
+  @override
+  String get exitViewAs => 'Sair';
 
   @override
   String get resetTips => 'Redefinir dicas';
@@ -1161,6 +1185,143 @@ class AppLocalizationsPt extends AppLocalizations {
   String get linkToGroups => 'Vincular a grupos';
 
   @override
+  String get linkToJourneys => 'Vincular a jornadas';
+
+  @override
+  String get activityLinkedToStep => 'Atividade adicionada ao passo.';
+
+  @override
+  String get failedToLinkActivity => 'Não foi possível adicionar a atividade.';
+
+  @override
+  String get couldNotLoadLinkActivity => 'Não foi possível carregar.';
+
+  @override
+  String get noJourneysToLink =>
+      'Nenhuma jornada está ligada aos grupos que você facilita.';
+
+  @override
+  String get noJourneysAvailable => 'Nenhuma jornada disponível.';
+
+  @override
+  String noJourneysMatch(String query) {
+    return 'Nenhuma jornada corresponde a \"$query\".';
+  }
+
+  @override
+  String get searchJourneys => 'Pesquisar jornadas…';
+
+  @override
+  String get selectJourney => 'Escolha a jornada';
+
+  @override
+  String get selectStep => 'Escolha o passo';
+
+  @override
+  String get noStepsInJourney => 'Esta jornada não tem passos.';
+
+  @override
+  String noStepsMatch(String query) {
+    return 'Nenhum passo corresponde a \"$query\".';
+  }
+
+  @override
+  String get searchSteps => 'Pesquisar passos…';
+
+  @override
+  String get activityLabel => 'Rótulo da atividade';
+
+  @override
+  String get activityLabelCustom => 'Rótulo personalizado';
+
+  @override
+  String get customActivityLabel => 'Personalizado';
+
+  @override
+  String get activityTypeLabel => 'Tipo';
+
+  @override
+  String get activityTypeAudio => 'Áudio';
+
+  @override
+  String get activityTypeVideo => 'Vídeo';
+
+  @override
+  String get activityTypePdf => 'PDF';
+
+  @override
+  String get activityTypeText => 'Texto';
+
+  @override
+  String get activityPromptLabel => 'Enunciado';
+
+  @override
+  String get activityOrder => 'Ordem no passo';
+
+  @override
+  String get activityRequiredHelp =>
+      'Precisa ser concluída antes do próximo passo abrir.';
+
+  @override
+  String get activityOptionalHelp =>
+      'Opcional. Não conta para abrir o próximo passo.';
+
+  @override
+  String get activityAudioUrl => 'URL do áudio';
+
+  @override
+  String get activityAudioFilename => 'Nome do arquivo';
+
+  @override
+  String get activityAudioDuration => 'Duração';
+
+  @override
+  String get activityVideoUrl => 'URL do vídeo';
+
+  @override
+  String get activityPdfUrl => 'URL do PDF';
+
+  @override
+  String get activityTextBody => 'Texto';
+
+  @override
+  String get activityLibraryTextCopied =>
+      'O texto da biblioteca é copiado para esta atividade.';
+
+  @override
+  String get activityLibraryTextMissing =>
+      'Este item da biblioteca não tem texto para copiar.';
+
+  @override
+  String get activityMediaMissing =>
+      'Informe o arquivo ou o texto deste tipo de atividade.';
+
+  @override
+  String get activityLabelRequired => 'Escolha um rótulo.';
+
+  @override
+  String get activityLabelTooLong =>
+      'O rótulo deve ter no máximo 40 caracteres.';
+
+  @override
+  String get activityPromptRequired => 'Escreva o enunciado.';
+
+  @override
+  String get activityPromptTooLong =>
+      'O enunciado deve ter no máximo 130 caracteres.';
+
+  @override
+  String get activityOrderInvalid => 'A ordem deve ser 1 ou mais.';
+
+  @override
+  String get addActivity => 'Adicionar atividade';
+
+  @override
+  String stepNumberLabel(int number) {
+    return 'Passo $number';
+  }
+
+  @override
   String get groupLinksUpdated => 'Vínculos com grupos atualizados.';
 
   @override
@@ -1489,6 +1650,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get noEventsYet => 'Nenhum evento ainda.';
 
   @override
+  String get pastEvents => 'Eventos passados';
+
+  @override
   String get noDate => 'Sem data';
 
   @override
@@ -1505,6 +1669,40 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get multiDay => 'Vários dias';
+
+  @override
+  String get repeats => 'Repete';
+
+  @override
+  String get doesNotRepeat => 'Não repete';
+
+  @override
+  String get repeatsWeekly => 'Toda semana';
+
+  @override
+  String get repeatsEveryTwoWeeks => 'A cada 2 semanas';
+
+  @override
+  String get repeatsMonthly => 'Todo mês';
+
+  @override
+  String get repeatUntilOptional => 'Repetir até (opcional)';
+
+  @override
+  String get clearDate => 'Limpar';
+
+  @override
+  String get recurrenceShowsNext =>
+      'A home e a lista de eventos mostram só a próxima data. Quando esse dia passa, aparece a seguinte.';
+
+  @override
+  String get repeatsWeeklyDetail => 'Repete toda semana';
+
+  @override
+  String get repeatsEveryTwoWeeksDetail => 'Repete a cada 2 semanas';
+
+  @override
+  String get repeatsMonthlyDetail => 'Repete todo mês';
 
   @override
   String get durationMinutes => 'Duração (minutos)';
@@ -1534,13 +1732,47 @@ class AppLocalizationsPt extends AppLocalizations {
   String get saveEvent => 'Salvar evento';
 
   @override
-  String get eventHeaderImage => 'Imagem de capa do evento';
+  String get eventHeaderImage => 'Imagem do evento';
+
+  @override
+  String get eventHeaderImageSize => 'Recomendado: 600 × 600 px';
 
   @override
   String get changeImage => 'Trocar imagem';
 
   @override
   String get uploadImage => 'Enviar imagem';
+
+  @override
+  String get activityImageTitle => 'Foto';
+
+  @override
+  String get activityPdfUnavailable => 'Este PDF não está disponível.';
+
+  @override
+  String get pdfViewPage => 'Página';
+
+  @override
+  String get pdfViewReading => 'Leitura';
+
+  @override
+  String get pdfReadingEmpty =>
+      'Este PDF não tem texto que dê para aumentar. Use a visualização de página.';
+
+  @override
+  String get pdfReadingFailed => 'Não foi possível ler o texto deste PDF.';
+
+  @override
+  String get pdfDecreaseTextSize => 'Diminuir o tamanho do texto';
+
+  @override
+  String get pdfIncreaseTextSize => 'Aumentar o tamanho do texto';
+
+  @override
+  String get usingGroupImage => 'Usando a imagem do grupo';
+
+  @override
+  String get useGroupImage => 'Usar imagem do grupo';
 
   @override
   String get onlyThisGroup => 'Somente este grupo';
@@ -1553,7 +1785,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get messagesByFacilitator =>
-      'Mensagens compartilhadas pelo facilitador.';
+      'Mensagens dos facilitadores. Respostas vistas apenas pelos facilitadores';
 
   @override
   String get newMessage => 'Nova mensagem';
@@ -1587,6 +1819,49 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get addMessage => 'Adicionar mensagem';
+
+  @override
+  String get pinMessage => 'Fixar mensagem';
+
+  @override
+  String get pinMessageHint => 'Fica no topo, mesmo depois de lida.';
+
+  @override
+  String get pinnedMessage => 'Fixada pelo facilitador';
+
+  @override
+  String get newComment => 'Nova';
+
+  @override
+  String get commentsOldestFirst => 'Mais antigos primeiro';
+
+  @override
+  String get commentsNewestFirst => 'Mais recentes primeiro';
+
+  @override
+  String get commentsConversationOrder => 'Ordem da conversa';
+
+  @override
+  String newReplies(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count respostas novas',
+      one: '1 resposta nova',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String commentCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count comentários',
+      one: '1 comentário',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get confirmDeleteThisMessage => 'Confirmar a exclusão desta mensagem?';
@@ -1670,6 +1945,18 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get fileRequired => 'Arquivo *';
+
+  @override
+  String get enterTextRequired => 'Entre com texto *';
+
+  @override
+  String get pleaseEnterText => 'Digite o texto.';
+
+  @override
+  String get preview => 'Pré-visualizar';
+
+  @override
+  String get markdownPlaceholder => 'Escreva em Markdown...';
 
   @override
   String get noContentAvailable => 'Nenhum conteúdo disponível.';

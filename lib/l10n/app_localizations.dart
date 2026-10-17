@@ -395,7 +395,7 @@ abstract class AppLocalizations {
   /// No description provided for @splashWelcomeSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'A community that shares good wishes\nto create a better world'**
+  /// **'A community that shares good wishes to create a better world'**
   String get splashWelcomeSubtitle;
 
   /// No description provided for @myGroups.
@@ -451,6 +451,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Edit Guidelines'**
   String get editGuidelines;
+
+  /// No description provided for @viewAsUser.
+  ///
+  /// In en, this message translates to:
+  /// **'View as user'**
+  String get viewAsUser;
+
+  /// No description provided for @viewAsSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Name or email'**
+  String get viewAsSearchHint;
+
+  /// No description provided for @viewAsSearchMin.
+  ///
+  /// In en, this message translates to:
+  /// **'Type at least 3 characters.'**
+  String get viewAsSearchMin;
+
+  /// No description provided for @viewAsNoResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No members found.'**
+  String get viewAsNoResults;
+
+  /// No description provided for @viewAsReadOnlyNote.
+  ///
+  /// In en, this message translates to:
+  /// **'You can look at this member\'s groups and journeys. Nothing will be created or changed.'**
+  String get viewAsReadOnlyNote;
+
+  /// No description provided for @viewingAs.
+  ///
+  /// In en, this message translates to:
+  /// **'Viewing as {name}'**
+  String viewingAs(String name);
+
+  /// No description provided for @exitViewAs.
+  ///
+  /// In en, this message translates to:
+  /// **'Exit'**
+  String get exitViewAs;
 
   /// No description provided for @resetTips.
   ///
@@ -2144,6 +2186,252 @@ abstract class AppLocalizations {
   /// **'Link to Groups'**
   String get linkToGroups;
 
+  /// No description provided for @linkToJourneys.
+  ///
+  /// In en, this message translates to:
+  /// **'Link to Journeys'**
+  String get linkToJourneys;
+
+  /// No description provided for @activityLinkedToStep.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity added to the step.'**
+  String get activityLinkedToStep;
+
+  /// No description provided for @failedToLinkActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not add the activity.'**
+  String get failedToLinkActivity;
+
+  /// No description provided for @couldNotLoadLinkActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load.'**
+  String get couldNotLoadLinkActivity;
+
+  /// No description provided for @noJourneysToLink.
+  ///
+  /// In en, this message translates to:
+  /// **'No journeys are linked to the groups you manage.'**
+  String get noJourneysToLink;
+
+  /// No description provided for @noJourneysAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No journeys available.'**
+  String get noJourneysAvailable;
+
+  /// No description provided for @noJourneysMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'No journeys match \"{query}\".'**
+  String noJourneysMatch(String query);
+
+  /// No description provided for @searchJourneys.
+  ///
+  /// In en, this message translates to:
+  /// **'Search journeys…'**
+  String get searchJourneys;
+
+  /// No description provided for @selectJourney.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a journey'**
+  String get selectJourney;
+
+  /// No description provided for @selectStep.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a step'**
+  String get selectStep;
+
+  /// No description provided for @noStepsInJourney.
+  ///
+  /// In en, this message translates to:
+  /// **'This journey has no steps.'**
+  String get noStepsInJourney;
+
+  /// No description provided for @noStepsMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'No steps match \"{query}\".'**
+  String noStepsMatch(String query);
+
+  /// No description provided for @searchSteps.
+  ///
+  /// In en, this message translates to:
+  /// **'Search steps…'**
+  String get searchSteps;
+
+  /// No description provided for @activityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity label'**
+  String get activityLabel;
+
+  /// No description provided for @activityLabelCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom label'**
+  String get activityLabelCustom;
+
+  /// No description provided for @customActivityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get customActivityLabel;
+
+  /// No description provided for @activityTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get activityTypeLabel;
+
+  /// No description provided for @activityTypeAudio.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio'**
+  String get activityTypeAudio;
+
+  /// No description provided for @activityTypeVideo.
+  ///
+  /// In en, this message translates to:
+  /// **'Video'**
+  String get activityTypeVideo;
+
+  /// No description provided for @activityTypePdf.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF'**
+  String get activityTypePdf;
+
+  /// No description provided for @activityTypeText.
+  ///
+  /// In en, this message translates to:
+  /// **'Text'**
+  String get activityTypeText;
+
+  /// No description provided for @activityPromptLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Prompt'**
+  String get activityPromptLabel;
+
+  /// No description provided for @activityOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Order in step'**
+  String get activityOrder;
+
+  /// No description provided for @activityRequiredHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Must be finished before the next step can open.'**
+  String get activityRequiredHelp;
+
+  /// No description provided for @activityOptionalHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional. It does not count toward opening the next step.'**
+  String get activityOptionalHelp;
+
+  /// No description provided for @activityAudioUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio URL'**
+  String get activityAudioUrl;
+
+  /// No description provided for @activityAudioFilename.
+  ///
+  /// In en, this message translates to:
+  /// **'File name'**
+  String get activityAudioFilename;
+
+  /// No description provided for @activityAudioDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration'**
+  String get activityAudioDuration;
+
+  /// No description provided for @activityVideoUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Video URL'**
+  String get activityVideoUrl;
+
+  /// No description provided for @activityPdfUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF URL'**
+  String get activityPdfUrl;
+
+  /// No description provided for @activityTextBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Text'**
+  String get activityTextBody;
+
+  /// No description provided for @activityLibraryTextCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'The library text is copied into this activity.'**
+  String get activityLibraryTextCopied;
+
+  /// No description provided for @activityLibraryTextMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'This library item has no text to copy.'**
+  String get activityLibraryTextMissing;
+
+  /// No description provided for @activityMediaMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the file or text for this activity type.'**
+  String get activityMediaMissing;
+
+  /// No description provided for @activityLabelRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a label.'**
+  String get activityLabelRequired;
+
+  /// No description provided for @activityLabelTooLong.
+  ///
+  /// In en, this message translates to:
+  /// **'Label must be 40 characters or less.'**
+  String get activityLabelTooLong;
+
+  /// No description provided for @activityPromptRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Write a prompt.'**
+  String get activityPromptRequired;
+
+  /// No description provided for @activityPromptTooLong.
+  ///
+  /// In en, this message translates to:
+  /// **'Prompt must be 130 characters or less.'**
+  String get activityPromptTooLong;
+
+  /// No description provided for @activityOrderInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Order must be 1 or more.'**
+  String get activityOrderInvalid;
+
+  /// No description provided for @addActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Add activity'**
+  String get addActivity;
+
+  /// No description provided for @stepNumberLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Step {number}'**
+  String stepNumberLabel(int number);
+
   /// No description provided for @groupLinksUpdated.
   ///
   /// In en, this message translates to:
@@ -2732,6 +3020,12 @@ abstract class AppLocalizations {
   /// **'No events yet.'**
   String get noEventsYet;
 
+  /// No description provided for @pastEvents.
+  ///
+  /// In en, this message translates to:
+  /// **'Past events'**
+  String get pastEvents;
+
   /// No description provided for @noDate.
   ///
   /// In en, this message translates to:
@@ -2767,6 +3061,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Multi-day'**
   String get multiDay;
+
+  /// No description provided for @repeats.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeats'**
+  String get repeats;
+
+  /// No description provided for @doesNotRepeat.
+  ///
+  /// In en, this message translates to:
+  /// **'Does not repeat'**
+  String get doesNotRepeat;
+
+  /// No description provided for @repeatsWeekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly'**
+  String get repeatsWeekly;
+
+  /// No description provided for @repeatsEveryTwoWeeks.
+  ///
+  /// In en, this message translates to:
+  /// **'Every 2 weeks'**
+  String get repeatsEveryTwoWeeks;
+
+  /// No description provided for @repeatsMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get repeatsMonthly;
+
+  /// No description provided for @repeatUntilOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeat until (optional)'**
+  String get repeatUntilOptional;
+
+  /// No description provided for @clearDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get clearDate;
+
+  /// No description provided for @recurrenceShowsNext.
+  ///
+  /// In en, this message translates to:
+  /// **'The home and the event list show only the next date. When that day passes, the following one appears.'**
+  String get recurrenceShowsNext;
+
+  /// No description provided for @repeatsWeeklyDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeats every week'**
+  String get repeatsWeeklyDetail;
+
+  /// No description provided for @repeatsEveryTwoWeeksDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeats every 2 weeks'**
+  String get repeatsEveryTwoWeeksDetail;
+
+  /// No description provided for @repeatsMonthlyDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeats every month'**
+  String get repeatsMonthlyDetail;
 
   /// No description provided for @durationMinutes.
   ///
@@ -2825,8 +3185,14 @@ abstract class AppLocalizations {
   /// No description provided for @eventHeaderImage.
   ///
   /// In en, this message translates to:
-  /// **'Event Header Image'**
+  /// **'Event image'**
   String get eventHeaderImage;
+
+  /// No description provided for @eventHeaderImageSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended: 600 × 600 px'**
+  String get eventHeaderImageSize;
 
   /// No description provided for @changeImage.
   ///
@@ -2839,6 +3205,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Upload Image'**
   String get uploadImage;
+
+  /// No description provided for @activityImageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo'**
+  String get activityImageTitle;
+
+  /// No description provided for @activityPdfUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'This PDF is not available.'**
+  String get activityPdfUnavailable;
+
+  /// No description provided for @pdfViewPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Page'**
+  String get pdfViewPage;
+
+  /// No description provided for @pdfViewReading.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading'**
+  String get pdfViewReading;
+
+  /// No description provided for @pdfReadingEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'This PDF has no text that can be enlarged. Use the page view.'**
+  String get pdfReadingEmpty;
+
+  /// No description provided for @pdfReadingFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not read the text of this PDF.'**
+  String get pdfReadingFailed;
+
+  /// No description provided for @pdfDecreaseTextSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Decrease text size'**
+  String get pdfDecreaseTextSize;
+
+  /// No description provided for @pdfIncreaseTextSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Increase text size'**
+  String get pdfIncreaseTextSize;
+
+  /// No description provided for @usingGroupImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Using the group image'**
+  String get usingGroupImage;
+
+  /// No description provided for @useGroupImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Use group image'**
+  String get useGroupImage;
 
   /// No description provided for @onlyThisGroup.
   ///
@@ -2861,7 +3287,7 @@ abstract class AppLocalizations {
   /// No description provided for @messagesByFacilitator.
   ///
   /// In en, this message translates to:
-  /// **'Messages shared by the facilitator.'**
+  /// **'Messages from facilitators. Replies viewed by facilitators only'**
   String get messagesByFacilitator;
 
   /// No description provided for @newMessage.
@@ -2929,6 +3355,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add Message'**
   String get addMessage;
+
+  /// No description provided for @pinMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Pin message'**
+  String get pinMessage;
+
+  /// No description provided for @pinMessageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Stays at the top, even after it has been read.'**
+  String get pinMessageHint;
+
+  /// No description provided for @pinnedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Pinned by the facilitator'**
+  String get pinnedMessage;
+
+  /// No description provided for @newComment.
+  ///
+  /// In en, this message translates to:
+  /// **'New'**
+  String get newComment;
+
+  /// No description provided for @commentsOldestFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Oldest first'**
+  String get commentsOldestFirst;
+
+  /// No description provided for @commentsNewestFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Newest first'**
+  String get commentsNewestFirst;
+
+  /// No description provided for @commentsConversationOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversation order'**
+  String get commentsConversationOrder;
+
+  /// No description provided for @newReplies.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 new reply} other{{count} new replies}}'**
+  String newReplies(int count);
+
+  /// No description provided for @commentCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 comment} other{{count} comments}}'**
+  String commentCount(int count);
 
   /// No description provided for @confirmDeleteThisMessage.
   ///
@@ -3085,6 +3565,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'File *'**
   String get fileRequired;
+
+  /// No description provided for @enterTextRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter text *'**
+  String get enterTextRequired;
+
+  /// No description provided for @pleaseEnterText.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter the text.'**
+  String get pleaseEnterText;
+
+  /// No description provided for @preview.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get preview;
+
+  /// No description provided for @markdownPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Write in Markdown...'**
+  String get markdownPlaceholder;
 
   /// No description provided for @noContentAvailable.
   ///

@@ -10,7 +10,9 @@ import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/ui/journey/step_audio_player_page/step_audio_player_page.dart';
 import 'package:gw_community/ui/journey/step_details_page/view_model/step_details_view_model.dart';
 import 'package:gw_community/ui/journey/step_details_page/widgets/activity_item_widget.dart';
+import 'package:gw_community/ui/journey/step_image_page/step_image_page.dart';
 import 'package:gw_community/ui/journey/step_journal_page/step_journal_page.dart';
+import 'package:gw_community/ui/journey/step_pdf_page/step_pdf_page.dart';
 import 'package:gw_community/ui/journey/step_text_view_page/step_text_view_page.dart';
 import 'package:gw_community/ui/journey/step_video_player_page/step_video_player_page.dart';
 import 'package:gw_community/ui/journey/themes/journey_theme_extension.dart';
@@ -53,7 +55,7 @@ class _StepDetailsPageState extends State<StepDetailsPage> {
 
       _viewModel = StepDetailsViewModel(
         repository: context.read<StepActivitiesRepository>(),
-        currentUserUid: context.currentUserIdOrEmpty,
+        currentUserUid: context.effectiveUserIdOrEmpty,
         userStepRow: widget.userStepRow!,
       );
       setState(() {});
@@ -278,6 +280,38 @@ class _StepDetailsPageState extends State<StepDetailsPage> {
             activityLabel: params['activityLabel'] as String?,
             fixedLanguage: widget.fixedLanguage,
           );
+        } else if (routeName == 'stepPdfPage') {
+          router.pushNamed(
+            StepPdfPage.routeName,
+            queryParameters: {
+              if (widget.fixedLanguage != null)
+                'fixedLanguage':
+                    serializeParam(widget.fixedLanguage, ParamType.String),
+            }.withoutNulls,
+            extra: <String, dynamic>{
+              'activityRow': params['activityRow'],
+            },
+          ).then((_) {
+            if (mounted) {
+              viewModel.loadActivities(showLoading: false);
+            }
+          });
+        } else if (routeName == 'stepImagePage') {
+          router.pushNamed(
+            StepImagePage.routeName,
+            queryParameters: {
+              if (widget.fixedLanguage != null)
+                'fixedLanguage':
+                    serializeParam(widget.fixedLanguage, ParamType.String),
+            }.withoutNulls,
+            extra: <String, dynamic>{
+              'activityRow': params['activityRow'],
+            },
+          ).then((_) {
+            if (mounted) {
+              viewModel.loadActivities(showLoading: false);
+            }
+          });
         } else if (routeName == 'stepVideoPlayerPage') {
           router.pushNamed(
             StepVideoPlayerPage.routeName,

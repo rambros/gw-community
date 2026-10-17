@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/event_repository.dart';
+import 'package:gw_community/data/repositories/group_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/domain/community/event_recurrence.dart';
 import 'package:gw_community/index.dart';
 import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/event_details_page/view_model/event_details_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
+import 'package:gw_community/ui/core/view_as/view_as_session.dart';
 import 'package:gw_community/ui/core/widgets/in_app_web_view_page.dart';
 import 'package:gw_community/ui/core/widgets/user_avatar.dart';
 import 'package:gw_community/utils/context_extensions.dart';
@@ -44,6 +47,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
     logFirebaseEvent('screen_view', parameters: {'screen_name': 'eventDetails'});
     _viewModel = EventDetailsViewModel(
       repository: context.read<EventRepository>(),
+      groupRepository: context.read<GroupRepository>(),
       currentUserUid: context.currentUserIdOrEmpty,
       appState: context.read<FFAppState>(),
       initialEvent: widget.eventRow,
@@ -130,7 +134,6 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _buildHeroImage(context, viewModel),
                             if (viewModel.errorMessage != null)
                               Padding(
                                 padding: const EdgeInsets.all(16.0),
@@ -156,22 +159,31 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
     );
   }
 
-  Widget _buildHeroImage(BuildContext context, EventDetailsViewModel viewModel) {
-    final imageUrl = viewModel.event?.eventImageUrl ?? 'https://picsum.photos/seed/945/600';
-    // Se o URL não for uma imagem (ex: mp3), podemos usar o placeholder
-    final isImage = imageUrl.contains(RegExp(r'\.(jpg|jpeg|png|webp|gif)', caseSensitive: false));
+  Widget _buildEventImage(BuildContext context, EventDetailsViewModel viewModel) {
+    const size = 112.0;
+    final imageUrl = viewModel.headerImageUrl;
+    final placeholder = Container(
+      width: size,
+      height: size,
+      color: AppTheme.of(context).alternate,
+      child: Icon(
+        imageUrl == null ? Icons.image_outlined : Icons.broken_image,
+        color: AppTheme.of(context).secondaryText,
+        size: 32.0,
+      ),
+    );
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Image.network(
-          isImage ? imageUrl : 'https://picsum.photos/seed/945/600',
-          width: MediaQuery.sizeOf(context).width,
-          height: 140.0,
-          fit: BoxFit.cover,
-        ),
-      ],
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16.0),
+      child: imageUrl == null
+          ? placeholder
+          : Image.network(
+              imageUrl,
+              width: size,
+              height: size,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => placeholder,
+            ),
     );
   }
 
@@ -180,6 +192,23 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
     if (event == null) {
       return const SizedBox.shrink();
     }
+    final window = event.eventDate == null
+        ? null
+        : upcomingEventWindow(
+            anchor: event.eventDate!,
+            end: event.endDate,
+            recurrence: event.recurrence,
+            until: event.recurrenceUntil,
+            now: DateTime.now(),
+          );
+    final shownStart = EventRecurrence.repeats(event.recurrence) ? (window?.start ?? event.eventDate) : event.eventDate;
+    final shownEnd = EventRecurrence.repeats(event.recurrence) ? (window?.end ?? event.endDate) : event.endDate;
+    final repeatLabel = switch (event.recurrence) {
+      EventRecurrence.weekly => context.l10n.repeatsWeeklyDetail,
+      EventRecurrence.biweekly => context.l10n.repeatsEveryTwoWeeksDetail,
+      EventRecurrence.monthly => context.l10n.repeatsMonthlyDetail,
+      _ => null,
+    };
 
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(12.0, 16.0, 12.0, 12.0),
@@ -191,6 +220,15 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildEventImage(context, viewModel),
+                const SizedBox(width: 12.0),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
             Text(
               valueOrDefault<String>(event.title, context.l10n.title),
               style: AppTheme.of(context).headlineMedium.override(
@@ -224,6 +262,11 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                     letterSpacing: 0.0,
                   ),
             ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(height: 12.0),
             Row(
               children: [
@@ -240,22 +283,22 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                     event.eventType == 'multi_day'
                         ? '${dateTimeFormat(
                             'yMMMd',
-                            event.eventDate,
+                            shownStart,
                             locale: FFLocalizations.of(context).languageCode,
                           )} - ${dateTimeFormat(
                             'yMMMd',
-                            event.endDate ?? event.eventDate,
+                            shownEnd ?? shownStart,
                             locale: FFLocalizations.of(context).languageCode,
-                          )}'
+                          )}${repeatLabel == null ? '' : '\n$repeatLabel'}'
                         : '${dateTimeFormat(
                             'MMMMEEEEd',
-                            event.eventDate,
+                            shownStart,
                             locale: FFLocalizations.of(context).languageCode,
                           )},  ${dateTimeFormat(
                             'jm',
                             event.eventTime?.time,
                             locale: FFLocalizations.of(context).languageCode,
-                          )}',
+                          )}${repeatLabel == null ? '' : '\n$repeatLabel'}',
                     style: AppTheme.of(context).bodyMedium.override(
                           font: GoogleFonts.lexendDeca(
                             fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
@@ -437,9 +480,23 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
   }
 
   Widget _buildRegistrationSection(BuildContext context, EventDetailsViewModel viewModel) {
+    if (viewAsBlocksWrite()) return const SizedBox.shrink();
     final isRegistered = viewModel.isUserRegistered;
-    final eventDate = viewModel.event?.eventDate;
-    final isPast = eventDate != null && eventDate.isBefore(DateTime.now());
+    final event = viewModel.event;
+    final eventDate = event?.eventDate;
+    final now = DateTime.now();
+    final seriesEnded = eventDate == null ||
+        upcomingEventWindow(
+              anchor: eventDate,
+              end: event?.endDate,
+              recurrence: event?.recurrence,
+              until: event?.recurrenceUntil,
+              now: now,
+            ) ==
+            null;
+    final isPast = event != null && EventRecurrence.repeats(event.recurrence)
+        ? seriesEnded
+        : eventDate != null && eventDate.isBefore(now);
 
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(12.0, 12.0, 12.0, 0.0),

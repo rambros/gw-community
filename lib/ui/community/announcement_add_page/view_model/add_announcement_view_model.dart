@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:gw_community/data/repositories/announcement_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/ui/core/view_as/view_as_session.dart';
 
 class AddAnnouncementViewModel extends ChangeNotifier {
   AddAnnouncementViewModel({
@@ -32,6 +33,14 @@ class AddAnnouncementViewModel extends ChangeNotifier {
 
   CcMembersRow? _recipientMember;
   CcMembersRow? get recipientMember => _recipientMember;
+
+  bool _pinMessage = false;
+  bool get pinMessage => _pinMessage;
+
+  void setPinMessage(bool value) {
+    _pinMessage = value;
+    notifyListeners();
+  }
 
   void setRecipient(CcMembersRow? member) {
     _recipientMember = member;
@@ -79,6 +88,7 @@ class AddAnnouncementViewModel extends ChangeNotifier {
   }
 
   Future<bool> saveAnnouncement() async {
+    if (viewAsBlocksWrite()) return false;
     if (!_validateForm()) {
       return false;
     }
@@ -92,6 +102,7 @@ class AddAnnouncementViewModel extends ChangeNotifier {
         groupId: groupId,
         visibility: visibility,
         recipientUserId: _recipientMember?.authUserId,
+        isPinned: _pinMessage,
       );
       return true;
     } catch (e) {

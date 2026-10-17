@@ -7,6 +7,7 @@ import 'package:gw_community/ui/community/group_details_page/view_model/group_de
 import 'package:gw_community/ui/community/group_details_page/widgets/resource_card_widget.dart';
 import 'package:gw_community/ui/community/group_details_page/widgets/resource_form_sheet.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
+import 'package:gw_community/ui/core/view_as/view_as_session.dart';
 import 'package:provider/provider.dart';
 
 class GroupResourcesTab extends StatelessWidget {
@@ -15,8 +16,9 @@ class GroupResourcesTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<GroupDetailsViewModel>();
-    final canManage = viewModel.currentUserIsGroupManager ||
-        (viewModel.isMember && _isAdminUser(context, viewModel));
+    final canManage = !viewAsBlocksWrite() &&
+        (viewModel.currentUserIsGroupManager ||
+            (viewModel.isMember && _isAdminUser(context, viewModel)));
 
     return Stack(
       children: [

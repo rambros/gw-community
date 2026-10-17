@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:gw_community/data/repositories/announcement_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/ui/core/view_as/view_as_session.dart';
 
 class AnnouncementEditViewModel extends ChangeNotifier {
   AnnouncementEditViewModel({
@@ -13,6 +14,7 @@ class AnnouncementEditViewModel extends ChangeNotifier {
     descriptionController.text = experienceRow.text ?? '';
     _visibility = experienceRow.visibility ?? 'group_only';
     _privacy = experienceRow.privacy ?? 'public';
+    _pinMessage = experienceRow.isPinned;
   }
 
   final AnnouncementRepository _repository;
@@ -28,6 +30,14 @@ class AnnouncementEditViewModel extends ChangeNotifier {
 
   String _privacy = 'public';
   String get privacy => _privacy;
+
+  bool _pinMessage = false;
+  bool get pinMessage => _pinMessage;
+
+  void setPinMessage(bool value) {
+    _pinMessage = value;
+    notifyListeners();
+  }
 
   bool _isSaving = false;
   bool get isSaving => _isSaving;
@@ -46,6 +56,7 @@ class AnnouncementEditViewModel extends ChangeNotifier {
   }
 
   Future<bool> saveAnnouncement() async {
+    if (viewAsBlocksWrite()) return false;
     if (titleController.text.trim().isEmpty || descriptionController.text.trim().isEmpty) {
       _setError('Please fill in all required fields.');
       return false;
@@ -53,12 +64,17 @@ class AnnouncementEditViewModel extends ChangeNotifier {
 
     _setSaving(true);
     try {
+      final contentChanged = titleController.text.trim() != (_experienceRow.title ?? '') ||
+          descriptionController.text.trim() != (_experienceRow.text ?? '');
       await _repository.updateAnnouncement(
         id: experienceRow.id!,
         title: titleController.text.trim(),
         text: descriptionController.text.trim(),
         privacy: _privacy,
         visibility: _visibility,
+        isPinned: _pinMessage,
+        wasPinned: _experienceRow.isPinned,
+        resetReads: contentChanged,
       );
       return true;
     } catch (e) {

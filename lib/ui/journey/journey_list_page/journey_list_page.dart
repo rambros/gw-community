@@ -63,7 +63,7 @@ class _JourneyListPageState extends State<JourneyListPage> with RouteAware {
     return ChangeNotifierProvider(
       create: (context) => JourneyListViewModel(
         repository: JourneysRepository(),
-        currentUserUid: context.currentUserIdOrEmpty,
+        currentUserUid: context.effectiveUserIdOrEmpty,
       ),
       child: Consumer<JourneyListViewModel>(
         builder: (context, viewModel, child) {

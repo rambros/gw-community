@@ -8,6 +8,7 @@ import 'package:gw_community/ui/community/experience_add_page/experience_add_pag
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_pdf_viewer.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_youtube_player.dart';
+import 'package:gw_community/ui/core/ui/reading_text_size.dart';
 import 'package:gw_community/ui/core/widgets/audio_player_widget.dart';
 import 'package:gw_community/ui/core/widgets/favorite_button.dart';
 import 'package:gw_community/ui/core/widgets/transcript_markdown.dart';
@@ -66,154 +67,189 @@ class _ContentViewPageState extends State<ContentViewPage> {
 
           final row = viewModel.viewContentRow!;
           final mediaType = viewModel.midiaType;
+          final letter = (row.text ?? '').trim();
 
-          return Scaffold(
-            backgroundColor: AppTheme.of(context).primaryBackground,
-            appBar: AppBar(
-              backgroundColor: AppTheme.of(context).primary,
-              title: Text(
-                _headerTitle(context, viewModel, row),
-                style: AppTheme.of(context)
-                    .headlineMedium
-                    .override(color: Colors.white, fontSize: 18),
-              ),
-              centerTitle: true,
-              actions: [
-                if (context.currentUserIdOrEmpty.isNotEmpty &&
-                    row.contentId != null)
-                  Padding(
-                    padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 12, 0),
-                    child: FavoriteButton(
-                      contentType: FavoritesRepository.typeRecording,
-                      contentId: row.contentId!,
-                      authUserId: context.currentUserIdOrEmpty,
-                      size: 24,
-                      iconColor: Colors.white,
-                    ),
-                  ),
-              ],
-            ),
-            body: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (viewModel.isMessageType)
-                    Text(
-                      context.l10n
-                          .messageFromAuthors(row.authorsNames.join(', ')),
-                      style: AppTheme.of(context).bodyLarge.override(
-                            fontWeight: FontWeight.w600,
-                            color: AppTheme.of(context).secondary,
-                          ),
-                    )
-                  else ...[
-                    Text(
-                      valueOrDefault<String>(row.title, context.l10n.untitled),
-                      style: AppTheme.of(context).bodyLarge.override(
-                            fontWeight: FontWeight.bold,
-                            color: AppTheme.of(context).secondary,
-                          ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      context.l10n.withAuthors(row.authorsNames.join(', ')),
-                      style: AppTheme.of(context).bodyMedium.override(
-                            fontSize: 12,
-                            color: AppTheme.of(context).secondaryText,
-                          ),
-                    ),
-                    if ((row.cottEventId ?? 0) > 0) ...[
-                      const SizedBox(height: 4),
-                      Text(
-                        context.l10n.atEvent(row.eventName ?? ''),
-                        style: AppTheme.of(context).bodyMedium.override(
-                              fontSize: 12,
-                              color: AppTheme.of(context).secondaryText,
-                            ),
-                      ),
-                    ],
-                  ],
-                  if ((row.description ?? '').isNotEmpty) ...[
-                    const SizedBox(height: 12),
-                    SelectionArea(
-                      child: Text(
-                        row.description!,
-                        style: AppTheme.of(context).bodyMedium.override(
-                              color: AppTheme.of(context).secondaryText,
-                            ),
+          Widget page({double? readingFontSize, Widget? readingControls}) {
+            return Scaffold(
+              backgroundColor: AppTheme.of(context).primaryBackground,
+              appBar: AppBar(
+                backgroundColor: AppTheme.of(context).primary,
+                title: Text(
+                  _headerTitle(context, viewModel, row),
+                  style: AppTheme.of(context)
+                      .headlineMedium
+                      .override(color: Colors.white, fontSize: 18),
+                ),
+                centerTitle: true,
+                actions: [
+                  if (context.currentUserIdOrEmpty.isNotEmpty &&
+                      row.contentId != null)
+                    Padding(
+                      padding:
+                          const EdgeInsetsDirectional.fromSTEB(0, 0, 12, 0),
+                      child: FavoriteButton(
+                        contentType: FavoritesRepository.typeRecording,
+                        contentId: row.contentId!,
+                        authUserId: context.currentUserIdOrEmpty,
+                        size: 24,
+                        iconColor: Colors.white,
                       ),
                     ),
-                  ],
-                  if (mediaType == 'audio' &&
-                      (row.audioUrl ?? '').isNotEmpty) ...[
-                    const SizedBox(height: 16),
-                    _ContentAudioPlayer(
-                      audioUrl: row.audioUrl!,
-                      audioTitle: row.title ?? '',
-                      offerShare: viewModel.librarySection ==
-                          LibraryContentSection.meditations,
-                    ),
-                  ],
-                  if (mediaType == 'video' &&
-                      (row.midiaFileUrl ?? '').isNotEmpty) ...[
-                    const SizedBox(height: 16),
-                    FlutterFlowYoutubePlayer(
-                      url: row.midiaFileUrl!,
-                      autoPlay: false,
-                      looping: true,
-                      mute: false,
-                      showControls: true,
-                      showFullScreen: true,
-                      strictRelatedVideos: false,
-                    ),
-                  ],
-                  if (mediaType == 'text') ...[
-                    const SizedBox(height: 16),
-                    if ((row.text ?? '').isNotEmpty)
-                      SelectionArea(
-                        child: Text(
-                          row.text!,
-                          style: AppTheme.of(context).bodyMedium.override(
-                                font: GoogleFonts.lexendDeca(),
-                                color: AppTheme.of(context).secondary,
-                              ),
-                        ),
-                      )
-                    else if ((row.midiaFileUrl ?? '').isNotEmpty)
-                      FlutterFlowPdfViewer(
-                        networkPath: row.midiaFileUrl!,
-                        height: 600,
-                        horizontalScroll: false,
-                      ),
-                  ],
-                  if (viewModel.hasTranscript) ...[
-                    const SizedBox(height: 16),
-                    ExpansionTile(
-                      title: Text(
-                        context.l10n.transcript,
-                        style: AppTheme.of(context).labelLarge.override(
-                              fontWeight: FontWeight.w600,
-                              color: AppTheme.of(context).secondary,
-                            ),
-                      ),
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
-                          child: SelectionArea(
-                            child: TranscriptMarkdown(
-                              data: row.transcript!,
-                              textColor: AppTheme.of(context).secondary,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
                 ],
               ),
-            ),
-          );
+              body: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (readingControls != null) readingControls,
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (viewModel.isMessageType)
+                            Text(
+                              context.l10n.messageFromAuthors(
+                                  row.authorsNames.join(', ')),
+                              style: AppTheme.of(context).bodyLarge.override(
+                                    fontWeight: FontWeight.w600,
+                                    color: AppTheme.of(context).secondary,
+                                  ),
+                            )
+                          else ...[
+                            Text(
+                              valueOrDefault<String>(
+                                  row.title, context.l10n.untitled),
+                              style: AppTheme.of(context).bodyLarge.override(
+                                    fontWeight: FontWeight.bold,
+                                    color: AppTheme.of(context).secondary,
+                                  ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              context.l10n
+                                  .withAuthors(row.authorsNames.join(', ')),
+                              style: AppTheme.of(context).bodyMedium.override(
+                                    fontSize: 12,
+                                    color: AppTheme.of(context).secondaryText,
+                                  ),
+                            ),
+                            if ((row.cottEventId ?? 0) > 0) ...[
+                              const SizedBox(height: 4),
+                              Text(
+                                context.l10n.atEvent(row.eventName ?? ''),
+                                style: AppTheme.of(context).bodyMedium.override(
+                                      fontSize: 12,
+                                      color: AppTheme.of(context).secondaryText,
+                                    ),
+                              ),
+                            ],
+                          ],
+                          if ((row.description ?? '').isNotEmpty) ...[
+                            const SizedBox(height: 12),
+                            SelectionArea(
+                              child: Text(
+                                row.description!,
+                                style: AppTheme.of(context).bodyMedium.override(
+                                      color: AppTheme.of(context).secondaryText,
+                                    ),
+                              ),
+                            ),
+                          ],
+                          if (mediaType == 'audio' &&
+                              (row.audioUrl ?? '').isNotEmpty) ...[
+                            const SizedBox(height: 16),
+                            _ContentAudioPlayer(
+                              audioUrl: row.audioUrl!,
+                              audioTitle: row.title ?? '',
+                              offerShare: viewModel.librarySection ==
+                                  LibraryContentSection.meditations,
+                            ),
+                          ],
+                          if (mediaType == 'video' &&
+                              (row.midiaFileUrl ?? '').isNotEmpty) ...[
+                            const SizedBox(height: 16),
+                            FlutterFlowYoutubePlayer(
+                              url: row.midiaFileUrl!,
+                              autoPlay: false,
+                              looping: true,
+                              mute: false,
+                              showControls: true,
+                              showFullScreen: true,
+                              strictRelatedVideos: false,
+                            ),
+                          ],
+                          if (mediaType == 'pdf' &&
+                              (row.midiaFileUrl ?? '').isNotEmpty) ...[
+                            const SizedBox(height: 16),
+                            FlutterFlowPdfViewer(
+                              networkPath: row.midiaFileUrl!,
+                              height: 600,
+                            ),
+                          ],
+                          if (mediaType == 'text') ...[
+                            const SizedBox(height: 16),
+                            if (letter.isNotEmpty)
+                              SelectionArea(
+                                child: Text(
+                                  letter,
+                                  style: AppTheme.of(context)
+                                      .bodyMedium
+                                      .override(
+                                        font: GoogleFonts.lexendDeca(),
+                                        color: AppTheme.of(context).secondary,
+                                        fontSize: readingFontSize,
+                                      ),
+                                ),
+                              )
+                            else if ((row.midiaFileUrl ?? '').isNotEmpty)
+                              FlutterFlowPdfViewer(
+                                networkPath: row.midiaFileUrl!,
+                                height: 600,
+                                horizontalScroll: false,
+                              ),
+                          ],
+                          if (viewModel.hasTranscript) ...[
+                            const SizedBox(height: 16),
+                            ExpansionTile(
+                              title: Text(
+                                context.l10n.transcript,
+                                style: AppTheme.of(context).labelLarge.override(
+                                      fontWeight: FontWeight.w600,
+                                      color: AppTheme.of(context).secondary,
+                                    ),
+                              ),
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 12),
+                                  child: SelectionArea(
+                                    child: TranscriptMarkdown(
+                                      data: row.transcript!,
+                                      textColor: AppTheme.of(context).secondary,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          if (mediaType == 'text' && letter.isNotEmpty) {
+            return ReadingTextSize(
+              builder: (context, fontSize, controls) => page(
+                readingFontSize: fontSize,
+                readingControls: controls,
+              ),
+            );
+          }
+          return page();
         },
       ),
     );

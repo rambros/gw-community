@@ -7,6 +7,7 @@ import 'package:gw_community/index.dart';
 import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/group_details_page/view_model/group_details_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
+import 'package:gw_community/ui/core/view_as/view_as_session.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
 
@@ -76,79 +77,53 @@ class GroupAnnouncementsTab extends StatelessWidget {
                       );
                     }
 
-                    // Usa os IDs lidos do viewModel (atualizados via notifyListeners)
-                    final readIds = viewModel.readNotificationIds;
-                    final unreadList = notificationsList
-                        .where((n) => !readIds.contains(n.id!))
+                    final pinnedList = notificationsList
+                        .where((n) => n.isPinned)
+                        .toList()
+                      ..sort(_newestPinFirst);
+                    final unpinned = notificationsList.where((n) => !n.isPinned);
+                    final unreadList = unpinned
+                        .where((n) => viewModel.messageNeedsAttention(n.id!))
                         .toList();
-                    final readList = notificationsList
-                        .where((n) => readIds.contains(n.id!))
+                    final readList = unpinned
+                        .where((n) => !viewModel.messageNeedsAttention(n.id!))
                         .toList();
+                    final hasUnread = unreadList.isNotEmpty ||
+                        pinnedList.any(
+                            (n) => viewModel.messageNeedsAttention(n.id!));
 
                     return Column(
                       children: [
-                        // Unread Announcements
-                        if (unreadList.isEmpty)
+                        if (pinnedList.isNotEmpty)
+                          ListView.builder(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: pinnedList.length,
+                            itemBuilder: (context, index) {
+                              final notification = pinnedList[index];
+                              return _buildAnnouncementCard(
+                                context,
+                                viewModel,
+                                notification,
+                                !viewModel.messageNeedsAttention(notification.id!),
+                              );
+                            },
+                          ),
+                        if (!hasUnread)
                           Padding(
                             padding: const EdgeInsetsDirectional.fromSTEB(
                                 24.0, 32.0, 24.0, 32.0),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 16.0),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: AppTheme.of(context)
-                                          .success
-                                          .withValues(alpha: 0.15),
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(12.0),
-                                      child: Icon(
-                                        Icons.check_rounded,
-                                        color: AppTheme.of(context).success,
-                                        size: 32.0,
-                                      ),
-                                    ),
+                            child: Text(
+                              'There are no new messages at the moment.',
+                              textAlign: TextAlign.center,
+                              style: AppTheme.of(context).bodyMedium.override(
+                                    font: GoogleFonts.lexendDeca(),
+                                    color: AppTheme.of(context).grayIcon,
                                   ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsetsDirectional.fromSTEB(
-                                      0.0, 8.0, 0.0, 0.0),
-                                  child: Text(
-                                    'There are no new messages at the moment.',
-                                    textAlign: TextAlign.center,
-                                    style: AppTheme.of(context)
-                                        .bodyMedium
-                                        .override(
-                                          font: GoogleFonts.lexendDeca(),
-                                          color: AppTheme.of(context).gray600,
-                                        ),
-                                  ),
-                                ),
-                                if (readList.isNotEmpty)
-                                  Padding(
-                                    padding:
-                                        const EdgeInsetsDirectional.fromSTEB(
-                                            0.0, 8.0, 0.0, 0.0),
-                                    child: Text(
-                                      'Past messages are available below.',
-                                      textAlign: TextAlign.center,
-                                      style: AppTheme.of(context)
-                                          .bodyMedium
-                                          .override(
-                                            font: GoogleFonts.lexendDeca(),
-                                            color:
-                                                AppTheme.of(context).grayIcon,
-                                          ),
-                                    ),
-                                  ),
-                              ],
                             ),
                           )
-                        else
+                        else if (unreadList.isNotEmpty)
                           ListView.builder(
                             padding: EdgeInsets.zero,
                             shrinkWrap: true,
@@ -230,8 +205,9 @@ class GroupAnnouncementsTab extends StatelessWidget {
           ),
         ),
         // Show FAB only for moderators or admins
-        if (viewModel.groupManagerIds.contains(viewModel.currentUserId) ||
-            context.read<FFAppState>().loginUser.roles.hasAdmin)
+        if (!viewAsBlocksWrite() &&
+            (viewModel.groupManagerIds.contains(viewModel.currentUserId) ||
+                context.read<FFAppState>().loginUser.roles.hasAdmin))
           Positioned(
             bottom: 16.0,
             right: 16.0,
@@ -276,6 +252,15 @@ class GroupAnnouncementsTab extends StatelessWidget {
           ),
       ],
     );
+  }
+
+  int _newestPinFirst(
+    CcViewNotificationsUsersRow a,
+    CcViewNotificationsUsersRow b,
+  ) {
+    final aDate = a.pinnedAt ?? a.createdAt ?? DateTime.fromMillisecondsSinceEpoch(0);
+    final bDate = b.pinnedAt ?? b.createdAt ?? DateTime.fromMillisecondsSinceEpoch(0);
+    return bDate.compareTo(aDate);
   }
 
   String _messageTime(
@@ -343,7 +328,7 @@ class GroupAnnouncementsTab extends StatelessWidget {
         padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 16.0),
         child: InkWell(
           onTap: () async {
-            // Marca como lida antes de navegar
+            final readAt = await viewModel.announcementReadAt(notification.id!);
             await viewModel.markNotificationAsRead(notification.id!);
 
             if (!context.mounted) return;
@@ -358,13 +343,14 @@ class GroupAnnouncementsTab extends StatelessWidget {
               }.withoutNulls,
               extra: {
                 'experienceRow': notification,
+                'commentsReadAt': readAt,
+                'highlightNewComments': true,
               },
             );
 
-            // Recarrega os IDs lidos após retornar (caso o anúncio tenha sido editado)
-            if (context.mounted) {
-              await viewModel.refreshReadNotifications();
-            }
+            if (!context.mounted) return;
+            // Replies that arrived after this open stay unread until the next open.
+            await viewModel.refreshReadNotifications();
           },
           child: Container(
             width: double.infinity,
@@ -385,8 +371,10 @@ class GroupAnnouncementsTab extends StatelessWidget {
               ],
               borderRadius: BorderRadius.circular(12.0),
               border: Border.all(
-                color: AppTheme.of(context).primaryBackground,
-                width: 1.0,
+                color: notification.isPinned
+                    ? AppTheme.of(context).primary.withValues(alpha: 0.45)
+                    : AppTheme.of(context).primaryBackground,
+                width: notification.isPinned ? 1.5 : 1.0,
               ),
             ),
             child: Padding(
@@ -434,6 +422,18 @@ class GroupAnnouncementsTab extends StatelessWidget {
                                 ),
                           ),
                         ),
+                        if (notification.isPinned)
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Tooltip(
+                              message: context.l10n.pinnedMessage,
+                              child: Icon(
+                                Icons.push_pin,
+                                size: 18.0,
+                                color: AppTheme.of(context).primary,
+                              ),
+                            ),
+                          ),
                         if (!isRead)
                           Padding(
                             padding: const EdgeInsets.only(left: 8.0),
@@ -468,12 +468,50 @@ class GroupAnnouncementsTab extends StatelessWidget {
                           ),
                     ),
                   ),
+                  if (notification.id != null &&
+                      (viewModel.replyCountFor(notification.id!) > 0 ||
+                          viewModel.commentCountFor(notification.id!) > 0))
+                    Padding(
+                      padding: const EdgeInsetsDirectional.fromSTEB(
+                          16.0, 0.0, 16.0, 12.0),
+                      child: _buildReplyLabel(context, viewModel, notification.id!),
+                    ),
                 ],
               ),
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildReplyLabel(
+    BuildContext context,
+    GroupDetailsViewModel viewModel,
+    int messageId,
+  ) {
+    final unseen = viewModel.replyCountFor(messageId);
+    final hasUnseen = unseen > 0;
+    final color = hasUnseen
+        ? AppTheme.of(context).primary
+        : AppTheme.of(context).secondary;
+    return Row(
+      children: [
+        Icon(Icons.chat_bubble_outline, size: 14.0, color: color),
+        const SizedBox(width: 6.0),
+        Text(
+          hasUnseen
+              ? context.l10n.newReplies(unseen)
+              : context.l10n.commentCount(viewModel.commentCountFor(messageId)),
+          style: AppTheme.of(context).labelSmall.override(
+                font: GoogleFonts.lexendDeca(
+                  fontWeight: hasUnseen ? FontWeight.w600 : FontWeight.w500,
+                ),
+                color: color,
+                fontSize: 13.0,
+              ),
+        ),
+      ],
     );
   }
 }

@@ -14,6 +14,7 @@ import 'package:gw_community/ui/core/nav_bar/nav_bar_page.dart';
 import 'package:gw_community/ui/journey/journey_list_page/journey_list_page.dart';
 import 'package:gw_community/ui/learn/utils/portal_content_mapper.dart';
 import 'package:gw_community/ui/notifications/set_notifications_page/set_notifications_page.dart';
+import 'package:gw_community/ui/profile/view_as_user_page/view_as_user_page.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
 
@@ -443,6 +444,24 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
+          name: StepPdfPage.routeName,
+          path: StepPdfPage.routePath,
+          builder: (context, params) => StepPdfPage(
+            activityRow: params.getParam<CcViewUserActivitiesRow>(
+                'activityRow', ParamType.SupabaseRow),
+            fixedLanguage: params.getParam('fixedLanguage', ParamType.String),
+          ),
+        ),
+        FFRoute(
+          name: StepImagePage.routeName,
+          path: StepImagePage.routePath,
+          builder: (context, params) => StepImagePage(
+            activityRow: params.getParam<CcViewUserActivitiesRow>(
+                'activityRow', ParamType.SupabaseRow),
+            fixedLanguage: params.getParam('fixedLanguage', ParamType.String),
+          ),
+        ),
+        FFRoute(
           name: StepJournalPage.routeName,
           path: StepJournalPage.routePath,
           builder: (context, params) => StepJournalPage(
@@ -508,6 +527,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
             announcementId: params.getParam('announcementId', ParamType.int),
             groupModerators: params
                 .getParam<int>('groupModerators', ParamType.int, isList: true),
+            commentsReadAt: params.getParam('commentsReadAt', ParamType.DateTime),
+            highlightNewComments:
+                params.getParam('highlightNewComments', ParamType.bool) ?? false,
           ),
         ),
         FFRoute(
@@ -604,6 +626,11 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: CommunityGuidelinesPage.routeName,
           path: CommunityGuidelinesPage.routePath,
           builder: (context, params) => const CommunityGuidelinesPage(),
+        ),
+        FFRoute(
+          name: ViewAsUserPage.routeName,
+          path: ViewAsUserPage.routePath,
+          builder: (context, params) => const ViewAsUserPage(),
         ),
         FFRoute(
           name: CommunityGuidelinesEditPage.routeName,

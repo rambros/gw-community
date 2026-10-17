@@ -26,7 +26,7 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with RouteAware {
   static const _hPad = 16.0;
   static const _sectionTop = 24.0;
   static const _titleToCards = 8.0;
@@ -35,6 +35,7 @@ class _HomePageState extends State<HomePage> {
   static const _maxHomeGroups = 2;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  bool _subscribedRoute = false;
 
   @override
   void initState() {
@@ -44,6 +45,30 @@ class _HomePageState extends State<HomePage> {
     SchedulerBinding.instance.addPostFrameCallback((_) {
       context.read<HomeViewModel>().loadData();
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route is PageRoute) {
+      routeObserver.subscribe(this, route);
+      _subscribedRoute = true;
+    }
+  }
+
+  /// Home stays mounted under group and event pages. Deletes there update
+  /// the group stream, but this list is a one-shot query from [initState].
+  @override
+  void didPopNext() {
+    if (!mounted) return;
+    context.read<HomeViewModel>().loadData(blocking: false);
+  }
+
+  @override
+  void dispose() {
+    if (_subscribedRoute) routeObserver.unsubscribe(this);
+    super.dispose();
   }
 
   @override
@@ -67,103 +92,111 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               )
-            : SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    _buildHeader(context),
-                    _buildWelcomeMessage(context, viewModel),
-                    _buildCommunityMessage(context),
-                    if (appState.enableJourneyModule) ...[
-                      _buildSectionTitle(
-                        context,
-                        context.l10n.myJourneys,
-                        actionLabel:
-                            viewModel.userJourneyProgressList.isNotEmpty
-                                ? context.l10n.seeAllJourneys
-                                : null,
-                        onAction: viewModel.userJourneyProgressList.isNotEmpty
-                            ? () => _openNavTab(
-                                  'journeyPage',
-                                  JourneyListPage.routeName,
-                                )
-                            : null,
-                      ),
-                      if (viewModel.userJourneyProgressList.isEmpty)
-                        Padding(
-                          padding:
-                              const EdgeInsets.symmetric(horizontal: _hPad),
-                          child: Text(
-                            context.l10n.noJourneysStarted,
-                            style: AppTheme.of(context).bodyMedium.override(
-                                  color: AppTheme.of(context).secondaryText,
-                                ),
-                          ),
-                        )
-                      else
-                        _buildCardList(
-                          viewModel.userJourneyProgressList
-                              .take(_maxHomeJourneys)
-                              .map(
-                                (progress) => HomeJourneyCard(
-                                    userJourneyProgress: progress),
-                              )
-                              .toList(),
+            : RefreshIndicator(
+                color: AppTheme.of(context).primary,
+                onRefresh: () =>
+                    context.read<HomeViewModel>().loadData(blocking: false),
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      _buildHeader(context),
+                      _buildWelcomeMessage(context, viewModel),
+                      _buildCommunityMessage(context),
+                      if (appState.enableJourneyModule) ...[
+                        _buildSectionTitle(
+                          context,
+                          context.l10n.myJourneys,
+                          actionLabel:
+                              viewModel.userJourneyProgressList.isNotEmpty
+                                  ? context.l10n.seeAllJourneys
+                                  : null,
+                          onAction: viewModel.userJourneyProgressList.isNotEmpty
+                              ? () => _openNavTab(
+                                    'journeyPage',
+                                    JourneyListPage.routeName,
+                                  )
+                              : null,
                         ),
-                    ],
-                    if (viewModel.userGroups.isNotEmpty) ...[
-                      _buildSectionTitle(
-                        context,
-                        context.l10n.myGroups,
-                        actionLabel: context.l10n.seeAllGroups,
-                        onAction: () => _openNavTab(
-                          'communityPage',
-                          CommunityPage.routeName,
-                        ),
-                      ),
-                      _buildCardList(
-                        viewModel.userGroups
-                            .take(_maxHomeGroups)
-                            .map((group) => _buildGroupItem(context, group))
-                            .toList(),
-                      ),
-                    ] else ...[
-                      _buildSectionTitle(
-                        context,
-                        context.l10n.otherGroups,
-                        actionLabel: viewModel.publicGroups.isNotEmpty
-                            ? context.l10n.seeAllGroups
-                            : null,
-                        onAction: viewModel.publicGroups.isNotEmpty
-                            ? () => _openNavTab(
-                                  'communityPage',
-                                  CommunityPage.routeName,
-                                )
-                            : null,
-                      ),
-                      _buildCardList(
-                        viewModel.publicGroups
-                            .take(_maxHomeGroups)
-                            .map((group) => _buildGroupItem(context, group))
-                            .toList(),
-                      ),
-                    ],
-                    _buildSectionTitle(context, context.l10n.upcomingEvents),
-                    _buildCardList(
-                      viewModel.upcomingEvents
-                          .map(
-                            (event) => HomeEventCard(
-                              eventRow: event,
-                              groupName:
-                                  viewModel.getGroupNameById(event.groupId),
+                        if (viewModel.userJourneyProgressList.isEmpty)
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: _hPad),
+                            child: Text(
+                              context.l10n.noJourneysStarted,
+                              style: AppTheme.of(context).bodyMedium.override(
+                                    color: AppTheme.of(context).secondaryText,
+                                  ),
                             ),
                           )
-                          .toList(),
-                    ),
-                    const SizedBox(height: 24.0),
-                  ],
+                        else
+                          _buildCardList(
+                            viewModel.userJourneyProgressList
+                                .take(_maxHomeJourneys)
+                                .map(
+                                  (progress) => HomeJourneyCard(
+                                      userJourneyProgress: progress),
+                                )
+                                .toList(),
+                          ),
+                      ],
+                      if (viewModel.userGroups.isNotEmpty) ...[
+                        _buildSectionTitle(
+                          context,
+                          context.l10n.myGroups,
+                          actionLabel: context.l10n.seeAllGroups,
+                          onAction: () => _openNavTab(
+                            'communityPage',
+                            CommunityPage.routeName,
+                          ),
+                        ),
+                        _buildCardList(
+                          viewModel.userGroups
+                              .take(_maxHomeGroups)
+                              .map((group) => _buildGroupItem(context, group))
+                              .toList(),
+                        ),
+                      ] else ...[
+                        _buildSectionTitle(
+                          context,
+                          context.l10n.otherGroups,
+                          actionLabel: viewModel.publicGroups.isNotEmpty
+                              ? context.l10n.seeAllGroups
+                              : null,
+                          onAction: viewModel.publicGroups.isNotEmpty
+                              ? () => _openNavTab(
+                                    'communityPage',
+                                    CommunityPage.routeName,
+                                  )
+                              : null,
+                        ),
+                        _buildCardList(
+                          viewModel.publicGroups
+                              .take(_maxHomeGroups)
+                              .map((group) => _buildGroupItem(context, group))
+                              .toList(),
+                        ),
+                      ],
+                      _buildSectionTitle(context, context.l10n.upcomingEvents),
+                      _buildCardList(
+                        viewModel.upcomingEvents
+                            .map(
+                              (event) => HomeEventCard(
+                                eventRow: event,
+                                groupName:
+                                    viewModel.getGroupNameById(event.groupId),
+                                groupImageUrl:
+                                    viewModel.groupImageUrlById(event.groupId),
+                              ),
+                            )
+                            .toList(),
+                      ),
+                      const SizedBox(height: 24.0),
+                    ],
+                  ),
                 ),
               ),
       ),
@@ -314,6 +347,7 @@ class _HomePageState extends State<HomePage> {
         );
       },
       child: GroupCard(
+        key: ValueKey('home-group-${group.id}'),
         groupRow: group,
         padding: EdgeInsets.zero,
       ),

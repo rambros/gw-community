@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'package:gw_community/data/repositories/file_resource_repository.dart';
 import 'package:gw_community/l10n/l10n.dart';
+import 'package:gw_community/ui/community/group_details_page/widgets/resource_markdown_editor.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/utils/upload_data.dart';
 
@@ -27,6 +28,7 @@ class _ResourceFormSheetState extends State<ResourceFormSheet> {
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _videoUrlController = TextEditingController();
+  final _bodyController = TextEditingController();
 
   String _selectedType = 'pdf';
   SelectedFile? _selectedFile;
@@ -38,6 +40,7 @@ class _ResourceFormSheetState extends State<ResourceFormSheet> {
     _titleController.dispose();
     _descriptionController.dispose();
     _videoUrlController.dispose();
+    _bodyController.dispose();
     super.dispose();
   }
 
@@ -57,6 +60,11 @@ class _ResourceFormSheetState extends State<ResourceFormSheet> {
         setState(() => _errorMessage = context.l10n.pleaseEnterYoutubeUrl);
         return;
       }
+    } else if (_selectedType == 'text') {
+      if (_bodyController.text.trim().isEmpty) {
+        setState(() => _errorMessage = context.l10n.pleaseEnterText);
+        return;
+      }
     } else if (_selectedFile == null) {
       setState(() => _errorMessage = context.l10n.pleaseSelectFile);
       return;
@@ -69,8 +77,12 @@ class _ResourceFormSheetState extends State<ResourceFormSheet> {
 
     try {
       String? url;
+      String? body;
       if (_selectedType == 'video') {
         url = _videoUrlController.text.trim();
+      } else if (_selectedType == 'text') {
+        url = textResourcePlaceholderUrl;
+        body = _bodyController.text.trim();
       } else {
         url = await _repository.uploadFile(
           _selectedFile!.bytes,
@@ -92,6 +104,7 @@ class _ResourceFormSheetState extends State<ResourceFormSheet> {
         type: _selectedType,
         groupId: widget.groupId,
         createdBy: widget.currentUserId,
+        body: body,
       );
 
       if (!ok) {
@@ -112,21 +125,27 @@ class _ResourceFormSheetState extends State<ResourceFormSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final viewInsets = MediaQuery.viewInsetsOf(context);
+    final maxHeight = MediaQuery.sizeOf(context).height - viewInsets.bottom - 8;
+
     return Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      padding: EdgeInsets.only(bottom: viewInsets.bottom),
       child: Container(
         decoration: BoxDecoration(
           color: AppTheme.of(context).primaryBackground,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _buildHandle(),
-            _buildHeader(context),
-            Flexible(child: _buildBody(context)),
-            _buildFooter(context),
-          ],
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: maxHeight),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildHandle(),
+              _buildHeader(context),
+              Flexible(child: _buildBody(context)),
+              _buildFooter(context),
+            ],
+          ),
         ),
       ),
     );
@@ -207,16 +226,18 @@ class _ResourceFormSheetState extends State<ResourceFormSheet> {
           _buildTypeSelector(context),
           const SizedBox(height: 14),
 
-          _label(
-            context,
-            _selectedType == 'video' ? context.l10n.youtubeVideoUrl : context.l10n.fileRequired,
-          ),
+          _label(context, _contentLabel(context)),
           const SizedBox(height: 8),
           if (_selectedType == 'video')
             TextField(
               controller: _videoUrlController,
               keyboardType: TextInputType.url,
               decoration: _inputDecoration(context.l10n.youtubeUrl),
+            )
+          else if (_selectedType == 'text')
+            ResourceMarkdownEditor(
+              controller: _bodyController,
+              enabled: !_isSaving,
             )
           else
             _buildFilePicker(context),
@@ -231,56 +252,72 @@ class _ResourceFormSheetState extends State<ResourceFormSheet> {
       ('pdf', Icons.picture_as_pdf_outlined, 'PDF'),
       ('audio', Icons.audiotrack_outlined, context.l10n.mediaAudio),
       ('video', Icons.videocam_outlined, context.l10n.mediaVideo),
+      ('text', Icons.article_outlined, context.l10n.mediaText),
     ];
 
     return Row(
-      children: types.map((t) {
-        final selected = _selectedType == t.$1;
-        return Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: GestureDetector(
-              onTap: () => setState(() {
-                _selectedType = t.$1;
-                _selectedFile = null;
-                _videoUrlController.clear();
-              }),
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                decoration: BoxDecoration(
-                  color: selected
-                      ? AppTheme.of(context).primary.withValues(alpha: 0.1)
-                      : Colors.grey.withValues(alpha: 0.06),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: selected ? AppTheme.of(context).primary : Colors.grey.shade300,
-                    width: selected ? 2 : 1,
-                  ),
-                ),
-                child: Column(
-                  children: [
-                    Icon(
-                      t.$2,
-                      color: selected ? AppTheme.of(context).primary : Colors.grey.shade500,
-                      size: 20,
-                    ),
-                    const SizedBox(height: 3),
-                    Text(
-                      t.$3,
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
-                        color: selected ? AppTheme.of(context).primary : Colors.grey.shade600,
-                      ),
-                    ),
-                  ],
-                ),
+      children: [
+        for (var i = 0; i < types.length; i++) ...[
+          if (i > 0) const SizedBox(width: 8),
+          Expanded(child: _typeOption(context, types[i])),
+        ],
+      ],
+    );
+  }
+
+  Widget _typeOption(BuildContext context, (String, IconData, String) type) {
+    final selected = _selectedType == type.$1;
+    final primary = AppTheme.of(context).primary;
+
+    return GestureDetector(
+      onTap: () => setState(() {
+        _selectedType = type.$1;
+        _selectedFile = null;
+        _videoUrlController.clear();
+      }),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+        decoration: BoxDecoration(
+          color: selected ? primary.withValues(alpha: 0.1) : Colors.grey.withValues(alpha: 0.06),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: selected ? primary : Colors.grey.shade300,
+            width: selected ? 2 : 1,
+          ),
+        ),
+        child: Column(
+          children: [
+            Icon(
+              type.$2,
+              color: selected ? primary : Colors.grey.shade500,
+              size: 20,
+            ),
+            const SizedBox(height: 3),
+            Text(
+              type.$3,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
+                color: selected ? primary : Colors.grey.shade600,
               ),
             ),
-          ),
-        );
-      }).toList(),
+          ],
+        ),
+      ),
     );
+  }
+
+  String _contentLabel(BuildContext context) {
+    switch (_selectedType) {
+      case 'video':
+        return context.l10n.youtubeVideoUrl;
+      case 'text':
+        return context.l10n.enterTextRequired;
+      default:
+        return context.l10n.fileRequired;
+    }
   }
 
   Widget _buildFilePicker(BuildContext context) {

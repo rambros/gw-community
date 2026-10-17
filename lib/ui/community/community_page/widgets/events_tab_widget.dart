@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/domain/community/event_recurrence.dart';
 import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/community_page/view_model/community_view_model.dart';
 import 'package:gw_community/ui/community/event_add_page/event_add_page.dart';
@@ -231,6 +232,20 @@ class _EventsTabWidgetState extends State<EventsTabWidget> {
                         debugPrint('EventsTabWidget: Skipping event "${e.title}" because date is null');
                         return false;
                       }
+                      if (EventRecurrence.repeats(e.recurrence)) {
+                        final isUpcoming = upcomingEventWindow(
+                              anchor: e.eventDate!,
+                              end: e.endDate,
+                              recurrence: e.recurrence,
+                              until: e.recurrenceUntil,
+                              now: now,
+                            ) !=
+                            null;
+                        if (!isUpcoming) {
+                          debugPrint('EventsTabWidget: Skipping finished series "${e.title}"');
+                        }
+                        return isUpcoming;
+                      }
                       final eventDate = e.eventDate!;
                       final eventStartOfDay = DateTime(eventDate.year, eventDate.month, eventDate.day);
                       final isUpcoming =
@@ -374,6 +389,7 @@ class _EventsTabWidgetState extends State<EventsTabWidget> {
                               : '';
 
                           return EventCardWidget(
+                            showNextOccurrence: false,
                             key: Key('Keyi64_${listRecordedEventsIndex}_of_${listRecordedEvents.length}'),
                             userRegistered: listRecordedEventsItem.userRegistered,
                             eventName: valueOrDefault<String>(

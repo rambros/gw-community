@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gw_community/index.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/notifications/in_app_notifications_page/view_model/in_app_notifications_view_model.dart';
 import 'package:intl/intl.dart';
@@ -216,6 +217,11 @@ class _InAppNotificationsPageState extends State<InAppNotificationsPage> {
     InAppNotificationsViewModel viewModel,
     UnifiedNotificationItem item,
   ) async {
+    DateTime? commentsReadAt;
+    if (item.source == 'announcement' && item.id != 0) {
+      commentsReadAt = await viewModel.announcementReadAt(item.id);
+    }
+
     await viewModel.markAsRead(item);
 
     if (!context.mounted) return;
@@ -224,6 +230,10 @@ class _InAppNotificationsPageState extends State<InAppNotificationsPage> {
       context.pushNamed(
         AnnouncementViewPage.routeName,
         queryParameters: {'announcementId': item.id.toString()},
+        extra: {
+          'commentsReadAt': commentsReadAt,
+          'highlightNewComments': true,
+        },
       );
     } else if (item.source == 'system' &&
         item.systemNotification?.referenceType == 'experience' &&
@@ -354,6 +364,17 @@ class _NotificationTile extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              if (item.newReplyCount > 0) ...[
+                const SizedBox(height: 4),
+                Text(
+                  context.l10n.newReplies(item.newReplyCount),
+                  style: AppTheme.of(context).bodyMedium.override(
+                        color: AppTheme.of(context).primary,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                ),
+              ],
               if (item.message != null) ...[
                 const SizedBox(height: 4),
                 Text(

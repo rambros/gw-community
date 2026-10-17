@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-
 import 'package:gw_community/data/repositories/group_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/ui/core/view_as/view_as_session.dart';
 import 'package:gw_community/utils/upload_data.dart';
 
 class GroupAddViewModel extends ChangeNotifier {
@@ -95,6 +95,7 @@ class GroupAddViewModel extends ChangeNotifier {
 
   // Save Group
   Future<bool> saveGroup(BuildContext context) async {
+    if (viewAsBlocksWrite()) return false;
     if (!formKey.currentState!.validate()) {
       return false;
     }

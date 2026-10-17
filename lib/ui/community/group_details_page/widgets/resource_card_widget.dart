@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/file_resource_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/l10n/l10n.dart';
+import 'package:gw_community/ui/community/group_details_page/widgets/resource_markdown_editor.dart';
 import 'package:gw_community/ui/community/resource_view_page/resource_view_page.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_youtube_player.dart';
@@ -95,6 +96,7 @@ class ResourceCardWidget extends StatelessWidget {
   }
 
   Widget _buildContent(BuildContext context) {
+    final snippet = _cardSnippet();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -120,10 +122,10 @@ class ResourceCardWidget extends StatelessWidget {
             ],
           ],
         ),
-        if (resource.description != null && resource.description!.isNotEmpty) ...[
+        if (snippet != null) ...[
           const SizedBox(height: 4),
           Text(
-            resource.description!,
+            snippet,
             style: AppTheme.of(context).bodyMedium.override(
                   font: GoogleFonts.inter(),
                   color: AppTheme.of(context).secondary,
@@ -348,6 +350,19 @@ class ResourceCardWidget extends StatelessWidget {
     );
   }
 
+  String? _cardSnippet() {
+    final description = resource.description?.trim();
+    if (description != null && description.isNotEmpty) return description;
+    if (resource.type != 'text') return null;
+    final body = resource.body?.trim();
+    if (body == null || body.isEmpty) return null;
+    final plain = body
+        .replaceAll(RegExp(r'[#*_`>\[\]()]'), '')
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
+    return plain.isEmpty ? null : plain;
+  }
+
   IconData _typeIcon() {
     switch (resource.type) {
       case 'pdf':
@@ -531,9 +546,12 @@ class _EditResourceSheetState extends State<_EditResourceSheet> {
   late final TextEditingController _titleController;
   late final TextEditingController _descriptionController;
   late final TextEditingController _urlController;
+  late final TextEditingController _bodyController;
 
   bool _isSaving = false;
   String? _errorMessage;
+
+  bool get _isText => widget.resource.type == 'text';
 
   @override
   void initState() {
@@ -542,6 +560,7 @@ class _EditResourceSheetState extends State<_EditResourceSheet> {
     _descriptionController =
         TextEditingController(text: widget.resource.description ?? '');
     _urlController = TextEditingController(text: widget.resource.url);
+    _bodyController = TextEditingController(text: widget.resource.body ?? '');
   }
 
   @override
@@ -549,18 +568,25 @@ class _EditResourceSheetState extends State<_EditResourceSheet> {
     _titleController.dispose();
     _descriptionController.dispose();
     _urlController.dispose();
+    _bodyController.dispose();
     super.dispose();
   }
 
   Future<void> _save() async {
     final title = _titleController.text.trim();
     final url = _urlController.text.trim();
+    final body = _bodyController.text.trim();
 
     if (title.isEmpty) {
       setState(() => _errorMessage = context.l10n.titleRequired);
       return;
     }
-    if (url.isEmpty) {
+    if (_isText) {
+      if (body.isEmpty) {
+        setState(() => _errorMessage = context.l10n.pleaseEnterText);
+        return;
+      }
+    } else if (url.isEmpty) {
       setState(() => _errorMessage = context.l10n.urlRequired);
       return;
     }
@@ -576,7 +602,8 @@ class _EditResourceSheetState extends State<_EditResourceSheet> {
       description: _descriptionController.text.trim().isNotEmpty
           ? _descriptionController.text.trim()
           : '',
-      url: url,
+      url: _isText ? null : url,
+      body: _isText ? body : null,
     );
 
     if (!mounted) return;
@@ -598,6 +625,8 @@ class _EditResourceSheetState extends State<_EditResourceSheet> {
     final bottomInset = MediaQuery.of(context).viewInsets.bottom +
         MediaQuery.of(context).viewPadding.bottom;
 
+    final maxHeight = MediaQuery.sizeOf(context).height - bottomInset - 8;
+
     return Padding(
       padding: EdgeInsets.only(bottom: bottomInset),
       child: Container(
@@ -605,7 +634,9 @@ class _EditResourceSheetState extends State<_EditResourceSheet> {
           color: AppTheme.of(context).primaryBackground,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
         ),
-        child: Column(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: maxHeight),
+          child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             // Handle
@@ -676,13 +707,22 @@ class _EditResourceSheetState extends State<_EditResourceSheet> {
                       decoration: _inputDecoration(context.l10n.optionalDescription),
                     ),
                     const SizedBox(height: 14),
-                    _label(context.l10n.urlAddress),
-                    const SizedBox(height: 6),
-                    TextField(
-                      controller: _urlController,
-                      keyboardType: TextInputType.url,
-                      decoration: _inputDecoration('https://...'),
-                    ),
+                    if (_isText) ...[
+                      _label(context.l10n.enterTextRequired),
+                      const SizedBox(height: 6),
+                      ResourceMarkdownEditor(
+                        controller: _bodyController,
+                        enabled: !_isSaving,
+                      ),
+                    ] else ...[
+                      _label(context.l10n.urlAddress),
+                      const SizedBox(height: 6),
+                      TextField(
+                        controller: _urlController,
+                        keyboardType: TextInputType.url,
+                        decoration: _inputDecoration('https://...'),
+                      ),
+                    ],
                     const SizedBox(height: 8),
                   ],
                 ),
@@ -722,6 +762,7 @@ class _EditResourceSheetState extends State<_EditResourceSheet> {
               ),
             ),
           ],
+        ),
         ),
       ),
     );

@@ -11,6 +11,7 @@ import 'package:gw_community/ui/community/experience_view_page/widgets/experienc
 import 'package:gw_community/ui/community/widgets/add_comment/add_comment_widget.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
+import 'package:gw_community/ui/core/view_as/view_as_session.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
 import 'package:sticky_headers/sticky_headers.dart';
@@ -275,6 +276,7 @@ class _ExperienceViewPageState extends State<ExperienceViewPage> {
     int experienceId,
     int? parentId,
   ) async {
+    if (viewAsBlocksWrite()) return;
     await showModalBottomSheet(
       isScrollControlled: true,
       backgroundColor: Colors.transparent,

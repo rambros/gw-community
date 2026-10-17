@@ -6,6 +6,7 @@ import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/group_details_page/view_model/group_details_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
+import 'package:gw_community/ui/core/view_as/view_as_session.dart';
 import 'package:gw_community/ui/core/widgets/user_avatar.dart';
 import 'package:provider/provider.dart';
 
@@ -51,7 +52,7 @@ class GroupAboutTab extends StatelessWidget {
                 ),
               ],
             ],
-            if (viewModel.shouldShowOnlyAbout && viewModel.canJoin) ...[
+            if (viewModel.shouldShowOnlyAbout && viewModel.canJoin && !viewAsBlocksWrite()) ...[
               const SizedBox(height: 16.0),
               const SizedBox(height: 24.0),
               Center(

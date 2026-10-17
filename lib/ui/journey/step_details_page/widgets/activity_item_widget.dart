@@ -143,6 +143,18 @@ class ActivityItemWidget extends StatelessWidget {
         color: iconColor,
         size: 36.0,
       );
+    } else if (activity.activityType == 'image') {
+      return Icon(
+        Icons.image_outlined,
+        color: iconColor,
+        size: 36.0,
+      );
+    } else if (activity.activityType == 'pdf') {
+      return Icon(
+        Icons.picture_as_pdf_outlined,
+        color: iconColor,
+        size: 36.0,
+      );
     } else if (activity.activityType == 'video') {
       return Icon(
         Icons.videocam_outlined,

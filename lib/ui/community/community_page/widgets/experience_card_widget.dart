@@ -7,6 +7,7 @@ import 'package:gw_community/ui/community/experience_edit_page/experience_edit_p
 import 'package:gw_community/ui/community/experience_view_page/experience_view_page.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
+import 'package:gw_community/ui/core/view_as/view_as_session.dart';
 import 'package:gw_community/ui/core/widgets/confirmation_dialog.dart';
 import 'package:gw_community/ui/core/widgets/user_avatar.dart';
 import 'package:gw_community/utils/context_extensions.dart';
@@ -258,9 +259,10 @@ class ExperienceCardWidget extends StatelessWidget {
     final isAdmin = FFAppState().loginUser.roles.hasAdmin;
     final isOwner = context.currentUserIdOrEmpty == experienceRow.userId;
     // Only the owner can delete their own experience
-    final canDelete = isOwner;
+    final canDelete = isOwner && !viewAsBlocksWrite();
     // Admins and group managers can unpublish (not delete) experiences from others
-    final canUnpublish = (isAdmin || isGroupManager) &&
+    final canUnpublish = !viewAsBlocksWrite() &&
+        (isAdmin || isGroupManager) &&
         !isOwner &&
         onUnpublish != null &&
         experienceRow.moderationStatus == 'approved';

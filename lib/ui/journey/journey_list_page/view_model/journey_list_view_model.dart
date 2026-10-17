@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gw_community/data/repositories/admin_view_as_queries.dart';
 import 'package:gw_community/data/repositories/journeys_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 
@@ -40,9 +41,11 @@ class JourneyListViewModel extends ChangeNotifier {
         // Filter by user ID only - we'll filter by journey publication status later
 
         // Get all user journeys from the view (no filter on journey_status)
-        final allUserJourneys = await CcViewUserJourneysTable().queryRows(
-          queryFn: (q) => q.eq('user_id', currentUserUid),
-        );
+        final allUserJourneys = AdminViewAsQueries.isOtherUser(currentUserUid)
+            ? await AdminViewAsQueries.journeys(currentUserUid)
+            : await CcViewUserJourneysTable().queryRows(
+                queryFn: (q) => q.eq('user_id', currentUserUid),
+              );
 
         // Now filter on the client side: we need journeys where the actual journey is Published
         // Since the view doesn't expose cc_journeys.status, we'll query it separately
@@ -87,9 +90,11 @@ class JourneyListViewModel extends ChangeNotifier {
       }
 
       // Get ALL user steps first to check statuses
-      final allUserSteps = await CcViewUserStepsTable().queryRows(
-        queryFn: (q) => q.eq('user_id', currentUserUid).eq('journey_id', journeyId),
-      );
+      final allUserSteps = AdminViewAsQueries.isOtherUser(currentUserUid)
+          ? await AdminViewAsQueries.steps(currentUserUid, journeyId: journeyId)
+          : await CcViewUserStepsTable().queryRows(
+              queryFn: (q) => q.eq('user_id', currentUserUid).eq('journey_id', journeyId),
+            );
 
       // Filter completed steps (case insensitive)
       final completedSteps = allUserSteps.where((step) {

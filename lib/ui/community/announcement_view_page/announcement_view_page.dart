@@ -3,6 +3,7 @@ import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/announcement_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/domain/community/reply_attention.dart';
 import 'package:gw_community/index.dart';
 import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/announcement_view_page/view_model/announcement_view_view_model.dart';
@@ -10,6 +11,7 @@ import 'package:gw_community/ui/community/experience_view_page/widgets/comment_i
 import 'package:gw_community/ui/community/widgets/add_comment/add_comment_widget.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
+import 'package:gw_community/ui/core/view_as/view_as_session.dart';
 import 'package:gw_community/utils/context_extensions.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
@@ -21,10 +23,14 @@ class AnnouncementViewPage extends StatefulWidget {
     super.key,
     required this.announcementId,
     this.groupModerators,
+    this.commentsReadAt,
+    this.highlightNewComments = false,
   });
 
   final int? announcementId;
   final List<int>? groupModerators;
+  final DateTime? commentsReadAt;
+  final bool highlightNewComments;
 
   static String routeName = 'announcementViewPage';
   static String routePath = '/announcementViewPage';
@@ -47,6 +53,8 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
       currentUserUid: context.currentUserIdOrEmpty,
       appState: context.read<FFAppState>(),
       groupModerators: widget.groupModerators,
+      commentsReadAt: widget.commentsReadAt,
+      highlightNewComments: widget.highlightNewComments,
     );
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final id = widget.announcementId;
@@ -141,8 +149,10 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
           content: Column(
             children: [
               _buildNotificationBody(context, viewModel, announcement),
-              const SizedBox(height: 16.0),
-              _buildCommentsList(context, viewModel),
+              if (viewModel.showCommentThread) ...[
+                const SizedBox(height: 16.0),
+                _buildCommentsList(context, viewModel),
+              ],
             ],
           ),
         ),
@@ -395,24 +405,24 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
                           await viewModel.refreshComments();
                         },
                 ),
-                Padding(
-                  padding:
-                      const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 10.0, 0.0),
-                  child: Text(
-                    valueOrDefault<String>(
-                        announcement.comments?.toString(), '0'),
-                    style: AppTheme.of(context).bodyMedium.override(
-                          font: GoogleFonts.lexendDeca(
-                            fontWeight:
-                                AppTheme.of(context).bodyMedium.fontWeight,
-                            fontStyle:
-                                AppTheme.of(context).bodyMedium.fontStyle,
+                if (viewModel.showCommentThread)
+                  Padding(
+                    padding: const EdgeInsetsDirectional.fromSTEB(
+                        0.0, 0.0, 10.0, 0.0),
+                    child: Text(
+                      '${viewModel.comments.length}',
+                      style: AppTheme.of(context).bodyMedium.override(
+                            font: GoogleFonts.lexendDeca(
+                              fontWeight:
+                                  AppTheme.of(context).bodyMedium.fontWeight,
+                              fontStyle:
+                                  AppTheme.of(context).bodyMedium.fontStyle,
+                            ),
+                            fontSize: 17.0,
+                            letterSpacing: 0.0,
                           ),
-                          fontSize: 17.0,
-                          letterSpacing: 0.0,
-                        ),
+                    ),
                   ),
-                ),
               ],
             ),
           ),
@@ -423,7 +433,7 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
 
   Widget _buildCommentsList(
       BuildContext context, AnnouncementViewViewModel viewModel) {
-    if (viewModel.comments.isEmpty) {
+    if (viewModel.comments.isEmpty && viewModel.canSeeAllComments) {
       return Padding(
         padding: const EdgeInsetsDirectional.fromSTEB(0.0, 24.0, 0.0, 0.0),
         child: Text(
@@ -434,27 +444,54 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
     }
 
     return Column(
-      children: viewModel.comments.map((comment) {
-        return CommentItemWidget(
-          comment: comment,
-          canDelete: viewModel.canDeleteComment(comment.userId),
-          onReply: () async {
-            await _showAddCommentSheet(context, parentId: comment.id);
-            await viewModel.refreshComments();
-          },
-          onDelete: viewModel.canDeleteComment(comment.userId)
-              ? () async {
-                  final confirm = await _showConfirmationDialog(
-                    context,
-                    title: 'Deletion of Comment',
-                    message: context.l10n.confirmDeleteThisComment,
-                  );
-                  if (!confirm) return;
-                  await viewModel.deleteComment(comment.id!);
-                }
-              : null,
-        );
-      }).toList(),
+      children: [
+        Align(
+          alignment: Alignment.centerRight,
+          child: IconButton(
+            visualDensity: VisualDensity.compact,
+            tooltip: switch (viewModel.commentOrder) {
+              CommentListOrder.conversation => context.l10n.commentsConversationOrder,
+              CommentListOrder.oldestFirst => context.l10n.commentsOldestFirst,
+              CommentListOrder.newestFirst => context.l10n.commentsNewestFirst,
+            },
+            onPressed: viewModel.cycleCommentOrder,
+            icon: Icon(
+              switch (viewModel.commentOrder) {
+                CommentListOrder.conversation => Icons.swap_vert,
+                CommentListOrder.oldestFirst => Icons.arrow_upward,
+                CommentListOrder.newestFirst => Icons.arrow_downward,
+              },
+              size: 18.0,
+              color: viewModel.commentOrder == CommentListOrder.conversation
+                  ? AppTheme.of(context).secondaryText
+                  : AppTheme.of(context).primary,
+            ),
+          ),
+        ),
+        ...viewModel.comments.map((comment) {
+          return CommentItemWidget(
+            comment: comment,
+            isNew: viewModel.isNewComment(comment),
+            showReadState: viewModel.highlightNewComments,
+            canDelete: viewModel.canDeleteComment(comment.userId),
+            onReply: () async {
+              await _showAddCommentSheet(context, parentId: comment.id);
+              await viewModel.refreshComments();
+            },
+            onDelete: viewModel.canDeleteComment(comment.userId)
+                ? () async {
+                    final confirm = await _showConfirmationDialog(
+                      context,
+                      title: 'Deletion of Comment',
+                      message: context.l10n.confirmDeleteThisComment,
+                    );
+                    if (!confirm) return;
+                    await viewModel.deleteComment(comment.id!);
+                  }
+                : null,
+          );
+        }),
+      ],
     );
   }
 
@@ -490,6 +527,7 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
 
   Future<void> _showAddCommentSheet(BuildContext context,
       {int? parentId}) async {
+    if (viewAsBlocksWrite()) return;
     await showModalBottomSheet(
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -509,6 +547,7 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
                 parentId: parentId,
                 photoUrl: FFAppState().loginUser.photoUrl,
                 fullName: FFAppState().loginUser.fullName,
+                notifyFacilitators: true,
               ),
             ),
           ),

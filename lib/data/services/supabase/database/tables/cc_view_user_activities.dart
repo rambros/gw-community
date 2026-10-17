@@ -79,4 +79,10 @@ class CcViewUserActivitiesRow extends SupabaseDataRow {
   String? get animationMediaType => getField<String>('animation_media_type');
   set animationMediaType(String? value) =>
       setField<String>('animation_media_type', value);
+
+  String? get imageUrl => getField<String>('image_url');
+  set imageUrl(String? value) => setField<String>('image_url', value);
+
+  String? get pdfUrl => getField<String>('pdf_url');
+  set pdfUrl(String? value) => setField<String>('pdf_url', value);
 }

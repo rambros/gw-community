@@ -4,6 +4,7 @@ import 'package:gw_community/data/models/structs/index.dart';
 import 'package:gw_community/data/repositories/home_repository.dart';
 import 'package:gw_community/data/repositories/settings_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/ui/core/view_as/view_as_session.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:gw_community/utils/request_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -51,7 +52,8 @@ class FFAppState extends ChangeNotifier {
   /// A module is visible if ANY group enables it (or has a null/unset flag).
   Future<void> loadGroupModuleConfig(HomeRepository homeRepo) async {
     try {
-      final uid = SupaFlow.client.auth.currentUser?.id ?? '';
+      final authId = SupaFlow.client.auth.currentUser?.id ?? '';
+      final uid = ViewAsSession.instance.subjectUserId(authId);
       if (uid.isEmpty) {
         debugPrint('🔧 loadGroupModuleConfig: no logged-in user, skipping');
         return;

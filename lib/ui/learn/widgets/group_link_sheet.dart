@@ -47,6 +47,7 @@ class _GroupLinkSheetState extends State<GroupLinkSheet> {
     final t = (widget.contentRow.midiaType ?? '').toLowerCase();
     if (t.contains('audio') || t.contains('áudio')) return 'audio';
     if (t.contains('video') || t.contains('vídeo')) return 'video';
+    if (t.contains('pdf')) return 'pdf';
     if (t.contains('text') || t.contains('texto')) return 'text';
     return (widget.contentRow.audioUrl?.isNotEmpty == true) ? 'audio' : 'pdf';
   }
@@ -72,12 +73,12 @@ class _GroupLinkSheetState extends State<GroupLinkSheet> {
       _isAdmin
           ? _repo.getAllGroups()
           : _repo.getManagedGroupIds(widget.userId).then(
-                (ids) async {
-                  if (ids.isEmpty) return <CcGroupsRow>[];
-                  final all = await _repo.getAllGroups();
-                  return all.where((g) => ids.contains(g.id)).toList();
-                },
-              ),
+              (ids) async {
+                if (ids.isEmpty) return <CcGroupsRow>[];
+                final all = await _repo.getAllGroups();
+                return all.where((g) => ids.contains(g.id)).toList();
+              },
+            ),
       if (contentId != null) _repo.getLinkedGroupIds(contentId),
     ]);
 
@@ -124,7 +125,9 @@ class _GroupLinkSheetState extends State<GroupLinkSheet> {
     Navigator.pop(context);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(ok ? context.l10n.groupLinksUpdated : context.l10n.failedToUpdateLinks),
+        content: Text(ok
+            ? context.l10n.groupLinksUpdated
+            : context.l10n.failedToUpdateLinks),
         backgroundColor: ok ? Colors.green.shade700 : Colors.red.shade700,
       ),
     );
@@ -139,52 +142,53 @@ class _GroupLinkSheetState extends State<GroupLinkSheet> {
             (g.name ?? '').toLowerCase().contains(_search.toLowerCase()))
         .toList();
 
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.primaryBackground,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _buildHandle(),
-          _buildHeader(theme),
-          const Divider(height: 1),
-          _buildSearch(theme),
-          Flexible(
-            child: _loading
-                ? const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(40),
-                      child: CircularProgressIndicator(),
-                    ),
-                  )
-                : filtered.isEmpty
-                    ? Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(40),
-                          child: Text(
-                            _search.isEmpty
-                                ? context.l10n.noGroupsAvailable
-                                : context.l10n.noGroupsMatch(_search),
-                            style: GoogleFonts.lexendDeca(
-                              color: Colors.grey.shade500,
+    return Material(
+      color: theme.primaryBackground,
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+      clipBehavior: Clip.antiAlias,
+      child: Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildHandle(),
+            _buildHeader(theme),
+            const Divider(height: 1),
+            _buildSearch(theme),
+            Flexible(
+              child: _loading
+                  ? const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(40),
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
+                  : filtered.isEmpty
+                      ? Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(40),
+                            child: Text(
+                              _search.isEmpty
+                                  ? context.l10n.noGroupsAvailable
+                                  : context.l10n.noGroupsMatch(_search),
+                              style: GoogleFonts.lexendDeca(
+                                color: Colors.grey.shade500,
+                              ),
                             ),
                           ),
+                        )
+                      : ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: filtered.length,
+                          itemBuilder: (_, i) => _buildGroupTile(filtered[i]),
                         ),
-                      )
-                    : ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: filtered.length,
-                        itemBuilder: (_, i) => _buildGroupTile(filtered[i]),
-                      ),
-          ),
-          const Divider(height: 1),
-          _buildActions(theme),
-        ],
+            ),
+            const Divider(height: 1),
+            _buildActions(theme),
+          ],
+        ),
       ),
     );
   }
@@ -335,10 +339,12 @@ Future<bool> showGroupLinkSheet(
   if (!appState.loginUser.roles.hasAdminOrGroupManager) return false;
 
   final midiaTypeLower = (contentRow.midiaType ?? '').toLowerCase();
-  final isText = midiaTypeLower.contains('text') || midiaTypeLower.contains('texto');
-  final url = (midiaTypeLower.contains('audio') || midiaTypeLower.contains('áudio'))
-      ? (contentRow.audioUrl ?? '')
-      : (contentRow.midiaFileUrl ?? '');
+  final isText =
+      midiaTypeLower.contains('text') || midiaTypeLower.contains('texto');
+  final url =
+      (midiaTypeLower.contains('audio') || midiaTypeLower.contains('áudio'))
+          ? (contentRow.audioUrl ?? '')
+          : (contentRow.midiaFileUrl ?? '');
 
   if (contentRow.contentId == null) return false;
   // Text type has no file URL — allow regardless of url/text emptiness.

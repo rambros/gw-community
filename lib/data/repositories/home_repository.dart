@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
+import 'package:gw_community/data/repositories/admin_view_as_queries.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/domain/community/event_recurrence.dart';
 
 class HomeRepository {
   /// Fetches the user profile by auth user ID
@@ -21,6 +23,22 @@ class HomeRepository {
 
   /// Fetches user journeys
   Future<List<CcUserJourneysRow>> getUserJourneys(String userId) async {
+    if (AdminViewAsQueries.isOtherUser(userId)) {
+      final progress = await getAllUserJourneyProgress(userId);
+      return progress
+          .map(
+            (row) => CcUserJourneysRow({
+              'id': row.id,
+              'journey_id': row.journeyId,
+              'user_id': row.userId,
+              'steps_completed': row.stepsCompleted,
+              'last_access_date': row.lastAccessDate?.toUtc().toIso8601String(),
+              'journey_status': row.journeyStatus,
+            }),
+          )
+          .toList();
+    }
+
     // Filter user journeys by ensuring the related journey has status='published'
     return await CcUserJourneysTable().queryRows(
       queryFn: (q) => q
@@ -39,6 +57,14 @@ class HomeRepository {
 
   /// Fetches view user journeys (for progress) for a specific journey
   Future<CcViewUserJourneysRow?> getUserJourneyProgress(String userId, int journeyId) async {
+    if (AdminViewAsQueries.isOtherUser(userId)) {
+      final rows = await AdminViewAsQueries.journeys(userId);
+      for (final row in rows) {
+        if (row.journeyId == journeyId) return row;
+      }
+      return null;
+    }
+
     final rows = await CcViewUserJourneysTable().queryRows(
       queryFn: (q) => q.eqOrNull('user_id', userId).eqOrNull('journey_id', journeyId),
     );
@@ -47,6 +73,18 @@ class HomeRepository {
 
   /// Fetches all journey progress records for a user
   Future<List<CcViewUserJourneysRow>> getAllUserJourneyProgress(String userId) async {
+    if (AdminViewAsQueries.isOtherUser(userId)) {
+      final rows = await AdminViewAsQueries.journeys(userId);
+      if (rows.isEmpty) return [];
+      final journeyIds = rows.map((j) => j.journeyId).whereType<int>().toList();
+      if (journeyIds.isEmpty) return [];
+      final published = await CcJourneysTable().queryRows(
+        queryFn: (q) => q.inFilter('id', journeyIds).inFilter('status', ['published', 'Published']),
+      );
+      final publishedIds = published.map((j) => j.id).toSet();
+      return rows.where((j) => publishedIds.contains(j.journeyId)).toList();
+    }
+
     return await CcViewUserJourneysTable().queryRows(
       queryFn: (q) => q.eqOrNull('user_id', userId),
     );
@@ -54,17 +92,99 @@ class HomeRepository {
 
   /// Fetches all completed steps for a user across all journeys
   Future<List<CcViewUserStepsRow>> getAllCompletedSteps(String userId) async {
+    if (AdminViewAsQueries.isOtherUser(userId)) {
+      final steps = await AdminViewAsQueries.steps(userId);
+      return steps.where((step) {
+        final status = step.stepStatus?.toLowerCase().trim();
+        return status == 'completed';
+      }).toList();
+    }
+
     return await CcViewUserStepsTable().queryRows(
       queryFn: (q) => q.eqOrNull('user_id', userId).inFilter('step_status', ['completed', 'Completed']),
     );
   }
 
-  /// Fetches upcoming events
-  Future<List<CcEventsRow>> getUpcomingEvents() async {
-    return await CcEventsTable().queryRows(
-      queryFn: (q) =>
-          q.gtOrNull('event_date', supaSerialize<DateTime>(DateTime.now())).order('event_date', ascending: true),
+  /// Events still ahead of [now]. A repeating event stays as one row and
+  /// is listed on its next date until that day has passed.
+  Future<List<CcEventsRow>> getUpcomingEvents({DateTime? now}) async {
+    final refreshedAt = now ?? DateTime.now();
+    final startOfToday = DateTime(refreshedAt.year, refreshedAt.month, refreshedAt.day);
+    final day =
+        '${startOfToday.year.toString().padLeft(4, '0')}-${startOfToday.month.toString().padLeft(2, '0')}-${startOfToday.day.toString().padLeft(2, '0')}';
+    final rows = await CcEventsTable().queryRows(
+      queryFn: (q) => q
+          .or('event_date.gte.$day,recurrence.in.(weekly,biweekly,monthly)')
+          .order('event_date', ascending: true),
     );
+    final upcoming = rows.where((event) => _isListed(event, refreshedAt)).toList();
+    upcoming.sort((a, b) {
+      final aStart = _sortStart(a, refreshedAt);
+      final bStart = _sortStart(b, refreshedAt);
+      if (aStart == null && bStart == null) return 0;
+      if (aStart == null) return 1;
+      if (bStart == null) return -1;
+      return aStart.compareTo(bStart);
+    });
+    return upcoming;
+  }
+
+  bool _isListed(CcEventsRow event, DateTime refreshedAt) {
+    if (EventRecurrence.repeats(event.recurrence)) {
+      final anchor = event.eventDate;
+      if (anchor == null) return false;
+      return upcomingEventWindow(
+            anchor: anchor,
+            end: event.endDate,
+            recurrence: event.recurrence,
+            until: event.recurrenceUntil,
+            now: refreshedAt,
+          ) !=
+          null;
+    }
+    return _occursAfter(event, refreshedAt);
+  }
+
+  DateTime? _sortStart(CcEventsRow event, DateTime refreshedAt) {
+    if (EventRecurrence.repeats(event.recurrence) && event.eventDate != null) {
+      final window = upcomingEventWindow(
+        anchor: event.eventDate!,
+        end: event.endDate,
+        recurrence: event.recurrence,
+        until: event.recurrenceUntil,
+        now: refreshedAt,
+      );
+      if (window != null) {
+        final clock = event.eventTime?.time?.toLocal();
+        if (clock == null) return window.start;
+        return DateTime(window.start.year, window.start.month, window.start.day, clock.hour, clock.minute);
+      }
+    }
+    return _eventStart(event);
+  }
+
+  DateTime? _eventStart(CcEventsRow event) {
+    final date = event.eventDate?.toLocal();
+    if (date == null) return null;
+    final clock = event.eventTime?.time?.toLocal();
+    if (clock == null) {
+      return DateTime(date.year, date.month, date.day);
+    }
+    return DateTime(date.year, date.month, date.day, clock.hour, clock.minute);
+  }
+
+  bool _occursAfter(CcEventsRow event, DateTime refreshedAt) {
+    final today = DateTime(refreshedAt.year, refreshedAt.month, refreshedAt.day);
+    if (event.eventType == 'multi_day') {
+      final end = (event.endDate ?? event.eventDate)?.toLocal();
+      if (end == null) return false;
+      final lastDay = DateTime(end.year, end.month, end.day);
+      return !lastDay.isBefore(today);
+    }
+    final date = event.eventDate?.toLocal();
+    if (date == null) return false;
+    final day = DateTime(date.year, date.month, date.day);
+    return !day.isBefore(today);
   }
 
   /// Fetches available groups for the user

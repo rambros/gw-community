@@ -195,7 +195,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
               ).animateOnPageLoad(animationsMap['textOnPageLoadAnimation1']!),
             ),
             Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(0.0, 12.0, 0.0, 120.0),
+              padding: const EdgeInsetsDirectional.fromSTEB(32.0, 12.0, 32.0, 120.0),
               child: Text(
                 context.l10n.splashWelcomeSubtitle,
                 textAlign: TextAlign.center,

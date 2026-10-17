@@ -7,6 +7,7 @@ import 'package:gw_community/ui/community/community_guidelines_edit_page/communi
 import 'package:gw_community/ui/core/widgets/screen_hint.dart';
 import 'package:gw_community/ui/profile/user_profile_page/widgets/language_picker.dart';
 import 'package:gw_community/ui/profile/user_profile_page/widgets/profile_menu_item_widget.dart';
+import 'package:gw_community/ui/profile/view_as_user_page/view_as_user_page.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -64,6 +65,16 @@ class AccountSettingsMenuSection extends StatelessWidget {
             },
           ),
         ),
+        if (isAdmin)
+          Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
+            child: ProfileMenuItemWidget(
+              text: l10n.viewAsUser,
+              onTap: () async {
+                context.pushNamed(ViewAsUserPage.routeName);
+              },
+            ),
+          ),
         if (isAdmin)
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),

@@ -38,6 +38,7 @@ import 'package:gw_community/ui/auth/login_page/view_model/login_view_model.dart
 import 'package:gw_community/ui/auth/on_boarding_page/view_model/on_boarding_view_model.dart';
 import 'package:gw_community/ui/community/experience_view_page/view_model/experience_view_view_model.dart';
 import 'package:gw_community/ui/core/app/view_model/app_view_model.dart';
+import 'package:gw_community/ui/core/view_as/view_as_session.dart';
 import 'package:gw_community/ui/home/home_page/home_page.dart';
 import 'package:gw_community/ui/home/home_page/view_model/home_view_model.dart';
 import 'package:gw_community/ui/journey/journeys_list_page/view_model/journeys_list_view_model.dart';
@@ -91,6 +92,8 @@ void main() async {
       providers: [
         // App State
         ChangeNotifierProvider(create: (context) => appState),
+        ChangeNotifierProvider<ViewAsSession>.value(
+            value: ViewAsSession.instance),
 
         // ========== REPOSITORIES ==========
         Provider<AuthService>(create: (_) => SupabaseAuthService()),
