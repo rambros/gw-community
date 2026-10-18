@@ -1739,7 +1739,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uploadImage => 'Upload Image';
 
   @override
-  String get activityImageTitle => 'Photo';
+  String get activityImageTitle => 'Image';
 
   @override
   String get activityPdfUnavailable => 'This PDF is not available.';

@@ -145,7 +145,8 @@ class _ContentViewPageState extends State<ContentViewPage> {
                               ),
                             ],
                           ],
-                          if ((row.description ?? '').isNotEmpty) ...[
+                          if ((row.description ?? '').isNotEmpty &&
+                              !(mediaType == 'text' && letter.isNotEmpty)) ...[
                             const SizedBox(height: 12),
                             SelectionArea(
                               child: Text(
@@ -243,6 +244,7 @@ class _ContentViewPageState extends State<ContentViewPage> {
 
           if (mediaType == 'text' && letter.isNotEmpty) {
             return ReadingTextSize(
+              barColor: AppTheme.of(context).primaryBackground,
               builder: (context, fontSize, controls) => page(
                 readingFontSize: fontSize,
                 readingControls: controls,

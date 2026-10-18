@@ -922,7 +922,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get onboardingJourneyBody =>
-      'Bem-vindo a uma jornada maravilhosa! Uma jornada para aprender, criar e compartilhar bons desejos que geram impacto. Os bons desejos são um caminho de autotransformação e de transformação do mundo. Você encontrará inspirações, meditações, práticas diárias e companhia…';
+      'Bem-vindo a uma jornada maravilhosa! Uma jornada para aprender, criar e compartilhar bons votos que geram impacto. Os bons votos são um caminho de autotransformação e de transformação do mundo. Você encontrará inspirações, meditações, práticas diárias e companhia…';
 
   @override
   String get onboardingLearnTitle => 'Aprenda';
@@ -936,7 +936,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get onboardingCommunityBody =>
-      'Os bons desejos coletivos são poderosos. Ao avançar, você fará parte de uma comunidade de bem-intencionados, disposta a se apoiar mutuamente pela troca de sentimentos sinceros que trazem esperança, força e apoio… a base de um mundo novo.';
+      'Os bons votos coletivos são poderosos. Ao avançar, você fará parte de uma comunidade de bem-intencionados, disposta a se apoiar mutuamente pela troca de sentimentos sinceros que trazem esperança, força e apoio… a base de um mundo novo.';
 
   @override
   String get onboardingBeginsTitle => 'Sua jornada começa';
@@ -1472,7 +1472,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get shareExperiencesSpace =>
-      'Um espaço para compartilhar suas experiências, inspirar outras pessoas e receber bons desejos da comunidade';
+      'Um espaço para compartilhar suas experiências, inspirar outras pessoas e receber bons votos da comunidade';
 
   @override
   String get experienceUnpublished => 'Experiência despublicada';
@@ -1744,7 +1744,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get uploadImage => 'Enviar imagem';
 
   @override
-  String get activityImageTitle => 'Foto';
+  String get activityImageTitle => 'Imagem';
 
   @override
   String get activityPdfUnavailable => 'Este PDF não está disponível.';

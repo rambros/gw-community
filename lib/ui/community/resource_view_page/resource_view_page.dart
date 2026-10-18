@@ -6,6 +6,7 @@ import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_pdf_viewer.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_youtube_player.dart';
+import 'package:gw_community/ui/core/ui/pinch_zoom_image.dart';
 import 'package:gw_community/ui/core/ui/reading_text_size.dart';
 import 'package:gw_community/ui/core/widgets/audio_player_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -91,6 +92,9 @@ class _ResourceViewPageState extends State<ResourceViewPage> {
   }
 
   Widget _buildBody(BuildContext context) {
+    if (isImageResource(type: widget.resource.type, url: widget.resource.url)) {
+      return _buildImage(context);
+    }
     switch (widget.resource.type) {
       case 'pdf':
         return _buildPdfViewer(context);
@@ -103,6 +107,34 @@ class _ResourceViewPageState extends State<ResourceViewPage> {
       default:
         return _buildFallback(context);
     }
+  }
+
+  Widget _buildImage(BuildContext context) {
+    final summary = widget.resource.description?.trim();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (summary != null && summary.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
+            child: Text(
+              summary,
+              style: AppTheme.of(context).bodyMedium.override(
+                    font: GoogleFonts.openSans(),
+                    color: AppTheme.of(context).textColor,
+                    fontSize: 16,
+                    letterSpacing: 0,
+                  ),
+            ),
+          ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: PinchZoomImage(imageUrl: widget.resource.url),
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _buildPdfViewer(BuildContext context) {

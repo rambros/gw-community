@@ -37,28 +37,10 @@ class ActivityItemWidget extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: localizedJourneyActivityLabel(
-                            context.l10n,
-                            activity.activityLabel,
-                          ),
-                        ),
-                        if (!activity.isRequired)
-                          TextSpan(
-                            text: ' · ${context.l10n.optionalActivity}',
-                            style: AppTheme.of(context)
-                                .journey
-                                .stepDescription
-                                .override(
-                                  color: activity.activityStatus == 'open'
-                                      ? AppTheme.of(context).primaryText
-                                      : AppTheme.of(context).alternate,
-                                ),
-                          ),
-                      ],
+                  Text(
+                    localizedJourneyActivityLabel(
+                      context.l10n,
+                      activity.activityLabel,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,

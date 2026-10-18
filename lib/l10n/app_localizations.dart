@@ -3209,7 +3209,7 @@ abstract class AppLocalizations {
   /// No description provided for @activityImageTitle.
   ///
   /// In en, this message translates to:
-  /// **'Photo'**
+  /// **'Image'**
   String get activityImageTitle;
 
   /// No description provided for @activityPdfUnavailable.

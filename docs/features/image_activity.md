@@ -1,6 +1,6 @@
 # Image activity
 
-An image activity is a step activity whose type is `image`. The facilitator writes the prompt as the title, a reflection text, and uploads the image. On the step, the participant only sees that title, the image, and the reflection. Nothing is uploaded from the phone.
+An image activity is a step activity whose type is `image`. The facilitator writes the prompt as the title, a reflection text, and uploads the image. On the step, the participant only sees that title, the image, and the reflection. A pinch zooms the picture, and a drag moves it while it is enlarged. A double tap zooms in, and another double tap returns to the original size. Nothing is uploaded from the phone. A group resource whose type is `image`, or whose file is a jpg, png, webp, or gif, uses the same zoom.
 
 `activity_prompt` is the title. `text` is the reflection. `cc_step_activities.image_url` is the picture, stored in the public `portal` bucket under `activity-images/`.
 

@@ -10,4 +10,4 @@ The control opens for:
 - a journey activity whose type is `text`
 - a group resource whose type is `text`
 
-The app bar, the library title and description, the step title, and the resource summary stay at their current size. Markdown headings grow with the body: two, four, and eight points above it. A library text item that only has a file still uses the PDF viewer, which already has these buttons.
+The app bar and the library title stay at their current size. When a library item already shows its letter in `text`, the older `description` copy is hidden so the letter is not printed twice. The step title and the resource summary stay at their current size. Markdown headings grow with the body: two, four, and eight points above it. A library text item that only has a file still uses the PDF viewer, which already has these buttons.

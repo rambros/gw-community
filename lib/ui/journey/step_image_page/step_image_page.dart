@@ -5,6 +5,7 @@ import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
+import 'package:gw_community/ui/core/ui/pinch_zoom_image.dart';
 import 'package:gw_community/ui/journey/themes/journey_theme_extension.dart';
 import 'package:gw_community/ui/journey/widgets/journey_locale_scope.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
@@ -56,8 +57,8 @@ class StepImagePage extends StatelessWidget {
           elevation: 2.0,
         ),
         body: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 32.0),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(24.0, 16.0, 24.0, 16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -70,35 +71,39 @@ class StepImagePage extends StatelessWidget {
                         ),
                   ),
                 if (imageUrl.isNotEmpty) ...[
-                  const SizedBox(height: 24.0),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(16.0),
-                    child: Image.network(imageUrl, fit: BoxFit.cover),
-                  ),
+                  const SizedBox(height: 16.0),
+                  Expanded(child: PinchZoomImage(imageUrl: imageUrl)),
                 ],
                 if (reflection.isNotEmpty) ...[
-                  const SizedBox(height: 24.0),
-                  MarkdownBody(
-                    data: reflection,
-                    selectable: true,
-                    softLineBreak: true,
-                    styleSheet: MarkdownStyleSheet(
-                      p: GoogleFonts.lexendDeca(
-                        color: AppTheme.of(context).primaryText,
-                        fontSize: 16.0,
-                        height: 1.5,
-                      ),
-                      strong: GoogleFonts.lexendDeca(
-                        color: AppTheme.of(context).primaryText,
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.bold,
-                        height: 1.5,
-                      ),
-                      em: GoogleFonts.lexendDeca(
-                        color: AppTheme.of(context).primaryText,
-                        fontSize: 16.0,
-                        fontStyle: FontStyle.italic,
-                        height: 1.5,
+                  const SizedBox(height: 16.0),
+                  ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxHeight: MediaQuery.sizeOf(context).height * 0.28,
+                    ),
+                    child: SingleChildScrollView(
+                      child: MarkdownBody(
+                        data: reflection,
+                        selectable: true,
+                        softLineBreak: true,
+                        styleSheet: MarkdownStyleSheet(
+                          p: GoogleFonts.lexendDeca(
+                            color: AppTheme.of(context).primaryText,
+                            fontSize: 16.0,
+                            height: 1.5,
+                          ),
+                          strong: GoogleFonts.lexendDeca(
+                            color: AppTheme.of(context).primaryText,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                            height: 1.5,
+                          ),
+                          em: GoogleFonts.lexendDeca(
+                            color: AppTheme.of(context).primaryText,
+                            fontSize: 16.0,
+                            fontStyle: FontStyle.italic,
+                            height: 1.5,
+                          ),
+                        ),
                       ),
                     ),
                   ),
