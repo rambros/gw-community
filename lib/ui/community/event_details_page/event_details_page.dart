@@ -49,6 +49,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
       repository: context.read<EventRepository>(),
       groupRepository: context.read<GroupRepository>(),
       currentUserUid: context.currentUserIdOrEmpty,
+      subjectUserId: context.effectiveUserIdOrEmpty,
       appState: context.read<FFAppState>(),
       initialEvent: widget.eventRow,
     );

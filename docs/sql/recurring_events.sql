@@ -18,6 +18,39 @@ comment on column public.cc_events.recurrence is
 comment on column public.cc_events.recurrence_until is
   'Last date an occurrence may start. Null repeats without an end.';
 
+-- Same rule as docs/sql/event_visibility.sql. Kept here so re-applying
+-- this script does not publish group-only events to every member again.
+create or replace function public.user_can_read_community_event(
+  event_visibility text,
+  event_group_id bigint,
+  event_facilitator_id uuid,
+  reader_id uuid
+)
+returns boolean
+language sql
+stable
+as $$
+  select
+    reader_id is not null
+    and (
+      nullif(btrim(event_visibility), '') = 'everyone'
+      or event_facilitator_id = reader_id
+      or (
+        event_group_id is null
+        and nullif(btrim(event_visibility), '') is null
+      )
+      or (
+        coalesce(nullif(btrim(event_visibility), ''), 'group_only') = 'group_only'
+        and event_group_id is not null
+        and event_group_id in (
+          select gm.group_id
+          from public.cc_group_members gm
+          where gm.user_id = reader_id
+        )
+      )
+    );
+$$;
+
 create or replace function public.get_user_events(user_id_input uuid)
 returns setof public.cc_events
 language sql
@@ -48,5 +81,11 @@ as $$
   from public.cc_events e
   left join public.cc_event_registrations er
     on e.id = er.event_id and er.user_id = user_id_input
+  where public.user_can_read_community_event(
+    e.visibility,
+    e.group_id,
+    e.facilitator_id,
+    user_id_input
+  )
   order by e.event_date asc;
 $$;

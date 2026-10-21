@@ -5,6 +5,7 @@ import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:gw_community/data/repositories/event_repository.dart';
 import 'package:gw_community/data/repositories/group_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/domain/community/event_access.dart';
 import 'package:gw_community/ui/core/view_as/view_as_session.dart';
 
 class EventDetailsViewModel extends ChangeNotifier {
@@ -12,20 +13,24 @@ class EventDetailsViewModel extends ChangeNotifier {
     required EventRepository repository,
     required GroupRepository groupRepository,
     required this.currentUserUid,
+    required this.subjectUserId,
     required this.appState,
     CcEventsRow? initialEvent,
   })  : _repository = repository,
         _groupRepository = groupRepository {
     if (initialEvent != null) {
-      _event = initialEvent;
       _eventId = initialEvent.id;
-      _loadGroupImage();
+      _isLoading = true;
     }
   }
 
   final EventRepository _repository;
   final GroupRepository _groupRepository;
   final String currentUserUid;
+
+  /// Member whose groups decide visibility. Equals [currentUserUid] except
+  /// while an admin is using view-as.
+  final String subjectUserId;
   final FFAppState appState;
 
   int? _eventId;
@@ -75,9 +80,23 @@ class EventDetailsViewModel extends ChangeNotifier {
     _setLoading(true);
     try {
       final fetchedEvent = await _repository.getEventById(_eventId!);
-      if (fetchedEvent != null) {
-        _event = fetchedEvent;
+      final groups = await _groupRepository.getMyGroups(subjectUserId);
+      final memberGroupIds = groups.map((group) => group.id).toSet();
+      final visible = fetchedEvent != null &&
+          eventVisibleToUser(
+            visibility: fetchedEvent.visibility,
+            groupId: fetchedEvent.groupId,
+            facilitatorId: fetchedEvent.facilitatorId,
+            userId: subjectUserId,
+            memberGroupIds: memberGroupIds,
+          );
+      if (!visible) {
+        _event = null;
+        _participants = [];
+        _clearError();
+        return;
       }
+      _event = fetchedEvent;
       await _loadGroupImage();
       _participants = await _repository.getParticipants(_eventId!);
       _clearError();

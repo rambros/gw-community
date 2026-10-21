@@ -8,6 +8,18 @@ class GroupRepository {
     return result;
   }
 
+  /// Groups this auth user belongs to. [authUserId] is cc_group_members.user_id.
+  Future<List<CcGroupsRow>> getMyGroups(String authUserId) async {
+    final response = await SupaFlow.client.rpc(
+      'get_my_groups',
+      params: {'user_input': authUserId},
+    );
+    if (response is List) {
+      return response.map((row) => CcGroupsRow(row as Map<String, dynamic>)).toList();
+    }
+    return [];
+  }
+
   /// Fetches a single group by ID
   Future<CcGroupsRow?> getGroupById(int id) async {
     final result = await CcGroupsTable().queryRows(queryFn: (q) => q.eq('id', id));

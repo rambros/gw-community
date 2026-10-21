@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:gw_community/data/repositories/community_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/domain/community/event_access.dart';
 import 'package:gw_community/ui/core/view_as/view_as_session.dart';
 
 class CommunityViewModel extends ChangeNotifier {
@@ -74,21 +75,40 @@ class CommunityViewModel extends ChangeNotifier {
   }
 
   Future<void> fetchEvents(String type) async {
-    // Use auth_user_id directly for events as well
+    final events = await _eventsVisibleToCurrentUser();
 
     if (type == 'upcoming') {
-      listRealEventsUpcoming = await _repository.getEvents(currentUserUid);
+      listRealEventsUpcoming = events;
       listEvents = listRealEventsUpcoming;
     } else if (type == 'recorded') {
-      listRealEventsRecorded = await _repository.getEvents(currentUserUid);
+      listRealEventsRecorded = events;
       listEvents = listRealEventsRecorded;
     } else {
-      listRealEventsTab = await _repository.getEvents(currentUserUid);
+      listRealEventsTab = events;
       listEvents = listRealEventsTab;
     }
 
     if (_disposed) return;
     notifyListeners();
+  }
+
+  Future<List<CcEventsRow>> _eventsVisibleToCurrentUser() async {
+    if (myGroups.isEmpty) {
+      myGroups = await _repository.getMyGroups(currentUserUid);
+    }
+    final events = await _repository.getEvents(currentUserUid);
+    final memberGroupIds = myGroups.map((group) => group.id).toSet();
+    return events
+        .where(
+          (event) => eventVisibleToUser(
+            visibility: event.visibility,
+            groupId: event.groupId,
+            facilitatorId: event.facilitatorId,
+            userId: currentUserUid,
+            memberGroupIds: memberGroupIds,
+          ),
+        )
+        .toList();
   }
 
   Future<void> refreshGroupsList() async {

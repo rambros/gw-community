@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gw_community/data/models/structs/index.dart';
 import 'package:gw_community/data/repositories/home_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/domain/community/event_access.dart';
 import 'package:gw_community/ui/core/view_as/view_as_session.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 
@@ -66,6 +67,7 @@ class HomeViewModel extends ChangeNotifier {
         _loadGroups(subjectUserId),
         _loadAllUserJourneyProgress(subjectUserId),
       ]);
+      _upcomingEvents = _eventsVisibleTo(subjectUserId);
     } catch (e) {
       _setError('Error loading home data: $e');
     } finally {
@@ -169,6 +171,24 @@ class HomeViewModel extends ChangeNotifier {
 
   Future<void> _loadUpcomingEvents() async {
     _upcomingEvents = await _repository.getUpcomingEvents();
+  }
+
+  /// The signed-in user already receives only their rows from RLS.
+  /// View-as keeps the admin session, so the same list has to be cut
+  /// down to the member's groups here.
+  List<CcEventsRow> _eventsVisibleTo(String userId) {
+    final memberGroupIds = _userGroups.map((group) => group.id).toSet();
+    return _upcomingEvents
+        .where(
+          (event) => eventVisibleToUser(
+            visibility: event.visibility,
+            groupId: event.groupId,
+            facilitatorId: event.facilitatorId,
+            userId: userId,
+            memberGroupIds: memberGroupIds,
+          ),
+        )
+        .toList();
   }
 
   Future<void> _loadGroups(String subjectUserId) async {
