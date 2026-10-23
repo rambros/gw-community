@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 
-/// Asks the server to ping facilitators about a new reply on a group message.
+/// Asks the server to push a new reply to its recipients.
 /// Failure here does not undo the comment. The in-app badge is computed from
 /// the comment itself.
 class CommentReplyNotifier {

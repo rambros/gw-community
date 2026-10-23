@@ -297,8 +297,9 @@ class _ResourceViewPageState extends State<ResourceViewPage> {
       child: ElevatedButton.icon(
         onPressed: () async {
           final uri = Uri.tryParse(widget.resource.url);
-          if (uri != null)
+          if (uri != null) {
             await launchUrl(uri, mode: LaunchMode.externalApplication);
+          }
         },
         icon: const Icon(Icons.open_in_new),
         label: const Text('Open Resource'),

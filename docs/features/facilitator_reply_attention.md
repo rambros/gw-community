@@ -1,6 +1,6 @@
 # Facilitator reply attention
 
-A facilitator sees a group message again when someone else comments after they last opened it. A member sees only the comments and replies they wrote. Other people's comments stay hidden from them, and do not mark the message as new. Their own comments do not count as new for themselves.
+A facilitator sees a group message again when someone else comments after they last opened it. A member sees the comments they wrote and the replies under those comments. Another member's thread stays hidden and does not mark the message as new. A reply in the member's own thread does. Their own comments do not count as new for themselves.
 
 ## What they see
 
@@ -14,8 +14,8 @@ A facilitator sees a group message again when someone else comments after they l
 
 ## Push
 
-Commenting on a group message calls the `notify-comment-reply` edge function. It pushes the facilitators of that group who can see the message, except the author. Further replies within 15 minutes collapse into one ping. The body is the current reply count ("3 new replies on …").
+Commenting on a group message calls the `notify-comment-reply` edge function. It pushes the facilitators of that group who can see the message, except the author, and also the person who was answered. A facilitator answering a member therefore reaches that member. Further replies within 15 minutes collapse into one ping. Creating a group message calls `notify-group-message`, which pushes every member who can see it, except the author. A private message pushes only its recipient.
 
-This needs `docs/sql/facilitator_reply_attention.sql` applied, and the edge function deployed. The in-app badge still works from the comments table if push is unavailable.
+The in-app badge still comes from the message and its visible replies if push is unavailable.
 
 Email is not sent.

@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:gw_community/data/repositories/announcement_repository.dart';
 import 'package:gw_community/data/repositories/in_app_notification_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/data/services/unread_badge_sync.dart';
 
 /// Unified item representing either a system notification or a facilitator announcement
 class UnifiedNotificationItem {
@@ -170,6 +171,7 @@ class InAppNotificationsViewModel extends ChangeNotifier {
       if (success) {
         item.isRead = true;
         _safeNotifyListeners();
+        unawaited(UnreadBadgeSync.instance.refreshNow());
       }
     } else if (item.source == 'announcement') {
       final userId = SupaFlow.client.auth.currentUser?.id;
@@ -177,6 +179,7 @@ class InAppNotificationsViewModel extends ChangeNotifier {
         await _announcementRepository.markAnnouncementAsRead(item.id, userId);
         item.isRead = true;
         _safeNotifyListeners();
+        unawaited(UnreadBadgeSync.instance.refreshNow());
       }
     }
   }
@@ -191,6 +194,7 @@ class InAppNotificationsViewModel extends ChangeNotifier {
       }
     }
     await loadNotifications();
+    unawaited(UnreadBadgeSync.instance.refreshNow());
   }
 
   Future<void> deleteNotification(UnifiedNotificationItem item) async {

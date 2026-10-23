@@ -10,8 +10,12 @@ void main() {
     required int sharingId,
     required DateTime createdAt,
     String? userId = 'member',
+    int? id,
+    int? parentId,
   }) {
     return SharingComment(
+      id: id,
+      parentId: parentId,
       sharingId: sharingId,
       createdAt: createdAt,
       userId: userId,
@@ -100,6 +104,37 @@ void main() {
       );
 
       expect(attention[4]?.count, 1);
+    });
+  });
+
+  group('commentIdsVisibleToMember', () {
+    test('includes the member comment and replies under it', () {
+      final visible = commentIdsVisibleToMember(
+        viewerId: 'member',
+        comments: [
+          comment(sharingId: 1, createdAt: earlier, userId: 'member', id: 10),
+          comment(sharingId: 1, createdAt: later, userId: 'facilitator', id: 11, parentId: 10),
+          comment(sharingId: 1, createdAt: later, userId: 'other', id: 12),
+        ],
+      );
+
+      expect(visible, {10, 11});
+    });
+
+    test('counts only a reply in the member thread', () {
+      final comments = [
+        comment(sharingId: 1, createdAt: earlier, userId: 'member', id: 10),
+        comment(sharingId: 1, createdAt: later, userId: 'facilitator', id: 11, parentId: 10),
+        comment(sharingId: 1, createdAt: later, userId: 'other', id: 12),
+      ];
+      final visible = commentIdsVisibleToMember(viewerId: 'member', comments: comments);
+      final attention = replyAttentionBySharing(
+        viewerId: 'member',
+        readAtBySharing: {1: opened},
+        comments: comments.where((item) => visible.contains(item.id)),
+      );
+
+      expect(attention[1]?.count, 1);
     });
   });
 

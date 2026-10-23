@@ -6,6 +6,7 @@ import 'package:gw_community/data/repositories/auth_repository.dart';
 import 'package:gw_community/data/repositories/home_repository.dart';
 import 'package:gw_community/data/repositories/user_profile_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/data/services/unread_badge_sync.dart';
 import 'package:gw_community/domain/models/app_auth_user.dart';
 import 'package:gw_community/l10n/app_locale.dart';
 import 'package:gw_community/routing/router.dart';
@@ -71,6 +72,9 @@ class AppViewModel extends ChangeNotifier with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused && appStateNotifier.loggedIn) {
+      unawaited(UnreadBadgeSync.instance.refreshNow());
+    }
     if (state == AppLifecycleState.resumed) {
       authRepository.refreshUser();
       if (appStateNotifier.loggedIn) {

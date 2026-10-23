@@ -5,6 +5,7 @@ import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:gw_community/data/repositories/announcement_repository.dart';
 import 'package:gw_community/data/repositories/group_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/data/services/unread_badge_sync.dart';
 import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/group_edit_page/group_edit_page.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
@@ -100,6 +101,8 @@ class _GroupCardState extends State<GroupCard> with RouteAware {
       return;
     }
     setState(() => _unreadCount = count);
+    // Same moment the card number changes, including the copy on Home.
+    UnreadBadgeSync.instance.schedule();
   }
 
   Future<void> _loadLastPostDate() async {

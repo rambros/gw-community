@@ -84,7 +84,7 @@ serve(async (req) => {
     const supabase = createClient(supabaseUrl, serviceKey);
     const { data: comment, error: commentError } = await supabase
       .from('cc_comments')
-      .select('id, user_id, sharing_id')
+      .select('id, user_id, sharing_id, parent_id')
       .eq('id', commentId)
       .maybeSingle();
     if (commentError) throw new Error(commentError.message);
@@ -109,14 +109,40 @@ serve(async (req) => {
       .eq('group_id', sharing.group_id);
     if (membersError) throw new Error(membersError.message);
 
-    const recipients = (members ?? []).filter((member) =>
-      typeof member.user_id === 'string' &&
-      member.user_id !== comment.user_id &&
-      isFacilitator(member.user_role) &&
-      canSeeMessage(member.user_id, sharing)
-    );
-    if (recipients.length === 0) {
-      return json({ skipped: true, reason: 'no facilitators' });
+    const recipientIds = new Set<string>();
+    for (const member of members ?? []) {
+      if (typeof member.user_id !== 'string') continue;
+      if (member.user_id === comment.user_id) continue;
+      if (!isFacilitator(member.user_role)) continue;
+      if (!canSeeMessage(member.user_id, sharing)) continue;
+      recipientIds.add(member.user_id);
+    }
+
+    // A reply also goes to the person who was answered. Walking up covers a
+    // facilitator answering a member, including a reply to that answer.
+    let parentId = comment.parent_id as number | null;
+    const seenParents = new Set<number>();
+    while (parentId != null && !seenParents.has(parentId)) {
+      seenParents.add(parentId);
+      const { data: parent, error: parentError } = await supabase
+        .from('cc_comments')
+        .select('id, user_id, parent_id')
+        .eq('id', parentId)
+        .maybeSingle();
+      if (parentError) throw new Error(parentError.message);
+      if (!parent) break;
+      if (
+        typeof parent.user_id === 'string' &&
+        parent.user_id !== comment.user_id &&
+        canSeeMessage(parent.user_id, sharing)
+      ) {
+        recipientIds.add(parent.user_id);
+      }
+      parentId = parent.parent_id as number | null;
+    }
+
+    if (recipientIds.size === 0) {
+      return json({ skipped: true, reason: 'no recipients' });
     }
 
     const { data: author } = await supabase
@@ -137,8 +163,7 @@ serve(async (req) => {
       .maybeSingle();
 
     const messageTitle = String(sharing.title ?? 'a message').slice(0, 80);
-    const outcomes = await Promise.all(recipients.map(async (recipient) => {
-      const userId = recipient.user_id as string;
+    const outcomes = await Promise.all([...recipientIds].map(async (userId) => {
       if (!await shouldPush(supabase, sharing.id, userId)) return false;
 
       let countQuery = supabase
@@ -157,6 +182,11 @@ serve(async (req) => {
       }
       const { count } = await countQuery;
       const replyCount = count && count > 0 ? count : 1;
+      const recipient = (members ?? []).find((member) => member.user_id === userId);
+      const recipientIsFacilitator = isFacilitator(recipient?.user_role ?? null);
+      const body = recipientIsFacilitator && replyCount > 1
+        ? `${replyCount} new replies on "${messageTitle}"`
+        : `${authorName} replied to "${messageTitle}"`;
 
       const pushRes = await fetch(`${supabaseUrl}/functions/v1/send-push-notification`, {
         method: 'POST',
@@ -168,9 +198,7 @@ serve(async (req) => {
         body: JSON.stringify({
           user_ids: [userId],
           title: group?.name ?? 'New replies',
-          message: replyCount === 1
-            ? `${authorName} replied to "${messageTitle}"`
-            : `${replyCount} new replies on "${messageTitle}"`,
+          message: body,
           channel: 'push',
           group_id: sharing.group_id,
           reference_type: 'group_message',

@@ -13,6 +13,7 @@ import 'package:gw_community/data/repositories/home_repository.dart';
 import 'package:gw_community/data/repositories/journeys_repository.dart';
 import 'package:gw_community/data/repositories/learn_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/data/services/unread_badge_sync.dart';
 import 'package:gw_community/domain/community/reply_attention.dart';
 import 'package:gw_community/ui/core/view_as/view_as_session.dart';
 
@@ -336,6 +337,9 @@ class GroupDetailsViewModel extends ChangeNotifier {
       }
 
       notifyListeners();
+      // The group card reloads this same read. The phone icon badge does not,
+      // unless something asks for the new total here.
+      unawaited(UnreadBadgeSync.instance.refreshNow());
     } catch (e) {
       debugPrint('Error marking notification as read: $e');
     }
@@ -359,6 +363,7 @@ class GroupDetailsViewModel extends ChangeNotifier {
       _latestNotifications = _visibleNotifications(notifications);
       await _reloadReplyCounts();
       notifyListeners();
+      unawaited(UnreadBadgeSync.instance.refreshNow());
     } catch (e) {
       debugPrint('Error refreshing read notifications: $e');
     }
@@ -472,8 +477,10 @@ class GroupDetailsViewModel extends ChangeNotifier {
     final unreadCount = ids.where(messageNeedsAttention).length;
 
     if (_unreadNotificationCount != unreadCount || forceNotify) {
+      final changed = _unreadNotificationCount != unreadCount;
       _unreadNotificationCount = unreadCount;
       notifyListeners();
+      if (changed) UnreadBadgeSync.instance.schedule();
     }
   }
 

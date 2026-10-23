@@ -47,9 +47,21 @@ class AnnouncementViewViewModel extends ChangeNotifier {
       ViewAsSession.instance.subjectUserId(currentUserUid);
 
   List<CcViewOrderedCommentsRow> get comments {
+    final visibleIds = commentIdsVisibleToMember(
+      viewerId: _viewerId,
+      comments: _comments.map(
+        (comment) => SharingComment(
+          id: comment.id,
+          parentId: comment.parentId,
+          userId: comment.userId,
+          sharingId: comment.sharingId ?? 0,
+          createdAt: comment.createdAt ?? DateTime.fromMillisecondsSinceEpoch(0),
+        ),
+      ),
+    );
     final visible = _canSeeAllComments
         ? _comments
-        : _comments.where((comment) => comment.userId == _viewerId);
+        : _comments.where((comment) => visibleIds.contains(comment.id));
     final list = List<CcViewOrderedCommentsRow>.of(visible);
     if (_commentOrder == CommentListOrder.oldestFirst) {
       list.sort((a, b) => _commentTime(a).compareTo(_commentTime(b)));

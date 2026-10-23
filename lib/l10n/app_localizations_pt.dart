@@ -189,14 +189,14 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get communityTagline =>
-      'Uma comunidade que compartilha\nbons votos para criar um mundo melhor';
+      'Uma comunidade que compartilha\nbons votos para criar um mundo novo';
 
   @override
   String get splashWelcomeTitle => 'Bem-vindo ao Good Wishes';
 
   @override
   String get splashWelcomeSubtitle =>
-      'Uma comunidade que compartilha bons votos para criar um mundo melhor';
+      'Uma comunidade que compartilha bons votos para criar um mundo novo';
 
   @override
   String get myGroups => 'Meus grupos';

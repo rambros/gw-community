@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:gw_community/data/repositories/announcement_repository.dart';
+import 'package:gw_community/data/services/push/group_message_notifier.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/ui/core/view_as/view_as_session.dart';
 
@@ -94,7 +97,7 @@ class AddAnnouncementViewModel extends ChangeNotifier {
     }
     _setSaving(true);
     try {
-      await _repository.createAnnouncement(
+      final sharingId = await _repository.createAnnouncement(
         title: titleController.text.trim(),
         text: experienceController.text.trim(),
         privacy: privacy,
@@ -104,6 +107,7 @@ class AddAnnouncementViewModel extends ChangeNotifier {
         recipientUserId: _recipientMember?.authUserId,
         isPinned: _pinMessage,
       );
+      unawaited(GroupMessageNotifier.notify(sharingId));
       return true;
     } catch (e) {
       _setError('Error creating announcement: $e');

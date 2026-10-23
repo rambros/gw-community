@@ -3,10 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:gw_community/data/repositories/announcement_repository.dart';
 import 'package:gw_community/data/repositories/in_app_notification_repository.dart';
-import 'package:gw_community/data/services/app_badge_service.dart';
-import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/data/services/unread_badge_sync.dart';
 import 'package:gw_community/index.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 
@@ -22,8 +20,6 @@ class NotificationBellWidget extends StatefulWidget {
 
 class _NotificationBellWidgetState extends State<NotificationBellWidget> {
   final InAppNotificationRepository _repository = InAppNotificationRepository();
-  final AnnouncementRepository _announcementRepository = AnnouncementRepository();
-  final AppBadgeService _badgeService = AppBadgeService();
   StreamSubscription<int>? _subscription;
   int _unreadCount = 0;
 
@@ -47,16 +43,8 @@ class _NotificationBellWidgetState extends State<NotificationBellWidget> {
   }
 
   Future<void> _loadUnreadCount() async {
-    final userId = SupaFlow.client.auth.currentUser?.id;
-    final notifCount = await _repository.getUnreadCount();
-    final announcementCount = userId != null
-        ? await _announcementRepository.getTotalUnreadForUser(userId)
-        : 0;
-    final total = notifCount + announcementCount;
-    if (mounted) {
-      setState(() => _unreadCount = total);
-      _badgeService.updateBadgeCount(total);
-    }
+    final total = await UnreadBadgeSync.instance.refreshNow();
+    if (mounted) setState(() => _unreadCount = total);
   }
 
   void _subscribeToUpdates() {

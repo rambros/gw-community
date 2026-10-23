@@ -383,7 +383,7 @@ abstract class AppLocalizations {
   /// No description provided for @communityTagline.
   ///
   /// In en, this message translates to:
-  /// **'A community that shares good wishes\nto create a better world'**
+  /// **'A community that shares good wishes\nto create a new world'**
   String get communityTagline;
 
   /// No description provided for @splashWelcomeTitle.
@@ -395,7 +395,7 @@ abstract class AppLocalizations {
   /// No description provided for @splashWelcomeSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'A community that shares good wishes to create a better world'**
+  /// **'A community that shares good wishes to create a new world'**
   String get splashWelcomeSubtitle;
 
   /// No description provided for @myGroups.

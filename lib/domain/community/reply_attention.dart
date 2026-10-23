@@ -3,12 +3,46 @@ class SharingComment {
   const SharingComment({
     required this.sharingId,
     required this.createdAt,
+    this.id,
+    this.parentId,
     this.userId,
   });
 
+  final int? id;
+  final int? parentId;
   final int sharingId;
   final DateTime createdAt;
   final String? userId;
+}
+
+/// Comments a member may see: the ones they wrote, and replies under those.
+/// Another member's thread stays hidden.
+Set<int> commentIdsVisibleToMember({
+  required String viewerId,
+  required Iterable<SharingComment> comments,
+}) {
+  final byParent = <int, List<SharingComment>>{};
+  final visibleIds = <int>{};
+  for (final comment in comments) {
+    final id = comment.id;
+    if (id == null) continue;
+    if (comment.userId == viewerId) visibleIds.add(id);
+    final parent = comment.parentId;
+    if (parent != null) {
+      (byParent[parent] ??= []).add(comment);
+    }
+  }
+
+  final queue = List<int>.of(visibleIds);
+  while (queue.isNotEmpty) {
+    final id = queue.removeLast();
+    for (final child in byParent[id] ?? const <SharingComment>[]) {
+      final childId = child.id;
+      if (childId == null || !visibleIds.add(childId)) continue;
+      queue.add(childId);
+    }
+  }
+  return visibleIds;
 }
 
 /// Every comment on a message, including the viewer's own.

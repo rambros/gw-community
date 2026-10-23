@@ -12,7 +12,7 @@ class AnnouncementRepository {
     return result.isNotEmpty ? result.first : null;
   }
 
-  Future<void> createAnnouncement({
+  Future<int> createAnnouncement({
     required String title,
     required String text,
     required String privacy,
@@ -22,7 +22,7 @@ class AnnouncementRepository {
     String? recipientUserId,
     bool isPinned = false,
   }) async {
-    await CcSharingsTable().insert({
+    final row = await CcSharingsTable().insert({
       'title': title,
       'privacy': privacy,
       'user_id': userId,
@@ -35,6 +35,7 @@ class AnnouncementRepository {
       if (isPinned) 'pinned_at': supaSerialize<DateTime>(getCurrentTimestamp),
       if (recipientUserId != null) 'recipient_user_id': recipientUserId,
     });
+    return row.id;
   }
 
   Future<CcViewNotificationsUsersRow?> getAnnouncementById(int id) async {
@@ -318,8 +319,9 @@ class AnnouncementRepository {
     }
   }
 
-  /// Replies from other people after this facilitator last opened each message.
-  /// Members get an empty snapshot. Keys are sharing ids the caller can see.
+  /// Replies from other people after this person last opened each message.
+  /// A member only counts replies in their own thread. Keys are sharing ids
+  /// the caller can see.
   Future<FacilitatorCommentSnapshot> getReplyAttention({
     required String userId,
     required Map<int, int> sharingGroupIds,
@@ -334,20 +336,17 @@ class AnnouncementRepository {
           .where((m) => m.groupId != null && _isFacilitatorRole(m.userRole))
           .map((m) => m.groupId!)
           .toSet();
-      if (facilitatorGroups.isEmpty) return FacilitatorCommentSnapshot.empty;
-
-      final sharingIds = [
-        for (final entry in sharingGroupIds.entries)
-          if (facilitatorGroups.contains(entry.value)) entry.key,
-      ];
-      if (sharingIds.isEmpty) return FacilitatorCommentSnapshot.empty;
-
+      final sharingIds = sharingGroupIds.keys.toList();
       final reads = await CcSharingReadsTable().queryRows(
         queryFn: (q) => q.eq('user_id', userId).inFilter('sharing_id', sharingIds),
       );
       return await _replyAttention(
         userId: userId,
         sharingIds: sharingIds,
+        facilitatorSharingIds: {
+          for (final entry in sharingGroupIds.entries)
+            if (facilitatorGroups.contains(entry.value)) entry.key,
+        },
         readAtBySharing: {
           for (final read in reads) read.experienceId: read.readAt,
         },
@@ -389,10 +388,11 @@ class AnnouncementRepository {
     required List<int> sharingIds,
     required List<CcExperienceReadsRow> reads,
   }) async {
-    if (!isFacilitator || sharingIds.isEmpty) return {};
+    if (sharingIds.isEmpty) return {};
     final attention = await _replyAttention(
       userId: userId,
       sharingIds: sharingIds,
+      facilitatorSharingIds: isFacilitator ? sharingIds.toSet() : const {},
       readAtBySharing: {
         for (final read in reads) read.experienceId: read.readAt,
       },
@@ -405,12 +405,13 @@ class AnnouncementRepository {
   Future<FacilitatorCommentSnapshot> _replyAttention({
     required String userId,
     required List<int> sharingIds,
+    required Set<int> facilitatorSharingIds,
     required Map<int, DateTime> readAtBySharing,
   }) async {
     if (sharingIds.isEmpty) return FacilitatorCommentSnapshot.empty;
     final rows = await SupaFlow.client
         .from('cc_comments')
-        .select('sharing_id, user_id, created_at')
+        .select('id, parent_id, sharing_id, user_id, created_at')
         .inFilter('sharing_id', sharingIds);
 
     final comments = <SharingComment>[];
@@ -419,19 +420,35 @@ class AnnouncementRepository {
       final createdAt = _asDateTime(row['created_at']);
       if (sharingId == null || createdAt == null) continue;
       comments.add(SharingComment(
+        id: _asInt(row['id']),
+        parentId: _asInt(row['parent_id']),
         sharingId: sharingId,
         createdAt: createdAt,
         userId: row['user_id']?.toString(),
       ));
     }
 
+    final counted = <SharingComment>[];
+    for (final sharingId in sharingIds) {
+      final onMessage = comments.where((comment) => comment.sharingId == sharingId);
+      if (facilitatorSharingIds.contains(sharingId)) {
+        counted.addAll(onMessage);
+        continue;
+      }
+      final visibleIds = commentIdsVisibleToMember(
+        viewerId: userId,
+        comments: onMessage,
+      );
+      counted.addAll(onMessage.where((comment) => visibleIds.contains(comment.id)));
+    }
+
     return FacilitatorCommentSnapshot(
       unseen: replyAttentionBySharing(
         viewerId: userId,
         readAtBySharing: readAtBySharing,
-        comments: comments,
+        comments: counted,
       ),
-      totals: commentCountBySharing(comments),
+      totals: commentCountBySharing(counted),
     );
   }
 
