@@ -42,6 +42,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get start => 'Começar';
 
   @override
+  String get startJourney => 'Começar a jornada';
+
+  @override
   String get resume => 'Continuar';
 
   @override

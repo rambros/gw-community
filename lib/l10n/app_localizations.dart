@@ -164,6 +164,12 @@ abstract class AppLocalizations {
   /// **'Start'**
   String get start;
 
+  /// No description provided for @startJourney.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Journey'**
+  String get startJourney;
+
   /// No description provided for @resume.
   ///
   /// In en, this message translates to:

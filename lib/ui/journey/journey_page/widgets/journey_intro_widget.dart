@@ -107,6 +107,7 @@ class _JourneyIntroWidgetState extends State<JourneyIntroWidget> {
             ),
           ),
         ),
+        if (widget.showStartButton) _buildStartButton(context),
         // Steps Section
         if (widget.groupedSteps.any((group) => group.steps.isNotEmpty))
           Padding(
@@ -128,44 +129,33 @@ class _JourneyIntroWidgetState extends State<JourneyIntroWidget> {
               ],
             ),
           ),
-        // Start Button - placed after Steps section
-        if (widget.showStartButton)
-          Padding(
-            padding: const EdgeInsets.all(32.0),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
-                  child: FFButtonWidget(
-                    onPressed: widget.onStart,
-                    text: widget.isJourneyStarted
-                        ? context.l10n.resume
-                        : context.l10n.start,
-                    options: FFButtonOptions(
-                      height: 40.0,
-                      padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-                      iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      color: AppTheme.of(context).primary,
-                      textStyle: AppTheme.of(context).journey.buttonText.override(
-                            color: AppTheme.of(context).primaryBackground,
-                          ),
-                      elevation: 1.0,
-                      borderSide: BorderSide(
-                        color: AppTheme.of(context).secondary,
-                        width: 0.5,
-                      ),
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
       ],
+    );
+  }
+
+  Widget _buildStartButton(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 8.0),
+      child: FFButtonWidget(
+        onPressed: widget.onStart,
+        text: widget.isJourneyStarted ? context.l10n.resume : context.l10n.startJourney,
+        options: FFButtonOptions(
+          width: double.infinity,
+          height: 40.0,
+          padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
+          iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+          color: AppTheme.of(context).primary,
+          textStyle: AppTheme.of(context).journey.buttonText.override(
+                color: AppTheme.of(context).primaryBackground,
+              ),
+          elevation: 1.0,
+          borderSide: BorderSide(
+            color: AppTheme.of(context).secondary,
+            width: 0.5,
+          ),
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+      ),
     );
   }
 
