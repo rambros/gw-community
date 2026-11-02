@@ -135,7 +135,7 @@ class _ScreenHintState extends State<ScreenHint> with SingleTickerProviderStateM
                                 Text(
                                   widget.title,
                                   style: const TextStyle(
-                                    fontSize: 15,
+                                    fontSize: 17,
                                     fontWeight: FontWeight.w700,
                                     color: Colors.white,
                                   ),
@@ -144,7 +144,7 @@ class _ScreenHintState extends State<ScreenHint> with SingleTickerProviderStateM
                                 Text(
                                   widget.message,
                                   style: const TextStyle(
-                                    fontSize: 13,
+                                    fontSize: 15,
                                     height: 1.45,
                                     color: Colors.white,
                                   ),

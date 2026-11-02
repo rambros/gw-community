@@ -903,17 +903,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get communityHintMessage =>
-      'Join a community to connect and share experiences, encouraging thoughts, ideas, and content for self-development.';
+      'Join a group to connect with others, share experiences and receive news about events and special resources.';
 
   @override
-  String get libraryHintTitle => 'Explore and grow';
+  String get libraryHintTitle => 'Explore';
 
   @override
   String get libraryHintMessage =>
-      'Access a growing collection of reflections, meditations, and resources to deepen your practice and support your spiritual development.';
+      'Access a collection of recordings, reflections, meditations, and resources to deepen your practice and support your spiritual development.';
 
   @override
-  String get journeyHintTitle => 'Welcome to a wonderful journey!';
+  String get journeyHintTitle => 'Welcome to wonderful journeys!';
 
   @override
   String get journeyHintMessage =>

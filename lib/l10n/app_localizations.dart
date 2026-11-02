@@ -1691,25 +1691,25 @@ abstract class AppLocalizations {
   /// No description provided for @communityHintMessage.
   ///
   /// In en, this message translates to:
-  /// **'Join a community to connect and share experiences, encouraging thoughts, ideas, and content for self-development.'**
+  /// **'Join a group to connect with others, share experiences and receive news about events and special resources.'**
   String get communityHintMessage;
 
   /// No description provided for @libraryHintTitle.
   ///
   /// In en, this message translates to:
-  /// **'Explore and grow'**
+  /// **'Explore'**
   String get libraryHintTitle;
 
   /// No description provided for @libraryHintMessage.
   ///
   /// In en, this message translates to:
-  /// **'Access a growing collection of reflections, meditations, and resources to deepen your practice and support your spiritual development.'**
+  /// **'Access a collection of recordings, reflections, meditations, and resources to deepen your practice and support your spiritual development.'**
   String get libraryHintMessage;
 
   /// No description provided for @journeyHintTitle.
   ///
   /// In en, this message translates to:
-  /// **'Welcome to a wonderful journey!'**
+  /// **'Welcome to wonderful journeys!'**
   String get journeyHintTitle;
 
   /// No description provided for @journeyHintMessage.
