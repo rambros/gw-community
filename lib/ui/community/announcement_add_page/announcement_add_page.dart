@@ -20,12 +20,16 @@ class AnnouncementAddPage extends StatefulWidget {
     this.groupName,
     String? privacy,
     this.groupMembers = const [],
+    this.initialRecipientAuthUserId,
+    this.initialRecipient,
   }) : privacy = privacy ?? 'public';
 
   final int? groupId;
   final String? groupName;
   final String privacy;
   final List<CcMembersRow> groupMembers;
+  final String? initialRecipientAuthUserId;
+  final CcMembersRow? initialRecipient;
 
   static String routeName = 'announcementAddPage';
   static String routePath = '/announcementAddPage';
@@ -43,14 +47,65 @@ class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
     super.initState();
     logFirebaseEvent('screen_view',
         parameters: {'screen_name': 'announcementAddPage'});
+    final members = _enrichedGroupMembers();
     _viewModel = AddAnnouncementViewModel(
       repository: context.read<AnnouncementRepository>(),
       currentUserUid: context.currentUserIdOrEmpty,
       groupId: widget.groupId,
       groupName: widget.groupName,
       privacy: widget.privacy,
-      groupMembers: widget.groupMembers,
+      groupMembers: members,
     );
+    final initial = _resolveInitialRecipient(members);
+    if (initial != null) {
+      _viewModel.setRecipient(initial);
+    }
+  }
+
+  List<CcMembersRow> _enrichedGroupMembers() {
+    final members = List<CcMembersRow>.from(widget.groupMembers);
+    final initial = widget.initialRecipient;
+    final initialId = initial?.authUserId;
+    if (initial != null &&
+        initialId != null &&
+        initialId.isNotEmpty &&
+        !members.any((m) => m.authUserId == initialId)) {
+      members.add(initial);
+    }
+    return members;
+  }
+
+  CcMembersRow? _resolveInitialRecipient(List<CcMembersRow> members) {
+    final preferredId = widget.initialRecipient?.authUserId ??
+        widget.initialRecipientAuthUserId;
+    if (preferredId == null || preferredId.isEmpty) {
+      return widget.initialRecipient;
+    }
+    for (final member in members) {
+      if (member.authUserId == preferredId) return member;
+    }
+    return widget.initialRecipient;
+  }
+
+  String _memberOptionLabel(CcMembersRow member) {
+    final parts = <String>[
+      if (member.firstName?.trim().isNotEmpty == true) member.firstName!.trim(),
+      if (member.hideLastName != true &&
+          member.lastName?.trim().isNotEmpty == true)
+        member.lastName!.trim(),
+    ];
+    var name = parts.join(' ').trim();
+    if (name.isEmpty) {
+      name = member.displayName?.trim() ?? '';
+    }
+    final email = member.email?.trim();
+    if (name.isEmpty) {
+      return email?.isNotEmpty == true ? email! : context.l10n.member;
+    }
+    if (email != null && email.isNotEmpty) {
+      return '$name ($email)';
+    }
+    return name;
   }
 
   @override
@@ -238,13 +293,18 @@ class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(8.0, 8.0, 8.0, 0.0),
             child: DropdownButtonFormField<CcMembersRow?>(
+              key: ValueKey(
+                'send-to-${viewModel.recipientMember?.authUserId ?? 'all'}',
+              ),
               initialValue: viewModel.recipientMember,
+              isExpanded: true,
               decoration: _inputDecoration(context, context.l10n.sendTo),
               items: [
                 DropdownMenuItem<CcMembersRow?>(
                   value: null,
                   child: Text(
                     context.l10n.allMembersBroadcast,
+                    overflow: TextOverflow.ellipsis,
                     style: AppTheme.of(context).bodyMedium.override(
                           font: GoogleFonts.lexendDeca(),
                           color: AppTheme.of(context).secondary,
@@ -255,10 +315,8 @@ class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
                     .map((member) => DropdownMenuItem<CcMembersRow?>(
                           value: member,
                           child: Text(
-                            member.displayName ??
-                                member.firstName ??
-                                member.email ??
-                                context.l10n.member,
+                            _memberOptionLabel(member),
+                            overflow: TextOverflow.ellipsis,
                             style: AppTheme.of(context).bodyMedium.override(
                                   font: GoogleFonts.lexendDeca(),
                                   color: AppTheme.of(context).secondary,

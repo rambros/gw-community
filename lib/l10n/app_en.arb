@@ -101,6 +101,24 @@
   "confirm": "Confirm",
   "groupDeleted": "Group deleted with success",
   "welcomeComma": "Welcome,",
+  "goodMorningGreeting": "Good morning, {name}!",
+  "@goodMorningGreeting": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "goodAfternoonGreeting": "Good afternoon, {name}!",
+  "@goodAfternoonGreeting": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "goodEveningGreeting": "Good evening, {name}!",
+  "@goodEveningGreeting": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
   "communityTagline": "A community that shares good wishes\nto create a new world",
   "splashWelcomeTitle": "Welcome to Good Wishes",
   "splashWelcomeSubtitle": "A community that shares good wishes to create a new world",
@@ -110,6 +128,7 @@
   "profile": "Profile",
   "accountSettings": "Account Settings",
   "editProfile": "Edit Profile",
+  "contactFacilitatorToChangeName": "If you want to change your first or last name, please contact your group's facilitator.",
   "changePassword": "Change Password",
   "setNotifications": "Set Notifications",
   "editGuidelines": "Edit Guidelines",
@@ -203,6 +222,10 @@
   "lastName": "Last Name",
   "displayName": "Display Name",
   "hideMyLastName": "Hide my last name",
+  "editName": "Edit Name",
+  "nameUpdated": "Name updated",
+  "nameUpdateFailed": "Could not update name",
+  "firstNameRequired": "First name is required",
   "saveChanges": "Save Changes",
   "nameFallback": "Name",
   "signUp": "Sign Up",
@@ -805,6 +828,7 @@
   "date": "Date",
   "messagesByFacilitator": "Messages from facilitators. Replies viewed by facilitators only",
   "newMessage": "New message",
+  "sendAMessage": "Send a message",
   "editMessage": "Edit Message",
   "details": "Details",
   "message": "Message",
@@ -894,6 +918,36 @@
     }
   },
   "searchByNameOrEmail": "Search by name or email (min 3 chars)...",
+  "addNewMember": "Add member",
+  "searchMembersByName": "Search members by name...",
+  "sortByName": "Name",
+  "sortByEmail": "Email",
+  "lastAccess": "Last access",
+  "lastAccessValue": "Last access: {date}",
+  "@lastAccessValue": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "neverAccessed": "Never accessed",
+  "memberCountTotal": "Total ({count})",
+  "@memberCountTotal": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "memberCountActive": "Active ({count})",
+  "@memberCountActive": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "memberCountNeverAccessed": "Never accessed ({count})",
+  "@memberCountNeverAccessed": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "searchToFindUsers": "Search to find users",
   "noUsersFound": "No users found",
   "groupImage": "Group Image",

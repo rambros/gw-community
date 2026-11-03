@@ -62,6 +62,14 @@ class UserProfileRepository {
         .eq('auth_user_id', authUserId);
   }
 
+  /// Updates a member row by primary key (used by facilitators/admins).
+  Future<void> updateMemberById(
+    String memberId,
+    Map<String, dynamic> data,
+  ) async {
+    await SupaFlow.client.from('cc_members').update(data).eq('id', memberId);
+  }
+
   /// Fetches the user's journal entries.
   Future<List<CcViewUserJournalRow>> getUserJournalEntries(String userId) async {
     return await CcViewUserJournalTable().queryRows(

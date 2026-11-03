@@ -223,19 +223,30 @@
                 return "Desktop";
             }
 
-            function hasAuthPayload() {
+            function getAuthParams() {
                 const params = new URLSearchParams(window.location.search);
                 const hash = window.location.hash.startsWith("#")
                     ? window.location.hash.substring(1)
                     : window.location.hash;
                 const hashParams = new URLSearchParams(hash);
+                return { params, hashParams };
+            }
 
+            function hasAuthError() {
+                const { params, hashParams } = getAuthParams();
                 return (
-                    params.has("code") ||
+                    params.has("error") ||
                     params.has("error_code") ||
-                    hashParams.has("access_token") ||
+                    params.has("error_description") ||
+                    hashParams.has("error") ||
+                    hashParams.has("error_code") ||
                     hashParams.has("error_description")
                 );
+            }
+
+            function hasAuthPayload() {
+                const { params, hashParams } = getAuthParams();
+                return params.has("code") || hashParams.has("access_token");
             }
 
             function buildAppCallbackUrl() {
@@ -262,11 +273,15 @@
             }
 
             function openApp() {
+                if (hasAuthError() || !hasAuthPayload()) {
+                    showError();
+                    return;
+                }
                 window.location.href = buildAppCallbackUrl();
             }
 
             function start() {
-                if (!hasAuthPayload()) {
+                if (hasAuthError() || !hasAuthPayload()) {
                     showError();
                     return;
                 }

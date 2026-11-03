@@ -386,6 +386,24 @@ abstract class AppLocalizations {
   /// **'Welcome,'**
   String get welcomeComma;
 
+  /// No description provided for @goodMorningGreeting.
+  ///
+  /// In en, this message translates to:
+  /// **'Good morning, {name}!'**
+  String goodMorningGreeting(String name);
+
+  /// No description provided for @goodAfternoonGreeting.
+  ///
+  /// In en, this message translates to:
+  /// **'Good afternoon, {name}!'**
+  String goodAfternoonGreeting(String name);
+
+  /// No description provided for @goodEveningGreeting.
+  ///
+  /// In en, this message translates to:
+  /// **'Good evening, {name}!'**
+  String goodEveningGreeting(String name);
+
   /// No description provided for @communityTagline.
   ///
   /// In en, this message translates to:
@@ -439,6 +457,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Edit Profile'**
   String get editProfile;
+
+  /// No description provided for @contactFacilitatorToChangeName.
+  ///
+  /// In en, this message translates to:
+  /// **'If you want to change your first or last name, please contact your group\'s facilitator.'**
+  String get contactFacilitatorToChangeName;
 
   /// No description provided for @changePassword.
   ///
@@ -817,6 +841,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Hide my last name'**
   String get hideMyLastName;
+
+  /// No description provided for @editName.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Name'**
+  String get editName;
+
+  /// No description provided for @nameUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Name updated'**
+  String get nameUpdated;
+
+  /// No description provided for @nameUpdateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not update name'**
+  String get nameUpdateFailed;
+
+  /// No description provided for @firstNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'First name is required'**
+  String get firstNameRequired;
 
   /// No description provided for @saveChanges.
   ///
@@ -3302,6 +3350,12 @@ abstract class AppLocalizations {
   /// **'New message'**
   String get newMessage;
 
+  /// No description provided for @sendAMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Send a message'**
+  String get sendAMessage;
+
   /// No description provided for @editMessage.
   ///
   /// In en, this message translates to:
@@ -3685,6 +3739,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Search by name or email (min 3 chars)...'**
   String get searchByNameOrEmail;
+
+  /// No description provided for @addNewMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Add member'**
+  String get addNewMember;
+
+  /// No description provided for @searchMembersByName.
+  ///
+  /// In en, this message translates to:
+  /// **'Search members by name...'**
+  String get searchMembersByName;
+
+  /// No description provided for @sortByName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get sortByName;
+
+  /// No description provided for @sortByEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get sortByEmail;
+
+  /// No description provided for @lastAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Last access'**
+  String get lastAccess;
+
+  /// No description provided for @lastAccessValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Last access: {date}'**
+  String lastAccessValue(String date);
+
+  /// No description provided for @neverAccessed.
+  ///
+  /// In en, this message translates to:
+  /// **'Never accessed'**
+  String get neverAccessed;
+
+  /// No description provided for @memberCountTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total ({count})'**
+  String memberCountTotal(int count);
+
+  /// No description provided for @memberCountActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active ({count})'**
+  String memberCountActive(int count);
+
+  /// No description provided for @memberCountNeverAccessed.
+  ///
+  /// In en, this message translates to:
+  /// **'Never accessed ({count})'**
+  String memberCountNeverAccessed(int count);
 
   /// No description provided for @searchToFindUsers.
   ///

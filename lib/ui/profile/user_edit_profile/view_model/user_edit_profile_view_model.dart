@@ -75,17 +75,26 @@ class UserEditProfileViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> saveProfileCommand(BuildContext context) async {
+  Future<void> saveProfileCommand(
+    BuildContext context, {
+    required bool canEditName,
+  }) async {
     _setLoading(true);
     _clearError();
 
     try {
-      await _repository.updateProfile(currentUserUid, {
-        'first_name': firstNameController.text,
-        'last_name': lastNameController.text,
+      final data = <String, dynamic>{
         'display_name': displayNameController.text,
         'hide_last_name': _hideLastName,
-      });
+      };
+      if (canEditName) {
+        data['first_name'] = firstNameController.text.trim();
+        data['last_name'] = lastNameController.text.trim();
+        _updateDisplayName();
+        data['display_name'] = displayNameController.text;
+      }
+
+      await _repository.updateProfile(currentUserUid, data);
 
       if (context.mounted) {
         Navigator.pop(context);

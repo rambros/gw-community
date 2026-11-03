@@ -191,6 +191,21 @@ class AppLocalizationsPt extends AppLocalizations {
   String get welcomeComma => 'Bem-vindo,';
 
   @override
+  String goodMorningGreeting(String name) {
+    return 'Bom dia, $name!';
+  }
+
+  @override
+  String goodAfternoonGreeting(String name) {
+    return 'Boa tarde, $name!';
+  }
+
+  @override
+  String goodEveningGreeting(String name) {
+    return 'Boa noite, $name!';
+  }
+
+  @override
   String get communityTagline =>
       'Uma comunidade que compartilha\nbons votos para criar um mundo novo';
 
@@ -218,6 +233,10 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get editProfile => 'Editar perfil';
+
+  @override
+  String get contactFacilitatorToChangeName =>
+      'Se você quiser alterar seu nome e sobrenome, entre em contato com o facilitador do seu grupo.';
 
   @override
   String get changePassword => 'Alterar senha';
@@ -426,6 +445,18 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get hideMyLastName => 'Ocultar meu sobrenome';
+
+  @override
+  String get editName => 'Editar nome';
+
+  @override
+  String get nameUpdated => 'Nome atualizado';
+
+  @override
+  String get nameUpdateFailed => 'Não foi possível atualizar o nome';
+
+  @override
+  String get firstNameRequired => 'O nome é obrigatório';
 
   @override
   String get saveChanges => 'Salvar alterações';
@@ -1794,6 +1825,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get newMessage => 'Nova mensagem';
 
   @override
+  String get sendAMessage => 'Enviar mensagem';
+
+  @override
   String get editMessage => 'Editar mensagem';
 
   @override
@@ -2009,6 +2043,44 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get searchByNameOrEmail =>
       'Buscar por nome ou e-mail (mín. 3 caracteres)...';
+
+  @override
+  String get addNewMember => 'Adicionar membro';
+
+  @override
+  String get searchMembersByName => 'Buscar membros por nome...';
+
+  @override
+  String get sortByName => 'Nome';
+
+  @override
+  String get sortByEmail => 'E-mail';
+
+  @override
+  String get lastAccess => 'Último acesso';
+
+  @override
+  String lastAccessValue(String date) {
+    return 'Último acesso: $date';
+  }
+
+  @override
+  String get neverAccessed => 'Nunca acessou';
+
+  @override
+  String memberCountTotal(int count) {
+    return 'Total ($count)';
+  }
+
+  @override
+  String memberCountActive(int count) {
+    return 'Ativos ($count)';
+  }
+
+  @override
+  String memberCountNeverAccessed(int count) {
+    return 'Nunca acessou ($count)';
+  }
 
   @override
   String get searchToFindUsers => 'Busque para encontrar usuários';

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/app_state.dart';
 import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
@@ -25,14 +26,17 @@ class _UserEditProfilePageState extends State<UserEditProfilePage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<UserEditProfileViewModel>().loadUserProfile();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await context.read<FFAppState>().loadAppConfig();
+      if (!mounted) return;
+      await context.read<UserEditProfileViewModel>().loadUserProfile();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<UserEditProfileViewModel>();
+    final canEditName = context.watch<FFAppState>().appConfig.enableEditName;
 
     return Scaffold(
       key: scaffoldKey,
@@ -109,7 +113,8 @@ class _UserEditProfilePageState extends State<UserEditProfilePage> {
                                   padding: const EdgeInsetsDirectional.fromSTEB(4.0, 4.0, 4.0, 8.0),
                                   child: TextFormField(
                                     controller: viewModel.firstNameController,
-                                    onChanged: viewModel.updateFirstName,
+                                    enabled: canEditName,
+                                    onChanged: canEditName ? viewModel.updateFirstName : null,
                                     autofocus: false,
                                     obscureText: false,
                                     textCapitalization: TextCapitalization.words,
@@ -187,7 +192,8 @@ class _UserEditProfilePageState extends State<UserEditProfilePage> {
                                   padding: const EdgeInsetsDirectional.fromSTEB(4.0, 4.0, 4.0, 8.0),
                                   child: TextFormField(
                                     controller: viewModel.lastNameController,
-                                    onChanged: viewModel.updateLastName,
+                                    enabled: canEditName,
+                                    onChanged: canEditName ? viewModel.updateLastName : null,
                                     autofocus: false,
                                     obscureText: false,
                                     textCapitalization: TextCapitalization.words,
@@ -263,6 +269,19 @@ class _UserEditProfilePageState extends State<UserEditProfilePage> {
                             ],
                           ),
                         ),
+                        if (!canEditName)
+                          Padding(
+                            padding: const EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 12.0, 8.0),
+                            child: Text(
+                              context.l10n.contactFacilitatorToChangeName,
+                              style: AppTheme.of(context).bodySmall.override(
+                                    font: GoogleFonts.lexendDeca(),
+                                    color: AppTheme.of(context).secondaryText,
+                                    fontSize: 13.0,
+                                    letterSpacing: 0.0,
+                                  ),
+                            ),
+                          ),
                         Padding(
                           padding: const EdgeInsets.all(4.0),
                           child: Row(
@@ -420,7 +439,10 @@ class _UserEditProfilePageState extends State<UserEditProfilePage> {
                                 padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
                                 child: FFButtonWidget(
                                   onPressed: () async {
-                                    await viewModel.saveProfileCommand(context);
+                                    await viewModel.saveProfileCommand(
+                                      context,
+                                      canEditName: canEditName,
+                                    );
                                   },
                                   text: context.l10n.saveChanges,
                                   options: FFButtonOptions(

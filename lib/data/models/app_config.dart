@@ -3,17 +3,22 @@
 class AppConfig {
   final bool enableJourneyList;
   final bool enableCommunityModule;
+  final bool enableEditName;
 
   AppConfig({
     required this.enableJourneyList,
     required this.enableCommunityModule,
+    required this.enableEditName,
   });
 
-  /// Create default configuration (all features enabled)
+  /// Create default configuration.
+  /// Journey list and community stay on. Name editing stays off until
+  /// the admin enables "Enable edit Name".
   factory AppConfig.defaults() {
     return AppConfig(
       enableJourneyList: true,
       enableCommunityModule: true,
+      enableEditName: false,
     );
   }
 
@@ -23,6 +28,7 @@ class AppConfig {
     return AppConfig(
       enableJourneyList: _parseBool(settings['enable_journey_list'], true),
       enableCommunityModule: _parseBool(settings['enable_community_module'], true),
+      enableEditName: _parseBool(settings['enable_edit_name'], false),
     );
   }
 
@@ -36,16 +42,18 @@ class AppConfig {
   AppConfig copyWith({
     bool? enableJourneyList,
     bool? enableCommunityModule,
+    bool? enableEditName,
   }) {
     return AppConfig(
       enableJourneyList: enableJourneyList ?? this.enableJourneyList,
       enableCommunityModule: enableCommunityModule ?? this.enableCommunityModule,
+      enableEditName: enableEditName ?? this.enableEditName,
     );
   }
 
   @override
   String toString() {
-    return 'AppConfig(enableJourneyList: $enableJourneyList, enableCommunityModule: $enableCommunityModule)';
+    return 'AppConfig(enableJourneyList: $enableJourneyList, enableCommunityModule: $enableCommunityModule, enableEditName: $enableEditName)';
   }
 
   @override
@@ -54,9 +62,13 @@ class AppConfig {
 
     return other is AppConfig &&
         other.enableJourneyList == enableJourneyList &&
-        other.enableCommunityModule == enableCommunityModule;
+        other.enableCommunityModule == enableCommunityModule &&
+        other.enableEditName == enableEditName;
   }
 
   @override
-  int get hashCode => enableJourneyList.hashCode ^ enableCommunityModule.hashCode;
+  int get hashCode =>
+      enableJourneyList.hashCode ^
+      enableCommunityModule.hashCode ^
+      enableEditName.hashCode;
 }

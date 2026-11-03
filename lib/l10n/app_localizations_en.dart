@@ -191,6 +191,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get welcomeComma => 'Welcome,';
 
   @override
+  String goodMorningGreeting(String name) {
+    return 'Good morning, $name!';
+  }
+
+  @override
+  String goodAfternoonGreeting(String name) {
+    return 'Good afternoon, $name!';
+  }
+
+  @override
+  String goodEveningGreeting(String name) {
+    return 'Good evening, $name!';
+  }
+
+  @override
   String get communityTagline =>
       'A community that shares good wishes\nto create a new world';
 
@@ -218,6 +233,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get editProfile => 'Edit Profile';
+
+  @override
+  String get contactFacilitatorToChangeName =>
+      'If you want to change your first or last name, please contact your group\'s facilitator.';
 
   @override
   String get changePassword => 'Change Password';
@@ -424,6 +443,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hideMyLastName => 'Hide my last name';
+
+  @override
+  String get editName => 'Edit Name';
+
+  @override
+  String get nameUpdated => 'Name updated';
+
+  @override
+  String get nameUpdateFailed => 'Could not update name';
+
+  @override
+  String get firstNameRequired => 'First name is required';
 
   @override
   String get saveChanges => 'Save Changes';
@@ -1789,6 +1820,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get newMessage => 'New message';
 
   @override
+  String get sendAMessage => 'Send a message';
+
+  @override
   String get editMessage => 'Edit Message';
 
   @override
@@ -2002,6 +2036,44 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get searchByNameOrEmail => 'Search by name or email (min 3 chars)...';
+
+  @override
+  String get addNewMember => 'Add member';
+
+  @override
+  String get searchMembersByName => 'Search members by name...';
+
+  @override
+  String get sortByName => 'Name';
+
+  @override
+  String get sortByEmail => 'Email';
+
+  @override
+  String get lastAccess => 'Last access';
+
+  @override
+  String lastAccessValue(String date) {
+    return 'Last access: $date';
+  }
+
+  @override
+  String get neverAccessed => 'Never accessed';
+
+  @override
+  String memberCountTotal(int count) {
+    return 'Total ($count)';
+  }
+
+  @override
+  String memberCountActive(int count) {
+    return 'Active ($count)';
+  }
+
+  @override
+  String memberCountNeverAccessed(int count) {
+    return 'Never accessed ($count)';
+  }
 
   @override
   String get searchToFindUsers => 'Search to find users';

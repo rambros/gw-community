@@ -99,14 +99,18 @@ serve(async (req) => {
         if (groupMemberError) {
           console.error(`Failed to add user to group: ${groupMemberError.message}`);
         } else {
-          const { count } = await supabaseClient
-            .from("cc_group_members")
-            .select("*", { count: "exact", head: true })
-            .eq("group_id", group_id);
-          await supabaseClient
-            .from("cc_groups")
-            .update({ number_members: count ?? 0 })
-            .eq("id", group_id);
+          const { data: visibleCount, error: countError } = await supabaseClient
+            .rpc("count_visible_group_members", { p_group_id: group_id });
+          if (countError) {
+            console.error(
+              `Failed to count visible members for group ${group_id}: ${countError.message}`,
+            );
+          } else {
+            await supabaseClient
+              .from("cc_groups")
+              .update({ number_members: visibleCount ?? 0 })
+              .eq("id", group_id);
+          }
           console.log(`Added ${email} to group ${group_id}`);
         }
       }

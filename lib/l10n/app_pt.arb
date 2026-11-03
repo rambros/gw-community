@@ -48,6 +48,24 @@
   "confirm": "Confirmar",
   "groupDeleted": "Grupo excluído com sucesso",
   "welcomeComma": "Bem-vindo,",
+  "goodMorningGreeting": "Bom dia, {name}!",
+  "@goodMorningGreeting": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "goodAfternoonGreeting": "Boa tarde, {name}!",
+  "@goodAfternoonGreeting": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "goodEveningGreeting": "Boa noite, {name}!",
+  "@goodEveningGreeting": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
   "communityTagline": "Uma comunidade que compartilha\nbons votos para criar um mundo novo",
   "splashWelcomeTitle": "Bem-vindo ao Good Wishes",
   "splashWelcomeSubtitle": "Uma comunidade que compartilha bons votos para criar um mundo novo",
@@ -57,6 +75,7 @@
   "profile": "Perfil",
   "accountSettings": "Configurações da conta",
   "editProfile": "Editar perfil",
+  "contactFacilitatorToChangeName": "Se você quiser alterar seu nome e sobrenome, entre em contato com o facilitador do seu grupo.",
   "changePassword": "Alterar senha",
   "setNotifications": "Notificações",
   "editGuidelines": "Editar diretrizes",
@@ -125,6 +144,10 @@
   "lastName": "Sobrenome",
   "displayName": "Nome de exibição",
   "hideMyLastName": "Ocultar meu sobrenome",
+  "editName": "Editar nome",
+  "nameUpdated": "Nome atualizado",
+  "nameUpdateFailed": "Não foi possível atualizar o nome",
+  "firstNameRequired": "O nome é obrigatório",
   "saveChanges": "Salvar alterações",
   "nameFallback": "Nome",
   "signUp": "Cadastro",
@@ -540,6 +563,7 @@
   "date": "Data",
   "messagesByFacilitator": "Mensagens dos facilitadores. Respostas vistas apenas pelos facilitadores",
   "newMessage": "Nova mensagem",
+  "sendAMessage": "Enviar mensagem",
   "editMessage": "Editar mensagem",
   "details": "Detalhes",
   "message": "Mensagem",
@@ -604,6 +628,36 @@
   "anyoneCanSee": "Qualquer pessoa pode ver o conteúdo.",
   "managersFacilitatorsCount": "Gestores / Facilitadores ({count})",
   "searchByNameOrEmail": "Buscar por nome ou e-mail (mín. 3 caracteres)...",
+  "addNewMember": "Adicionar membro",
+  "searchMembersByName": "Buscar membros por nome...",
+  "sortByName": "Nome",
+  "sortByEmail": "E-mail",
+  "lastAccess": "Último acesso",
+  "lastAccessValue": "Último acesso: {date}",
+  "@lastAccessValue": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "neverAccessed": "Nunca acessou",
+  "memberCountTotal": "Total ({count})",
+  "@memberCountTotal": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "memberCountActive": "Ativos ({count})",
+  "@memberCountActive": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "memberCountNeverAccessed": "Nunca acessou ({count})",
+  "@memberCountNeverAccessed": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "searchToFindUsers": "Busque para encontrar usuários",
   "noUsersFound": "Nenhum usuário encontrado",
   "groupImage": "Imagem do grupo",

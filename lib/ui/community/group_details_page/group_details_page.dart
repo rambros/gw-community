@@ -383,7 +383,11 @@ class GroupDetailsPageView extends StatelessWidget {
                                     context.l10n,
                                     group.groupPrivacy,
                                   ),
-                                  context.l10n.memberCount(group.numberMembers ?? 0),
+                                  context.l10n.memberCount(
+                                    viewModel.isLoadingMembers
+                                        ? (group.numberMembers ?? 0)
+                                        : viewModel.publicMemberCount,
+                                  ),
                                 ),
                                 style: AppTheme.of(context).bodyMedium.override(
                                       font: GoogleFonts.lexendDeca(),

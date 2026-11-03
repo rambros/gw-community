@@ -29,15 +29,21 @@ class FFAppState extends ChangeNotifier {
     });
   }
 
-  /// Load app configuration from settings
-  Future<void> loadAppConfig(SettingsRepository settingsRepo) async {
+  /// Load app configuration from settings.
+  /// Call this after auth is ready — RLS only exposes mobile feature flags
+  /// to authenticated users.
+  Future<void> loadAppConfig([SettingsRepository? settingsRepo]) async {
+    final repo = settingsRepo ?? SettingsRepository();
     try {
-      final settings = await settingsRepo.getSettingsByCategory('mobile_features');
+      final settings = await repo.getSettingsByCategory('mobile_features');
+      debugPrint('🔧 loadAppConfig: $settings');
       _appConfig = AppConfig.fromMap(settings);
+      debugPrint('🔧 loadAppConfig: $_appConfig');
       notifyListeners();
     } catch (e) {
-      // Keep defaults on error
+      debugPrint('🔧 loadAppConfig ERROR: $e — keeping defaults');
       _appConfig = AppConfig.defaults();
+      notifyListeners();
     }
   }
 

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gw_community/app_state.dart';
 import 'package:gw_community/data/repositories/auth_repository.dart';
 import 'package:gw_community/data/repositories/home_repository.dart';
+import 'package:gw_community/data/repositories/settings_repository.dart';
 import 'package:gw_community/data/repositories/user_profile_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/data/services/unread_badge_sync.dart';
@@ -63,7 +64,8 @@ class AppViewModel extends ChangeNotifier with WidgetsBindingObserver {
       appStateNotifier.update(user);
       final isNowLoggedIn = appStateNotifier.loggedIn;
       if (!wasLoggedIn && isNowLoggedIn) {
-        FFAppState().loadGroupModuleConfig(HomeRepository());
+        unawaited(FFAppState().loadAppConfig(SettingsRepository()));
+        unawaited(FFAppState().loadGroupModuleConfig(HomeRepository()));
       }
     });
 
@@ -79,9 +81,10 @@ class AppViewModel extends ChangeNotifier with WidgetsBindingObserver {
       authRepository.refreshUser();
       if (appStateNotifier.loggedIn) {
         HomeRepository().touchLastAccess();
-        // Refresh module flags on resume so changes made in the admin portal
+        // Refresh global + group flags on resume so admin portal changes
         // are reflected without requiring a log-out/log-in cycle.
-        FFAppState().loadGroupModuleConfig(HomeRepository());
+        unawaited(FFAppState().loadAppConfig(SettingsRepository()));
+        unawaited(FFAppState().loadGroupModuleConfig(HomeRepository()));
       }
     }
   }

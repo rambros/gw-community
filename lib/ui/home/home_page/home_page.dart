@@ -28,7 +28,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with RouteAware {
   static const _hPad = 16.0;
-  static const _sectionTop = 24.0;
+  static const _sectionTop = 16.0;
   static const _titleToCards = 8.0;
   static const _cardGap = 12.0;
   static const _maxHomeJourneys = 3;
@@ -205,7 +205,7 @@ class _HomePageState extends State<HomePage> with RouteAware {
 
   Widget _buildHeader(BuildContext context) {
     return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 0.0),
+      padding: const EdgeInsetsDirectional.fromSTEB(16.0, 8.0, 16.0, 0.0),
       child: Stack(
         children: [
           // Notification bell positioned at top right
@@ -217,10 +217,10 @@ class _HomePageState extends State<HomePage> with RouteAware {
           // Centered logo
           Center(
             child: Padding(
-              padding: const EdgeInsets.only(top: 20.0),
+              padding: const EdgeInsets.only(top: 8.0),
               child: Image.asset(
                 'assets/images/GoodWishes_RGB_Logo_Stacked_600.png',
-                height: 88.0,
+                height: 72.0,
                 fit: BoxFit.contain,
               ),
             ),
@@ -231,25 +231,17 @@ class _HomePageState extends State<HomePage> with RouteAware {
   }
 
   Widget _buildWelcomeMessage(BuildContext context, HomeViewModel viewModel) {
+    final name = viewModel.userProfile?.firstName?.trim();
+    if (name == null || name.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(0.0, 24.0, 0.0, 8.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            '${context.l10n.welcomeComma} ',
-            style: AppTheme.of(context).headlineSmall,
-          ),
-          if (viewModel.userProfile != null)
-            Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(0.0, 3.0, 0.0, 0.0),
-              child: Text(
-                viewModel.userProfile!.firstName!,
-                style: AppTheme.of(context).headlineSmall,
-              ),
-            ),
-        ],
+      padding: const EdgeInsetsDirectional.fromSTEB(0.0, 12.0, 0.0, 4.0),
+      child: Text(
+        context.l10n.greetingForTime(name),
+        textAlign: TextAlign.center,
+        style: AppTheme.of(context).headlineSmall,
       ),
     );
   }

@@ -78,7 +78,7 @@ class GroupAboutTab extends StatelessWidget {
             const SizedBox(height: 24.0),
             if (viewModel.isLoadingMembers)
               Center(child: SpinKitRipple(color: AppTheme.of(context).primary, size: 30.0))
-            else if (viewModel.members.isEmpty)
+            else if (viewModel.visibleAboutMembers.isEmpty)
               Text(
                 context.l10n.noMembersFound,
                 style: AppTheme.of(context).bodyMedium.override(
@@ -116,18 +116,9 @@ class GroupAboutTab extends StatelessWidget {
   }
 
   Widget _buildMembersSections(BuildContext context, GroupDetailsViewModel viewModel) {
-    final members = viewModel.members;
-
-    // Separa facilitators (group_managers) dos membros comuns usando IDs
-    final facilitators = members.where((m) {
-      if (m.authUserId == null) return false;
-      return viewModel.groupManagerIds.contains(m.authUserId);
-    }).toList();
-
-    final regularMembers = members.where((m) {
-      if (m.authUserId == null) return true;
-      return !viewModel.groupManagerIds.contains(m.authUserId);
-    }).toList();
+    // Facilitators always listed; regular members only if they opened the app.
+    final facilitators = viewModel.visibleAboutFacilitators;
+    final regularMembers = viewModel.visibleAboutRegularMembers;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

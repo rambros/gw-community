@@ -58,15 +58,20 @@ async function addUserToGroup(
     return;
   }
 
-  const { count } = await supabaseClient
-    .from("cc_group_members")
-    .select("*", { count: "exact", head: true })
-    .eq("group_id", groupId);
-
-  await supabaseClient
-    .from("cc_groups")
-    .update({ number_members: count ?? 0 })
-    .eq("id", groupId);
+  const { data: visibleCount, error: countError } = await supabaseClient.rpc(
+    "count_visible_group_members",
+    { p_group_id: groupId },
+  );
+  if (countError) {
+    console.error(
+      `Failed to count visible members for group ${groupId}: ${countError.message}`,
+    );
+  } else {
+    await supabaseClient
+      .from("cc_groups")
+      .update({ number_members: visibleCount ?? 0 })
+      .eq("id", groupId);
+  }
 
   console.log(`Added ${email} to group ${groupId}`);
 }

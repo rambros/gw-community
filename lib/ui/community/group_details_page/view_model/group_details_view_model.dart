@@ -56,6 +56,36 @@ class GroupDetailsViewModel extends ChangeNotifier {
   bool _isLoadingMembers = false;
   bool get isLoadingMembers => _isLoadingMembers;
 
+  /// Public member count: facilitators/managers + members who opened the app.
+  int get publicMemberCount {
+    if (_members.isEmpty && !_isLoadingMembers) {
+      return _group.numberMembers ?? 0;
+    }
+    return _members.where(_isVisibleOnAbout).length;
+  }
+
+  bool _isGroupManager(CcMembersRow member) {
+    final authId = member.authUserId;
+    if (authId == null) return false;
+    return _groupManagerIds.contains(authId);
+  }
+
+  bool _hasAccessedApp(CcMembersRow member) => member.lastAccess != null;
+
+  /// Facilitators always show; regular members only after first app access.
+  bool _isVisibleOnAbout(CcMembersRow member) =>
+      _isGroupManager(member) || _hasAccessedApp(member);
+
+  List<CcMembersRow> get visibleAboutMembers =>
+      _members.where(_isVisibleOnAbout).toList();
+
+  List<CcMembersRow> get visibleAboutRegularMembers => _members
+      .where((m) => !_isGroupManager(m) && _hasAccessedApp(m))
+      .toList();
+
+  List<CcMembersRow> get visibleAboutFacilitators =>
+      _members.where(_isGroupManager).toList();
+
   Stream<List<CcViewSharingsUsersRow>> get experiencesStream {
     return _experienceRepository.getExperiencesStream(group.id,
         currentUserId: currentUserId);

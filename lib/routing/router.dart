@@ -510,6 +510,14 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
                     'groupMembers', ParamType.SupabaseRow,
                     isList: true) ??
                 [],
+            initialRecipientAuthUserId: params.getParam(
+              'initialRecipientAuthUserId',
+              ParamType.String,
+            ),
+            initialRecipient: params.getParam<CcMembersRow>(
+              'initialRecipient',
+              ParamType.SupabaseRow,
+            ),
           ),
         ),
         FFRoute(

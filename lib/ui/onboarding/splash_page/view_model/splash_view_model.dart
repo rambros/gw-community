@@ -10,14 +10,14 @@ class SplashViewModel extends ChangeNotifier {
   Future<void> initSplash(BuildContext context) async {
     final appState = context.read<FFAppState>();
 
-    try {
-      final settingsRepo = SettingsRepository();
-      await appState.loadAppConfig(settingsRepo);
-    } catch (e) {
-      debugPrint('Error loading app config: $e');
-    }
-
+    // Feature flags in cc_settings are only readable when authenticated.
+    // Load them after we know whether there is a session.
     if (AppStateNotifier.instance.loggedIn) {
+      try {
+        await appState.loadAppConfig(SettingsRepository());
+      } catch (e) {
+        debugPrint('Error loading app config: $e');
+      }
       try {
         await appState.loadGroupModuleConfig(HomeRepository());
       } catch (e) {
