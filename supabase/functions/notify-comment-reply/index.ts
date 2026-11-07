@@ -1,5 +1,6 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { createClient, SupabaseClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { isFacilitatorRole, loadPrefs } from '../_shared/facilitator_prefs.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -7,14 +8,6 @@ const corsHeaders = {
 };
 
 const PUSH_WINDOW_MS = 15 * 60 * 1000;
-
-function isFacilitator(role: string | null): boolean {
-  if (!role) return false;
-  const normalized = role.toUpperCase().replace(/ /g, '_');
-  return normalized === 'GROUP_MANAGER' ||
-    normalized === 'GROUPMANAGER' ||
-    normalized === 'MANAGER';
-}
 
 function json(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
@@ -25,8 +18,12 @@ function json(body: unknown, status = 200): Response {
 
 function canSeeMessage(
   memberId: string,
-  sharing: { user_id: string | null; recipient_user_id: string | null },
+  isFacilitator: boolean,
+  sharing: { user_id: string | null; recipient_user_id: string | null; audience?: string | null },
 ): boolean {
+  if (sharing.audience === 'facilitators') {
+    return isFacilitator || sharing.user_id === memberId;
+  }
   if (sharing.recipient_user_id == null) return true;
   return sharing.recipient_user_id === memberId || sharing.user_id === memberId;
 }
@@ -95,7 +92,7 @@ serve(async (req) => {
 
     const { data: sharing, error: sharingError } = await supabase
       .from('cc_sharings')
-      .select('id, type, title, group_id, user_id, recipient_user_id')
+      .select('id, type, title, group_id, user_id, recipient_user_id, audience')
       .eq('id', comment.sharing_id)
       .maybeSingle();
     if (sharingError) throw new Error(sharingError.message);
@@ -113,9 +110,25 @@ serve(async (req) => {
     for (const member of members ?? []) {
       if (typeof member.user_id !== 'string') continue;
       if (member.user_id === comment.user_id) continue;
-      if (!isFacilitator(member.user_role)) continue;
-      if (!canSeeMessage(member.user_id, sharing)) continue;
+      if (!isFacilitatorRole(member.user_role)) continue;
+      if (!canSeeMessage(member.user_id, true, sharing)) continue;
+      const prefs = await loadPrefs(supabase, member.user_id, sharing.group_id);
+      if (!prefs.notify_messages) continue;
       recipientIds.add(member.user_id);
+    }
+
+    // The person who wrote the message, and a private recipient, hear the first
+    // reply even when that reply is not attached to one of their comments.
+    for (const userId of [sharing.user_id, sharing.recipient_user_id]) {
+      if (typeof userId !== 'string' || userId === comment.user_id) continue;
+      const member = (members ?? []).find((row) => row.user_id === userId);
+      const facilitator = isFacilitatorRole(member?.user_role);
+      if (!canSeeMessage(userId, facilitator, sharing)) continue;
+      if (facilitator) {
+        const prefs = await loadPrefs(supabase, userId, sharing.group_id);
+        if (!prefs.notify_messages) continue;
+      }
+      recipientIds.add(userId);
     }
 
     // A reply also goes to the person who was answered. Walking up covers a
@@ -131,12 +144,18 @@ serve(async (req) => {
         .maybeSingle();
       if (parentError) throw new Error(parentError.message);
       if (!parent) break;
-      if (
-        typeof parent.user_id === 'string' &&
-        parent.user_id !== comment.user_id &&
-        canSeeMessage(parent.user_id, sharing)
-      ) {
-        recipientIds.add(parent.user_id);
+      if (typeof parent.user_id === 'string' && parent.user_id !== comment.user_id) {
+        const parentMember = (members ?? []).find((row) => row.user_id === parent.user_id);
+        const parentIsFacilitator = isFacilitatorRole(parentMember?.user_role);
+        const visible = canSeeMessage(parent.user_id, parentIsFacilitator, sharing);
+        if (visible) {
+          const prefs = parentIsFacilitator
+            ? await loadPrefs(supabase, parent.user_id, sharing.group_id)
+            : null;
+          if (!parentIsFacilitator || prefs?.notify_messages) {
+            recipientIds.add(parent.user_id);
+          }
+        }
       }
       parentId = parent.parent_id as number | null;
     }
@@ -183,7 +202,7 @@ serve(async (req) => {
       const { count } = await countQuery;
       const replyCount = count && count > 0 ? count : 1;
       const recipient = (members ?? []).find((member) => member.user_id === userId);
-      const recipientIsFacilitator = isFacilitator(recipient?.user_role ?? null);
+      const recipientIsFacilitator = isFacilitatorRole(recipient?.user_role ?? null);
       const body = recipientIsFacilitator && replyCount > 1
         ? `${replyCount} new replies on "${messageTitle}"`
         : `${authorName} replied to "${messageTitle}"`;

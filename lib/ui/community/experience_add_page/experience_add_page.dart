@@ -8,7 +8,6 @@ import 'package:gw_community/ui/community/experience_add_page/view_model/experie
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
-import 'package:gw_community/ui/core/widgets/user_avatar.dart';
 import 'package:gw_community/ui/journey/widgets/journey_locale_scope.dart';
 import 'package:gw_community/utils/context_extensions.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
@@ -168,22 +167,15 @@ class _ExperienceAddPageContent extends StatelessWidget {
         : loginUser.firstName.isNotEmpty
             ? loginUser.firstName
             : viewModel.currentUser?.displayName;
-    final photoUrl = loginUser.photoUrl.isNotEmpty
-        ? loginUser.photoUrl
-        : viewModel.currentUser?.photoUrl;
 
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(16.0, 24.0, 16.0, 24.0),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         children: [
-          UserAvatar(
-            imageUrl: photoUrl,
-            fullName: displayName,
-          ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(12.0, 4.0, 0.0, 0.0),
+              padding: const EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 0.0),
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.start,

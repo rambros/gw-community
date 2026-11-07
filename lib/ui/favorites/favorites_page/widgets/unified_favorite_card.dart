@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gw_community/data/repositories/favorites_repository.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/domain/models/favorites/unified_favorite_item.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
@@ -105,6 +106,7 @@ class _UnifiedFavoriteCardState extends State<UnifiedFavoriteCard> {
         title: activity.activityPrompt,
         content: activity.text,
         activityId: activity.id,
+        activityLabel: activity.activityLabel,
       );
     } else if (activity.activityType == 'video') {
       context.pushNamed(
@@ -151,7 +153,12 @@ class _UnifiedFavoriteCardState extends State<UnifiedFavoriteCard> {
             children: [
               // Título
               Text(
-                widget.item.title,
+                widget.item.type == FavoriteType.activity
+                    ? localizedJourneyActivityLabel(
+                        context.l10n,
+                        widget.item.activity?.activityLabel,
+                      )
+                    : widget.item.title,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: AppTheme.of(context).learn.contentTitle.override(

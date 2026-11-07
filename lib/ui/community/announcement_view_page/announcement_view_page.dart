@@ -94,7 +94,13 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
                   color: Colors.white,
                   size: 30.0,
                 ),
-                onPressed: () => context.pop(),
+                onPressed: () {
+                  if (context.canPop()) {
+                    context.pop();
+                    return;
+                  }
+                  context.goNamed(HomePage.routeName);
+                },
               ),
               title: Text(
                 'Message',
@@ -160,6 +166,24 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
     );
   }
 
+  String _messageSubtitle(
+    BuildContext context,
+    CcViewNotificationsUsersRow announcement,
+  ) {
+    final date = announcement.createdAt ?? announcement.updatedAt;
+    final when = date == null
+        ? ''
+        : dateTimeFormat(
+            'MMM d, HH:mm',
+            date,
+            locale: Localizations.localeOf(context).toString(),
+          );
+    final name = announcement.authorName;
+    if (name == null) return when;
+    if (when.isEmpty) return context.l10n.fromAuthors(name);
+    return '$when - ${context.l10n.fromAuthors(name)}';
+  }
+
   Widget _buildHeaderCard(
       BuildContext context, CcViewNotificationsUsersRow announcement) {
     return Card(
@@ -203,7 +227,7 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
               children: [
                 Expanded(
                   child: Text(
-                    '${dateTimeFormat('MMM d, HH:mm', announcement.createdAt ?? announcement.updatedAt, locale: Localizations.localeOf(context).toString())} - From ${valueOrDefault<String>(announcement.displayName, 'name')} - Facilitator',
+                    _messageSubtitle(context, announcement),
                     style: AppTheme.of(context).bodyMedium.override(
                           font: GoogleFonts.lexendDeca(
                             fontWeight:
@@ -545,8 +569,6 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
               child: AddCommentWidget(
                 experienceId: widget.announcementId!,
                 parentId: parentId,
-                photoUrl: FFAppState().loginUser.photoUrl,
-                fullName: FFAppState().loginUser.fullName,
                 notifyFacilitators: true,
               ),
             ),

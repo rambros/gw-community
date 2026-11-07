@@ -6,7 +6,6 @@ import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/widgets/add_comment/view_model/add_comment_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
-import 'package:gw_community/ui/core/widgets/user_avatar.dart';
 import 'package:gw_community/utils/context_extensions.dart';
 import 'package:provider/provider.dart';
 
@@ -15,15 +14,11 @@ class AddCommentWidget extends StatelessWidget {
     super.key,
     required this.experienceId,
     this.parentId,
-    this.photoUrl,
-    required this.fullName,
     this.notifyFacilitators = false,
   });
 
   final int experienceId;
   final int? parentId;
-  final String? photoUrl;
-  final String? fullName;
   final bool notifyFacilitators;
 
   @override
@@ -36,25 +31,13 @@ class AddCommentWidget extends StatelessWidget {
         parentId: parentId,
         notifyFacilitators: notifyFacilitators,
       ),
-      child: _AddCommentView(
-        fullName: fullName,
-        photoUrl: photoUrl,
-        experienceId: experienceId,
-      ),
+      child: const _AddCommentView(),
     );
   }
 }
 
 class _AddCommentView extends StatelessWidget {
-  const _AddCommentView({
-    required this.fullName,
-    required this.photoUrl,
-    required this.experienceId,
-  });
-
-  final String? photoUrl;
-  final String? fullName;
-  final int experienceId;
+  const _AddCommentView();
 
   @override
   Widget build(BuildContext context) {
@@ -83,13 +66,9 @@ class _AddCommentView extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  UserAvatar(
-                    imageUrl: photoUrl,
-                    fullName: fullName,
-                  ),
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 0.0, 0.0),
+                      padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
                       child: TextFormField(
                         controller: viewModel.textController,
                         focusNode: viewModel.textFieldFocusNode,
@@ -208,9 +187,9 @@ class _AddCommentView extends StatelessWidget {
                         : null,
                     text: viewModel.isSubmitting ? context.l10n.posting : context.l10n.post,
                     options: FFButtonOptions(
-                      width: 90.0,
+                      width: 148.0,
                       height: 40.0,
-                      padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
+                      padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
                       color: AppTheme.of(context).primary,
                       textStyle: AppTheme.of(context).labelLarge.override(
                             font: GoogleFonts.poppins(

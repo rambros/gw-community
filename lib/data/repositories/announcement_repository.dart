@@ -2,11 +2,25 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:gw_community/data/models/enums/enums.dart';
+import 'package:gw_community/data/repositories/facilitator_settings_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/domain/community/message_visibility.dart';
 import 'package:gw_community/domain/community/reply_attention.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 
 class AnnouncementRepository {
+  final FacilitatorSettingsRepository _facilitatorSettings = FacilitatorSettingsRepository();
+
+  bool _visibleTo(CcViewNotificationsUsersRow message, String userId, bool isFacilitator) {
+    return canSeeGroupMessage(
+      audience: message.audience,
+      recipientUserId: message.recipientUserId,
+      authorUserId: message.userId,
+      viewerId: userId,
+      viewerIsFacilitator: isFacilitator,
+    );
+  }
+
   Future<CcMembersRow?> getUserById(String authUserId) async {
     final result = await CcMembersTable().querySingleRow(queryFn: (q) => q.eqOrNull('auth_user_id', authUserId));
     return result.isNotEmpty ? result.first : null;
@@ -21,6 +35,7 @@ class AnnouncementRepository {
     String visibility = 'group_only',
     String? recipientUserId,
     bool isPinned = false,
+    String? audience,
   }) async {
     final row = await CcSharingsTable().insert({
       'title': title,
@@ -34,6 +49,7 @@ class AnnouncementRepository {
       'is_pinned': isPinned,
       if (isPinned) 'pinned_at': supaSerialize<DateTime>(getCurrentTimestamp),
       if (recipientUserId != null) 'recipient_user_id': recipientUserId,
+      if (audience != null) 'audience': audience,
     });
     return row.id;
   }
@@ -183,11 +199,10 @@ class AnnouncementRepository {
       final notifications = await CcViewNotificationsUsersTable().queryRows(
         queryFn: (q) => q.eq('group_id', groupId),
       );
+      final isFacilitator = await isGroupFacilitator(groupId: groupId, userId: userId);
 
       final relevantIds = notifications
-          .where((n) =>
-              n.id != null &&
-              (n.recipientUserId == null || n.recipientUserId == userId || n.userId == userId))
+          .where((n) => n.id != null && _visibleTo(n, userId, isFacilitator))
           .map((n) => n.id!)
           .toList();
 
@@ -216,10 +231,19 @@ class AnnouncementRepository {
         queryFn: (q) => q.eq('group_id', groupId),
       );
 
+      final isFacilitator = _isFacilitatorRole(membership?.userRole);
+      final muteMessages = isFacilitator && !await _facilitatorSettings.messagesEnabled(userId, groupId);
       final relevant = notifications.where((n) =>
           n.id != null &&
           (joinDate == null || (n.updatedAt != null && n.updatedAt!.isAfter(joinDate))) &&
-          (n.recipientUserId == null || n.recipientUserId == userId || n.userId == userId));
+          _visibleTo(n, userId, isFacilitator) &&
+          !(muteMessages &&
+              isMessageForFacilitator(
+                audience: n.audience,
+                recipientUserId: n.recipientUserId,
+                authorUserId: n.userId,
+                viewerId: userId,
+              )));
 
       final relevantIds = relevant.map((n) => n.id!).toList();
       if (relevantIds.isEmpty) return 0;
@@ -229,12 +253,14 @@ class AnnouncementRepository {
       );
 
       final readIds = reads.map((r) => r.experienceId).toSet();
-      final replyCounts = await _replyCountsFor(
-        userId: userId,
-        isFacilitator: _isFacilitatorRole(membership?.userRole),
-        sharingIds: relevantIds,
-        reads: reads,
-      );
+      final replyCounts = muteMessages
+          ? <int, int>{}
+          : await _replyCountsFor(
+              userId: userId,
+              isFacilitator: isFacilitator,
+              sharingIds: relevantIds,
+              reads: reads,
+            );
       return messagesNeedingAttention(
         messageIds: relevantIds,
         readIds: readIds,
@@ -268,11 +294,20 @@ class AnnouncementRepository {
         );
 
         // Só mensagens após a entrada do membro, broadcast ou privadas para/por este usuário
+        final isFacilitator = _isFacilitatorRole(membership.userRole);
+        final muteMessages = isFacilitator && !await _facilitatorSettings.messagesEnabled(userId, groupId);
         final relevant = notifications.where((n) =>
             n.id != null &&
             n.updatedAt != null &&
             n.updatedAt!.isAfter(joinDate) &&
-            (n.recipientUserId == null || n.recipientUserId == userId || n.userId == userId));
+            _visibleTo(n, userId, isFacilitator) &&
+            !(muteMessages &&
+                isMessageForFacilitator(
+                  audience: n.audience,
+                  recipientUserId: n.recipientUserId,
+                  authorUserId: n.userId,
+                  viewerId: userId,
+                )));
 
         final relevantIds = relevant.map((n) => n.id!).toList();
         if (relevantIds.isEmpty) continue;
@@ -281,12 +316,14 @@ class AnnouncementRepository {
           queryFn: (q) => q.eq('user_id', userId).inFilter('sharing_id', relevantIds),
         );
         final readIds = reads.map((r) => r.experienceId).toSet();
-        final replyCounts = await _replyCountsFor(
-          userId: userId,
-          isFacilitator: _isFacilitatorRole(membership.userRole),
-          sharingIds: relevantIds,
-          reads: reads,
-        );
+        final replyCounts = muteMessages
+            ? <int, int>{}
+            : await _replyCountsFor(
+                userId: userId,
+                isFacilitator: isFacilitator,
+                sharingIds: relevantIds,
+                reads: reads,
+              );
 
         total += messagesNeedingAttention(
           messageIds: relevantIds,
@@ -332,15 +369,19 @@ class AnnouncementRepository {
       final memberships = await CcGroupMembersTable().queryRows(
         queryFn: (q) => q.eq('user_id', userId).inFilter('group_id', groupIds),
       );
+      final mutedGroups = await _facilitatorSettings.groupsWithMessagesOff(userId);
       final facilitatorGroups = memberships
-          .where((m) => m.groupId != null && _isFacilitatorRole(m.userRole))
+          .where((m) =>
+              m.groupId != null &&
+              _isFacilitatorRole(m.userRole) &&
+              !mutedGroups.contains(m.groupId))
           .map((m) => m.groupId!)
           .toSet();
       final sharingIds = sharingGroupIds.keys.toList();
       final reads = await CcSharingReadsTable().queryRows(
         queryFn: (q) => q.eq('user_id', userId).inFilter('sharing_id', sharingIds),
       );
-      return await _replyAttention(
+      final snapshot = await _replyAttention(
         userId: userId,
         sharingIds: sharingIds,
         facilitatorSharingIds: {
@@ -351,10 +392,25 @@ class AnnouncementRepository {
           for (final read in reads) read.experienceId: read.readAt,
         },
       );
+      if (mutedGroups.isEmpty) return snapshot;
+      return FacilitatorCommentSnapshot(
+        unseen: {
+          for (final entry in snapshot.unseen.entries)
+            if (!mutedGroups.contains(sharingGroupIds[entry.key])) entry.key: entry.value,
+        },
+        totals: snapshot.totals,
+      );
     } catch (e) {
       debugPrint('Error fetching reply attention: $e');
       return FacilitatorCommentSnapshot.empty;
     }
+  }
+
+  /// Facilitators who turned off "messages for you" do not badge those messages.
+  /// Everyone else still does.
+  Future<bool> personalMessagesCountTowardBadge(String userId, int groupId) async {
+    if (!await isGroupFacilitator(groupId: groupId, userId: userId)) return true;
+    return _facilitatorSettings.messagesEnabled(userId, groupId);
   }
 
   /// True when [userId] is a facilitator of this group, not merely an app admin.
@@ -409,6 +465,20 @@ class AnnouncementRepository {
     required Map<int, DateTime> readAtBySharing,
   }) async {
     if (sharingIds.isEmpty) return FacilitatorCommentSnapshot.empty;
+    final sharingRows = await SupaFlow.client
+        .from('cc_sharings')
+        .select('id, user_id, audience')
+        .inFilter('id', sharingIds);
+    final authorThreadIds = <int>{
+      for (final row in sharingRows)
+        if (_asInt(row['id']) != null &&
+            authorSeesFacilitatorReplies(
+              audience: row['audience']?.toString(),
+              authorUserId: row['user_id']?.toString(),
+              viewerId: userId,
+            ))
+          _asInt(row['id'])!,
+    };
     final rows = await SupaFlow.client
         .from('cc_comments')
         .select('id, parent_id, sharing_id, user_id, created_at')
@@ -431,7 +501,8 @@ class AnnouncementRepository {
     final counted = <SharingComment>[];
     for (final sharingId in sharingIds) {
       final onMessage = comments.where((comment) => comment.sharingId == sharingId);
-      if (facilitatorSharingIds.contains(sharingId)) {
+      if (facilitatorSharingIds.contains(sharingId) ||
+          authorThreadIds.contains(sharingId)) {
         counted.addAll(onMessage);
         continue;
       }

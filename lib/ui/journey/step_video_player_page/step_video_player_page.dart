@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gw_community/data/repositories/favorites_repository.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_youtube_player.dart';
@@ -93,7 +94,9 @@ class _StepVideoPlayerPageState extends State<StepVideoPlayerPage> {
             },
           ),
           title: Text(
-            widget.typeStep ?? 'Video',
+            widget.typeStep?.trim().isNotEmpty == true
+                ? localizedJourneyActivityLabel(context.l10n, widget.typeStep)
+                : 'Video',
             style: AppTheme.of(context).journey.pageTitle,
           ),
           actions: [

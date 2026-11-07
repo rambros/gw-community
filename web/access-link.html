@@ -203,9 +203,9 @@
                 <h1>Continue in the app</h1>
                 <p>Tap the button below to finish signing in to Good Wishes.</p>
                 <div class="buttons">
-                    <button onclick="continueSignIn()" class="btn btn-primary">
+                    <a id="open-app" href="#" class="btn btn-primary">
                         Sign In to Good Wishes
-                    </button>
+                    </a>
                 </div>
             </div>
 
@@ -219,9 +219,6 @@
         </div>
 
         <script>
-            const SUPABASE_URL = "https://hxhpzoyjjghtekqgfbfh.supabase.co";
-            const LOGIN_CALLBACK = "https://invite.callofthetime.org/login-callback";
-
             function getMobileOS() {
                 const ua = navigator.userAgent;
                 if (/iPad|iPhone|iPod/.test(ua)) return "iOS";
@@ -240,41 +237,9 @@
                 document.getElementById(id).classList.remove("hidden");
             }
 
-            function buildConfirmationUrl() {
-                const params = new URLSearchParams(window.location.search);
-
-                const confirmationUrl = params.get("confirmation_url");
-                if (confirmationUrl) {
-                    return confirmationUrl;
-                }
-
-                const tokenHash = params.get("token_hash");
-                const type = params.get("type") || "magiclink";
-                if (!tokenHash) return null;
-
-                const redirectTo = encodeURIComponent(LOGIN_CALLBACK);
-                return (
-                    SUPABASE_URL +
-                    "/auth/v1/verify?token=" +
-                    encodeURIComponent(tokenHash) +
-                    "&type=" +
-                    encodeURIComponent(type) +
-                    "&redirect_to=" +
-                    redirectTo
-                );
-            }
-
-            let confirmationUrl = null;
-
-            function continueSignIn() {
-                if (confirmationUrl) {
-                    window.location.href = confirmationUrl;
-                }
-            }
-
             function start() {
-                confirmationUrl = buildConfirmationUrl();
-                if (!confirmationUrl) {
+                const params = new URLSearchParams(window.location.search);
+                if (!params.get("token_hash")) {
                     show("error");
                     return;
                 }
@@ -284,6 +249,15 @@
                     return;
                 }
 
+                const openLink = document.getElementById("open-app");
+                openLink.href = "gw://access-link" + window.location.search;
+                if (params.get("type") === "recovery") {
+                    document.querySelector("#mobile h1").textContent =
+                        "Reset your password";
+                    document.querySelector("#mobile p").textContent =
+                        "Tap the button below to choose a new password in the Good Wishes app.";
+                    openLink.textContent = "Reset Password";
+                }
                 show("mobile");
             }
 

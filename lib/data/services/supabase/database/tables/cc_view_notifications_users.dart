@@ -46,6 +46,15 @@ class CcViewNotificationsUsersRow extends SupabaseDataRow {
   String? get displayName => getField<String>('display_name');
   set displayName(String? value) => setField<String>('display_name', value);
 
+  /// Name shown on a message: the chosen display name, or first and last name.
+  String? get authorName {
+    final display = displayName?.trim();
+    if (display != null && display.isNotEmpty) return display;
+    final full = fullName?.trim();
+    if (full != null && full.isNotEmpty) return full;
+    return null;
+  }
+
   int? get groupId => getField<int>('group_id');
   set groupId(int? value) => setField<int>('group_id', value);
 
@@ -70,4 +79,7 @@ class CcViewNotificationsUsersRow extends SupabaseDataRow {
 
   DateTime? get pinnedAt => getField<DateTime>('pinned_at');
   set pinnedAt(DateTime? value) => setField<DateTime>('pinned_at', value);
+
+  String? get audience => getField<String>('audience');
+  set audience(String? value) => setField<String>('audience', value);
 }

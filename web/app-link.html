@@ -85,7 +85,7 @@
 
             <div id="error" class="hidden">
                 <h1>Link unavailable</h1>
-                <p>This link is missing an event or recording id. Ask the sender to share it again from the app.</p>
+                <p>This link is missing an id. Ask the sender to share it again from the app.</p>
             </div>
         </div>
 
@@ -103,7 +103,7 @@
             }
 
             function openDeepLink() {
-                if (!id || (kind !== "event" && kind !== "content")) return;
+                if (!id || (kind !== "event" && kind !== "content" && kind !== "message")) return;
                 window.location.href = "gw://" + kind + "?id=" + encodeURIComponent(id);
             }
 
@@ -113,7 +113,7 @@
             }
 
             function start() {
-                if (!id || (kind !== "event" && kind !== "content")) {
+                if (!id || (kind !== "event" && kind !== "content" && kind !== "message")) {
                     document.getElementById("error").classList.remove("hidden");
                     return;
                 }
@@ -121,7 +121,9 @@
                 document.getElementById("mobile-copy").textContent =
                     kind === "event"
                         ? "Open this event in Good Wishes to listen to its recordings."
-                        : "Open this recording in Good Wishes.";
+                        : kind === "message"
+                            ? "Open this message in Good Wishes."
+                            : "Open this recording in Good Wishes.";
 
                 const platform = getMobileOS();
                 if (platform === "Desktop") {

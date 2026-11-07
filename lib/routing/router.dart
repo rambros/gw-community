@@ -5,7 +5,9 @@ import 'package:gw_community/data/models/structs/index.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/domain/models/app_auth_user.dart';
 import 'package:gw_community/index.dart';
+import 'package:gw_community/routing/auth_callback_link.dart';
 import 'package:gw_community/routing/portal_app_links.dart';
+import 'package:gw_community/ui/auth/auth_callback_page/auth_callback_page.dart';
 import 'package:gw_community/ui/community/community_guidelines_edit_page/community_guidelines_edit_page.dart';
 import 'package:gw_community/ui/community/community_guidelines_page/community_guidelines_page.dart';
 import 'package:gw_community/ui/community/group_details_page/member_management_page/member_management_page.dart';
@@ -14,6 +16,7 @@ import 'package:gw_community/ui/core/nav_bar/nav_bar_page.dart';
 import 'package:gw_community/ui/journey/journey_list_page/journey_list_page.dart';
 import 'package:gw_community/ui/learn/utils/portal_content_mapper.dart';
 import 'package:gw_community/ui/notifications/set_notifications_page/set_notifications_page.dart';
+import 'package:gw_community/ui/profile/facilitator_settings_page/facilitator_settings_page.dart';
 import 'package:gw_community/ui/profile/view_as_user_page/view_as_user_page.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
@@ -72,6 +75,18 @@ class AppStateNotifier extends ChangeNotifier {
 
   bool pendingPasswordRecovery = false;
 
+  void beginPasswordRecovery() {
+    if (pendingPasswordRecovery) return;
+    pendingPasswordRecovery = true;
+    notifyListeners();
+  }
+
+  void finishPasswordRecovery() {
+    if (!pendingPasswordRecovery) return;
+    pendingPasswordRecovery = false;
+    notifyListeners();
+  }
+
   void update(AppAuthUser newUser) {
     final shouldUpdate =
         user?.uid == null || newUser.uid == null || user?.uid != newUser.uid;
@@ -114,10 +129,23 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         ];
         final isPublicRoute = publicRoutes.contains(state.uri.path);
 
-        // Auth landing URLs are handled in main.dart, not as in-app routes.
-        if (state.uri.path.startsWith('/access-link') ||
-            state.uri.path.startsWith('/login-callback')) {
-          return LoginPage.routePath;
+        final sessionReady =
+            loggedIn || SupaFlow.client.auth.currentSession != null;
+        if (sessionReady &&
+            appStateNotifier.pendingPasswordRecovery &&
+            state.uri.path != ChangePasswordPage.routePath) {
+          debugPrint(
+              'ROUTER: Password recovery in progress — redirecting to ChangePasswordPage.');
+          return ChangePasswordPage.routePath;
+        }
+
+        final authLink = AuthCallbackLink.tryParse(state.uri);
+        if (authLink != null) {
+          final normalizedPath = Uri.parse(authLink.inAppLocation).path;
+          if (state.uri.path != normalizedPath) {
+            return authLink.inAppLocation;
+          }
+          return null;
         }
 
         if (!loggedIn && !isPublicRoute) {
@@ -125,12 +153,6 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               'ROUTER: User not logged in and on protected page ${state.uri.path}. Redirecting to Login.');
           appStateNotifier.setRedirectLocationIfUnset(state.uri.toString());
           return LoginPage.routePath;
-        }
-
-        if (loggedIn && appStateNotifier.pendingPasswordRecovery) {
-          debugPrint(
-              'ROUTER: Password recovery in progress — redirecting to ChangePasswordPage.');
-          return ChangePasswordPage.routePath;
         }
 
         final pendingPortal = appStateNotifier.pendingPortalLocation;
@@ -195,6 +217,16 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: ForgotPasswordPage.routeName,
           path: ForgotPasswordPage.routePath,
           builder: (context, params) => const ForgotPasswordPage(),
+        ),
+        FFRoute(
+          name: 'loginCallback',
+          path: '/login-callback',
+          builder: (context, params) => AuthCallbackPage(uri: params.state.uri),
+        ),
+        FFRoute(
+          name: 'accessLink',
+          path: '/access-link',
+          builder: (context, params) => AuthCallbackPage(uri: params.state.uri),
         ),
         FFRoute(
           name: HomePage.routeName,
@@ -281,6 +313,15 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
+          name: 'portalMessageLink',
+          path: PortalAppLinks.messagePath,
+          builder: (context, params) => AnnouncementViewPage(
+            announcementId: PortalAppLinks.parseId(
+                    params.state.uri.queryParameters['id']) ??
+                params.getParam('id', ParamType.int),
+          ),
+        ),
+        FFRoute(
           name: 'portalContentLink',
           path: PortalAppLinks.contentPath,
           builder: (context, params) => NavBarPage(
@@ -349,7 +390,8 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
             groupId: params.getParam('groupId', ParamType.int),
             groupName: params.getParam('groupName', ParamType.String),
             privacy: params.getParam('privacy', ParamType.String),
-            chooseGroups: params.getParam('chooseGroups', ParamType.bool) ?? false,
+            chooseGroups:
+                params.getParam('chooseGroups', ParamType.bool) ?? false,
             fixedLanguage: params.getParam('fixedLanguage', ParamType.String),
           ),
         ),
@@ -518,6 +560,8 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               'initialRecipient',
               ParamType.SupabaseRow,
             ),
+            toFacilitators:
+                params.getParam('toFacilitators', ParamType.String) == '1',
           ),
         ),
         FFRoute(
@@ -535,9 +579,11 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
             announcementId: params.getParam('announcementId', ParamType.int),
             groupModerators: params
                 .getParam<int>('groupModerators', ParamType.int, isList: true),
-            commentsReadAt: params.getParam('commentsReadAt', ParamType.DateTime),
+            commentsReadAt:
+                params.getParam('commentsReadAt', ParamType.DateTime),
             highlightNewComments:
-                params.getParam('highlightNewComments', ParamType.bool) ?? false,
+                params.getParam('highlightNewComments', ParamType.bool) ??
+                    false,
           ),
         ),
         FFRoute(
@@ -578,6 +624,11 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: SetNotificationsPage.routeName,
           path: SetNotificationsPage.routePath,
           builder: (context, params) => const SetNotificationsPage(),
+        ),
+        FFRoute(
+          name: FacilitatorSettingsPage.routeName,
+          path: FacilitatorSettingsPage.routePath,
+          builder: (context, params) => const FacilitatorSettingsPage(),
         ),
         FFRoute(
           name: MyExperiencesPage.routeName,
@@ -796,6 +847,8 @@ class FFRoute {
         name: name,
         path: path,
         redirect: (context, state) {
+          if (AuthCallbackLink.tryParse(state.uri) != null) return null;
+
           if (appStateNotifier.shouldRedirect) {
             final redirectLocation = appStateNotifier.getRedirectLocation();
             appStateNotifier.clearRedirectLocation();

@@ -11,10 +11,12 @@ class JourneyAboutDialog extends StatelessWidget {
     super.key,
     required this.title,
     required this.description,
+    this.moreInformation,
   });
 
   final String title;
   final String description;
+  final String? moreInformation;
 
   @override
   Widget build(BuildContext context) {
@@ -98,62 +100,19 @@ class JourneyAboutDialog extends StatelessWidget {
                   color: theme.secondary,
                 ),
 
-                // Conteúdo markdown scrollable
                 Expanded(
                   child: SingleChildScrollView(
                     child: Padding(
                       padding: const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 8.0, 0.0),
-                      child: MarkdownBody(
-                        data: description,
-                        onTapLink: (text, href, title) {
-                          if (href != null) {
-                            launchURL(href);
-                          }
-                        },
-                        styleSheet: MarkdownStyleSheet(
-                          p: GoogleFonts.lexendDeca(
-                            color: theme.secondary,
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.w300,
-                            height: 1.5,
-                          ),
-                          strong: GoogleFonts.lexendDeca(
-                            color: theme.secondary,
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.bold,
-                            height: 1.5,
-                          ),
-                          em: GoogleFonts.lexendDeca(
-                            color: theme.secondary,
-                            fontSize: 14.0,
-                            fontStyle: FontStyle.italic,
-                            height: 1.5,
-                          ),
-                          h1: GoogleFonts.lexendDeca(
-                            color: theme.tertiary,
-                            fontSize: 24.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          h2: GoogleFonts.lexendDeca(
-                            color: theme.tertiary,
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          h3: GoogleFonts.lexendDeca(
-                            color: theme.tertiary,
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          a: GoogleFonts.lexendDeca(
-                            color: theme.primary,
-                            fontSize: 14.0,
-                            decoration: TextDecoration.underline,
-                          ),
-                          listBullet: GoogleFonts.lexendDeca(
-                            color: theme.secondary,
-                            fontSize: 14.0,
-                          ),
-                        ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _markdown(context, description),
+                          if (moreInformation != null && moreInformation!.trim().isNotEmpty) ...[
+                            const SizedBox(height: 16.0),
+                            _markdown(context, moreInformation!.trim()),
+                          ],
+                        ],
                       ),
                     ),
                   ),
@@ -161,6 +120,62 @@ class JourneyAboutDialog extends StatelessWidget {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _markdown(BuildContext context, String data) {
+    final theme = AppTheme.of(context);
+    return MarkdownBody(
+      data: data,
+      onTapLink: (text, href, title) {
+        if (href != null) {
+          launchURL(href);
+        }
+      },
+      styleSheet: MarkdownStyleSheet(
+        p: GoogleFonts.lexendDeca(
+          color: theme.secondary,
+          fontSize: 14.0,
+          fontWeight: FontWeight.w300,
+          height: 1.5,
+        ),
+        strong: GoogleFonts.lexendDeca(
+          color: theme.secondary,
+          fontSize: 14.0,
+          fontWeight: FontWeight.bold,
+          height: 1.5,
+        ),
+        em: GoogleFonts.lexendDeca(
+          color: theme.secondary,
+          fontSize: 14.0,
+          fontStyle: FontStyle.italic,
+          height: 1.5,
+        ),
+        h1: GoogleFonts.lexendDeca(
+          color: theme.tertiary,
+          fontSize: 24.0,
+          fontWeight: FontWeight.bold,
+        ),
+        h2: GoogleFonts.lexendDeca(
+          color: theme.tertiary,
+          fontSize: 20.0,
+          fontWeight: FontWeight.bold,
+        ),
+        h3: GoogleFonts.lexendDeca(
+          color: theme.tertiary,
+          fontSize: 18.0,
+          fontWeight: FontWeight.w600,
+        ),
+        a: GoogleFonts.lexendDeca(
+          color: theme.primary,
+          fontSize: 14.0,
+          decoration: TextDecoration.underline,
+        ),
+        listBullet: GoogleFonts.lexendDeca(
+          color: theme.secondary,
+          fontSize: 14.0,
         ),
       ),
     );

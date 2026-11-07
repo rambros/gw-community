@@ -170,11 +170,11 @@
 
             <div id="mobile-fallback" class="hidden">
                 <h1>Continue in the app</h1>
-                <p>Tap the button below to finish signing in.</p>
+                <p>Tap the button below to continue in the Good Wishes app.</p>
                 <div class="buttons">
-                    <button onclick="openApp()" class="btn btn-primary">
+                    <a id="open-app" href="#" class="btn btn-primary">
                         Open Good Wishes
-                    </button>
+                    </a>
                 </div>
             </div>
 
@@ -287,13 +287,22 @@
                 }
 
                 const platform = getMobileOS();
+                const openLink = document.getElementById("open-app");
+                openLink.href = buildAppCallbackUrl();
 
                 if (platform === "Desktop") {
                     show("desktop");
                     return;
                 }
 
-                // Mobile: try to open the app with the auth payload.
+                // iOS confirmation dialogs for a scripted custom-scheme redirect
+                // open the app without the auth query, so the reset screen never
+                // appears. A real tap on the link keeps the code.
+                if (platform === "iOS") {
+                    show("mobile-fallback");
+                    return;
+                }
+
                 openApp();
                 setTimeout(() => {
                     if (document.visibilityState === "visible") {

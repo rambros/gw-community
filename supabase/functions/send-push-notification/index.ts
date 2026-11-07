@@ -12,6 +12,7 @@ interface RequestBody {
   reference_type?: string;
   reference_id?: number;
   metadata?: Record<string, unknown>;
+  notification_type?: string;
 }
 
 interface FcmMessage {
@@ -142,7 +143,7 @@ serve(async (req) => {
 
   try {
     const body: RequestBody = await req.json();
-    const { user_ids, title, message, channel, group_id, reference_type, reference_id, metadata } = body;
+    const { user_ids, title, message, channel, group_id, reference_type, reference_id, metadata, notification_type } = body;
 
     if (!user_ids?.length || !title || !message || !channel) {
       return new Response(JSON.stringify({ error: 'Missing required fields' }), {
@@ -177,7 +178,7 @@ serve(async (req) => {
       if (inAppRecipients.length > 0) {
         const rows = inAppRecipients.map((userId) => ({
           user_id: userId,
-          type: group_id ? 'group_announcement' : 'admin_announcement',
+          type: notification_type ?? (group_id ? 'group_announcement' : 'admin_announcement'),
           title,
           message,
           reference_type: reference_type ?? null,

@@ -47,11 +47,12 @@ class AppViewModel extends ChangeNotifier with WidgetsBindingObserver {
 
     // Detect password recovery deep link before the auth user stream fires,
     // so the router redirect can send the user to ChangePasswordPage instead of Home.
-    _authEventSubscription = SupaFlow.client.auth.onAuthStateChange.listen((authState) {
+    _authEventSubscription =
+        SupaFlow.client.auth.onAuthStateChange.listen((authState) {
       if (authState.event == AuthChangeEvent.passwordRecovery) {
-        debugPrint('AUTH: passwordRecovery detected — setting pendingPasswordRecovery flag.');
-        appStateNotifier.pendingPasswordRecovery = true;
-        appStateNotifier.notifyListeners();
+        debugPrint(
+            'AUTH: passwordRecovery detected — setting pendingPasswordRecovery flag.');
+        appStateNotifier.beginPasswordRecovery();
       }
     });
 
@@ -116,11 +117,16 @@ class AppViewModel extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   String getRoute([RouteMatchBase? routeMatch]) {
-    final RouteMatchBase lastMatch = routeMatch ?? router.routerDelegate.currentConfiguration.last;
-    final RouteMatchList matchList =
-        lastMatch is ImperativeRouteMatch ? lastMatch.matches : router.routerDelegate.currentConfiguration;
+    final RouteMatchBase lastMatch =
+        routeMatch ?? router.routerDelegate.currentConfiguration.last;
+    final RouteMatchList matchList = lastMatch is ImperativeRouteMatch
+        ? lastMatch.matches
+        : router.routerDelegate.currentConfiguration;
     return matchList.uri.toString();
   }
 
-  List<String> getRouteStack() => router.routerDelegate.currentConfiguration.matches.map((e) => getRoute(e)).toList();
+  List<String> getRouteStack() =>
+      router.routerDelegate.currentConfiguration.matches
+          .map((e) => getRoute(e))
+          .toList();
 }

@@ -5,6 +5,7 @@ import 'package:gw_community/index.dart';
 import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/community_guidelines_edit_page/community_guidelines_edit_page.dart';
 import 'package:gw_community/ui/core/widgets/screen_hint.dart';
+import 'package:gw_community/ui/profile/facilitator_settings_page/facilitator_settings_page.dart';
 import 'package:gw_community/ui/profile/user_profile_page/widgets/language_picker.dart';
 import 'package:gw_community/ui/profile/user_profile_page/widgets/profile_menu_item_widget.dart';
 import 'package:gw_community/ui/profile/view_as_user_page/view_as_user_page.dart';
@@ -16,10 +17,12 @@ class AccountSettingsMenuSection extends StatelessWidget {
     super.key,
     required this.onResetOnboarding,
     this.userProfile,
+    this.showFacilitatorSettings = false,
   });
 
   final VoidCallback onResetOnboarding;
   final CcMembersRow? userProfile;
+  final bool showFacilitatorSettings;
 
   bool get isAdmin {
     final roles = userProfile?.userRole ?? [];
@@ -65,6 +68,16 @@ class AccountSettingsMenuSection extends StatelessWidget {
             },
           ),
         ),
+        if (showFacilitatorSettings)
+          Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
+            child: ProfileMenuItemWidget(
+              text: l10n.facilitatorSettings,
+              onTap: () async {
+                context.pushNamed(FacilitatorSettingsPage.routeName);
+              },
+            ),
+          ),
         if (isAdmin)
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),

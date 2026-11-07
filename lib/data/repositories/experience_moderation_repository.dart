@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
+import 'package:gw_community/data/services/push/experience_facilitator_notifier.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 
 /// Repository for managing experience moderation operations
@@ -88,6 +91,7 @@ class ExperienceModerationRepository {
       },
       matchingRows: (rows) => rows.eq('id', experienceId),
     );
+    unawaited(ExperienceFacilitatorNotifier.notify(experienceId));
     debugPrint('approveExperience: update completed');
   }
 

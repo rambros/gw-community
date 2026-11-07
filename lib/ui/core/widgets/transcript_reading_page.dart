@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
+import 'package:gw_community/ui/core/ui/reading_text_size.dart';
 import 'package:gw_community/ui/core/widgets/transcript_markdown.dart';
 import 'package:gw_community/ui/journey/themes/journey_theme_extension.dart';
 
-/// Full-screen transcript reader. Only the app bar stays pinned.
+/// Full-screen transcript reader. The app bar and text-size controls stay pinned.
 class TranscriptReadingPage extends StatelessWidget {
   const TranscriptReadingPage({
     super.key,
@@ -50,23 +51,34 @@ class TranscriptReadingPage extends StatelessWidget {
         centerTitle: true,
         elevation: 2.0,
       ),
-      body: SingleChildScrollView(
-        clipBehavior: Clip.hardEdge,
-        padding: const EdgeInsets.fromLTRB(20.0, 16.0, 20.0, 32.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+      body: ReadingTextSize(
+        barColor: theme.primaryBackground,
+        builder: (context, fontSize, controls) => Column(
           children: [
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: theme.journey.stepTitle.copyWith(
-                color: theme.secondary,
+            controls,
+            Expanded(
+              child: SingleChildScrollView(
+                clipBehavior: Clip.hardEdge,
+                padding: const EdgeInsets.fromLTRB(20.0, 8.0, 20.0, 32.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      title,
+                      textAlign: TextAlign.center,
+                      style: theme.journey.stepTitle.copyWith(
+                        color: theme.secondary,
+                      ),
+                    ),
+                    const SizedBox(height: 20.0),
+                    TranscriptMarkdown(
+                      data: data,
+                      textColor: theme.textColor,
+                      fontSize: fontSize,
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 20.0),
-            TranscriptMarkdown(
-              data: data,
-              textColor: theme.textColor,
             ),
           ],
         ),

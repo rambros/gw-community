@@ -14,6 +14,7 @@ import 'package:gw_community/data/repositories/journeys_repository.dart';
 import 'package:gw_community/data/repositories/learn_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/data/services/unread_badge_sync.dart';
+import 'package:gw_community/domain/community/message_visibility.dart';
 import 'package:gw_community/domain/community/reply_attention.dart';
 import 'package:gw_community/ui/core/view_as/view_as_session.dart';
 
@@ -79,9 +80,8 @@ class GroupDetailsViewModel extends ChangeNotifier {
   List<CcMembersRow> get visibleAboutMembers =>
       _members.where(_isVisibleOnAbout).toList();
 
-  List<CcMembersRow> get visibleAboutRegularMembers => _members
-      .where((m) => !_isGroupManager(m) && _hasAccessedApp(m))
-      .toList();
+  List<CcMembersRow> get visibleAboutRegularMembers =>
+      _members.where((m) => !_isGroupManager(m) && _hasAccessedApp(m)).toList();
 
   List<CcMembersRow> get visibleAboutFacilitators =>
       _members.where(_isGroupManager).toList();
@@ -97,13 +97,7 @@ class GroupDetailsViewModel extends ChangeNotifier {
 
   Stream<List<CcViewNotificationsUsersRow>> get notificationsStream {
     return _announcementRepository.getAnnouncementsStream(group.id).map((list) {
-      // Filtra mensagens privadas: exibe broadcast + privadas para/do usuário atual
-      return list
-          .where((n) =>
-              n.recipientUserId == null ||
-              n.recipientUserId == currentUserId ||
-              n.userId == currentUserId)
-          .toList();
+      return list.where(_canSeeMessage).toList();
     });
   }
 
@@ -310,19 +304,17 @@ class GroupDetailsViewModel extends ChangeNotifier {
   bool get currentUserIsGroupManager =>
       currentUserId != null && _groupManagerIds.contains(currentUserId);
 
+  int _membersLoadGeneration = 0;
+
   Future<void> _fetchMembers() async {
+    final generation = ++_membersLoadGeneration;
     _isLoadingMembers = true;
     notifyListeners();
     try {
-      // 1. Fetch the relationships (roles)
       final groupMembersLinks =
           await _groupRepository.getGroupMembers(group.id);
+      if (_disposed || generation != _membersLoadGeneration) return;
 
-      // 2. Fetch the user profiles
-      final membersUsers =
-          await _groupRepository.getGroupMembersAsUsers(group.id);
-
-      // 3. Identify managers based on group-specific role
       _groupManagerIds = groupMembersLinks
           .where((m) =>
               m.userRole == 'GROUP_MANAGER' ||
@@ -333,12 +325,27 @@ class GroupDetailsViewModel extends ChangeNotifier {
           .cast<String>()
           .toSet();
 
+      // About lists people who already opened the app, plus facilitators.
+      // Invitees who never signed in stay on member management only.
+      final membersUsers = await _groupRepository.getGroupMembersAsUsers(
+        group.id,
+        links: groupMembersLinks,
+        onlyActive: true,
+        onProgress: (loaded) {
+          if (_disposed || generation != _membersLoadGeneration) return;
+          _members = loaded;
+          notifyListeners();
+        },
+      );
+      if (_disposed || generation != _membersLoadGeneration) return;
       _members = membersUsers;
     } catch (e) {
       debugPrint('Error fetching members: $e');
     } finally {
-      _isLoadingMembers = false;
-      notifyListeners();
+      if (!_disposed && generation == _membersLoadGeneration) {
+        _isLoadingMembers = false;
+        notifyListeners();
+      }
     }
   }
 
@@ -437,6 +444,9 @@ class GroupDetailsViewModel extends ChangeNotifier {
         _memberJoinDate = joinDate;
         _readNotificationIds = newReadIds;
         _latestNotifications = notifications;
+        _countPersonalMessages = await _announcementRepository
+            .personalMessagesCountTowardBadge(currentUserId!, group.id);
+        if (_disposed) return;
         await _reloadReplyCounts(forceNotify: readIdsChanged);
       });
 
@@ -450,15 +460,23 @@ class GroupDetailsViewModel extends ChangeNotifier {
     }
   }
 
+  bool _countPersonalMessages = true;
+
+  bool _canSeeMessage(CcViewNotificationsUsersRow message) {
+    final viewerId = currentUserId ?? '';
+    return canSeeGroupMessage(
+      audience: message.audience,
+      recipientUserId: message.recipientUserId,
+      authorUserId: message.userId,
+      viewerId: viewerId,
+      viewerIsFacilitator: currentUserIsGroupManager,
+    );
+  }
+
   List<CcViewNotificationsUsersRow> _visibleNotifications(
     List<CcViewNotificationsUsersRow> notifications,
   ) {
-    return notifications
-        .where((n) =>
-            n.recipientUserId == null ||
-            n.recipientUserId == currentUserId ||
-            n.userId == currentUserId)
-        .toList();
+    return notifications.where(_canSeeMessage).toList();
   }
 
   Future<void> _reloadReplyCounts({bool forceNotify = false}) async {
@@ -498,11 +516,17 @@ class GroupDetailsViewModel extends ChangeNotifier {
   void _updateUnreadCount(List<CcViewNotificationsUsersRow> notifications,
       {bool forceNotify = false}) {
     if (_disposed) return;
-    // Só conta broadcast + privadas para/do usuário atual
-    final visible = notifications.where((n) =>
-        n.recipientUserId == null ||
-        n.recipientUserId == currentUserId ||
-        n.userId == currentUserId);
+    final viewerId = currentUserId ?? '';
+    final visible = notifications.where((n) {
+      if (!_canSeeMessage(n)) return false;
+      if (_countPersonalMessages) return true;
+      return !isMessageForFacilitator(
+        audience: n.audience,
+        recipientUserId: n.recipientUserId,
+        authorUserId: n.userId,
+        viewerId: viewerId,
+      );
+    });
     final ids = visible.map((n) => n.id!).toSet();
     final unreadCount = ids.where(messageNeedsAttention).length;
 

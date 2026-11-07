@@ -1688,6 +1688,12 @@ abstract class AppLocalizations {
   /// **'Practices'**
   String get journeyActivityPractices;
 
+  /// No description provided for @journeyActivityDailyPractice.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Practice'**
+  String get journeyActivityDailyPractice;
+
   /// No description provided for @optionalActivity.
   ///
   /// In en, this message translates to:
@@ -4057,6 +4063,132 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error resetting journey: {error}'**
   String errorResettingJourney(String error);
+
+  /// No description provided for @facilitatorSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Facilitator settings'**
+  String get facilitatorSettings;
+
+  /// No description provided for @facilitatorSettingsIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose, for each group you facilitate, what should reach you. Experience and summary emails stay off until you turn them on.'**
+  String get facilitatorSettingsIntro;
+
+  /// No description provided for @notifyNewExperiences.
+  ///
+  /// In en, this message translates to:
+  /// **'New experiences'**
+  String get notifyNewExperiences;
+
+  /// No description provided for @notifyNewExperiencesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A notification when someone sends an experience for approval, and when it is published.'**
+  String get notifyNewExperiencesSubtitle;
+
+  /// No description provided for @emailEachExperience.
+  ///
+  /// In en, this message translates to:
+  /// **'Email for each published experience'**
+  String get emailEachExperience;
+
+  /// No description provided for @emailEachExperienceSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'One email when an experience becomes visible in the group. Nothing while it is still a draft or waiting for approval.'**
+  String get emailEachExperienceSubtitle;
+
+  /// No description provided for @notifyMessagesForYou.
+  ///
+  /// In en, this message translates to:
+  /// **'New messages for you'**
+  String get notifyMessagesForYou;
+
+  /// No description provided for @notifyMessagesForYouSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Private messages to you, messages members send to the facilitators, and new replies.'**
+  String get notifyMessagesForYouSubtitle;
+
+  /// No description provided for @emailMemberMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Email when a member writes to you'**
+  String get emailMemberMessage;
+
+  /// No description provided for @emailMemberMessageSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'One email for each message a member sends only to the facilitators.'**
+  String get emailMemberMessageSubtitle;
+
+  /// No description provided for @emailDailySummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily summary by email'**
+  String get emailDailySummary;
+
+  /// No description provided for @emailDailySummarySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'One email at 8:00 with every group that has this turned on.'**
+  String get emailDailySummarySubtitle;
+
+  /// No description provided for @emailWeeklySummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly summary by email'**
+  String get emailWeeklySummary;
+
+  /// No description provided for @emailWeeklySummarySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'One email on Monday at 8:00 with the week for every group that has this turned on.'**
+  String get emailWeeklySummarySubtitle;
+
+  /// No description provided for @applySettingsToAllGroups.
+  ///
+  /// In en, this message translates to:
+  /// **'Use these settings for all groups'**
+  String get applySettingsToAllGroups;
+
+  /// No description provided for @couldNotSaveFacilitatorSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save these settings. Try again.'**
+  String get couldNotSaveFacilitatorSettings;
+
+  /// No description provided for @newMessageToFacilitator.
+  ///
+  /// In en, this message translates to:
+  /// **'New message to the facilitator'**
+  String get newMessageToFacilitator;
+
+  /// No description provided for @messageToFacilitatorHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the facilitators of this group will see this message.'**
+  String get messageToFacilitatorHint;
+
+  /// No description provided for @facilitatorsOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Facilitators only'**
+  String get facilitatorsOnly;
+
+  /// No description provided for @pastMessages.
+  ///
+  /// In en, this message translates to:
+  /// **'Past messages'**
+  String get pastMessages;
+
+  /// No description provided for @noNewMessagesAtTheMoment.
+  ///
+  /// In en, this message translates to:
+  /// **'There are no new messages at the moment.'**
+  String get noNewMessagesAtTheMoment;
 }
 
 class _AppLocalizationsDelegate

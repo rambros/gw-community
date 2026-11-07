@@ -1,10 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:gw_community/data/models/enums/user_role.dart';
 import 'package:gw_community/data/repositories/announcement_repository.dart';
+import 'package:gw_community/data/repositories/facilitator_settings_repository.dart';
 import 'package:gw_community/data/repositories/in_app_notification_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/data/services/unread_badge_sync.dart';
+import 'package:gw_community/domain/community/message_visibility.dart';
 
 /// Unified item representing either a system notification or a facilitator announcement
 class UnifiedNotificationItem {
@@ -97,6 +100,13 @@ class InAppNotificationsViewModel extends ChangeNotifier {
         );
         final groupIds =
             memberships.map((m) => m.groupId).whereType<int>().toList();
+        final facilitatorGroups = memberships
+            .where((m) =>
+                m.groupId != null &&
+                UserRole.fromString(m.userRole) == UserRole.groupManager)
+            .map((m) => m.groupId!)
+            .toSet();
+        final mutedGroups = await FacilitatorSettingsRepository().groupsWithMessagesOff(userId);
 
         if (groupIds.isNotEmpty) {
           final announcements = await CcViewNotificationsUsersTable().queryRows(
@@ -104,12 +114,14 @@ class InAppNotificationsViewModel extends ChangeNotifier {
           );
 
           if (announcements.isNotEmpty) {
-            // Filtra mensagens privadas: broadcast + privadas para/do usuário atual
             final visible = announcements
-                .where((a) =>
-                    a.recipientUserId == null ||
-                    a.recipientUserId == userId ||
-                    a.userId == userId)
+                .where((a) => canSeeGroupMessage(
+                      audience: a.audience,
+                      recipientUserId: a.recipientUserId,
+                      authorUserId: a.userId,
+                      viewerId: userId,
+                      viewerIsFacilitator: a.groupId != null && facilitatorGroups.contains(a.groupId),
+                    ))
                 .toList();
 
             if (visible.isNotEmpty) {
@@ -133,9 +145,17 @@ class InAppNotificationsViewModel extends ChangeNotifier {
                   .map((a) {
                     final attention = replies.unseen[a.id];
                     final newReplies = attention?.count ?? 0;
+                    final personalMuted = a.groupId != null &&
+                        mutedGroups.contains(a.groupId) &&
+                        isMessageForFacilitator(
+                          audience: a.audience,
+                          recipientUserId: a.recipientUserId,
+                          authorUserId: a.userId,
+                          viewerId: userId,
+                        );
                     return UnifiedNotificationItem.fromAnnouncement(
                       a,
-                      isRead: readIds.contains(a.id) && newReplies == 0,
+                      isRead: personalMuted || (readIds.contains(a.id) && newReplies == 0),
                       newReplyCount: newReplies,
                       activityAt: attention?.latestAt,
                     );

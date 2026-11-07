@@ -419,6 +419,7 @@
   "journeyActivityInspiration": "Inspiration",
   "journeyActivityMeditation": "Meditation",
   "journeyActivityPractices": "Practices",
+  "journeyActivityDailyPractice": "Daily Practice",
   "optionalActivity": "Optional",
   "mediaAudio": "Audio",
   "mediaVideo": "Video",
@@ -1026,5 +1027,26 @@
     "placeholders": {
       "error": { "type": "String" }
     }
-  }
+  },
+  "facilitatorSettings": "Facilitator settings",
+  "facilitatorSettingsIntro": "Choose, for each group you facilitate, what should reach you. Experience and summary emails stay off until you turn them on.",
+  "notifyNewExperiences": "New experiences",
+  "notifyNewExperiencesSubtitle": "A notification when someone sends an experience for approval, and when it is published.",
+  "emailEachExperience": "Email for each published experience",
+  "emailEachExperienceSubtitle": "One email when an experience becomes visible in the group. Nothing while it is still a draft or waiting for approval.",
+  "notifyMessagesForYou": "New messages for you",
+  "notifyMessagesForYouSubtitle": "Private messages to you, messages members send to the facilitators, and new replies.",
+  "emailMemberMessage": "Email when a member writes to you",
+  "emailMemberMessageSubtitle": "One email for each message a member sends only to the facilitators.",
+  "emailDailySummary": "Daily summary by email",
+  "emailDailySummarySubtitle": "One email at 8:00 with every group that has this turned on.",
+  "emailWeeklySummary": "Weekly summary by email",
+  "emailWeeklySummarySubtitle": "One email on Monday at 8:00 with the week for every group that has this turned on.",
+  "applySettingsToAllGroups": "Use these settings for all groups",
+  "couldNotSaveFacilitatorSettings": "Could not save these settings. Try again.",
+  "newMessageToFacilitator": "New message to the facilitator",
+  "messageToFacilitatorHint": "Only the facilitators of this group will see this message.",
+  "facilitatorsOnly": "Facilitators only",
+  "pastMessages": "Past messages",
+  "noNewMessagesAtTheMoment": "There are no new messages at the moment."
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
+import 'package:gw_community/ui/core/ui/reading_text_size.dart';
 
 /// Renders transcript text with a small Markdown subset for long-form reading.
 class TranscriptMarkdown extends StatelessWidget {
@@ -8,18 +9,24 @@ class TranscriptMarkdown extends StatelessWidget {
     super.key,
     required this.data,
     this.textColor,
+    this.fontSize,
   });
 
   final String data;
   final Color? textColor;
 
+  /// When set, body and headings follow the shared reading size (A− / A+).
+  final double? fontSize;
+
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.of(context);
     final color = textColor ?? theme.textColor;
+    final size = fontSize;
     final body = theme.bodyMedium.copyWith(
       color: color,
       height: 1.7,
+      fontSize: size,
     );
 
     return MarkdownBody(
@@ -37,16 +44,19 @@ class TranscriptMarkdown extends StatelessWidget {
         h1: theme.headlineSmall.copyWith(
           color: color,
           fontWeight: FontWeight.w600,
+          fontSize: size == null ? null : readingMarkdownHeadingSize(size, 1),
         ),
         h1Padding: const EdgeInsets.only(top: 8.0, bottom: 12.0),
         h2: theme.titleMedium.copyWith(
           color: color,
           fontWeight: FontWeight.w600,
+          fontSize: size == null ? null : readingMarkdownHeadingSize(size, 2),
         ),
         h2Padding: const EdgeInsets.only(top: 20.0, bottom: 8.0),
         h3: theme.titleSmall.copyWith(
           color: color,
           fontWeight: FontWeight.w600,
+          fontSize: size == null ? null : readingMarkdownHeadingSize(size, 3),
         ),
         h3Padding: const EdgeInsets.only(top: 16.0, bottom: 8.0),
         listBullet: body,

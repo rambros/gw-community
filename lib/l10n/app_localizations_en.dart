@@ -909,6 +909,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get journeyActivityPractices => 'Practices';
 
   @override
+  String get journeyActivityDailyPractice => 'Daily Practice';
+
+  @override
   String get optionalActivity => 'Optional';
 
   @override
@@ -2223,4 +2226,77 @@ class AppLocalizationsEn extends AppLocalizations {
   String errorResettingJourney(String error) {
     return 'Error resetting journey: $error';
   }
+
+  @override
+  String get facilitatorSettings => 'Facilitator settings';
+
+  @override
+  String get facilitatorSettingsIntro =>
+      'Choose, for each group you facilitate, what should reach you. Experience and summary emails stay off until you turn them on.';
+
+  @override
+  String get notifyNewExperiences => 'New experiences';
+
+  @override
+  String get notifyNewExperiencesSubtitle =>
+      'A notification when someone sends an experience for approval, and when it is published.';
+
+  @override
+  String get emailEachExperience => 'Email for each published experience';
+
+  @override
+  String get emailEachExperienceSubtitle =>
+      'One email when an experience becomes visible in the group. Nothing while it is still a draft or waiting for approval.';
+
+  @override
+  String get notifyMessagesForYou => 'New messages for you';
+
+  @override
+  String get notifyMessagesForYouSubtitle =>
+      'Private messages to you, messages members send to the facilitators, and new replies.';
+
+  @override
+  String get emailMemberMessage => 'Email when a member writes to you';
+
+  @override
+  String get emailMemberMessageSubtitle =>
+      'One email for each message a member sends only to the facilitators.';
+
+  @override
+  String get emailDailySummary => 'Daily summary by email';
+
+  @override
+  String get emailDailySummarySubtitle =>
+      'One email at 8:00 with every group that has this turned on.';
+
+  @override
+  String get emailWeeklySummary => 'Weekly summary by email';
+
+  @override
+  String get emailWeeklySummarySubtitle =>
+      'One email on Monday at 8:00 with the week for every group that has this turned on.';
+
+  @override
+  String get applySettingsToAllGroups => 'Use these settings for all groups';
+
+  @override
+  String get couldNotSaveFacilitatorSettings =>
+      'Could not save these settings. Try again.';
+
+  @override
+  String get newMessageToFacilitator => 'New message to the facilitator';
+
+  @override
+  String get messageToFacilitatorHint =>
+      'Only the facilitators of this group will see this message.';
+
+  @override
+  String get facilitatorsOnly => 'Facilitators only';
+
+  @override
+  String get pastMessages => 'Past messages';
+
+  @override
+  String get noNewMessagesAtTheMoment =>
+      'There are no new messages at the moment.';
 }

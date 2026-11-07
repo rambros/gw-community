@@ -9,7 +9,6 @@ import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
 import 'package:gw_community/ui/core/view_as/view_as_session.dart';
 import 'package:gw_community/ui/core/widgets/confirmation_dialog.dart';
-import 'package:gw_community/ui/core/widgets/user_avatar.dart';
 import 'package:gw_community/utils/context_extensions.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 
@@ -92,16 +91,8 @@ class ExperienceCardWidget extends StatelessWidget {
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          UserAvatar(
-            key: Key('Keys09_${index}_of_$totalCount'),
-            imageUrl: experienceRow.photoUrl,
-            fullName: experienceRow.fullName,
-            size: 36.0,
-          ),
           Expanded(
-            child: Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 0.0),
-              child: Column(
+            child: Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -122,7 +113,6 @@ class ExperienceCardWidget extends StatelessWidget {
                   ),
                 ],
               ),
-            ),
           ),
         ],
       ),

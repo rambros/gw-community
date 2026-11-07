@@ -116,7 +116,7 @@ class _StepJournalPageState extends State<StepJournalPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    context.l10n.mediaJournal,
+                    'Journal',
                     style: AppTheme.of(context).journey.pageTitle,
                   ),
                   Text(

@@ -80,6 +80,10 @@
           "destination": "/app-link.html"
         },
         {
+          "source": "/message",
+          "destination": "/app-link.html"
+        },
+        {
           "source": "/content.html",
           "destination": "/app-link.html"
         },

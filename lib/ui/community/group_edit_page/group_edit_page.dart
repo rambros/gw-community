@@ -9,7 +9,6 @@ import 'package:gw_community/ui/community/group_edit_page/view_model/group_edit_
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
-import 'package:gw_community/ui/core/widgets/user_avatar.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
 
@@ -291,11 +290,6 @@ class GroupEditPageView extends StatelessWidget {
                                         children: viewModel.selectedManagers.map((manager) {
                                           final managerId = manager.authUserId ?? manager.id;
                                           return Chip(
-                                            avatar: UserAvatar(
-                                              imageUrl: manager.photoUrl,
-                                              fullName: manager.displayName,
-                                              size: 24.0,
-                                            ),
                                             label: Text(
                                               manager.displayName ?? context.l10n.unknown,
                                               style: AppTheme.of(context).bodySmall.override(

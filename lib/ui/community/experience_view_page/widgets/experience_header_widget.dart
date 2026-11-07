@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
-import 'package:gw_community/ui/core/widgets/user_avatar.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 
 /// Widget que exibe o cabeçalho do experience com informações do autor
@@ -30,13 +29,9 @@ class ExperienceHeaderWidget extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.max,
           children: [
-            UserAvatar(
-              imageUrl: experience.photoUrl,
-              fullName: experience.fullName,
-            ),
             Expanded(
               child: Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(12.0, 8.0, 0.0, 0.0),
+                padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 0.0),
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.start,

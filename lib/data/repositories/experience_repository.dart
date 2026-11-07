@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:gw_community/data/models/enums/enums.dart';
+import 'package:gw_community/data/services/push/experience_facilitator_notifier.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 
 /// Repository responsável por todas as operações de dados relacionadas a Experiences e Comentários
@@ -131,6 +132,9 @@ class ExperienceRepository {
       },
       matchingRows: (rows) => rows.eqOrNull('id', id),
     );
+    if (!keepAsDraft && groupId != null) {
+      unawaited(ExperienceFacilitatorNotifier.notify(id));
+    }
   }
 
   /// Retorna um stream de experiences para um grupo específico
@@ -251,6 +255,9 @@ class ExperienceRepository {
       if (moderatedAt != null) 'moderated_by': 'auto',
     });
 
+    if (!isDraft && groupId != null) {
+      unawaited(ExperienceFacilitatorNotifier.notify(row.id));
+    }
     return row.id;
   }
 
@@ -278,6 +285,7 @@ class ExperienceRepository {
         },
         matchingRows: (rows) => rows.eqOrNull('id', experienceId),
       );
+      unawaited(ExperienceFacilitatorNotifier.notify(experienceId));
       return true;
     } catch (e) {
       debugPrint('Error submitting for moderation: $e');

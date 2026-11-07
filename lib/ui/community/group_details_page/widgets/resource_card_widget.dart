@@ -100,27 +100,16 @@ class ResourceCardWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Text(
-                resource.title,
-                style: AppTheme.of(context).bodyMedium.override(
-                      font: GoogleFonts.lexendDeca(),
-                      color: AppTheme.of(context).secondary,
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w600,
-                    ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+        Text(
+          resource.title,
+          style: AppTheme.of(context).bodyMedium.override(
+                font: GoogleFonts.lexendDeca(),
+                color: AppTheme.of(context).secondary,
+                fontSize: 16.0,
+                fontWeight: FontWeight.w600,
               ),
-            ),
-            if (isAdminOrManager) ...[
-              const SizedBox(width: 8),
-              _buildStatusBadge(context),
-            ],
-          ],
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
         ),
         if (snippet != null) ...[
           const SizedBox(height: 4),
@@ -167,26 +156,6 @@ class ResourceCardWidget extends StatelessWidget {
           ],
         ),
       ],
-    );
-  }
-
-  Widget _buildStatusBadge(BuildContext context) {
-    final isPublished = resource.status == 'published';
-    final color = isPublished ? Colors.green : Colors.orange;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Text(
-        isPublished ? context.l10n.published : context.l10n.draft,
-        style: TextStyle(
-          fontSize: 10,
-          fontWeight: FontWeight.w600,
-          color: color.shade700,
-        ),
-      ),
     );
   }
 

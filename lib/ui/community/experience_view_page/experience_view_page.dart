@@ -294,8 +294,6 @@ class _ExperienceViewPageState extends State<ExperienceViewPage> {
               child: AddCommentWidget(
                 experienceId: experienceId,
                 parentId: parentId,
-                photoUrl: context.read<FFAppState>().loginUser.photoUrl,
-                fullName: context.read<FFAppState>().loginUser.fullName,
               ),
             ),
           ),

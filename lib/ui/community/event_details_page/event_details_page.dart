@@ -13,7 +13,6 @@ import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
 import 'package:gw_community/ui/core/view_as/view_as_session.dart';
 import 'package:gw_community/ui/core/widgets/in_app_web_view_page.dart';
-import 'package:gw_community/ui/core/widgets/user_avatar.dart';
 import 'package:gw_community/utils/context_extensions.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
@@ -450,11 +449,6 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          UserAvatar(
-                            key: Key('participant_$index'),
-                            imageUrl: participant.photoUrl,
-                            fullName: participant.displayName,
-                          ),
                           Padding(
                             padding: const EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 0.0),
                             child: Text(

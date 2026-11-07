@@ -7,7 +7,6 @@ import 'package:gw_community/ui/community/experience_edit_page/view_model/experi
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
-import 'package:gw_community/ui/core/widgets/user_avatar.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
 
@@ -171,13 +170,9 @@ class _ExperienceEditPageContent extends StatelessWidget {
           Row(
             mainAxisSize: MainAxisSize.max,
             children: [
-              UserAvatar(
-                imageUrl: experience.photoUrl,
-                fullName: experience.fullName,
-              ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(12.0, 4.0, 0.0, 0.0),
+                  padding: const EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 0.0),
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.start,

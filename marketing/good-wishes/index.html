@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Good Wishes — o app da jornada</title>
+    <meta
+      name="description"
+      content="Uma comunidade que compartilha bons votos para criar um mundo novo. Jornadas, meditações, biblioteca e grupos no celular."
+    />
+    <meta property="og:title" content="Good Wishes" />
+    <meta
+      property="og:description"
+      content="Uma comunidade que compartilha bons votos para criar um mundo novo."
+    />
+    <meta property="og:image" content="images/mark.png" />
+    <link rel="icon" href="images/icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!--
+      COMO PUBLICAR O VÍDEO DE INSTALAÇÃO
+      No final deste arquivo, troque a linha:
+        const YOUTUBE_VIDEO_ID = "";
+      pelo ID do YouTube (o trecho depois de v=).
+      Exemplo: https://www.youtube.com/watch?v=abc123XYZ
+               const YOUTUBE_VIDEO_ID = "abc123XYZ";
+
+      COMO USAR CAPTURAS REAIS DO APP
+      Salve as imagens em images/screens/ com estes nomes:
+        home.png, journey.png, library.png, community.png
+      Depois troque, na tag <body>, data-shots="off" por data-shots="on".
+      Enquanto estiver "off", a página mostra desenhos fiéis às telas reais.
+    -->
+    <style>
+      :root {
+        --ink: #1e2429;
+        --muted: #57636c;
+        --deep: #340964;
+        --purple: #7c52a0;
+        --lilac: #b9a0cb;
+        --gold: #fcc612;
+        --paper: #f7f5f2;
+        --card: #ffffff;
+        --line: #e7e1ec;
+        --soft: #f3eef7;
+        --shadow: 0 18px 50px rgba(52, 9, 100, 0.12);
+      }
+
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        color: var(--ink);
+        background:
+          radial-gradient(900px 420px at 100% -10%, rgba(252, 198, 18, 0.28), transparent 60%),
+          radial-gradient(800px 480px at -10% 8%, rgba(185, 160, 203, 0.45), transparent 55%),
+          var(--paper);
+        font-family: "Lexend Deca", sans-serif;
+        font-size: 17px;
+        line-height: 1.6;
+      }
+      img { max-width: 100%; }
+      a { color: var(--deep); }
+      h1, h2, h3, .brand-name, .phone-ui strong, .nav-links a {
+        font-family: Poppins, sans-serif;
+      }
+
+      .wrap {
+        width: min(1120px, calc(100% - 40px));
+        margin: 0 auto;
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        backdrop-filter: blur(16px);
+        background: rgba(247, 245, 242, 0.86);
+        border-bottom: 1px solid rgba(52, 9, 100, 0.06);
+      }
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        min-height: 72px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        color: var(--deep);
+      }
+      .brand img { width: 42px; height: 42px; }
+      .brand-name { font-weight: 600; letter-spacing: -0.02em; }
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+      }
+      .nav-links a {
+        color: var(--deep);
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+      }
+      .lang {
+        display: flex;
+        border: 1px solid var(--lilac);
+        border-radius: 999px;
+        overflow: hidden;
+      }
+      .lang button {
+        border: 0;
+        background: transparent;
+        color: var(--deep);
+        font: 600 13px Poppins, sans-serif;
+        padding: 6px 12px;
+        cursor: pointer;
+      }
+      .lang button[aria-pressed="true"] {
+        background: var(--deep);
+        color: white;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 48px;
+        align-items: center;
+        padding: 56px 0 28px;
+      }
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--purple);
+        font-weight: 600;
+        font-size: 13px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .eyebrow::before {
+        content: "";
+        width: 28px;
+        height: 3px;
+        border-radius: 99px;
+        background: var(--gold);
+      }
+      h1 {
+        margin: 12px 0 8px;
+        color: var(--deep);
+        font-size: clamp(36px, 5vw, 58px);
+        line-height: 1.08;
+        letter-spacing: -0.03em;
+      }
+      .logo-lockup {
+        width: min(280px, 70%);
+        margin: 8px 0 18px;
+      }
+      .lede {
+        font-size: 19px;
+        color: var(--muted);
+        max-width: 38rem;
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 28px;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        min-height: 52px;
+        padding: 0 18px;
+        border-radius: 14px;
+        text-decoration: none;
+        font-family: Poppins, sans-serif;
+        font-weight: 600;
+        font-size: 15px;
+      }
+      .btn-ios { background: var(--deep); color: white; }
+      .btn-play { background: var(--purple); color: white; }
+      .btn-ghost {
+        background: transparent;
+        color: var(--deep);
+        border: 1.5px solid var(--lilac);
+      }
+      .btn svg { width: 18px; height: 18px; fill: currentColor; }
+
+      .video-band {
+        margin: 28px 0 10px;
+        background: linear-gradient(160deg, #4a2078 0%, #340964 55%, #2a0754 100%);
+        color: white;
+        border-radius: 28px;
+        padding: 36px 28px 32px;
+        box-shadow: var(--shadow);
+      }
+      .video-band h2 { margin: 0 0 8px; font-size: clamp(28px, 4vw, 40px); letter-spacing: -0.03em; }
+      .video-band p { margin: 0 0 22px; color: rgba(255, 255, 255, 0.82); max-width: 40rem; }
+      .frame {
+        position: relative;
+        aspect-ratio: 16 / 9;
+        border-radius: 18px;
+        overflow: hidden;
+        background:
+          radial-gradient(420px 180px at 70% 20%, rgba(252, 198, 18, 0.35), transparent 60%),
+          #241046;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+      }
+      .frame iframe, .frame img.poster { width: 100%; height: 100%; border: 0; }
+      .poster {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 24px;
+        gap: 14px;
+      }
+      .play {
+        width: 74px;
+        height: 74px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: var(--gold);
+        color: var(--deep);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      }
+      .play svg { width: 28px; height: 28px; margin-left: 4px; }
+      .poster strong { font-family: Poppins, sans-serif; font-size: 20px; }
+      .poster span { color: rgba(255, 255, 255, 0.75); max-width: 28rem; }
+
+      .steps {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin: 28px 0 8px;
+      }
+      .step {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 16px;
+        padding: 16px 16px 18px;
+      }
+      .step b {
+        display: inline-grid;
+        place-items: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: var(--gold);
+        color: var(--deep);
+        font-family: Poppins, sans-serif;
+        margin-bottom: 8px;
+      }
+      .step h3 { margin: 0 0 4px; font-size: 16px; }
+      .step p { margin: 0; font-size: 14px; color: rgba(255, 255, 255, 0.78); }
+
+      section { padding: 64px 0; }
+      .section-title { color: var(--deep); font-size: clamp(28px, 4vw, 40px); letter-spacing: -0.03em; margin: 0 0 8px; }
+      .section-lead { color: var(--muted); margin: 0 0 28px; max-width: 40rem; }
+
+      .features {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+      }
+      .feature {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 22px 20px 20px;
+      }
+      .icon-bubble {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        background: var(--soft);
+        color: var(--purple);
+        margin-bottom: 14px;
+      }
+      .icon-bubble svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+      .feature h3 { margin: 0 0 6px; color: var(--deep); font-size: 18px; }
+      .feature p { margin: 0; color: var(--muted); font-size: 15px; }
+
+      .screens-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        align-items: end;
+      }
+      .phones {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(220px, 1fr));
+        gap: 22px;
+        margin-top: 28px;
+      }
+      .phone { margin: 0; }
+      .bezel {
+        background: #1a1024;
+        border-radius: 36px;
+        padding: 10px;
+        box-shadow: var(--shadow);
+      }
+      .screen, .phone-shot {
+        height: 560px;
+        border-radius: 28px;
+        overflow: hidden;
+        background: #f9fafb;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+      }
+      .phone-shot { display: none; width: 100%; object-fit: cover; object-position: top; }
+      .phone.has-shot .phone-shot { display: block; }
+      .phone.has-shot .screen { display: none; }
+      figcaption {
+        text-align: center;
+        margin-top: 12px;
+        color: var(--deep);
+        font-family: Poppins, sans-serif;
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+      .status {
+        display: flex;
+        justify-content: space-between;
+        font-size: 11px;
+        font-weight: 600;
+        padding: 10px 16px 0;
+        color: #1e2429;
+      }
+      .appbar {
+        background: linear-gradient(90deg, #73449b, #9a61b5);
+        color: white;
+        text-align: center;
+        font-family: Poppins, sans-serif;
+        font-weight: 600;
+        padding: 14px 12px;
+      }
+      .pad { padding: 8px 14px 10px; flex: 1; min-height: 0; overflow: hidden; }
+      .mini-logo { width: 78px; display: block; margin: 2px auto 4px; }
+      .greet {
+        text-align: center;
+        color: var(--deep);
+        font-family: Poppins, sans-serif;
+        font-weight: 600;
+        font-size: 16px;
+        margin: 0;
+      }
+      .tag {
+        text-align: center;
+        font-size: 11px;
+        color: #1e2429;
+        margin: 4px 0 10px;
+        line-height: 1.35;
+      }
+      .label {
+        color: var(--deep);
+        font-family: Poppins, sans-serif;
+        font-weight: 600;
+        font-size: 14px;
+        margin: 8px 0 4px;
+      }
+      .card {
+        background: white;
+        border-radius: 14px;
+        padding: 10px 12px;
+        box-shadow: 0 6px 16px rgba(52, 9, 100, 0.06);
+        margin-bottom: 8px;
+      }
+      .card small { color: var(--muted); font-size: 11px; }
+      .bar {
+        height: 6px;
+        border-radius: 99px;
+        background: #eee7f4;
+        margin-top: 8px;
+        overflow: hidden;
+      }
+      .bar span { display: block; height: 100%; width: 46%; background: var(--purple); }
+      .row { display: flex; gap: 8px; align-items: center; }
+      .avatar {
+        width: 36px; height: 36px; border-radius: 50%;
+        background: linear-gradient(160deg, var(--gold), #f0a202);
+        flex: none;
+      }
+      .date-pill {
+        background: var(--gold);
+        color: var(--deep);
+        font-size: 11px;
+        font-weight: 700;
+        border-radius: 8px;
+        padding: 8px 6px;
+        text-align: center;
+        line-height: 1.15;
+      }
+      .tabbar {
+        margin-top: auto;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        background: white;
+        border-top: 1px solid #eee;
+        padding: 8px 4px 12px;
+        font-size: 9px;
+        text-align: center;
+        color: #95a1ac;
+      }
+      .tabbar b { display: block; color: var(--purple); font-weight: 600; }
+      .tabbar span { display: block; }
+
+      .activity {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: white;
+        border-radius: 14px;
+        padding: 12px;
+        margin-bottom: 8px;
+        box-shadow: 0 6px 16px rgba(52, 9, 100, 0.06);
+      }
+      .activity i {
+        width: 36px; height: 36px; border-radius: 12px;
+        display: grid; place-items: center;
+        background: var(--soft); color: var(--purple);
+        font-style: normal; font-weight: 700;
+      }
+      .search {
+        background: white;
+        border: 1.5px solid var(--lilac);
+        border-radius: 14px;
+        padding: 10px 12px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+      .hub {
+        min-height: 92px;
+        border-radius: 16px;
+        color: white;
+        padding: 12px;
+        display: flex;
+        align-items: flex-end;
+        font-family: Poppins, sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        line-height: 1.2;
+        background: linear-gradient(160deg, #8a55b8, #a072c8);
+      }
+      .hub.wide { min-height: 72px; grid-column: 1 / -1; }
+      .chips { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 10px; }
+      .chips span {
+        font-size: 10px;
+        padding: 5px 7px;
+        border-radius: 999px;
+        background: white;
+        color: var(--muted);
+        white-space: nowrap;
+      }
+      .chips .on { background: var(--deep); color: white; }
+
+      .library-note {
+        margin-top: 36px;
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 18px;
+      }
+      .panel {
+        background: white;
+        border-radius: 22px;
+        border: 1px solid var(--line);
+        padding: 24px;
+      }
+      .panel h3 { margin: 0 0 8px; color: var(--deep); }
+      .panel ul { margin: 0; padding-left: 18px; color: var(--muted); }
+      .panel li + li { margin-top: 6px; }
+
+      .closing {
+        text-align: center;
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        padding: 42px 20px;
+      }
+      .closing img { width: 72px; }
+      footer {
+        padding: 10px 0 36px;
+        color: var(--muted);
+        font-size: 14px;
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      @media (max-width: 980px) {
+        .hero, .features, .library-note, .steps { grid-template-columns: 1fr 1fr; }
+        .phones { grid-template-columns: repeat(2, minmax(220px, 1fr)); }
+      }
+      @media (max-width: 760px) {
+        .nav-links a { display: none; }
+      }
+      @media (max-width: 680px) {
+        .hero, .features, .library-note, .steps, .phones { grid-template-columns: 1fr; }
+        .hero { padding-top: 28px; }
+        .screens-head { display: block; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+      }
+    </style>
+  </head>
+  <body data-shots="off">
+    <header>
+      <div class="wrap nav">
+        <a class="brand" href="#topo">
+          <img src="images/mark.png" alt="" />
+          <span class="brand-name">Good Wishes</span>
+        </a>
+        <nav class="nav-links" aria-label="Seções">
+          <a href="#instalacao" data-en="Setup">Instalação</a>
+          <a href="#recursos" data-en="Features">Recursos</a>
+          <a href="#telas" data-en="The app">O app</a>
+          <a href="#baixar" data-en="Download">Baixar</a>
+        </nav>
+        <div class="lang" role="group" aria-label="Idioma">
+          <button type="button" id="lang-pt" aria-pressed="true">PT</button>
+          <button type="button" id="lang-en" aria-pressed="false">EN</button>
+        </div>
+      </div>
+    </header>
+
+    <main id="topo">
+      <div class="wrap hero">
+        <div>
+          <p class="eyebrow" data-en="For participants">Para quem participa</p>
+          <h1 data-en="A journey of good wishes, on your phone.">Uma jornada de bons votos, no seu celular.</h1>
+          <img class="logo-lockup" src="images/logo-stacked.png" alt="Good Wishes" />
+          <p class="lede" data-en="A community that shares good wishes to create a new world. Inspirations, meditations, daily practices, and people walking with you.">
+            Uma comunidade que compartilha bons votos para criar um mundo novo. Inspirações, meditações, práticas diárias e pessoas caminhando com você.
+          </p>
+          <div class="actions">
+            <a class="btn btn-ios" href="https://apps.apple.com/app/id6758221292">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.4 12.7c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.2-2.8.9-3.5.9s-1.8-.8-3-.8c-1.5 0-3 .9-3.8 2.3-1.6 2.8-.4 7 1.2 9.3.8 1.1 1.7 2.3 2.9 2.3 1.2 0 1.6-.7 3-.7s1.8.7 3 .7 2-.1 2.9-2.2c1.1-1.5 1.5-2.9 1.5-3v-.1c-1.9-.7-1.8-2.9-1.8-3.4zM14.7 6.5c.6-.8 1.1-1.9.9-3-.9 0-2 .6-2.6 1.4-.6.7-1.1 1.8-.9 2.9 1 .1 2-.5 2.6-1.3z"/></svg>
+              App Store
+            </a>
+            <a class="btn btn-play" href="https://play.google.com/store/apps/details?id=org.callofthetime.gw">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3.5v17l12.2-8.5L4 3.5zm13.2 6.3 2.3 1.3c.7.4.7 1.4 0 1.8l-2.3 1.3-2.6-2.2 2.6-2.2zM5.2 20.8l9.2-9.3-2.2-2.2-7 11.5z"/></svg>
+              Google Play
+            </a>
+            <a class="btn btn-ghost" href="#instalacao" data-en="Watch the setup">Ver a instalação</a>
+          </div>
+        </div>
+        <div aria-hidden="true">
+          <div class="bezel">
+            <div class="screen">
+              <div class="status"><span>9:41</span><span>●●●</span></div>
+              <img class="mini-logo" src="images/logo-stacked.png" alt="" />
+              <p class="greet" data-en="Good morning">Bom dia</p>
+              <div class="pad">
+                <div class="label" data-en="My journeys">Minhas jornadas</div>
+                <div class="card">
+                  <strong data-en="Journey">Jornada</strong><br />
+                  <small data-en="Step 2 of 5">Passo 2 de 5</small>
+                  <div class="bar"><span></span></div>
+                </div>
+                <div class="label" data-en="My groups">Meus grupos</div>
+                <div class="card row">
+                  <div class="avatar"></div>
+                  <div><strong data-en="My group">Meu grupo</strong><br /><small data-en="Community">Comunidade</small></div>
+                </div>
+                <div class="label" data-en="Upcoming events">Próximos eventos</div>
+                <div class="card row">
+                  <div class="date-pill">12<br />nov</div>
+                  <div><strong data-en="Gathering">Encontro</strong><br /><small data-en="With your group">Com o seu grupo</small></div>
+                </div>
+              </div>
+              <div class="tabbar">
+                <b data-en="Home">Início</b>
+                <span data-en="Library">Biblioteca</span>
+                <span data-en="Journey">Jornada</span>
+                <span data-en="Community">Comunidade</span>
+                <span data-en="Profile">Perfil</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="wrap">
+        <section class="video-band" id="instalacao">
+          <h2 data-en="First-time setup">Instalação inicial</h2>
+          <p data-en="A short video shows how to install the app, sign in with your invite, and take the first steps. The same path is written below.">
+            Um vídeo curto mostra como instalar o app, entrar com o convite e dar os primeiros passos. O mesmo caminho está escrito logo abaixo.
+          </p>
+          <div class="frame" id="video-frame">
+            <div class="poster" id="video-poster">
+              <div class="play" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path fill="currentColor" d="M8 5v14l11-7z"/></svg>
+              </div>
+              <strong data-en="Setup video">Vídeo da instalação</strong>
+              <span data-en="A short walkthrough of the first install will play in this space.">
+                O passo a passo da instalação inicial entra neste espaço.
+              </span>
+            </div>
+          </div>
+          <div class="steps">
+            <article class="step">
+              <b>1</b>
+              <h3 data-en="Open the invite">Abra o convite</h3>
+              <p data-en="The email already created your account and brings the access details.">
+                O e-mail já criou a sua conta e traz os dados de acesso.
+              </p>
+            </article>
+            <article class="step">
+              <b>2</b>
+              <h3 data-en="Install the app">Instale o app</h3>
+              <p data-en="Download Good Wishes from the App Store or Google Play.">
+                Baixe o Good Wishes na App Store ou no Google Play.
+              </p>
+            </article>
+            <article class="step">
+              <b>3</b>
+              <h3 data-en="Sign in">Entre</h3>
+              <p data-en="Open the app and sign in with the email and password from the invite.">
+                Abra o app e entre com o e-mail e a senha do convite.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section id="recursos">
+          <h2 class="section-title" data-en="What you find inside">O que você encontra</h2>
+          <p class="section-lead" data-en="The same places you see after signing in: home, library, journey, community, and profile.">
+            Os mesmos lugares que aparecem depois do login: início, biblioteca, jornada, comunidade e perfil.
+          </p>
+          <div class="features">
+            <article class="feature">
+              <div class="icon-bubble" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 19c2-4 4-6 8-6s6 2 8 6"/><circle cx="12" cy="8" r="3"/></svg></div>
+              <h3 data-en="Journey">Jornada</h3>
+              <p data-en="Guided steps with inspiration, meditation, and daily practices, plus reading, audio, video, images, and PDF.">
+                Passos guiados com inspiração, meditação e práticas diárias, além de leitura, áudio, vídeo, imagem e PDF.
+              </p>
+            </article>
+            <article class="feature">
+              <div class="icon-bubble" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 6h16v12H4z"/><path d="M8 6v12M4 10h4"/></svg></div>
+              <h3 data-en="Library">Biblioteca</h3>
+              <p data-en="Dialogues &amp; Retreats, Heart to Heart, Words of Wisdom, Dadi Janki, and Meditation, with search across the collection.">
+                Dialogues &amp; Retreats, Heart to Heart, Words of Wisdom, Dadi Janki e Meditation, com busca em toda a coleção.
+              </p>
+            </article>
+            <article class="feature">
+              <div class="icon-bubble" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="8" cy="9" r="2.2"/><circle cx="16" cy="9" r="2.2"/><path d="M4 18c.6-2.2 2.2-3.4 4-3.4S11.4 15.8 12 18c.6-2.2 2.2-3.4 4-3.4s3.4 1.2 4 3.4"/></svg></div>
+              <h3 data-en="Community">Comunidade</h3>
+              <p data-en="Your groups and others you can join. Inside a group: experiences, events, messages, and resources.">
+                Seus grupos e outros para participar. Dentro do grupo: experiências, eventos, mensagens e recursos.
+              </p>
+            </article>
+            <article class="feature">
+              <div class="icon-bubble" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 9h8M8 13h5"/></svg></div>
+              <h3 data-en="Journal and favorites">Diário e favoritos</h3>
+              <p data-en="Journal entries stay private. Favorites keep the pieces you want to return to.">
+                As entradas do diário ficam privadas. Os favoritos guardam o que você quer rever.
+              </p>
+            </article>
+            <article class="feature">
+              <div class="icon-bubble" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></div>
+              <h3 data-en="Events">Eventos</h3>
+              <p data-en="Upcoming gatherings on the home screen, including recorded events and repeating dates.">
+                Encontros próximos logo na tela inicial, com eventos gravados e datas que se repetem.
+              </p>
+            </article>
+            <article class="feature">
+              <div class="icon-bubble" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9a6 6 0 0 1 12 0c0 7 2 7 2 9H4c0-2 2-2 2-9z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></div>
+              <h3 data-en="Notices and language">Avisos e idioma</h3>
+              <p data-en="Notifications from your community, a place to ask a question, and the app in Portuguese or English.">
+                Avisos da comunidade, um lugar para fazer uma pergunta, e o app em português ou inglês.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section id="telas">
+          <div class="screens-head">
+            <div>
+              <h2 class="section-title" data-en="A look at the app">Um olhar pelo app</h2>
+              <p class="section-lead" data-en="Home, journey, library, and community — the four places a participant lives in.">
+                Início, jornada, biblioteca e comunidade — os quatro lugares em que a pessoa participante vive.
+              </p>
+            </div>
+          </div>
+          <div class="phones" id="phones">
+            <figure class="phone" data-shot="home">
+              <div class="bezel">
+                <img class="phone-shot" alt="Tela Início do Good Wishes" data-en-alt="Good Wishes Home screen" />
+                <div class="screen">
+                  <div class="status"><span>9:41</span><span>●●●</span></div>
+                  <img class="mini-logo" src="images/logo-stacked.png" alt="" />
+                  <p class="greet" data-en="Good morning">Bom dia</p>
+                  <div class="pad">
+                    <div class="label" data-en="My journeys">Minhas jornadas</div>
+                    <div class="card">
+                      <strong data-en="Journey">Jornada</strong><br />
+                      <small data-en="Step 2 of 5">Passo 2 de 5</small>
+                      <div class="bar"><span></span></div>
+                    </div>
+                    <div class="label" data-en="My groups">Meus grupos</div>
+                    <div class="card row">
+                      <div class="avatar"></div>
+                      <div><strong data-en="My group">Meu grupo</strong><br /><small data-en="Community">Comunidade</small></div>
+                    </div>
+                    <div class="label" data-en="Upcoming events">Próximos eventos</div>
+                    <div class="card row">
+                      <div class="date-pill">12<br />nov</div>
+                      <div><strong data-en="Gathering">Encontro</strong><br /><small data-en="With your group">Com o seu grupo</small></div>
+                    </div>
+                  </div>
+                  <div class="tabbar">
+                    <b data-en="Home">Início</b>
+                    <span data-en="Library">Biblioteca</span>
+                    <span data-en="Journey">Jornada</span>
+                    <span data-en="Community">Comunidade</span>
+                    <span data-en="Profile">Perfil</span>
+                  </div>
+                </div>
+              </div>
+              <figcaption data-en="Home">Início</figcaption>
+            </figure>
+
+            <figure class="phone" data-shot="journey">
+              <div class="bezel">
+                <img class="phone-shot" alt="Tela da jornada" data-en-alt="Journey screen" />
+                <div class="screen">
+                  <div class="appbar" data-en="Journey">Jornada</div>
+                  <div class="pad">
+                    <div class="label" data-en="Step 2">Passo 2</div>
+                    <p class="tag" style="text-align:left" data-en="Inspiration, meditation, and a practice for the day.">Inspiração, meditação e uma prática para o dia.</p>
+                    <div class="activity"><i>✦</i><div><strong data-en="Inspiration">Inspiração</strong><br /><small data-en="A text to read">Um texto para ler</small></div></div>
+                    <div class="activity"><i>◎</i><div><strong data-en="Meditation">Meditação</strong><br /><small data-en="Audio">Áudio</small></div></div>
+                    <div class="activity"><i>✓</i><div><strong data-en="Practices">Práticas</strong><br /><small data-en="Something to try today">Algo para experimentar hoje</small></div></div>
+                    <div class="activity"><i>✎</i><div><strong data-en="Journal">Diário</strong><br /><small data-en="Private on your phone">Privado no seu celular</small></div></div>
+                  </div>
+                  <div class="tabbar">
+                    <span data-en="Home">Início</span>
+                    <span data-en="Library">Biblioteca</span>
+                    <b data-en="Journey">Jornada</b>
+                    <span data-en="Community">Comunidade</span>
+                    <span data-en="Profile">Perfil</span>
+                  </div>
+                </div>
+              </div>
+              <figcaption data-en="Journey">Jornada</figcaption>
+            </figure>
+
+            <figure class="phone" data-shot="library">
+              <div class="bezel">
+                <img class="phone-shot" alt="Tela da biblioteca" data-en-alt="Library screen" />
+                <div class="screen">
+                  <div class="appbar" data-en="Library">Biblioteca</div>
+                  <div class="pad">
+                    <div class="search" data-en="Search all content">Buscar em todo o conteúdo</div>
+                    <div class="grid2">
+                      <div class="hub">Dialogues &amp; Retreats</div>
+                      <div class="hub">Heart to Heart</div>
+                      <div class="hub">Words of Wisdom</div>
+                      <div class="hub">Dadi Janki</div>
+                      <div class="hub wide">Meditation</div>
+                    </div>
+                  </div>
+                  <div class="tabbar">
+                    <span data-en="Home">Início</span>
+                    <b data-en="Library">Biblioteca</b>
+                    <span data-en="Journey">Jornada</span>
+                    <span data-en="Community">Comunidade</span>
+                    <span data-en="Profile">Perfil</span>
+                  </div>
+                </div>
+              </div>
+              <figcaption data-en="Library">Biblioteca</figcaption>
+            </figure>
+
+            <figure class="phone" data-shot="community">
+              <div class="bezel">
+                <img class="phone-shot" alt="Tela da comunidade" data-en-alt="Community screen" />
+                <div class="screen">
+                  <div class="appbar" data-en="Community">Comunidade</div>
+                  <div class="pad">
+                    <div class="label" data-en="My group">Meu grupo</div>
+                    <div class="chips">
+                      <span class="on" data-en="Experiences">Experiências</span>
+                      <span data-en="Events">Eventos</span>
+                      <span data-en="Messages">Mensagens</span>
+                      <span data-en="Resources">Recursos</span>
+                    </div>
+                    <div class="card">
+                      <strong data-en="A shared experience">Uma experiência compartilhada</strong>
+                      <p class="tag" style="text-align:left;margin-bottom:0" data-en="Experiences that inspire the group.">Experiências que inspiram o grupo.</p>
+                    </div>
+                    <div class="card row">
+                      <div class="date-pill">qui</div>
+                      <div><strong data-en="Next event">Próximo evento</strong><br /><small data-en="Upcoming">Em breve</small></div>
+                    </div>
+                    <div class="card">
+                      <strong data-en="Message">Mensagem</strong><br />
+                      <small data-en="News from the facilitators">Novidades de quem facilita</small>
+                    </div>
+                  </div>
+                  <div class="tabbar">
+                    <span data-en="Home">Início</span>
+                    <span data-en="Library">Biblioteca</span>
+                    <span data-en="Journey">Jornada</span>
+                    <b data-en="Community">Comunidade</b>
+                    <span data-en="Profile">Perfil</span>
+                  </div>
+                </div>
+              </div>
+              <figcaption data-en="Community">Comunidade</figcaption>
+            </figure>
+          </div>
+
+          <div class="library-note">
+            <div class="panel">
+              <h3 data-en="On each journey step">Em cada passo da jornada</h3>
+              <ul>
+                <li data-en="Inspiration, meditation, and practices">Inspiração, meditação e práticas</li>
+                <li data-en="Text, with a reading size you can change">Texto, com tamanho de leitura que você ajusta</li>
+                <li data-en="Audio, video, image, and PDF">Áudio, vídeo, imagem e PDF</li>
+                <li data-en="A private journal tied to the step">Um diário privado ligado ao passo</li>
+              </ul>
+            </div>
+            <div class="panel">
+              <h3 data-en="Inside a group">Dentro de um grupo</h3>
+              <ul>
+                <li data-en="Experiences">Experiências</li>
+                <li data-en="Events, including recorded ones">Eventos, inclusive os gravados</li>
+                <li data-en="Messages">Mensagens</li>
+                <li data-en="Resources to open or listen to">Recursos para abrir ou ouvir</li>
+                <li data-en="Community guidelines">Diretrizes da comunidade</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section id="baixar">
+          <div class="closing">
+            <img src="images/mark.png" alt="" />
+            <h2 class="section-title" data-en="Your journey begins">A sua jornada começa</h2>
+            <p class="section-lead" style="margin-left:auto;margin-right:auto" data-en="Install the app, sign in with the invite, and the home screen is already waiting with your journeys, groups, and upcoming events.">
+              Instale o app, entre com o convite, e a tela inicial já espera com as suas jornadas, grupos e próximos eventos.
+            </p>
+            <div class="actions" style="justify-content:center">
+              <a class="btn btn-ios" href="https://apps.apple.com/app/id6758221292">App Store</a>
+              <a class="btn btn-play" href="https://play.google.com/store/apps/details?id=org.callofthetime.gw">Google Play</a>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <div class="wrap">
+      <footer>
+        <span>Good Wishes</span>
+        <span data-en="Portuguese and English in the app">Português e inglês no app</span>
+      </footer>
+    </div>
+
+    <script>
+      // Cole aqui o ID do vídeo. Deixe vazio até o vídeo existir.
+      // Exemplo: const YOUTUBE_VIDEO_ID = "abc123XYZ";
+      const YOUTUBE_VIDEO_ID = "";
+
+      const frame = document.getElementById("video-frame");
+      const poster = document.getElementById("video-poster");
+      if (YOUTUBE_VIDEO_ID && YOUTUBE_VIDEO_ID !== "YOUTUBE_VIDEO_ID") {
+        const iframe = document.createElement("iframe");
+        iframe.src = "https://www.youtube-nocookie.com/embed/" + encodeURIComponent(YOUTUBE_VIDEO_ID) + "?rel=0";
+        iframe.title = "Good Wishes — instalação inicial";
+        iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+        iframe.allowFullscreen = true;
+        poster.replaceWith(iframe);
+      }
+
+      const ptBtn = document.getElementById("lang-pt");
+      const enBtn = document.getElementById("lang-en");
+
+      function applyLang(lang) {
+        document.documentElement.lang = lang;
+        ptBtn.setAttribute("aria-pressed", lang === "pt" ? "true" : "false");
+        enBtn.setAttribute("aria-pressed", lang === "en" ? "true" : "false");
+        document.querySelectorAll("[data-en]").forEach((el) => {
+          if (!el.dataset.pt) el.dataset.pt = el.textContent;
+          el.textContent = lang === "en" ? el.dataset.en : el.dataset.pt;
+        });
+        document.querySelectorAll("[data-en-alt]").forEach((el) => {
+          if (!el.dataset.ptAlt) el.dataset.ptAlt = el.alt;
+          el.alt = lang === "en" ? el.dataset.enAlt : el.dataset.ptAlt;
+        });
+        try { localStorage.setItem("gw-lang", lang); } catch (e) {}
+      }
+
+      ptBtn.addEventListener("click", () => applyLang("pt"));
+      enBtn.addEventListener("click", () => applyLang("en"));
+
+      let start = "pt";
+      try { start = localStorage.getItem("gw-lang") || "pt"; } catch (e) {}
+      applyLang(start === "en" ? "en" : "pt");
+
+      if (document.body.dataset.shots === "on") {
+        document.querySelectorAll(".phone").forEach((phone) => {
+          const img = phone.querySelector(".phone-shot");
+          img.addEventListener("load", () => {
+            if (img.naturalWidth > 0) phone.classList.add("has-shot");
+          });
+          img.src = "images/screens/" + phone.dataset.shot + ".png";
+        });
+      }
+    </script>
+  </body>
+</html>

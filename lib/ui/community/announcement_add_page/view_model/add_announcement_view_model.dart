@@ -15,6 +15,7 @@ class AddAnnouncementViewModel extends ChangeNotifier {
     this.groupName,
     required this.privacy,
     this.groupMembers = const [],
+    this.toFacilitators = false,
   }) : _repository = repository {
     _loadCurrentUser();
   }
@@ -25,6 +26,7 @@ class AddAnnouncementViewModel extends ChangeNotifier {
   final String? groupName;
   final String privacy;
   final List<CcMembersRow> groupMembers;
+  final bool toFacilitators;
 
   final titleController = TextEditingController();
   final experienceController = TextEditingController();
@@ -104,8 +106,9 @@ class AddAnnouncementViewModel extends ChangeNotifier {
         userId: currentUserUid,
         groupId: groupId,
         visibility: visibility,
-        recipientUserId: _recipientMember?.authUserId,
-        isPinned: _pinMessage,
+        recipientUserId: toFacilitators ? null : _recipientMember?.authUserId,
+        isPinned: toFacilitators ? false : _pinMessage,
+        audience: toFacilitators ? 'facilitators' : null,
       );
       unawaited(GroupMessageNotifier.notify(sharingId));
       return true;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gw_community/app_state.dart';
+import 'package:gw_community/data/repositories/facilitator_settings_repository.dart';
 import 'package:gw_community/data/repositories/user_profile_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 
@@ -8,7 +9,11 @@ class UserProfileViewModel extends ChangeNotifier {
 
   UserProfileViewModel({
     required UserProfileRepository repository,
-  }) : _repository = repository;
+    FacilitatorSettingsRepository? facilitatorSettings,
+  })  : _repository = repository,
+        _facilitatorSettings = facilitatorSettings ?? FacilitatorSettingsRepository();
+
+  final FacilitatorSettingsRepository _facilitatorSettings;
 
   /// Gets the current user ID dynamically from Supabase auth
   String get currentUserUid => SupaFlow.client.auth.currentUser?.id ?? '';
@@ -24,6 +29,9 @@ class UserProfileViewModel extends ChangeNotifier {
   CcMembersRow? _userProfile;
   CcMembersRow? get userProfile => _userProfile;
 
+  bool _facilitatesAnyGroup = false;
+  bool get facilitatesAnyGroup => _facilitatesAnyGroup;
+
   // ========== COMMANDS ==========
 
   /// Loads the user profile data.
@@ -33,6 +41,12 @@ class UserProfileViewModel extends ChangeNotifier {
 
     try {
       _userProfile = await _repository.getUserProfile(currentUserUid);
+      try {
+        _facilitatesAnyGroup = (await _facilitatorSettings.load(currentUserUid)).isNotEmpty;
+      } catch (e) {
+        debugPrint('Facilitator groups unavailable: $e');
+        _facilitatesAnyGroup = false;
+      }
       if (_userProfile == null && currentUserUid.isNotEmpty) {
         debugPrint('Profile not found for $currentUserUid, logging out.');
         await _signOut();

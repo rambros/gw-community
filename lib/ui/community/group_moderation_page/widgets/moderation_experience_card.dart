@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
-import 'package:gw_community/ui/core/widgets/user_avatar.dart';
 import 'package:intl/intl.dart';
 
 /// Card widget displaying an experience with moderation actions
@@ -63,12 +62,6 @@ class ModerationExperienceCard extends StatelessWidget {
 
     return Row(
       children: [
-        UserAvatar(
-          imageUrl: experience.authorPhotoUrl,
-          fullName: experience.authorDisplayName ?? experience.authorName ?? context.l10n.userFallback,
-          size: 40.0,
-        ),
-        const SizedBox(width: 12),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

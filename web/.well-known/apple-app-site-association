@@ -16,7 +16,9 @@
           "/event",
           "/event/*",
           "/content",
-          "/content/*"
+          "/content/*",
+          "/message",
+          "/message/*"
         ]
       }
     ]

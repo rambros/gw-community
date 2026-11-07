@@ -60,34 +60,26 @@ class GroupEditViewModel extends ChangeNotifier {
       // Initialize controllers with existing data
       nameController = TextEditingController(text: group.name);
       descriptionController = TextEditingController(text: group.description);
-      moreInformationController = TextEditingController(text: group.moreInformation);
+      moreInformationController =
+          TextEditingController(text: group.moreInformation);
 
       // Initialize privacy
       _isPrivate = (group.groupPrivacy?.toLowerCase() ?? 'public') == 'private';
 
-      // Initialize selected managers from group members
-      // We use getGroupMembersAsUsers to get the full user profiles of existing members
-      final allMembers = await _groupRepository.getGroupMembersAsUsers(group.id);
-
-      // Filter for managers/facilitators
-      _selectedManagerObjects = allMembers.where((m) {
-        // getGroupMembersAsUsers returns CcMembersRow which has 'userRole' if joined properly
-        // wait, CcMembersRow from getGroupMembersAsUsers might NOT have userRole populated directly
-        // if it comes from CcMembersTable join.
-        // Actually, getGroupMembersAsUsers in repository does NOT join with role.
-        // We need to match with the links.
-        return false; // logic below
-      }).toList();
-
-      // Better approach: Get links, then get users.
       final links = await _groupRepository.getGroupMembers(group.id);
       final managerUserIds = links
-          .where((m) => m.userId != null && (m.userRole == 'GROUP_MANAGER' || m.userRole == 'Manager'))
+          .where((m) =>
+              m.userId != null &&
+              (m.userRole == 'GROUP_MANAGER' ||
+                  m.userRole == 'Manager' ||
+                  m.userRole == 'group_manager'))
           .map((m) => m.userId!)
-          .toSet();
+          .toList();
 
-      _selectedManagerObjects = allMembers.where((u) => managerUserIds.contains(u.authUserId)).toList();
-      _selectedManagerIds = _selectedManagerObjects.map((u) => u.authUserId!).toList();
+      _selectedManagerObjects =
+          await _groupRepository.getMembersByAuthUserIds(managerUserIds);
+      _selectedManagerIds =
+          _selectedManagerObjects.map((u) => u.authUserId!).toList();
       _initialManagerIds = List.from(_selectedManagerIds);
 
       // We do NOT fetch all available users anymore.
@@ -163,13 +155,16 @@ class GroupEditViewModel extends ChangeNotifier {
       includeBlurHash: true,
     );
 
-    if (selectedMedia != null && selectedMedia.every((m) => validateFileFormat(m.storagePath, context))) {
+    if (selectedMedia != null &&
+        selectedMedia
+            .every((m) => validateFileFormat(m.storagePath, context))) {
       if (!context.mounted) return;
       _setLoading(true);
       try {
         showUploadMessage(context, 'Uploading file...', showLoading: true);
 
-        final downloadUrls = await uploadSupabaseStorageFiles(bucketName: 'portal', selectedFiles: selectedMedia);
+        final downloadUrls = await uploadSupabaseStorageFiles(
+            bucketName: 'portal', selectedFiles: selectedMedia);
 
         if (downloadUrls.isNotEmpty) {
           _uploadedImageUrl = downloadUrls.first;
@@ -177,7 +172,8 @@ class GroupEditViewModel extends ChangeNotifier {
         }
       } catch (e) {
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error uploading image: $e')));
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Error uploading image: $e')));
         }
       } finally {
         if (context.mounted) {
@@ -202,21 +198,27 @@ class GroupEditViewModel extends ChangeNotifier {
         name: nameController.text.trim(),
         description: descriptionController.text.trim(),
         moreInformation: moreInformationController.text.trim(),
-        imageUrl: _uploadedImageUrl, // Only pass if new image uploaded, repository handles null
+        imageUrl:
+            _uploadedImageUrl, // Only pass if new image uploaded, repository handles null
         privacy: _isPrivate ? 'Private' : 'Public', // Update privacy
       );
 
       // Sync managers
-      final managersToAdd = _selectedManagerIds.where((id) => !_initialManagerIds.contains(id));
-      final managersToRemove = _initialManagerIds.where((id) => !_selectedManagerIds.contains(id));
+      final managersToAdd =
+          _selectedManagerIds.where((id) => !_initialManagerIds.contains(id));
+      final managersToRemove =
+          _initialManagerIds.where((id) => !_selectedManagerIds.contains(id));
 
       for (final userId in managersToAdd) {
         // Check if already member
-        final isMember = await _groupRepository.isUserMemberOfGroup(group.id, userId);
+        final isMember =
+            await _groupRepository.isUserMemberOfGroup(group.id, userId);
         if (isMember) {
-          await _groupRepository.updateMemberRole(group.id, userId, 'GROUP_MANAGER');
+          await _groupRepository.updateMemberRole(
+              group.id, userId, 'GROUP_MANAGER');
         } else {
-          await _groupRepository.addMemberWithRole(group.id, userId, 'GROUP_MANAGER');
+          await _groupRepository.addMemberWithRole(
+              group.id, userId, 'GROUP_MANAGER');
         }
       }
 
@@ -227,7 +229,8 @@ class GroupEditViewModel extends ChangeNotifier {
       return true;
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error updating group: $e')));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Error updating group: $e')));
       }
       return false;
     } finally {

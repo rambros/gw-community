@@ -115,7 +115,7 @@ class GroupAnnouncementsTab extends StatelessWidget {
                             padding: const EdgeInsetsDirectional.fromSTEB(
                                 24.0, 32.0, 24.0, 32.0),
                             child: Text(
-                              'There are no new messages at the moment.',
+                              context.l10n.noNewMessagesAtTheMoment,
                               textAlign: TextAlign.center,
                               style: AppTheme.of(context).bodyMedium.override(
                                     font: GoogleFonts.lexendDeca(),
@@ -160,7 +160,7 @@ class GroupAnnouncementsTab extends StatelessWidget {
                                       0xFFF1F4F8), // Light grey background
                                   child: ExpansionTile(
                                     title: Text(
-                                      'Past messages',
+                                      context.l10n.pastMessages,
                                       style: AppTheme.of(context)
                                           .bodyMedium
                                           .override(
@@ -249,6 +249,36 @@ class GroupAnnouncementsTab extends StatelessWidget {
                     ),
               ),
             ),
+          )
+        else if (!viewAsBlocksWrite() && viewModel.groupManagerIds.isNotEmpty)
+          Positioned(
+            bottom: 16.0,
+            right: 16.0,
+            child: FloatingActionButton.extended(
+              onPressed: () async {
+                context.pushNamed(
+                  AnnouncementAddPage.routeName,
+                  queryParameters: {
+                    'groupId': serializeParam(group.id, ParamType.int),
+                    'groupName': serializeParam(group.name, ParamType.String),
+                    'toFacilitators': serializeParam('1', ParamType.String),
+                  }.withoutNulls,
+                );
+              },
+              backgroundColor: AppTheme.of(context).primary,
+              elevation: 8.0,
+              icon: Icon(
+                Icons.lock_outline,
+                color: AppTheme.of(context).primaryBackground,
+              ),
+              label: Text(
+                context.l10n.newMessageToFacilitator,
+                style: AppTheme.of(context).labelLarge.override(
+                      font: GoogleFonts.poppins(),
+                      color: AppTheme.of(context).primaryBackground,
+                    ),
+              ),
+            ),
           ),
       ],
     );
@@ -276,6 +306,16 @@ class GroupAnnouncementsTab extends StatelessWidget {
     );
   }
 
+  String _messageSubtitle(
+    BuildContext context,
+    CcViewNotificationsUsersRow notification,
+  ) {
+    final when = _messageTime(context, notification);
+    final name = notification.authorName;
+    if (name == null) return when;
+    return '$when - ${context.l10n.fromAuthors(name)}';
+  }
+
   Widget _buildPrivateBadge(
     BuildContext context,
     GroupDetailsViewModel viewModel,
@@ -285,7 +325,9 @@ class GroupAnnouncementsTab extends StatelessWidget {
     final isSender = notification.userId == viewModel.currentUserId;
 
     String label;
-    if (isSender && !isRecipient) {
+    if (notification.audience == 'facilitators') {
+      label = context.l10n.facilitatorsOnly;
+    } else if (isSender && !isRecipient) {
       final recipient = viewModel.members.firstWhere(
         (m) => m.authUserId == notification.recipientUserId,
         orElse: () => CcMembersRow({}),
@@ -449,7 +491,7 @@ class GroupAnnouncementsTab extends StatelessWidget {
                       ],
                     ),
                   ),
-                  if (notification.recipientUserId != null)
+                  if (notification.recipientUserId != null || notification.audience == 'facilitators')
                     Padding(
                       padding: const EdgeInsetsDirectional.fromSTEB(
                           16.0, 0.0, 16.0, 6.0),
@@ -460,7 +502,7 @@ class GroupAnnouncementsTab extends StatelessWidget {
                     padding: const EdgeInsetsDirectional.fromSTEB(
                         16.0, 0.0, 16.0, 12.0),
                     child: Text(
-                      '${_messageTime(context, notification)} - From ${notification.displayName ?? context.l10n.userFallback} - ${context.l10n.facilitator}',
+                      _messageSubtitle(context, notification),
                       style: AppTheme.of(context).labelSmall.override(
                             font: GoogleFonts.lexendDeca(),
                             color: AppTheme.of(context).secondary,

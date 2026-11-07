@@ -4,6 +4,7 @@ import 'package:gw_community/app_state.dart';
 import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:gw_community/data/repositories/announcement_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/domain/community/message_visibility.dart';
 import 'package:gw_community/domain/community/reply_attention.dart';
 import 'package:gw_community/ui/core/view_as/view_as_session.dart';
 
@@ -37,8 +38,20 @@ class AnnouncementViewViewModel extends ChangeNotifier {
 
   CcViewNotificationsUsersRow? get announcement => _announcement;
 
-  /// Facilitators see every comment. Members see only what they wrote.
+  /// Facilitators see every comment. Members see only what they wrote, except
+  /// the author of a message to the facilitators, who sees that whole thread.
   bool get canSeeAllComments => _canSeeAllComments;
+
+  bool get _seesEveryCommentOnThisMessage {
+    if (_canSeeAllComments) return true;
+    final message = _announcement;
+    if (message == null) return false;
+    return authorSeesFacilitatorReplies(
+      audience: message.audience,
+      authorUserId: message.userId,
+      viewerId: _viewerId,
+    );
+  }
   CommentListOrder get commentOrder => _commentOrder;
 
   bool get showCommentThread => canSeeAllComments || comments.isNotEmpty;
@@ -59,7 +72,7 @@ class AnnouncementViewViewModel extends ChangeNotifier {
         ),
       ),
     );
-    final visible = _canSeeAllComments
+    final visible = _seesEveryCommentOnThisMessage
         ? _comments
         : _comments.where((comment) => visibleIds.contains(comment.id));
     final list = List<CcViewOrderedCommentsRow>.of(visible);

@@ -281,6 +281,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 await _handleResetOnboarding(context, viewModel);
               },
               userProfile: viewModel.userProfile,
+              showFacilitatorSettings: viewModel.facilitatesAnyGroup,
             ),
             Padding(
               padding:

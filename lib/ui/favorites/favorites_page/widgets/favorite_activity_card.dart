@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gw_community/data/repositories/favorites_repository.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/widgets/favorite_button.dart';
@@ -52,6 +53,7 @@ class _FavoriteActivityCardState extends State<FavoriteActivityCard> {
               title: widget.activity.activityPrompt,
               content: widget.activity.text,
               activityId: widget.activity.id,
+              activityLabel: widget.activity.activityLabel,
             );
           } else if (widget.activity.activityType == 'video') {
             context.pushNamed(
@@ -90,7 +92,10 @@ class _FavoriteActivityCardState extends State<FavoriteActivityCard> {
             children: [
               // Título
               Text(
-                valueOrDefault<String>(widget.activity.activityLabel, 'Activity'),
+                localizedJourneyActivityLabel(
+                  context.l10n,
+                  widget.activity.activityLabel,
+                ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: AppTheme.of(context).learn.contentTitle.override(

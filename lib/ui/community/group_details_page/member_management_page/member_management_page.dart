@@ -15,6 +15,8 @@ import 'package:provider/provider.dart';
 
 enum _MemberSortBy { name, email }
 
+enum _MemberAccessFilter { all, active, neverAccessed }
+
 /// Page for managing group members
 /// Only accessible to ADMIN and GROUP_MANAGER roles
 class MemberManagementPage extends StatefulWidget {
@@ -44,9 +46,12 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
   List<CcMembersRow> _regularMembers = [];
 
   bool _isLoadingMembers = true;
+  bool _isLoadingMore = false;
+  int _loadGeneration = 0;
 
   String _rosterQuery = '';
   _MemberSortBy _sortBy = _MemberSortBy.name;
+  _MemberAccessFilter _accessFilter = _MemberAccessFilter.all;
   bool _facilitatorsExpanded = true;
 
   @override
@@ -76,39 +81,62 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
   }
 
   Future<void> _loadCurrentMembers() async {
-    setState(() => _isLoadingMembers = true);
+    final generation = ++_loadGeneration;
+    final keepList = _currentMembers.isNotEmpty;
+    setState(() {
+      if (!keepList) _isLoadingMembers = true;
+      _isLoadingMore = true;
+    });
     try {
       final groupMembersLinks =
           await _groupRepository.getGroupMembers(widget.groupId);
-      final membersUsers =
-          await _groupRepository.getGroupMembersAsUsers(widget.groupId);
+      if (!mounted || generation != _loadGeneration) return;
 
-      if (mounted) {
-        final managerIds = groupMembersLinks
-            .where((m) =>
-                m.userRole == 'GROUP_MANAGER' ||
-                m.userRole == 'Manager' ||
-                m.userRole == 'group_manager')
-            .map((m) => m.userId)
-            .toSet();
-
-        setState(() {
-          _currentMembers = membersUsers;
-          _facilitators = membersUsers
-              .where((m) => managerIds.contains(m.authUserId))
-              .toList();
-          _regularMembers = membersUsers
-              .where((m) => !managerIds.contains(m.authUserId))
-              .toList();
-          _isLoadingMembers = false;
-        });
-      }
+      final membersUsers = await _groupRepository.getGroupMembersAsUsers(
+        widget.groupId,
+        links: groupMembersLinks,
+        onProgress: (loaded) {
+          if (!mounted || generation != _loadGeneration) return;
+          setState(() {
+            _applyRoster(loaded, groupMembersLinks);
+            _isLoadingMembers = false;
+          });
+        },
+      );
+      if (!mounted || generation != _loadGeneration) return;
+      setState(() {
+        _applyRoster(membersUsers, groupMembersLinks);
+        _isLoadingMembers = false;
+        _isLoadingMore = false;
+      });
     } catch (e) {
       debugPrint('Error loading members: $e');
-      if (mounted) {
-        setState(() => _isLoadingMembers = false);
+      if (mounted && generation == _loadGeneration) {
+        setState(() {
+          _isLoadingMembers = false;
+          _isLoadingMore = false;
+        });
       }
     }
+  }
+
+  void _applyRoster(
+    List<CcMembersRow> membersUsers,
+    List<CcGroupMembersRow> links,
+  ) {
+    final managerIds = links
+        .where((m) =>
+            m.userRole == 'GROUP_MANAGER' ||
+            m.userRole == 'Manager' ||
+            m.userRole == 'group_manager')
+        .map((m) => m.userId)
+        .toSet();
+
+    _currentMembers = membersUsers;
+    _facilitators =
+        membersUsers.where((m) => managerIds.contains(m.authUserId)).toList();
+    _regularMembers =
+        membersUsers.where((m) => !managerIds.contains(m.authUserId)).toList();
   }
 
   String _getDisplayName(CcMembersRow member, BuildContext context) {
@@ -146,8 +174,26 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
         display.contains(q);
   }
 
-  List<CcMembersRow> _visibleMembers(List<CcMembersRow> source) {
-    final filtered = source.where(_matchesRosterQuery).toList();
+  bool _matchesAccessFilter(CcMembersRow member) {
+    switch (_accessFilter) {
+      case _MemberAccessFilter.all:
+        return true;
+      case _MemberAccessFilter.active:
+        return member.lastAccess != null;
+      case _MemberAccessFilter.neverAccessed:
+        return member.lastAccess == null;
+    }
+  }
+
+  List<CcMembersRow> _visibleMembers(
+    List<CcMembersRow> source, {
+    bool applyAccessFilter = false,
+  }) {
+    final filtered = source.where((member) {
+      if (!_matchesRosterQuery(member)) return false;
+      if (applyAccessFilter && !_matchesAccessFilter(member)) return false;
+      return true;
+    }).toList();
     filtered.sort((a, b) {
       switch (_sortBy) {
         case _MemberSortBy.email:
@@ -167,11 +213,10 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
     return filtered;
   }
 
-  List<CcMembersRow> get _visibleFacilitators =>
-      _visibleMembers(_facilitators);
+  List<CcMembersRow> get _visibleFacilitators => _visibleMembers(_facilitators);
 
   List<CcMembersRow> get _visibleRegularMembers =>
-      _visibleMembers(_regularMembers);
+      _visibleMembers(_regularMembers, applyAccessFilter: true);
 
   int get _totalMembersCount => _regularMembers.length;
 
@@ -250,8 +295,7 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
           setState(() {
             _currentMembers
                 .removeWhere((m) => (m.authUserId ?? m.id) == userId);
-            _facilitators
-                .removeWhere((m) => (m.authUserId ?? m.id) == userId);
+            _facilitators.removeWhere((m) => (m.authUserId ?? m.id) == userId);
             _regularMembers
                 .removeWhere((m) => (m.authUserId ?? m.id) == userId);
           });
@@ -560,7 +604,8 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
                       ),
                     ),
                 ],
-                if (_regularMembers.isNotEmpty || visibleMembers.isNotEmpty) ...[
+                if (_regularMembers.isNotEmpty ||
+                    visibleMembers.isNotEmpty) ...[
                   SliverPadding(
                     padding: EdgeInsets.fromLTRB(
                       16.0,
@@ -601,8 +646,24 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
                       ),
                     ),
                   ),
-                ],
-                if (visibleFacilitators.isEmpty && visibleMembers.isEmpty)
+                ] else if (visibleFacilitators.isNotEmpty &&
+                    _regularMembers.isNotEmpty &&
+                    !_isLoadingMore)
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 88.0),
+                    sliver: SliverToBoxAdapter(
+                      child: Text(
+                        context.l10n.noMembersFound,
+                        style: AppTheme.of(context).bodyMedium.override(
+                              font: GoogleFonts.lexendDeca(),
+                              color: AppTheme.of(context).secondaryText,
+                            ),
+                      ),
+                    ),
+                  ),
+                if (visibleFacilitators.isEmpty &&
+                    visibleMembers.isEmpty &&
+                    !_isLoadingMore)
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.all(24.0),
@@ -613,6 +674,18 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
                                 font: GoogleFonts.lexendDeca(),
                                 color: AppTheme.of(context).secondaryText,
                               ),
+                        ),
+                      ),
+                    ),
+                  ),
+                if (_isLoadingMore)
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 88.0),
+                      child: Center(
+                        child: SpinKitRipple(
+                          color: AppTheme.of(context).primary,
+                          size: 32.0,
                         ),
                       ),
                     ),
@@ -654,13 +727,16 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
   }
 
   bool get _hasActiveRosterFilter =>
-      _rosterQuery.isNotEmpty || _sortBy != _MemberSortBy.name;
+      _rosterQuery.isNotEmpty ||
+      _sortBy != _MemberSortBy.name ||
+      _accessFilter != _MemberAccessFilter.all;
 
   void _clearRosterFilters() {
     _rosterSearchController.clear();
     setState(() {
       _rosterQuery = '';
       _sortBy = _MemberSortBy.name;
+      _accessFilter = _MemberAccessFilter.all;
       _facilitatorsExpanded = true;
     });
   }
@@ -693,7 +769,7 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
   Widget _buildSortChip({
     required BuildContext context,
     required String label,
-    required IconData icon,
+    IconData? icon,
     required bool isSelected,
     required VoidCallback onTap,
   }) {
@@ -711,12 +787,14 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              icon,
-              size: 16,
-              color: isSelected ? Colors.white : secondary,
-            ),
-            const SizedBox(width: 6),
+            if (icon != null) ...[
+              Icon(
+                icon,
+                size: 16,
+                color: isSelected ? Colors.white : secondary,
+              ),
+              const SizedBox(width: 6),
+            ],
             Text(
               label,
               style: GoogleFonts.lexendDeca(
@@ -794,28 +872,32 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
   }
 
   Widget _buildMemberCounters(BuildContext context) {
-    final primary = AppTheme.of(context).primary;
-    final style = GoogleFonts.lexendDeca(
-      fontSize: 13,
-      fontWeight: FontWeight.w600,
-      color: primary,
-    );
-
     return Wrap(
-      spacing: 16,
-      runSpacing: 4,
+      spacing: 8,
+      runSpacing: 8,
       children: [
-        Text(
-          context.l10n.memberCountTotal(_totalMembersCount),
-          style: style,
+        _buildSortChip(
+          context: context,
+          label: context.l10n.memberCountTotal(_totalMembersCount),
+          isSelected: _accessFilter == _MemberAccessFilter.all,
+          onTap: () =>
+              setState(() => _accessFilter = _MemberAccessFilter.all),
         ),
-        Text(
-          context.l10n.memberCountActive(_activeMembersCount),
-          style: style,
+        _buildSortChip(
+          context: context,
+          label: context.l10n.memberCountActive(_activeMembersCount),
+          isSelected: _accessFilter == _MemberAccessFilter.active,
+          onTap: () =>
+              setState(() => _accessFilter = _MemberAccessFilter.active),
         ),
-        Text(
-          context.l10n.memberCountNeverAccessed(_neverAccessedMembersCount),
-          style: style,
+        _buildSortChip(
+          context: context,
+          label: context.l10n
+              .memberCountNeverAccessed(_neverAccessedMembersCount),
+          isSelected: _accessFilter == _MemberAccessFilter.neverAccessed,
+          onTap: () => setState(
+            () => _accessFilter = _MemberAccessFilter.neverAccessed,
+          ),
         ),
       ],
     );
@@ -827,8 +909,7 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
     bool isFacilitator = false,
   }) {
     final displayName = _getDisplayName(member, context);
-    final canEditName =
-        context.watch<FFAppState>().appConfig.enableEditName;
+    final canEditName = context.watch<FFAppState>().appConfig.enableEditName;
 
     return Card(
       margin: const EdgeInsets.only(bottom: 8.0),

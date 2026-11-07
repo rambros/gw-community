@@ -910,6 +910,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get journeyActivityPractices => 'Práticas';
 
   @override
+  String get journeyActivityDailyPractice => 'Prática diária';
+
+  @override
   String get optionalActivity => 'Opcional';
 
   @override
@@ -2231,4 +2234,77 @@ class AppLocalizationsPt extends AppLocalizations {
   String errorResettingJourney(String error) {
     return 'Erro ao reiniciar a jornada: $error';
   }
+
+  @override
+  String get facilitatorSettings => 'Ajustes de facilitador';
+
+  @override
+  String get facilitatorSettingsIntro =>
+      'Escolha, em cada grupo que você facilita, o que deve chegar até você. Os e-mails de experiência e de resumo ficam desligados até você ativar.';
+
+  @override
+  String get notifyNewExperiences => 'Novas experiências';
+
+  @override
+  String get notifyNewExperiencesSubtitle =>
+      'Um aviso quando alguém envia uma experiência para aprovação e quando ela é publicada.';
+
+  @override
+  String get emailEachExperience => 'E-mail a cada experiência publicada';
+
+  @override
+  String get emailEachExperienceSubtitle =>
+      'Um e-mail quando a experiência fica visível no grupo. Nada enquanto é rascunho ou espera aprovação.';
+
+  @override
+  String get notifyMessagesForYou => 'Novas mensagens para você';
+
+  @override
+  String get notifyMessagesForYouSubtitle =>
+      'Mensagens privadas para você, mensagens que membros enviam aos facilitadores e respostas novas.';
+
+  @override
+  String get emailMemberMessage => 'E-mail quando um membro escrever para você';
+
+  @override
+  String get emailMemberMessageSubtitle =>
+      'Um e-mail para cada mensagem que um membro envia só aos facilitadores.';
+
+  @override
+  String get emailDailySummary => 'Resumo diário por e-mail';
+
+  @override
+  String get emailDailySummarySubtitle =>
+      'Um e-mail às 8h com todos os grupos em que isto estiver ligado.';
+
+  @override
+  String get emailWeeklySummary => 'Resumo semanal por e-mail';
+
+  @override
+  String get emailWeeklySummarySubtitle =>
+      'Um e-mail na segunda às 8h com a semana de todos os grupos em que isto estiver ligado.';
+
+  @override
+  String get applySettingsToAllGroups =>
+      'Usar estes ajustes em todos os grupos';
+
+  @override
+  String get couldNotSaveFacilitatorSettings =>
+      'Não foi possível salvar estes ajustes. Tente de novo.';
+
+  @override
+  String get newMessageToFacilitator => 'Nova mensagem para o facilitador';
+
+  @override
+  String get messageToFacilitatorHint =>
+      'Só os facilitadores deste grupo verão esta mensagem.';
+
+  @override
+  String get facilitatorsOnly => 'Só os facilitadores';
+
+  @override
+  String get pastMessages => 'Mensagens anteriores';
+
+  @override
+  String get noNewMessagesAtTheMoment => 'Não há mensagens novas no momento.';
 }

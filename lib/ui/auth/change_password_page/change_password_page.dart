@@ -64,7 +64,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               context.l10n.changePassword,
               style: AppTheme.of(context).headlineMedium.override(
                     font: GoogleFonts.lexendDeca(
-                      fontWeight: AppTheme.of(context).headlineMedium.fontWeight,
+                      fontWeight:
+                          AppTheme.of(context).headlineMedium.fontWeight,
                       fontStyle: AppTheme.of(context).headlineMedium.fontStyle,
                     ),
                     color: Colors.white,
@@ -99,8 +100,12 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                             context.l10n.enterNewPasswordBelow,
                             style: AppTheme.of(context).bodyMedium.override(
                                   font: GoogleFonts.lexendDeca(
-                                    fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                                    fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
+                                    fontWeight: AppTheme.of(context)
+                                        .bodyMedium
+                                        .fontWeight,
+                                    fontStyle: AppTheme.of(context)
+                                        .bodyMedium
+                                        .fontStyle,
                                   ),
                                   color: AppTheme.of(context).secondaryText,
                                   fontSize: 14.0,
@@ -108,7 +113,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                                 ),
                           ),
                           Padding(
-                            padding: const EdgeInsetsDirectional.fromSTEB(0.0, 24.0, 0.0, 0.0),
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                0.0, 24.0, 0.0, 0.0),
                             child: TextFormField(
                               controller: _passwordController,
                               focusNode: _passwordFocusNode,
@@ -116,24 +122,34 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                               obscureText: !viewModel.passwordVisibility,
                               decoration: InputDecoration(
                                 labelText: context.l10n.newPassword,
-                                labelStyle: AppTheme.of(context).labelLarge.override(
-                                      font: GoogleFonts.poppins(
-                                        fontWeight: AppTheme.of(context).labelLarge.fontWeight,
-                                        fontStyle: AppTheme.of(context).labelLarge.fontStyle,
-                                      ),
-                                      color: AppTheme.of(context).primary,
-                                      fontSize: 16.0,
-                                      letterSpacing: 0.0,
-                                    ),
+                                labelStyle:
+                                    AppTheme.of(context).labelLarge.override(
+                                          font: GoogleFonts.poppins(
+                                            fontWeight: AppTheme.of(context)
+                                                .labelLarge
+                                                .fontWeight,
+                                            fontStyle: AppTheme.of(context)
+                                                .labelLarge
+                                                .fontStyle,
+                                          ),
+                                          color: AppTheme.of(context).primary,
+                                          fontSize: 16.0,
+                                          letterSpacing: 0.0,
+                                        ),
                                 hintText: context.l10n.enterNewPassword,
-                                hintStyle: AppTheme.of(context).bodySmall.override(
-                                      font: GoogleFonts.lexendDeca(
-                                        fontWeight: AppTheme.of(context).bodySmall.fontWeight,
-                                        fontStyle: AppTheme.of(context).bodySmall.fontStyle,
-                                      ),
-                                      color: AppTheme.of(context).alternate,
-                                      letterSpacing: 0.0,
-                                    ),
+                                hintStyle:
+                                    AppTheme.of(context).bodySmall.override(
+                                          font: GoogleFonts.lexendDeca(
+                                            fontWeight: AppTheme.of(context)
+                                                .bodySmall
+                                                .fontWeight,
+                                            fontStyle: AppTheme.of(context)
+                                                .bodySmall
+                                                .fontStyle,
+                                          ),
+                                          color: AppTheme.of(context).alternate,
+                                          letterSpacing: 0.0,
+                                        ),
                                 enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
                                     color: AppTheme.of(context).alternate,
@@ -165,7 +181,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                                 filled: true,
                                 fillColor: const Color(0xFFF9FAFB),
                                 suffixIcon: InkWell(
-                                  onTap: () => viewModel.togglePasswordVisibility(),
+                                  onTap: () =>
+                                      viewModel.togglePasswordVisibility(),
                                   focusNode: FocusNode(skipTraversal: true),
                                   child: Icon(
                                     viewModel.passwordVisibility
@@ -178,8 +195,12 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                               ),
                               style: AppTheme.of(context).bodyMedium.override(
                                     font: GoogleFonts.lexendDeca(
-                                      fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                                      fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
+                                      fontWeight: AppTheme.of(context)
+                                          .bodyMedium
+                                          .fontWeight,
+                                      fontStyle: AppTheme.of(context)
+                                          .bodyMedium
+                                          .fontStyle,
                                     ),
                                     color: AppTheme.of(context).secondary,
                                     fontSize: 14.0,
@@ -194,7 +215,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                0.0, 16.0, 0.0, 0.0),
                             child: TextFormField(
                               controller: _confirmPasswordController,
                               focusNode: _confirmPasswordFocusNode,
@@ -202,24 +224,34 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                               obscureText: !viewModel.confirmPasswordVisibility,
                               decoration: InputDecoration(
                                 labelText: context.l10n.confirmPassword,
-                                labelStyle: AppTheme.of(context).labelLarge.override(
-                                      font: GoogleFonts.poppins(
-                                        fontWeight: AppTheme.of(context).labelLarge.fontWeight,
-                                        fontStyle: AppTheme.of(context).labelLarge.fontStyle,
-                                      ),
-                                      color: AppTheme.of(context).primary,
-                                      fontSize: 16.0,
-                                      letterSpacing: 0.0,
-                                    ),
+                                labelStyle:
+                                    AppTheme.of(context).labelLarge.override(
+                                          font: GoogleFonts.poppins(
+                                            fontWeight: AppTheme.of(context)
+                                                .labelLarge
+                                                .fontWeight,
+                                            fontStyle: AppTheme.of(context)
+                                                .labelLarge
+                                                .fontStyle,
+                                          ),
+                                          color: AppTheme.of(context).primary,
+                                          fontSize: 16.0,
+                                          letterSpacing: 0.0,
+                                        ),
                                 hintText: context.l10n.confirmNewPassword,
-                                hintStyle: AppTheme.of(context).bodySmall.override(
-                                      font: GoogleFonts.lexendDeca(
-                                        fontWeight: AppTheme.of(context).bodySmall.fontWeight,
-                                        fontStyle: AppTheme.of(context).bodySmall.fontStyle,
-                                      ),
-                                      color: AppTheme.of(context).alternate,
-                                      letterSpacing: 0.0,
-                                    ),
+                                hintStyle:
+                                    AppTheme.of(context).bodySmall.override(
+                                          font: GoogleFonts.lexendDeca(
+                                            fontWeight: AppTheme.of(context)
+                                                .bodySmall
+                                                .fontWeight,
+                                            fontStyle: AppTheme.of(context)
+                                                .bodySmall
+                                                .fontStyle,
+                                          ),
+                                          color: AppTheme.of(context).alternate,
+                                          letterSpacing: 0.0,
+                                        ),
                                 enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
                                     color: AppTheme.of(context).alternate,
@@ -251,7 +283,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                                 filled: true,
                                 fillColor: const Color(0xFFF9FAFB),
                                 suffixIcon: InkWell(
-                                  onTap: () => viewModel.toggleConfirmPasswordVisibility(),
+                                  onTap: () => viewModel
+                                      .toggleConfirmPasswordVisibility(),
                                   focusNode: FocusNode(skipTraversal: true),
                                   child: Icon(
                                     viewModel.confirmPasswordVisibility
@@ -264,8 +297,12 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                               ),
                               style: AppTheme.of(context).bodyMedium.override(
                                     font: GoogleFonts.lexendDeca(
-                                      fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
-                                      fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
+                                      fontWeight: AppTheme.of(context)
+                                          .bodyMedium
+                                          .fontWeight,
+                                      fontStyle: AppTheme.of(context)
+                                          .bodyMedium
+                                          .fontStyle,
                                     ),
                                     color: AppTheme.of(context).secondary,
                                     fontSize: 14.0,
@@ -283,7 +320,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsetsDirectional.fromSTEB(0.0, 24.0, 0.0, 0.0),
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                0.0, 24.0, 0.0, 0.0),
                             child: FFButtonWidget(
                               onPressed: () async {
                                 if (_formKey.currentState!.validate()) {
@@ -293,16 +331,20 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                                       _passwordController.text,
                                     );
                                     if (context.mounted) {
-                                      AppStateNotifier.instance.pendingPasswordRecovery = false;
-                                      ScaffoldMessenger.of(context).showSnackBar(
+                                      AppStateNotifier.instance
+                                          .finishPasswordRecovery();
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
                                         SnackBar(
                                           content: Text(
                                             context.l10n.passwordUpdated,
                                             style: TextStyle(
-                                              color: AppTheme.of(context).primaryText,
+                                              color: AppTheme.of(context)
+                                                  .primaryText,
                                             ),
                                           ),
-                                          backgroundColor: AppTheme.of(context).secondary,
+                                          backgroundColor:
+                                              AppTheme.of(context).secondary,
                                         ),
                                       );
                                       if (context.canPop()) {
@@ -313,15 +355,18 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                                     }
                                   } catch (e) {
                                     if (context.mounted) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
                                         SnackBar(
                                           content: Text(
                                             e.toString(),
                                             style: TextStyle(
-                                              color: AppTheme.of(context).primaryText,
+                                              color: AppTheme.of(context)
+                                                  .primaryText,
                                             ),
                                           ),
-                                          backgroundColor: AppTheme.of(context).secondary,
+                                          backgroundColor:
+                                              AppTheme.of(context).secondary,
                                         ),
                                       );
                                     }
@@ -332,19 +377,27 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                               options: FFButtonOptions(
                                 width: double.infinity,
                                 height: 50.0,
-                                padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                                iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                                padding: const EdgeInsetsDirectional.fromSTEB(
+                                    0.0, 0.0, 0.0, 0.0),
+                                iconPadding:
+                                    const EdgeInsetsDirectional.fromSTEB(
+                                        0.0, 0.0, 0.0, 0.0),
                                 color: AppTheme.of(context).primary,
-                                textStyle: AppTheme.of(context).titleSmall.override(
-                                      font: GoogleFonts.lexendDeca(
-                                        fontWeight: AppTheme.of(context).titleSmall.fontWeight,
-                                        fontStyle: AppTheme.of(context).titleSmall.fontStyle,
-                                      ),
-                                      color: Colors.white,
-                                      fontSize: 16.0,
-                                      letterSpacing: 0.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                textStyle:
+                                    AppTheme.of(context).titleSmall.override(
+                                          font: GoogleFonts.lexendDeca(
+                                            fontWeight: AppTheme.of(context)
+                                                .titleSmall
+                                                .fontWeight,
+                                            fontStyle: AppTheme.of(context)
+                                                .titleSmall
+                                                .fontStyle,
+                                          ),
+                                          color: Colors.white,
+                                          fontSize: 16.0,
+                                          letterSpacing: 0.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                 elevation: 3.0,
                                 borderSide: const BorderSide(
                                   color: Colors.transparent,

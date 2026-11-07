@@ -31,16 +31,22 @@ String localizedJourneyActivityLabel(AppLocalizations l10n, String? label) {
   final base = numbered?.group(1)?.trim() ?? normalized;
   final number = numbered?.group(2);
   final translated = switch (base) {
-    'inspiration' || 'inspiração' || 'inspiracao' => l10n.journeyActivityInspiration,
-    'meditation' || 'meditação' || 'meditacao' => l10n.journeyActivityMeditation,
+    'inspiration' || 'inspiração' || 'inspiracao' =>
+      l10n.journeyActivityInspiration,
+    'meditation' || 'meditação' || 'meditacao' =>
+      l10n.journeyActivityMeditation,
+    'daily practice' ||
+    'prática diária' ||
+    'pratica diaria' ||
+    'pratica diária' ||
+    'prática diaria' =>
+      l10n.journeyActivityDailyPractice,
     'practices' ||
     'practice' ||
     'práticas' ||
     'pratica' ||
-    'praticas' ||
-    'daily practice' =>
+    'praticas' =>
       l10n.journeyActivityPractices,
-    'journal' => l10n.mediaJournal,
     _ => null,
   };
   if (translated == null) {

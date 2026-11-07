@@ -7,7 +7,6 @@ import 'package:gw_community/ui/community/group_details_page/view_model/group_de
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
 import 'package:gw_community/ui/core/view_as/view_as_session.dart';
-import 'package:gw_community/ui/core/widgets/user_avatar.dart';
 import 'package:provider/provider.dart';
 
 class GroupAboutTab extends StatelessWidget {
@@ -26,7 +25,8 @@ class GroupAboutTab extends StatelessWidget {
           children: [
             _buildSection(context, context.l10n.description, group.description),
             if (viewModel.shouldShowOnlyAbout) ...[
-              if (!viewModel.canJoin && group.groupPrivacy?.toLowerCase().trim() == 'private') ...[
+              if (!viewModel.canJoin &&
+                  group.groupPrivacy?.toLowerCase().trim() == 'private') ...[
                 const SizedBox(height: 24.0),
                 Container(
                   width: double.infinity,
@@ -34,25 +34,31 @@ class GroupAboutTab extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: AppTheme.of(context).secondaryBackground,
                     borderRadius: BorderRadius.circular(12.0),
-                    border: Border.all(color: AppTheme.of(context).secondary, width: 1.0),
+                    border: Border.all(
+                        color: AppTheme.of(context).secondary, width: 1.0),
                   ),
                   child: Column(
                     children: [
-                      Icon(Icons.lock_outline, color: AppTheme.of(context).secondary, size: 32.0),
+                      Icon(Icons.lock_outline,
+                          color: AppTheme.of(context).secondary, size: 32.0),
                       const SizedBox(height: 12.0),
                       Text(
                         context.l10n.privateGroupInviteOnly,
                         textAlign: TextAlign.center,
                         style: AppTheme.of(
                           context,
-                        ).bodyMedium.override(font: GoogleFonts.lexendDeca(), color: AppTheme.of(context).secondary),
+                        ).bodyMedium.override(
+                            font: GoogleFonts.lexendDeca(),
+                            color: AppTheme.of(context).secondary),
                       ),
                     ],
                   ),
                 ),
               ],
             ],
-            if (viewModel.shouldShowOnlyAbout && viewModel.canJoin && !viewAsBlocksWrite()) ...[
+            if (viewModel.shouldShowOnlyAbout &&
+                viewModel.canJoin &&
+                !viewAsBlocksWrite()) ...[
               const SizedBox(height: 16.0),
               const SizedBox(height: 24.0),
               Center(
@@ -62,12 +68,17 @@ class GroupAboutTab extends StatelessWidget {
                   options: FFButtonOptions(
                     width: double.infinity,
                     height: 50.0,
-                    padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                    iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                    padding: const EdgeInsetsDirectional.fromSTEB(
+                        0.0, 0.0, 0.0, 0.0),
+                    iconPadding: const EdgeInsetsDirectional.fromSTEB(
+                        0.0, 0.0, 0.0, 0.0),
                     color: AppTheme.of(context).primary,
                     textStyle: AppTheme.of(
                       context,
-                    ).titleSmall.override(font: GoogleFonts.lexendDeca(), color: Colors.white, fontSize: 16.0),
+                    ).titleSmall.override(
+                        font: GoogleFonts.lexendDeca(),
+                        color: Colors.white,
+                        fontSize: 16.0),
                     elevation: 2.0,
                     borderRadius: BorderRadius.circular(12.0),
                   ),
@@ -76,8 +87,11 @@ class GroupAboutTab extends StatelessWidget {
               ),
             ],
             const SizedBox(height: 24.0),
-            if (viewModel.isLoadingMembers)
-              Center(child: SpinKitRipple(color: AppTheme.of(context).primary, size: 30.0))
+            if (viewModel.isLoadingMembers &&
+                viewModel.visibleAboutMembers.isEmpty)
+              Center(
+                  child: SpinKitRipple(
+                      color: AppTheme.of(context).primary, size: 30.0))
             else if (viewModel.visibleAboutMembers.isEmpty)
               Text(
                 context.l10n.noMembersFound,
@@ -85,8 +99,15 @@ class GroupAboutTab extends StatelessWidget {
                       color: AppTheme.of(context).textColor,
                     ),
               )
-            else
+            else ...[
               _buildMembersSections(context, viewModel),
+              if (viewModel.isLoadingMembers) ...[
+                const SizedBox(height: 16.0),
+                Center(
+                    child: SpinKitRipple(
+                        color: AppTheme.of(context).primary, size: 30.0)),
+              ],
+            ],
           ],
         ),
       ),
@@ -102,7 +123,9 @@ class GroupAboutTab extends StatelessWidget {
           title,
           style: AppTheme.of(
             context,
-          ).titleMedium.override(font: GoogleFonts.lexendDeca(), color: AppTheme.of(context).primary),
+          ).titleMedium.override(
+              font: GoogleFonts.lexendDeca(),
+              color: AppTheme.of(context).primary),
         ),
         const SizedBox(height: 4.0),
         Text(
@@ -115,7 +138,8 @@ class GroupAboutTab extends StatelessWidget {
     );
   }
 
-  Widget _buildMembersSections(BuildContext context, GroupDetailsViewModel viewModel) {
+  Widget _buildMembersSections(
+      BuildContext context, GroupDetailsViewModel viewModel) {
     // Facilitators always listed; regular members only if they opened the app.
     final facilitators = viewModel.visibleAboutFacilitators;
     final regularMembers = viewModel.visibleAboutRegularMembers;
@@ -129,7 +153,9 @@ class GroupAboutTab extends StatelessWidget {
             context.l10n.facilitators,
             style: AppTheme.of(
               context,
-            ).titleMedium.override(font: GoogleFonts.lexendDeca(), color: AppTheme.of(context).primary),
+            ).titleMedium.override(
+                font: GoogleFonts.lexendDeca(),
+                color: AppTheme.of(context).primary),
           ),
           const SizedBox(height: 8.0),
           ListView.builder(
@@ -148,7 +174,9 @@ class GroupAboutTab extends StatelessWidget {
             context.l10n.members,
             style: AppTheme.of(
               context,
-            ).titleMedium.override(font: GoogleFonts.lexendDeca(), color: AppTheme.of(context).primary),
+            ).titleMedium.override(
+                font: GoogleFonts.lexendDeca(),
+                color: AppTheme.of(context).primary),
           ),
           const SizedBox(height: 8.0),
           ListView.builder(
@@ -169,16 +197,17 @@ class GroupAboutTab extends StatelessWidget {
       if (member.hideLastName == true) {
         return member.firstName ?? member.displayName ?? context.l10n.unknown;
       }
-      final fullName = '${member.firstName ?? ''} ${member.lastName ?? ''}'.trim();
-      return fullName.isNotEmpty ? fullName : (member.displayName ?? context.l10n.unknown);
+      final fullName =
+          '${member.firstName ?? ''} ${member.lastName ?? ''}'.trim();
+      return fullName.isNotEmpty
+          ? fullName
+          : (member.displayName ?? context.l10n.unknown);
     }();
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
         children: [
-          UserAvatar(imageUrl: member.photoUrl, fullName: displayName, size: 36.0),
-          const SizedBox(width: 10.0),
           Text(
             displayName,
             style: AppTheme.of(context).bodyMedium.override(

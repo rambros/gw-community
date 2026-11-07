@@ -30,6 +30,23 @@ void main() {
       );
     });
 
+    test('builds a share/email URL for a group message', () {
+      expect(
+        PortalAppLinks.message(96),
+        'https://invite.callofthetime.org/message?id=96',
+      );
+      expect(
+        PortalAppLinks.inAppLocation(
+          Uri.parse('https://invite.callofthetime.org/message?id=96'),
+        ),
+        '/message?id=96',
+      );
+      expect(
+        PortalAppLinks.inAppLocation(Uri.parse('gw://message?id=96')),
+        '/message?id=96',
+      );
+    });
+
     test('maps custom-scheme links used as a web fallback', () {
       expect(
         PortalAppLinks.inAppLocation(Uri.parse('gw://event?id=7')),

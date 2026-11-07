@@ -8,7 +8,6 @@ import 'package:gw_community/ui/community/announcement_add_page/view_model/add_a
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_icon_button.dart';
 import 'package:gw_community/ui/core/ui/flutter_flow_widgets.dart';
-import 'package:gw_community/ui/core/widgets/user_avatar.dart';
 import 'package:gw_community/utils/context_extensions.dart';
 import 'package:gw_community/utils/flutter_flow_util.dart';
 import 'package:provider/provider.dart';
@@ -22,6 +21,7 @@ class AnnouncementAddPage extends StatefulWidget {
     this.groupMembers = const [],
     this.initialRecipientAuthUserId,
     this.initialRecipient,
+    this.toFacilitators = false,
   }) : privacy = privacy ?? 'public';
 
   final int? groupId;
@@ -30,6 +30,7 @@ class AnnouncementAddPage extends StatefulWidget {
   final List<CcMembersRow> groupMembers;
   final String? initialRecipientAuthUserId;
   final CcMembersRow? initialRecipient;
+  final bool toFacilitators;
 
   static String routeName = 'announcementAddPage';
   static String routePath = '/announcementAddPage';
@@ -55,6 +56,7 @@ class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
       groupName: widget.groupName,
       privacy: widget.privacy,
       groupMembers: members,
+      toFacilitators: widget.toFacilitators,
     );
     final initial = _resolveInitialRecipient(members);
     if (initial != null) {
@@ -85,6 +87,52 @@ class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
       if (member.authUserId == preferredId) return member;
     }
     return widget.initialRecipient;
+  }
+
+  String _memberName(CcMembersRow? member) {
+    if (member == null) return '';
+
+    final displayName = member.displayName?.trim();
+    if (displayName != null && displayName.isNotEmpty) {
+      return displayName;
+    }
+
+    final parts = <String>[
+      if (member.firstName?.trim().isNotEmpty == true) member.firstName!.trim(),
+      if (member.hideLastName != true &&
+          member.lastName?.trim().isNotEmpty == true)
+        member.lastName!.trim(),
+    ];
+    final name = parts.join(' ').trim();
+    if (name.isNotEmpty) return name;
+
+    final email = member.email?.trim();
+    if (email != null && email.contains('@')) {
+      final local = email.split('@').first.trim();
+      if (local.isNotEmpty) return local;
+    }
+    return '';
+  }
+
+  String _headerUserName(CcMembersRow? member) {
+    final fromMember = _memberName(member);
+    if (fromMember.isNotEmpty) return fromMember;
+
+    final loginUser = FFAppState().loginUser;
+    for (final candidate in [
+      loginUser.displayName,
+      loginUser.fullName,
+      loginUser.firstName,
+    ]) {
+      final value = candidate.trim();
+      if (value.isNotEmpty) return value;
+    }
+    final email = loginUser.email.trim();
+    if (email.contains('@')) {
+      final local = email.split('@').first.trim();
+      if (local.isNotEmpty) return local;
+    }
+    return '';
   }
 
   String _memberOptionLabel(CcMembersRow member) {
@@ -144,7 +192,9 @@ class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
                   onPressed: () => context.pop(),
                 ),
                 title: Text(
-                  context.l10n.newMessage,
+                  widget.toFacilitators
+                      ? context.l10n.newMessageToFacilitator
+                      : context.l10n.newMessage,
                   style: AppTheme.of(context).titleLarge.override(
                         font: GoogleFonts.poppins(
                           fontWeight:
@@ -200,52 +250,37 @@ class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
 
   Widget _buildHeader(
       BuildContext context, AddAnnouncementViewModel viewModel) {
+    final userName = _headerUserName(viewModel.currentUser);
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(16.0, 24.0, 16.0, 24.0),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          UserAvatar(
-            imageUrl: viewModel.currentUser?.photoUrl,
-            fullName: viewModel.currentUser?.displayName,
-          ),
-          Expanded(
-            child: Padding(
-              padding:
-                  const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 0.0, 0.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    valueOrDefault<String>(
-                        viewModel.currentUser?.displayName, 'name'),
-                    style: AppTheme.of(context).bodyLarge.override(
-                          font: GoogleFonts.inter(
-                            fontWeight: FontWeight.normal,
-                            fontStyle: AppTheme.of(context).bodyLarge.fontStyle,
-                          ),
-                          color: AppTheme.of(context).secondary,
-                          fontSize: 16.0,
-                          letterSpacing: 0.0,
-                        ),
-                  ),
-                  if (widget.groupId != null)
-                    Text(
-                      context.l10n.fromGroup(widget.groupName ?? ''),
-                      style: AppTheme.of(context).bodyMedium.override(
-                            font: GoogleFonts.lexendDeca(
-                              fontWeight:
-                                  AppTheme.of(context).bodyMedium.fontWeight,
-                              fontStyle:
-                                  AppTheme.of(context).bodyMedium.fontStyle,
-                            ),
-                            color: AppTheme.of(context).secondary,
-                            letterSpacing: 0.0,
-                          ),
+          if (userName.isNotEmpty)
+            Text(
+              userName,
+              style: AppTheme.of(context).bodyLarge.override(
+                    font: GoogleFonts.inter(
+                      fontWeight: FontWeight.normal,
+                      fontStyle: AppTheme.of(context).bodyLarge.fontStyle,
                     ),
-                ],
-              ),
+                    color: AppTheme.of(context).secondary,
+                    fontSize: 16.0,
+                    letterSpacing: 0.0,
+                  ),
             ),
-          ),
+          if (widget.groupId != null)
+            Text(
+              context.l10n.fromGroup(widget.groupName ?? ''),
+              style: AppTheme.of(context).bodyMedium.override(
+                    font: GoogleFonts.lexendDeca(
+                      fontWeight: AppTheme.of(context).bodyMedium.fontWeight,
+                      fontStyle: AppTheme.of(context).bodyMedium.fontStyle,
+                    ),
+                    color: AppTheme.of(context).secondary,
+                    letterSpacing: 0.0,
+                  ),
+            ),
         ],
       ),
     );
@@ -289,7 +324,18 @@ class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
             maxLines: 14,
           ),
         ),
-        if (viewModel.groupMembers.isNotEmpty && widget.groupId != null)
+        if (widget.toFacilitators)
+          Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(8.0, 8.0, 8.0, 0.0),
+            child: Text(
+              context.l10n.messageToFacilitatorHint,
+              style: AppTheme.of(context).bodyMedium.override(
+                    font: GoogleFonts.lexendDeca(),
+                    color: AppTheme.of(context).secondary,
+                  ),
+            ),
+          ),
+        if (!widget.toFacilitators && viewModel.groupMembers.isNotEmpty && widget.groupId != null)
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(8.0, 8.0, 8.0, 0.0),
             child: DropdownButtonFormField<CcMembersRow?>(
@@ -327,7 +373,8 @@ class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
               onChanged: viewModel.setRecipient,
             ),
           ),
-        _pinSwitch(context, viewModel.pinMessage, viewModel.setPinMessage),
+        if (!widget.toFacilitators)
+          _pinSwitch(context, viewModel.pinMessage, viewModel.setPinMessage),
         if (viewModel.errorMessage != null)
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(8.0, 8.0, 8.0, 0.0),

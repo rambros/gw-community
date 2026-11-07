@@ -550,6 +550,7 @@ class _JourneyPageState extends State<JourneyPage> {
     final title = viewModel.journey?.title ?? viewModel.userJourney?.title ?? 'Journey';
     final description =
         viewModel.journey?.description ?? viewModel.userJourney?.description ?? 'No description available';
+    final moreInformation = viewModel.journey?.moreInformation;
 
     await showDialog(
       context: context,
@@ -560,6 +561,7 @@ class _JourneyPageState extends State<JourneyPage> {
             builder: (context) => JourneyAboutDialog(
               title: title,
               description: description,
+              moreInformation: moreInformation,
             ),
           ),
         );

@@ -26,6 +26,10 @@ class CcJourneysRow extends SupabaseDataRow {
   String? get description => getField<String>('description');
   set description(String? value) => setField<String>('description', value);
 
+  /// Markdown shown after the description only in the About dialog.
+  String? get moreInformation => getField<String>('more_information');
+  set moreInformation(String? value) => setField<String>('more_information', value);
+
   String? get imageFilename => getField<String>('image_filename');
   set imageFilename(String? value) => setField<String>('image_filename', value);
 
