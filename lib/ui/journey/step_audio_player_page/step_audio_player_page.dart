@@ -315,30 +315,33 @@ class _JourneyAudioColumnState extends State<_JourneyAudioColumn> {
           if (_finished)
             Padding(
               padding: const EdgeInsetsDirectional.fromSTEB(24.0, 4.0, 24.0, 12.0),
-              child: SizedBox(
-                width: double.infinity,
-                child: FilledButton(
-                  style: FilledButton.styleFrom(
-                    backgroundColor: theme.primary,
-                    foregroundColor: Colors.white,
-                    minimumSize: const Size.fromHeight(48),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                  ),
-                  onPressed: () {
-                    final language = widget.shareLanguage?.trim();
-                    context.pushNamed(
-                      ExperienceAddPage.routeName,
-                      extra: <String, dynamic>{
-                        'chooseGroups': true,
-                        if (language != null && language.isNotEmpty)
-                          'fixedLanguage': language,
+              child: Column(
+                children: [
+                  FilledButton(
+                      style: FilledButton.styleFrom(
+                        backgroundColor: theme.primary,
+                        foregroundColor: Colors.white,
+                        minimumSize: const Size(0, 44),
+                        padding: const EdgeInsets.symmetric(horizontal: 28),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                      ),
+                      onPressed: () {
+                        final language = widget.shareLanguage?.trim();
+                        context.pushNamed(
+                          ExperienceAddPage.routeName,
+                          extra: <String, dynamic>{
+                            'chooseGroups': true,
+                            if (language != null && language.isNotEmpty)
+                              'fixedLanguage': language,
+                          },
+                        );
                       },
-                    );
-                  },
-                  child: Text(context.l10n.likedShareExperience),
-                ),
+                      child: Text(context.l10n.shareYourExperience),
+                    ),
+                ],
               ),
             ),
           if (page.transcript != null && page.transcript!.isNotEmpty)

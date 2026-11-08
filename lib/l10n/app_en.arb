@@ -729,7 +729,7 @@
       "name": { "type": "String" }
     }
   },
-  "likedShareExperience": "How about sharing your experience?",
+  "likedShareExperience": "We would love to hear about your experience.",
   "shareInGroups": "Share in",
   "chooseGroups": "Choose groups",
   "chooseOneOrMoreGroups": "Choose one or more groups where you want to share your experience.",

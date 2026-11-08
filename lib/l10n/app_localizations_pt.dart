@@ -1533,7 +1533,8 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String get likedShareExperience => 'Que tal compartilhar sua experiência?';
+  String get likedShareExperience =>
+      'Adoraríamos ouvir sobre a sua experiência.';
 
   @override
   String get shareInGroups => 'Compartilhar em';

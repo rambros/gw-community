@@ -3,6 +3,7 @@ import 'package:gw_community/data/repositories/journeys_repository.dart';
 import 'package:gw_community/data/repositories/step_activities_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/domain/models/journey_step_group.dart';
+import 'package:gw_community/domain/step_wait.dart';
 import 'package:gw_community/ui/core/view_as/view_as_session.dart';
 
 class JourneyViewModel extends ChangeNotifier {
@@ -245,9 +246,11 @@ class JourneyViewModel extends ChangeNotifier {
       // If date control is disabled, current open step is accessible
       if (!enableDateControl) return true;
 
-      // If date control is enabled, check if enough days have passed
-      return step.dateStarted != null &&
-          DateTime.now().difference(step.dateStarted!).inDays >= daysToWait;
+      // Opens at local midnight after [daysToWait] calendar days, not 24h later.
+      return stepWaitElapsed(
+        startedAt: step.dateStarted,
+        daysToWait: daysToWait,
+      );
     }
 
     return false;

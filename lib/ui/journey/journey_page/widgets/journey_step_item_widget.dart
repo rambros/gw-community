@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/domain/step_wait.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/journey/themes/journey_theme_extension.dart';
 
@@ -117,17 +118,12 @@ class JourneyStepItemWidget extends StatelessWidget {
       );
     } else if (stepRow.stepStatus == 'open') {
       // Check if enough time has passed
-      bool timeConditionMet = true;
-      if (enableDateControl && _number != 1 && stepRow.dateStarted != null) {
-        final now = DateTime.now();
-        // Remove time component for date comparison
-        final today = DateTime(now.year, now.month, now.day);
-        final dateStarted = stepRow.dateStarted!;
-        final startDate = DateTime(dateStarted.year, dateStarted.month, dateStarted.day);
-
-        final daysPassed = today.difference(startDate).inDays;
-        timeConditionMet = daysPassed >= daysToWait;
-      }
+      final timeConditionMet = !enableDateControl ||
+          _number == 1 ||
+          stepWaitElapsed(
+            startedAt: stepRow.dateStarted,
+            daysToWait: daysToWait,
+          );
 
       // Apenas o step atual pode ser acessado, respeitando o controle de data
       final canStart = isCurrentStep && timeConditionMet;

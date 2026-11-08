@@ -1530,7 +1530,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get likedShareExperience => 'How about sharing your experience?';
+  String get likedShareExperience =>
+      'We would love to hear about your experience.';
 
   @override
   String get shareInGroups => 'Share in';

@@ -317,13 +317,14 @@ class _ContentAudioPlayerState extends State<_ContentAudioPlayer> {
         ),
         if (_finished) ...[
           const SizedBox(height: 20),
-          SizedBox(
-            width: double.infinity,
+          Center(
             child: FilledButton(
               style: FilledButton.styleFrom(
                 backgroundColor: AppTheme.of(context).primary,
                 foregroundColor: Colors.white,
-                minimumSize: const Size.fromHeight(48),
+                minimumSize: const Size(0, 44),
+                padding: const EdgeInsets.symmetric(horizontal: 28),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(24),
                 ),
@@ -337,7 +338,7 @@ class _ContentAudioPlayerState extends State<_ContentAudioPlayer> {
                 );
               },
               child: Text(
-                context.l10n.likedShareExperience,
+                context.l10n.shareYourExperience,
                 style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
               ),
             ),

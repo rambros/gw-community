@@ -2795,7 +2795,7 @@ abstract class AppLocalizations {
   /// No description provided for @likedShareExperience.
   ///
   /// In en, this message translates to:
-  /// **'How about sharing your experience?'**
+  /// **'We would love to hear about your experience.'**
   String get likedShareExperience;
 
   /// No description provided for @shareInGroups.
