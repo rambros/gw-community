@@ -16,11 +16,13 @@ class AccountSettingsMenuSection extends StatelessWidget {
   const AccountSettingsMenuSection({
     super.key,
     required this.onResetOnboarding,
+    required this.onDeleteAccount,
     this.userProfile,
     this.showFacilitatorSettings = false,
   });
 
   final VoidCallback onResetOnboarding;
+  final VoidCallback onDeleteAccount;
   final CcMembersRow? userProfile;
   final bool showFacilitatorSettings;
 
@@ -117,6 +119,13 @@ class AccountSettingsMenuSection extends StatelessWidget {
               },
             ),
           ),
+        Padding(
+          padding: const EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
+          child: ProfileMenuItemWidget(
+            text: l10n.deleteAccount,
+            onTap: onDeleteAccount,
+          ),
+        ),
       ],
     );
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gw_community/app_state.dart';
 import 'package:gw_community/data/repositories/facilitator_settings_repository.dart';
 import 'package:gw_community/data/repositories/user_profile_repository.dart';
+import 'package:gw_community/data/services/auth/auth_service.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 
 class UserProfileViewModel extends ChangeNotifier {
@@ -9,9 +10,13 @@ class UserProfileViewModel extends ChangeNotifier {
 
   UserProfileViewModel({
     required UserProfileRepository repository,
+    required AuthService authService,
     FacilitatorSettingsRepository? facilitatorSettings,
   })  : _repository = repository,
+        _authService = authService,
         _facilitatorSettings = facilitatorSettings ?? FacilitatorSettingsRepository();
+
+  final AuthService _authService;
 
   final FacilitatorSettingsRepository _facilitatorSettings;
 
@@ -94,6 +99,20 @@ class UserProfileViewModel extends ChangeNotifier {
     } catch (e) {
       _setError('Error resetting onboarding: $e');
       rethrow;
+    }
+  }
+
+  /// Deletes the signed-in account and its data, then ends the session.
+  Future<void> deleteAccountCommand(BuildContext context) async {
+    _setLoading(true);
+    _clearError();
+    try {
+      await _authService.deleteUser(context);
+    } catch (e) {
+      _setError('Error deleting account: $e');
+      rethrow;
+    } finally {
+      _setLoading(false);
     }
   }
 

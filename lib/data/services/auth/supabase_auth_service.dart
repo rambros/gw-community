@@ -164,22 +164,26 @@ class SupabaseAuthService implements AuthService {
 
   @override
   Future<void> deleteUser(BuildContext context) async {
+    final user = SupaFlow.client.auth.currentUser;
+    if (user == null) {
+      debugPrint('Error: delete user attempted with no logged in user!');
+      return;
+    }
+
+    final response = await SupaFlow.client.functions.invoke('delete-own-account');
+    final status = response.status;
+    if (status != 200) {
+      final data = response.data;
+      final message = data is Map && data['error'] != null
+          ? data['error'].toString()
+          : 'Could not delete account';
+      throw Exception(message);
+    }
+
     try {
-      final user = SupaFlow.client.auth.currentUser;
-      if (user == null) {
-        debugPrint('Error: delete user attempted with no logged in user!');
-        return;
-      }
-      // Note: Supabase doesn't have a direct delete user method in the client SDK
-      throw UnsupportedError('The delete user operation is not yet supported.');
-    } on AuthException catch (e) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${e.message}')),
-        );
-      }
-      rethrow;
+      await SupaFlow.client.auth.signOut();
+    } on AuthException {
+      // The account is already gone; the local session can be dropped.
     }
   }
 

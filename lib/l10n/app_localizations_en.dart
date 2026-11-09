@@ -296,6 +296,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get logOut => 'Log Out';
 
   @override
+  String get deleteAccount => 'Delete Account';
+
+  @override
+  String get deleteAccountWarning =>
+      'This deletes all of your data and your account.';
+
+  @override
+  String get deleteAccountConfirmTitle => 'Delete your account?';
+
+  @override
+  String get deleteAccountConfirmBody =>
+      'If you delete your account, all of your data will be erased and you will not be able to get it back.';
+
+  @override
+  String get errorDeletingAccount =>
+      'Could not delete your account. Please try again.';
+
+  @override
   String versionLabel(String version) {
     return 'Version $version';
   }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gw_community/data/repositories/favorites_repository.dart';
-import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/widgets/favorite_button.dart';
 import 'package:gw_community/ui/journey/step_audio_player_page/step_audio_player_page.dart';
@@ -59,9 +59,12 @@ class _FavoriteActivityCardState extends State<FavoriteActivityCard> {
             context.pushNamed(
               StepVideoPlayerPage.routeName,
               queryParameters: {
-                'videoUrl': serializeParam(widget.activity.videoUrl, ParamType.String),
-                'videoTitle': serializeParam(widget.activity.activityPrompt, ParamType.String),
-                'typeStep': serializeParam(widget.activity.activityLabel, ParamType.String),
+                'videoUrl':
+                    serializeParam(widget.activity.videoUrl, ParamType.String),
+                'videoTitle': serializeParam(
+                    widget.activity.activityPrompt, ParamType.String),
+                'typeStep': serializeParam(
+                    widget.activity.activityLabel, ParamType.String),
                 'activityId': serializeParam(widget.activity.id, ParamType.int),
               }.withoutNulls,
             );
@@ -119,7 +122,8 @@ class _FavoriteActivityCardState extends State<FavoriteActivityCard> {
               const SizedBox(height: 6.0),
               // Descrição
               Text(
-                valueOrDefault<String>(widget.activity.activityPrompt, '').maybeHandleOverflow(
+                valueOrDefault<String>(widget.activity.activityPrompt, '')
+                    .maybeHandleOverflow(
                   maxChars: 120,
                   replacement: '…',
                 ),
@@ -140,7 +144,8 @@ class _FavoriteActivityCardState extends State<FavoriteActivityCard> {
                   // Favorito
                   if (context.currentUserIdOrEmpty.isNotEmpty)
                     FavoriteButton(
-                      key: ValueKey('favorite_${widget.activity.id}_$_favoriteVersion'),
+                      key: ValueKey(
+                          'favorite_${widget.activity.id}_$_favoriteVersion'),
                       contentType: FavoritesRepository.typeActivity,
                       contentId: widget.activity.id,
                       authUserId: context.currentUserIdOrEmpty,

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gw_community/data/repositories/favorites_repository.dart';
-import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/domain/models/favorites/unified_favorite_item.dart';
+import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/widgets/favorite_button.dart';
 import 'package:gw_community/ui/journey/step_audio_player_page/step_audio_player_page.dart';
@@ -113,7 +113,8 @@ class _UnifiedFavoriteCardState extends State<UnifiedFavoriteCard> {
         StepVideoPlayerPage.routeName,
         queryParameters: {
           'videoUrl': serializeParam(activity.videoUrl, ParamType.String),
-          'videoTitle': serializeParam(activity.activityPrompt, ParamType.String),
+          'videoTitle':
+              serializeParam(activity.activityPrompt, ParamType.String),
           'typeStep': serializeParam(activity.activityLabel, ParamType.String),
           'activityId': serializeParam(activity.id, ParamType.int),
         }.withoutNulls,
@@ -168,7 +169,8 @@ class _UnifiedFavoriteCardState extends State<UnifiedFavoriteCard> {
                     ),
               ),
               // Autor (apenas para recordings) ou Step Info (apenas para activities de jornada)
-              if (widget.item.isRecording && widget.item.recording!.authorsNames.isNotEmpty) ...[
+              if (widget.item.isRecording &&
+                  widget.item.recording!.authorsNames.isNotEmpty) ...[
                 const SizedBox(height: 4.0),
                 Text(
                   widget.item.recording!.authorsNames.join(', '),
@@ -179,7 +181,8 @@ class _UnifiedFavoriteCardState extends State<UnifiedFavoriteCard> {
                         fontSize: 12.0,
                       ),
                 ),
-              ] else if (widget.item.isActivity && widget.item.stepTitle != null) ...[
+              ] else if (widget.item.isActivity &&
+                  widget.item.stepTitle != null) ...[
                 const SizedBox(height: 4.0),
                 Text(
                   'Step ${widget.item.stepNumber ?? 1}: ${widget.item.stepTitle}',
@@ -193,7 +196,8 @@ class _UnifiedFavoriteCardState extends State<UnifiedFavoriteCard> {
               ],
               const SizedBox(height: 6.0),
               // Descrição
-              if (widget.item.description != null && widget.item.description!.isNotEmpty)
+              if (widget.item.description != null &&
+                  widget.item.description!.isNotEmpty)
                 Text(
                   widget.item.description!.maybeHandleOverflow(
                     maxChars: 120,
@@ -222,7 +226,8 @@ class _UnifiedFavoriteCardState extends State<UnifiedFavoriteCard> {
                   // Favorito
                   if (context.currentUserIdOrEmpty.isNotEmpty)
                     FavoriteButton(
-                      key: ValueKey('favorite_${widget.item.contentId}_$_favoriteVersion'),
+                      key: ValueKey(
+                          'favorite_${widget.item.contentId}_$_favoriteVersion'),
                       contentType: widget.item.isRecording
                           ? FavoritesRepository.typeRecording
                           : FavoritesRepository.typeActivity,
@@ -311,7 +316,9 @@ class _CategoryTag extends StatelessWidget {
       child: Text(
         label,
         style: TextStyle(
-          color: isPrimary ? AppTheme.of(context).primary : AppTheme.of(context).secondary,
+          color: isPrimary
+              ? AppTheme.of(context).primary
+              : AppTheme.of(context).secondary,
           fontSize: 11.0,
           fontWeight: FontWeight.w600,
         ),

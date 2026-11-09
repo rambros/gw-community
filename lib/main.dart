@@ -145,7 +145,9 @@ void main() async {
         ),
         ChangeNotifierProvider(
           create: (context) => UserProfileViewModel(
-              repository: context.read<UserProfileRepository>()),
+            repository: context.read<UserProfileRepository>(),
+            authService: context.read<AuthService>(),
+          ),
         ),
         ChangeNotifierProvider(
           create: (context) => UserEditProfileViewModel(

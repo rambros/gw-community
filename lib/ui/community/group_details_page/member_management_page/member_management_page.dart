@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:gw_community/app_state.dart';
 import 'package:gw_community/data/repositories/group_repository.dart';
 import 'package:gw_community/data/repositories/user_profile_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
@@ -880,8 +879,7 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
           context: context,
           label: context.l10n.memberCountTotal(_totalMembersCount),
           isSelected: _accessFilter == _MemberAccessFilter.all,
-          onTap: () =>
-              setState(() => _accessFilter = _MemberAccessFilter.all),
+          onTap: () => setState(() => _accessFilter = _MemberAccessFilter.all),
         ),
         _buildSortChip(
           context: context,
@@ -892,8 +890,8 @@ class _MemberManagementPageState extends State<MemberManagementPage> {
         ),
         _buildSortChip(
           context: context,
-          label: context.l10n
-              .memberCountNeverAccessed(_neverAccessedMembersCount),
+          label:
+              context.l10n.memberCountNeverAccessed(_neverAccessedMembersCount),
           isSelected: _accessFilter == _MemberAccessFilter.neverAccessed,
           onTap: () => setState(
             () => _accessFilter = _MemberAccessFilter.neverAccessed,

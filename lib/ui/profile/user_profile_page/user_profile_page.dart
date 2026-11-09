@@ -280,6 +280,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
               onResetOnboarding: () async {
                 await _handleResetOnboarding(context, viewModel);
               },
+              onDeleteAccount: () {
+                _handleDeleteAccount(context, viewModel);
+              },
               userProfile: viewModel.userProfile,
               showFacilitatorSettings: viewModel.facilitatesAnyGroup,
             ),
@@ -399,6 +402,46 @@ class _UserProfilePageState extends State<UserProfilePage> {
               context.l10n.errorResettingOnboarding('$e'),
               style: const TextStyle(color: Colors.white),
             ),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _handleDeleteAccount(
+      BuildContext context, UserProfileViewModel viewModel) async {
+    final l10n = context.l10n;
+    final confirmed = await showDialog<bool>(
+          context: context,
+          builder: (alertDialogContext) {
+            return WebViewAware(
+              child: ConfirmProfileActionDialog(
+                title: l10n.deleteAccountConfirmTitle,
+                description: l10n.deleteAccountConfirmBody,
+                confirmLabel: l10n.delete,
+                cancelLabel: l10n.cancel,
+                icon: Icons.warning_amber_rounded,
+                confirmColor: Colors.red,
+              ),
+            );
+          },
+        ) ??
+        false;
+    if (!confirmed || !context.mounted) return;
+
+    try {
+      await viewModel.deleteAccountCommand(context);
+      if (context.mounted) {
+        GoRouter.of(context).prepareAuthEvent();
+        GoRouter.of(context).clearRedirectLocation();
+        context.goNamed(SplashPage.routeName);
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(context.l10n.errorDeletingAccount),
             backgroundColor: Colors.red,
           ),
         );

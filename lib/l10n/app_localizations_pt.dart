@@ -297,6 +297,24 @@ class AppLocalizationsPt extends AppLocalizations {
   String get logOut => 'Sair';
 
   @override
+  String get deleteAccount => 'Excluir conta';
+
+  @override
+  String get deleteAccountWarning =>
+      'Isso apaga todos os seus dados e a sua conta.';
+
+  @override
+  String get deleteAccountConfirmTitle => 'Excluir a sua conta?';
+
+  @override
+  String get deleteAccountConfirmBody =>
+      'Se você excluir a sua conta, todos os seus dados serão apagados e não será possível voltar.';
+
+  @override
+  String get errorDeletingAccount =>
+      'Não foi possível excluir a sua conta. Tente de novo.';
+
+  @override
   String versionLabel(String version) {
     return 'Versão $version';
   }

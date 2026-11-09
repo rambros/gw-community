@@ -152,6 +152,11 @@
   "askAQuestion": "Ask a Question",
   "communityGuidelines": "Community Guidelines",
   "logOut": "Log Out",
+  "deleteAccount": "Delete Account",
+  "deleteAccountWarning": "This deletes all of your data and your account.",
+  "deleteAccountConfirmTitle": "Delete your account?",
+  "deleteAccountConfirmBody": "If you delete your account, all of your data will be erased and you will not be able to get it back.",
+  "errorDeletingAccount": "Could not delete your account. Please try again.",
   "versionLabel": "Version {version}",
   "@versionLabel": {
     "placeholders": {
