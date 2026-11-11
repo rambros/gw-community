@@ -4,6 +4,7 @@ import 'package:gw_community/app_state.dart';
 import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:gw_community/data/repositories/experience_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/domain/community/comment_delete.dart';
 import 'package:gw_community/l10n/app_localizations.dart';
 
 /// ViewModel para a página de visualização de Experience
@@ -107,17 +108,25 @@ class ExperienceViewViewModel extends ChangeNotifier {
     }
   }
 
-  /// Deleta um comentário específico
-  /// Recarrega a lista de comentários após deletar
-  Future<void> deleteCommentCommand(int commentId, int experienceId) async {
+  /// Deletes one comment. A comment that still has replies is left in place.
+  Future<CommentDeleteOutcome> deleteCommentCommand(int commentId, int experienceId) async {
+    if (commentHasReplies(
+      commentId: commentId,
+      parentIds: _comments.map((comment) => comment.parentId),
+    )) {
+      return CommentDeleteOutcome.blockedByReplies;
+    }
+
     try {
       await _repository.deleteComment(commentId);
-
-      // Recarregar comentários
       _comments = await _repository.getComments(experienceId);
       notifyListeners();
+      return CommentDeleteOutcome.deleted;
     } catch (e) {
-      _setError('Error deleting comment: $e');
+      if (commentDeleteBlockedByReplies(e)) {
+        return CommentDeleteOutcome.blockedByReplies;
+      }
+      return CommentDeleteOutcome.failed;
     }
   }
 

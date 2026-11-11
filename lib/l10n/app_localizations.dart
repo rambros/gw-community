@@ -2930,6 +2930,18 @@ abstract class AppLocalizations {
   /// **'Confirm deletion of this comment?'**
   String get confirmDeleteThisComment;
 
+  /// No description provided for @commentHasReplies.
+  ///
+  /// In en, this message translates to:
+  /// **'This comment has replies. Delete the replies before deleting it.'**
+  String get commentHasReplies;
+
+  /// No description provided for @couldNotDeleteComment.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not delete this comment. Please try again.'**
+  String get couldNotDeleteComment;
+
   /// No description provided for @withdrawExperienceTitle.
   ///
   /// In en, this message translates to:

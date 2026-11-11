@@ -3,6 +3,7 @@ import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/repositories/announcement_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/domain/community/comment_delete.dart';
 import 'package:gw_community/domain/community/reply_attention.dart';
 import 'package:gw_community/index.dart';
 import 'package:gw_community/l10n/l10n.dart';
@@ -509,8 +510,18 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
                       title: 'Deletion of Comment',
                       message: context.l10n.confirmDeleteThisComment,
                     );
-                    if (!confirm) return;
-                    await viewModel.deleteComment(comment.id!);
+                    if (!confirm || !context.mounted) return;
+                    final outcome = await viewModel.deleteComment(comment.id!);
+                    if (!context.mounted) return;
+                    final message = switch (outcome) {
+                      CommentDeleteOutcome.deleted => null,
+                      CommentDeleteOutcome.blockedByReplies => context.l10n.commentHasReplies,
+                      CommentDeleteOutcome.failed => context.l10n.couldNotDeleteComment,
+                    };
+                    if (message == null) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(message)),
+                    );
                   }
                 : null,
           );

@@ -4,6 +4,7 @@ import 'package:gw_community/app_state.dart';
 import 'package:gw_community/data/models/enums/enums.dart';
 import 'package:gw_community/data/repositories/announcement_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:gw_community/domain/community/comment_delete.dart';
 import 'package:gw_community/domain/community/message_visibility.dart';
 import 'package:gw_community/domain/community/reply_attention.dart';
 import 'package:gw_community/ui/core/view_as/view_as_session.dart';
@@ -187,15 +188,24 @@ class AnnouncementViewViewModel extends ChangeNotifier {
     }
   }
 
-  Future<bool> deleteComment(int commentId) async {
+  Future<CommentDeleteOutcome> deleteComment(int commentId) async {
+    if (commentHasReplies(
+      commentId: commentId,
+      parentIds: _comments.map((comment) => comment.parentId),
+    )) {
+      return CommentDeleteOutcome.blockedByReplies;
+    }
+
     _setActionInProgress(true);
     try {
       await _repository.deleteComment(commentId);
       await refreshComments();
-      return true;
+      return CommentDeleteOutcome.deleted;
     } catch (e) {
-      _setError('Error deleting comment: $e');
-      return false;
+      if (commentDeleteBlockedByReplies(e)) {
+        return CommentDeleteOutcome.blockedByReplies;
+      }
+      return CommentDeleteOutcome.failed;
     } finally {
       _setActionInProgress(false);
     }

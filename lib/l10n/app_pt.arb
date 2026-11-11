@@ -492,6 +492,8 @@
   "noCommentsYetPeriod": "Nenhum comentário ainda.",
   "confirmDeleteThisExperience": "Confirmar a exclusão desta experiência?",
   "confirmDeleteThisComment": "Confirmar a exclusão deste comentário?",
+  "commentHasReplies": "Este comentário tem respostas. Apague as respostas antes de excluí-lo.",
+  "couldNotDeleteComment": "Não foi possível excluir este comentário. Tente novamente.",
   "withdrawExperienceTitle": "Retirar esta experiência?",
   "withdrawExperienceMessage": "Ela será removida do grupo de forma permanente e não poderá ser restaurada.",
   "unpublish": "Despublicar",

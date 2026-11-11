@@ -1610,6 +1610,14 @@ class AppLocalizationsPt extends AppLocalizations {
       'Confirmar a exclusão deste comentário?';
 
   @override
+  String get commentHasReplies =>
+      'Este comentário tem respostas. Apague as respostas antes de excluí-lo.';
+
+  @override
+  String get couldNotDeleteComment =>
+      'Não foi possível excluir este comentário. Tente novamente.';
+
+  @override
   String get withdrawExperienceTitle => 'Retirar esta experiência?';
 
   @override

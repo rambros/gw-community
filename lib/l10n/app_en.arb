@@ -752,6 +752,8 @@
   "noCommentsYetPeriod": "No comments yet.",
   "confirmDeleteThisExperience": "Confirm deletion of this experience?",
   "confirmDeleteThisComment": "Confirm deletion of this comment?",
+  "commentHasReplies": "This comment has replies. Delete the replies before deleting it.",
+  "couldNotDeleteComment": "Could not delete this comment. Please try again.",
   "withdrawExperienceTitle": "Withdraw this experience?",
   "withdrawExperienceMessage": "It will be permanently removed from the group and cannot be restored.",
   "unpublish": "Unpublish",

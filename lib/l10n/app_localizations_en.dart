@@ -1605,6 +1605,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirmDeleteThisComment => 'Confirm deletion of this comment?';
 
   @override
+  String get commentHasReplies =>
+      'This comment has replies. Delete the replies before deleting it.';
+
+  @override
+  String get couldNotDeleteComment =>
+      'Could not delete this comment. Please try again.';
+
+  @override
   String get withdrawExperienceTitle => 'Withdraw this experience?';
 
   @override

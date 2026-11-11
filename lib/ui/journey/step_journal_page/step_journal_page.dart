@@ -83,6 +83,9 @@ class _StepJournalPageState extends State<StepJournalPage> {
       );
     }
 
+    final inspiration = (widget.activityRow?.journal ?? '').trim();
+    final prompt = (widget.activityRow?.activityPrompt ?? '').trim();
+
     return JourneyLocaleScope(
       fixedLanguage: widget.fixedLanguage,
       builder: (context) => ChangeNotifierProvider.value(
@@ -150,25 +153,36 @@ class _StepJournalPageState extends State<StepJournalPage> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsetsDirectional.fromSTEB(
-                                  12.0, 8.0, 12.0, 16.0),
-                              child: Text(
-                                widget.activityRow?.activityPrompt ?? 'prompt',
-                                textAlign: TextAlign.center,
-                                style: AppTheme.of(context)
-                                    .journey
-                                    .stepTitle
-                                    .override(
-                                      color: AppTheme.of(context).tertiary,
-                                    ),
-                              ),
+                        if (inspiration.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                12.0, 8.0, 12.0, 8.0),
+                            child: Text(
+                              inspiration,
+                              textAlign: TextAlign.center,
+                              style: AppTheme.of(context)
+                                  .journey
+                                  .bodyText
+                                  .override(
+                                    color: Colors.white,
+                                  ),
                             ),
-                          ],
-                        ),
+                          )
+                        else if (prompt.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                12.0, 8.0, 12.0, 16.0),
+                            child: Text(
+                              prompt,
+                              textAlign: TextAlign.center,
+                              style: AppTheme.of(context)
+                                  .journey
+                                  .stepTitle
+                                  .override(
+                                    color: AppTheme.of(context).tertiary,
+                                  ),
+                            ),
+                          ),
                         Padding(
                           padding: const EdgeInsetsDirectional.fromSTEB(
                               0.0, 8.0, 0.0, 8.0),

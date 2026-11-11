@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gw_community/domain/community/comment_delete.dart';
 import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/experience_edit_page/experience_edit_page.dart';
 import 'package:gw_community/ui/community/experience_view_page/view_model/experience_view_view_model.dart';
@@ -381,7 +382,19 @@ class _ExperienceViewPageState extends State<ExperienceViewPage> {
 
     if (confirmDialogResponse && widget.experienceId != null) {
       if (!mounted) return;
-      await viewModel.deleteCommentCommand(commentId, widget.experienceId!);
+      final outcome = await viewModel.deleteCommentCommand(commentId, widget.experienceId!);
+      if (!context.mounted) return;
+      _showCommentDeleteMessage(context, outcome);
     }
+  }
+
+  void _showCommentDeleteMessage(BuildContext context, CommentDeleteOutcome outcome) {
+    final message = switch (outcome) {
+      CommentDeleteOutcome.deleted => null,
+      CommentDeleteOutcome.blockedByReplies => context.l10n.commentHasReplies,
+      CommentDeleteOutcome.failed => context.l10n.couldNotDeleteComment,
+    };
+    if (message == null) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 }
