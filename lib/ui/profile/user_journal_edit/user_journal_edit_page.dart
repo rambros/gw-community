@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/l10n/l10n.dart';
@@ -35,7 +36,7 @@ class _UserJournalEditPageState extends State<UserJournalEditPage> {
   void initState() {
     super.initState();
     _textController = TextEditingController(text: widget.userJournalEntryRow?.journalSaved);
-    _textFieldFocusNode = FocusNode();
+    _textFieldFocusNode = FocusNode(skipTraversal: true);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.userJournalEntryRow != null) {
@@ -46,6 +47,18 @@ class _UserJournalEditPageState extends State<UserJournalEditPage> {
         TextPosition(offset: _textController.text.length),
       );
     });
+  }
+
+  void _closeKeyboard() {
+    _textFieldFocusNode.unfocus();
+    FocusManager.instance.primaryFocus?.unfocus();
+    SystemChannels.textInput.invokeMethod<void>('TextInput.hide');
+  }
+
+  @override
+  void deactivate() {
+    _closeKeyboard();
+    super.deactivate();
   }
 
   @override
@@ -75,6 +88,7 @@ class _UserJournalEditPageState extends State<UserJournalEditPage> {
             size: 25.0,
           ),
           onPressed: () async {
+            _closeKeyboard();
             context.pop();
           },
         ),
@@ -188,7 +202,7 @@ class _UserJournalEditPageState extends State<UserJournalEditPage> {
                               const Duration(milliseconds: 2000),
                               () => safeSetState(() {}),
                             ),
-                            autofocus: true,
+                            autofocus: false,
                             enabled: !viewModel.isLoading,
                             obscureText: false,
                             textCapitalization: TextCapitalization.sentences,
@@ -298,6 +312,7 @@ class _UserJournalEditPageState extends State<UserJournalEditPage> {
                     padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
                     child: FFButtonWidget(
                       onPressed: () async {
+                        _closeKeyboard();
                         context.pop();
                       },
                       text: context.l10n.cancel,
@@ -346,6 +361,7 @@ class _UserJournalEditPageState extends State<UserJournalEditPage> {
                                     backgroundColor: AppTheme.of(context).secondary,
                                   ),
                                 );
+                                _closeKeyboard();
                                 context.safePop();
                               }
                             },

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gw_community/data/repositories/journal_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/l10n/l10n.dart';
@@ -60,10 +61,19 @@ class _StepJournalPageState extends State<StepJournalPage> {
     );
 
     _textController = TextEditingController(text: _viewModel!.journalContent);
-    _focusNode = FocusNode();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) _focusNode.requestFocus();
-    });
+    _focusNode = FocusNode(skipTraversal: true);
+  }
+
+  void _closeKeyboard() {
+    _focusNode.unfocus();
+    FocusManager.instance.primaryFocus?.unfocus();
+    SystemChannels.textInput.invokeMethod<void>('TextInput.hide');
+  }
+
+  @override
+  void deactivate() {
+    _closeKeyboard();
+    super.deactivate();
   }
 
   @override
@@ -111,6 +121,7 @@ class _StepJournalPageState extends State<StepJournalPage> {
                   size: 30.0,
                 ),
                 onPressed: () async {
+                  _closeKeyboard();
                   context.pop();
                 },
               ),
@@ -198,6 +209,7 @@ class _StepJournalPageState extends State<StepJournalPage> {
                               child: TextFormField(
                                 controller: _textController,
                                 focusNode: _focusNode,
+                                autofocus: false,
                                 textAlignVertical: TextAlignVertical.top,
                                 obscureText: false,
                                 textCapitalization:
