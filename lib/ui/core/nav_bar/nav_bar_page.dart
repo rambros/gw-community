@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gw_community/app_state.dart';
 import 'package:gw_community/data/models/app_config.dart';
+import 'package:gw_community/data/repositories/app_popup_repository.dart';
+import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/l10n/l10n.dart';
 import 'package:gw_community/ui/community/community_page/community_page.dart';
+import 'package:gw_community/ui/core/app_popup/app_popup_dialog.dart';
 import 'package:gw_community/ui/core/nav_bar/view_model/nav_bar_view_model.dart';
 import 'package:gw_community/ui/core/themes/app_theme.dart';
 import 'package:gw_community/ui/core/view_as/view_as_actions.dart';
@@ -33,6 +36,28 @@ class NavBarPage extends StatefulWidget {
 }
 
 class _NavBarPageState extends State<NavBarPage> {
+  var _popupChecked = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _showAppPopup());
+  }
+
+  Future<void> _showAppPopup() async {
+    if (!mounted || _popupChecked || viewAsBlocksWrite()) return;
+    _popupChecked = true;
+    final userId = SupaFlow.client.auth.currentUser?.id;
+    if (userId == null || userId.isEmpty) return;
+    try {
+      final popup = await AppPopupRepository().activePopup();
+      if (!mounted || popup == null) return;
+      await showAppPopupDialog(context, popup: popup, userId: userId);
+    } catch (error) {
+      debugPrint('App popup skipped: $error');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // Watch app state for configuration
