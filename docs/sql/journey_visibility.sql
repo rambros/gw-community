@@ -1,6 +1,6 @@
 -- My Journeys reads cc_view_user_journeys. Without is_public the app showed
--- every started journey as public. Available journeys must stay limited to
--- journeys marked public.
+-- every started journey as public. Available journeys are public journeys,
+-- plus private journeys the member can still open at the initial status.
 
 CREATE OR REPLACE VIEW public.cc_view_user_journeys
 WITH (security_invoker = true) AS
@@ -34,7 +34,16 @@ SELECT
   m.auth_user_id AS user_id
 FROM cc_journeys j
 CROSS JOIN cc_members m
-WHERE j.is_public IS TRUE
+WHERE (
+    j.is_public IS TRUE
+    OR EXISTS (
+      SELECT 1
+      FROM cc_user_journeys access_row
+      WHERE access_row.journey_id = j.id
+        AND access_row.user_id = m.auth_user_id
+        AND access_row.journey_status = 'non_started'
+    )
+  )
   AND NOT EXISTS (
     SELECT 1
     FROM cc_user_journeys uj

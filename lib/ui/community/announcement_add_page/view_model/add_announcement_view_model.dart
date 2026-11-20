@@ -1,11 +1,13 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
 import 'package:gw_community/data/repositories/announcement_repository.dart';
+import 'package:gw_community/data/services/message_image.dart';
 import 'package:gw_community/data/services/push/group_message_notifier.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/ui/core/view_as/view_as_session.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AddAnnouncementViewModel extends ChangeNotifier {
   AddAnnouncementViewModel({
@@ -42,8 +44,40 @@ class AddAnnouncementViewModel extends ChangeNotifier {
   bool _pinMessage = false;
   bool get pinMessage => _pinMessage;
 
+  Uint8List? _imageBytes;
+  Uint8List? get imageBytes => _imageBytes;
+
+  final ImagePicker _imagePicker = ImagePicker();
+
   void setPinMessage(bool value) {
     _pinMessage = value;
+    notifyListeners();
+  }
+
+  Future<void> pickImage() async {
+    try {
+      final image = await _imagePicker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: messageImageMaxSide.toDouble(),
+        maxHeight: messageImageMaxSide.toDouble(),
+        imageQuality: 80,
+      );
+      if (image == null) return;
+      final bytes = await image.readAsBytes();
+      if (bytes.length > messageImageMaxBytes) {
+        _setError('image_too_large');
+        return;
+      }
+      _imageBytes = await compute(encodeMessageImage, bytes);
+      _clearError();
+      notifyListeners();
+    } catch (e) {
+      _setError('image_not_supported');
+    }
+  }
+
+  void clearImage() {
+    _imageBytes = null;
     notifyListeners();
   }
 
@@ -99,6 +133,15 @@ class AddAnnouncementViewModel extends ChangeNotifier {
     }
     _setSaving(true);
     try {
+      String? imageUrl;
+      final imageBytes = _imageBytes;
+      final messageGroupId = groupId;
+      if (imageBytes != null && messageGroupId != null) {
+        imageUrl = await _repository.uploadAnnouncementImage(
+          groupId: messageGroupId,
+          bytes: imageBytes,
+        );
+      }
       final sharingId = await _repository.createAnnouncement(
         title: titleController.text.trim(),
         text: experienceController.text.trim(),
@@ -109,6 +152,7 @@ class AddAnnouncementViewModel extends ChangeNotifier {
         recipientUserId: toFacilitators ? null : _recipientMember?.authUserId,
         isPinned: toFacilitators ? false : _pinMessage,
         audience: toFacilitators ? 'facilitators' : null,
+        imageUrl: imageUrl,
       );
       unawaited(GroupMessageNotifier.notify(sharingId));
       return true;

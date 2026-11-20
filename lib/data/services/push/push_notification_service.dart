@@ -1,9 +1,11 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
+import 'package:http/http.dart' as http;
 
 /// Handles FCM token registration, permission requests, foreground banners,
 /// and background/terminated message tap navigation.
@@ -55,7 +57,8 @@ class PushNotificationService {
         }
         if (apnsToken == null) {
           // Will get the FCM token later via onTokenRefresh
-          debugPrint('PushNotificationService: APNS token not ready, skipping getToken()');
+          debugPrint(
+              'PushNotificationService: APNS token not ready, skipping getToken()');
           return;
         }
       }
@@ -117,21 +120,33 @@ class PushNotificationService {
   // ── Local notifications (foreground banner) ───────────────────────────────────
 
   Future<void> _setupLocalNotifications() async {
-    const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const androidSettings =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
     const iosSettings = DarwinInitializationSettings();
-    const settings = InitializationSettings(android: androidSettings, iOS: iosSettings);
+    const settings =
+        InitializationSettings(android: androidSettings, iOS: iosSettings);
 
     await _localNotifications.initialize(settings: settings);
 
     await _localNotifications
-        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(_androidChannel);
   }
 
   void _listenForeground() {
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       final notification = message.notification;
       if (notification == null) return;
+
+      final imageUrl = message.data['image_url']?.trim();
+      final imageBytes = imageUrl == null || imageUrl.isEmpty
+          ? null
+          : await _downloadImage(imageUrl);
+      String? imagePath;
+      if (imageBytes != null && imageUrl != null) {
+        imagePath = await _writeTempImage(imageBytes, imageUrl);
+      }
 
       _localNotifications.show(
         id: notification.hashCode,
@@ -145,11 +160,48 @@ class PushNotificationService {
             importance: Importance.max,
             priority: Priority.high,
             icon: '@mipmap/ic_launcher',
+            styleInformation: imageBytes == null
+                ? null
+                : BigPictureStyleInformation(
+                    ByteArrayAndroidBitmap(imageBytes),
+                    hideExpandedLargeIcon: true,
+                  ),
           ),
-          iOS: const DarwinNotificationDetails(),
+          iOS: DarwinNotificationDetails(
+            attachments: imagePath == null
+                ? null
+                : [DarwinNotificationAttachment(imagePath)],
+          ),
         ),
       );
     });
+  }
+
+  Future<Uint8List?> _downloadImage(String url) async {
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode != 200 || response.bodyBytes.isEmpty) return null;
+      return response.bodyBytes;
+    } catch (e) {
+      debugPrint('PushNotificationService: image download failed: $e');
+      return null;
+    }
+  }
+
+  Future<String?> _writeTempImage(Uint8List bytes, String url) async {
+    try {
+      final ext = url.split('.').last.split('?').first.toLowerCase();
+      const allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+      final suffix = allowed.contains(ext) ? ext : 'jpg';
+      final file = File(
+        '${Directory.systemTemp.path}/push_${DateTime.now().millisecondsSinceEpoch}.$suffix',
+      );
+      await file.writeAsBytes(bytes, flush: true);
+      return file.path;
+    } catch (e) {
+      debugPrint('PushNotificationService: image file failed: $e');
+      return null;
+    }
   }
 }
 
@@ -157,6 +209,7 @@ class PushNotificationService {
 /// Must be a top-level function — not a method.
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  debugPrint('PushNotificationService: background message: ${message.messageId}');
+  debugPrint(
+      'PushNotificationService: background message: ${message.messageId}');
   // No UI work here — Firebase handles the system notification automatically.
 }

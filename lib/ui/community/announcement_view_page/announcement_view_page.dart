@@ -264,6 +264,18 @@ class _AnnouncementViewPageState extends State<AnnouncementViewPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          if ((announcement.imageUrl ?? '').trim().isNotEmpty)
+            Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 8.0, 12.0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: Image.network(
+                  announcement.imageUrl!.trim(),
+                  width: double.infinity,
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 8.0, 8.0),
             child: MarkdownBody(

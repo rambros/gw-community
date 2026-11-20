@@ -36,6 +36,7 @@ class AnnouncementRepository {
     String? recipientUserId,
     bool isPinned = false,
     String? audience,
+    String? imageUrl,
   }) async {
     final row = await CcSharingsTable().insert({
       'title': title,
@@ -50,8 +51,24 @@ class AnnouncementRepository {
       if (isPinned) 'pinned_at': supaSerialize<DateTime>(getCurrentTimestamp),
       if (recipientUserId != null) 'recipient_user_id': recipientUserId,
       if (audience != null) 'audience': audience,
+      if (imageUrl != null && imageUrl.isNotEmpty) 'image_url': imageUrl,
     });
     return row.id;
+  }
+
+  /// Uploads a group-message photo and returns its public URL.
+  Future<String> uploadAnnouncementImage({
+    required int groupId,
+    required Uint8List bytes,
+  }) async {
+    final path = 'messages/$groupId/${DateTime.now().millisecondsSinceEpoch}.jpg';
+    final bucket = SupaFlow.client.storage.from('groups');
+    await bucket.uploadBinary(
+      path,
+      bytes,
+      fileOptions: const FileOptions(contentType: 'image/jpeg'),
+    );
+    return bucket.getPublicUrl(path);
   }
 
   Future<CcViewNotificationsUsersRow?> getAnnouncementById(int id) async {
@@ -164,14 +181,22 @@ class AnnouncementRepository {
   /// respostas anteriores deixem de contar como novas.
   Future<void> markAnnouncementAsRead(int announcementId, String userId) async {
     try {
+      final readAt = supaSerialize<DateTime>(getCurrentTimestamp.toUtc());
       await SupaFlow.client.from('cc_sharing_reads').upsert(
         {
           'sharing_id': announcementId,
           'user_id': userId,
-          'read_at': supaSerialize<DateTime>(getCurrentTimestamp.toUtc()),
+          'read_at': readAt,
         },
         onConflict: 'sharing_id,user_id',
       );
+      await SupaFlow.client
+          .from('cc_notifications')
+          .update({'is_read': true, 'read_at': readAt})
+          .eq('user_id', userId)
+          .eq('reference_type', 'group_message')
+          .eq('reference_id', announcementId)
+          .eq('is_read', false);
     } catch (e) {
       debugPrint('Error marking notification as read: $e');
     }

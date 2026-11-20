@@ -510,6 +510,20 @@ class GroupAnnouncementsTab extends StatelessWidget {
                           ),
                     ),
                   ),
+                  if ((notification.imageUrl ?? '').trim().isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsetsDirectional.fromSTEB(
+                          16.0, 0.0, 16.0, 12.0),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8.0),
+                        child: Image.network(
+                          notification.imageUrl!.trim(),
+                          height: 180.0,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
                   if (notification.id != null &&
                       (viewModel.replyCountFor(notification.id!) > 0 ||
                           viewModel.commentCountFor(notification.id!) > 0))

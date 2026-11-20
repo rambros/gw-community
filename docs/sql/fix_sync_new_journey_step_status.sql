@@ -12,7 +12,7 @@ BEGIN
     uj.id,
     uj.user_id,
     NEW.id,
-    NOW(),
+    NULL,
     'locked'
   FROM cc_user_journeys uj
   WHERE uj.journey_id = NEW.journey_id;

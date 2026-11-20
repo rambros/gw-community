@@ -45,16 +45,20 @@ class _InAppNotificationsPageState extends State<InAppNotificationsPage> {
               backgroundColor: AppTheme.of(context).primaryBackground,
               elevation: 0,
               leading: IconButton(
-                icon: Icon(Icons.arrow_back_ios, color: AppTheme.of(context).secondary),
+                icon: Icon(Icons.arrow_back_ios,
+                    color: AppTheme.of(context).secondary),
                 onPressed: () => Navigator.of(context).pop(),
               ),
-              title: Text('Notifications', style: AppTheme.of(context).headlineSmall),
+              title: Text('Notifications',
+                  style: AppTheme.of(context).headlineSmall),
               centerTitle: true,
               actions: [
                 if (viewModel.items.isNotEmpty)
                   PopupMenuButton<String>(
-                    icon: Icon(Icons.more_vert, color: AppTheme.of(context).secondary),
-                    onSelected: (value) => _handleMenuAction(context, viewModel, value),
+                    icon: Icon(Icons.more_vert,
+                        color: AppTheme.of(context).secondary),
+                    onSelected: (value) =>
+                        _handleMenuAction(context, viewModel, value),
                     itemBuilder: (context) => [
                       if (viewModel.hasUnread)
                         const PopupMenuItem(
@@ -76,9 +80,11 @@ class _InAppNotificationsPageState extends State<InAppNotificationsPage> {
                       const PopupMenuItem(
                         value: 'delete_all',
                         child: Row(children: [
-                          Icon(Icons.delete_forever, size: 20, color: Colors.red),
+                          Icon(Icons.delete_forever,
+                              size: 20, color: Colors.red),
                           SizedBox(width: 12),
-                          Text('Delete all', style: TextStyle(color: Colors.red)),
+                          Text('Delete all',
+                              style: TextStyle(color: Colors.red)),
                         ]),
                       ),
                     ],
@@ -92,9 +98,12 @@ class _InAppNotificationsPageState extends State<InAppNotificationsPage> {
     );
   }
 
-  Widget _buildBody(BuildContext context, InAppNotificationsViewModel viewModel) {
+  Widget _buildBody(
+      BuildContext context, InAppNotificationsViewModel viewModel) {
     if (viewModel.isLoading) {
-      return Center(child: CircularProgressIndicator(color: AppTheme.of(context).primary));
+      return Center(
+          child:
+              CircularProgressIndicator(color: AppTheme.of(context).primary));
     }
 
     if (viewModel.items.isEmpty) {
@@ -102,7 +111,8 @@ class _InAppNotificationsPageState extends State<InAppNotificationsPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.notifications_none, size: 64, color: AppTheme.of(context).cadetGrey),
+            Icon(Icons.notifications_none,
+                size: 64, color: AppTheme.of(context).cadetGrey),
             const SizedBox(height: 16),
             Text(
               'No notifications yet',
@@ -126,13 +136,18 @@ class _InAppNotificationsPageState extends State<InAppNotificationsPage> {
         padding: const EdgeInsets.symmetric(vertical: 8),
         children: [
           if (unread.isNotEmpty) ...[
-            _buildSectionHeader(context, title: 'New', count: unread.length,
+            _buildSectionHeader(context,
+                title: 'New',
+                count: unread.length,
                 color: AppTheme.of(context).primary),
             ...unread.map((item) => _buildItem(context, viewModel, item)),
           ],
           if (read.isNotEmpty) ...[
-            _buildSectionHeader(context, title: 'Read', count: read.length,
-                color: AppTheme.of(context).cadetGrey, isRead: true),
+            _buildSectionHeader(context,
+                title: 'Read',
+                count: read.length,
+                color: AppTheme.of(context).cadetGrey,
+                isRead: true),
             ...read.map((item) => _buildItem(context, viewModel, item)),
           ],
         ],
@@ -154,12 +169,12 @@ class _InAppNotificationsPageState extends State<InAppNotificationsPage> {
           : AppTheme.of(context).primary.withValues(alpha: 0.05),
       child: Row(
         children: [
-          Icon(isRead ? Icons.done_all : Icons.notifications_active, size: 18, color: color),
+          Icon(isRead ? Icons.done_all : Icons.notifications_active,
+              size: 18, color: color),
           const SizedBox(width: 8),
           Text(title,
-              style: AppTheme.of(context)
-                  .bodyMedium
-                  .override(fontWeight: FontWeight.w600, color: color, fontSize: 14)),
+              style: AppTheme.of(context).bodyMedium.override(
+                  fontWeight: FontWeight.w600, color: color, fontSize: 14)),
           const SizedBox(width: 8),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
@@ -168,9 +183,8 @@ class _InAppNotificationsPageState extends State<InAppNotificationsPage> {
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(count.toString(),
-                style: AppTheme.of(context)
-                    .bodySmall
-                    .override(color: color, fontWeight: FontWeight.w600, fontSize: 12)),
+                style: AppTheme.of(context).bodySmall.override(
+                    color: color, fontWeight: FontWeight.w600, fontSize: 12)),
           ),
         ],
       ),
@@ -182,31 +196,24 @@ class _InAppNotificationsPageState extends State<InAppNotificationsPage> {
     InAppNotificationsViewModel viewModel,
     UnifiedNotificationItem item,
   ) {
-    final canDelete = item.source == 'system';
     return Column(
       children: [
-        canDelete
-            ? Dismissible(
-                key: Key('notif_${item.source}_${item.id}'),
-                direction: DismissDirection.endToStart,
-                background: Container(
-                  alignment: Alignment.centerRight,
-                  padding: const EdgeInsets.only(right: 20),
-                  color: AppTheme.of(context).error,
-                  child: const Icon(Icons.delete, color: Colors.white),
-                ),
-                onDismissed: (_) => viewModel.deleteNotification(item),
-                child: _NotificationTile(
-                  item: item,
-                  onTap: () => _handleTap(context, viewModel, item),
-                  onDelete: canDelete ? () => viewModel.deleteNotification(item) : null,
-                ),
-              )
-            : _NotificationTile(
-                item: item,
-                onTap: () => _handleTap(context, viewModel, item),
-                onDelete: null,
-              ),
+        Dismissible(
+          key: Key('notif_${item.id}'),
+          direction: DismissDirection.endToStart,
+          background: Container(
+            alignment: Alignment.centerRight,
+            padding: const EdgeInsets.only(right: 20),
+            color: AppTheme.of(context).error,
+            child: const Icon(Icons.delete, color: Colors.white),
+          ),
+          onDismissed: (_) => viewModel.deleteNotification(item),
+          child: _NotificationTile(
+            item: item,
+            onTap: () => _handleTap(context, viewModel, item),
+            onDelete: () => viewModel.deleteNotification(item),
+          ),
+        ),
         Divider(height: 1, color: AppTheme.of(context).gray200),
       ],
     );
@@ -217,32 +224,79 @@ class _InAppNotificationsPageState extends State<InAppNotificationsPage> {
     InAppNotificationsViewModel viewModel,
     UnifiedNotificationItem item,
   ) async {
-    DateTime? commentsReadAt;
-    if (item.source == 'announcement' && item.id != 0) {
-      commentsReadAt = await viewModel.announcementReadAt(item.id);
-    }
-
+    final row = item.notification;
     await viewModel.markAsRead(item);
 
     if (!context.mounted) return;
 
-    if (item.source == 'announcement' && item.id != 0) {
+    if (row.referenceType == 'group_message' && row.referenceId != null) {
+      await viewModel.markMessageRead(row.referenceId!);
+      if (!context.mounted) return;
       context.pushNamed(
         AnnouncementViewPage.routeName,
-        queryParameters: {'announcementId': item.id.toString()},
-        extra: {
-          'commentsReadAt': commentsReadAt,
-          'highlightNewComments': true,
-        },
+        queryParameters: {'announcementId': row.referenceId.toString()},
+        extra: const {'highlightNewComments': true},
       );
-    } else if (item.source == 'system' &&
-        item.systemNotification?.referenceType == 'experience' &&
-        item.systemNotification?.referenceId != null) {
+    } else if (row.referenceType == 'experience' && row.referenceId != null) {
       context.pushNamed(
         ExperienceViewPage.routeName,
-        extra: {'experienceId': item.systemNotification!.referenceId},
+        extra: {'experienceId': row.referenceId},
       );
+    } else {
+      _showNotificationDetail(context, item);
     }
+  }
+
+  void _showNotificationDetail(
+    BuildContext context,
+    UnifiedNotificationItem item,
+  ) {
+    final imageUrl = item.imageUrl;
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        final theme = AppTheme.of(dialogContext);
+        return AlertDialog(
+          contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  item.title,
+                  style: theme.titleMedium.override(fontWeight: FontWeight.w600),
+                ),
+                if (item.message != null && item.message!.trim().isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  Text(item.message!, style: theme.bodyMedium),
+                ],
+                if (imageUrl != null) ...[
+                  const SizedBox(height: 16),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: AspectRatio(
+                      aspectRatio: 2,
+                      child: Image.network(
+                        imageUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: Text(context.l10n.close),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _handleMenuAction(
@@ -266,7 +320,8 @@ class _InAppNotificationsPageState extends State<InAppNotificationsPage> {
         _showDeleteConfirmation(
           context,
           title: 'Delete All Notifications',
-          message: 'Are you sure you want to delete all system notifications? This action cannot be undone.',
+          message:
+              'Are you sure you want to delete all system notifications? This action cannot be undone.',
           onConfirm: () => viewModel.deleteAllNotifications(),
         );
         break;
@@ -287,7 +342,8 @@ class _InAppNotificationsPageState extends State<InAppNotificationsPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
-            child: Text('Cancel', style: TextStyle(color: AppTheme.of(context).secondary)),
+            child: Text('Cancel',
+                style: TextStyle(color: AppTheme.of(context).secondary)),
           ),
           TextButton(
             onPressed: () {
@@ -324,107 +380,114 @@ class _NotificationTile extends StatelessWidget {
       color: isRead
           ? AppTheme.of(context).gray200.withValues(alpha: 0.15)
           : AppTheme.of(context).primaryBackground,
-      child: ListTile(
+      child: InkWell(
         onTap: onTap,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        leading: Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            color: color.withValues(alpha: isRead ? 0.05 : 0.1),
-            shape: BoxShape.circle,
-          ),
-          child: Icon(_tileIcon(), color: color, size: 20),
-        ),
-        title: Opacity(
-          opacity: isRead ? 0.6 : 1.0,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (item.source == 'announcement' && item.groupName != null)
-                Text(
-                  item.groupName!,
-                  style: AppTheme.of(context).bodySmall.override(
-                        color: AppTheme.of(context).primary,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                      ),
-                ),
-              Text(
-                item.title,
-                style: AppTheme.of(context).bodySmall.override(
-                      fontWeight: isRead ? FontWeight.normal : FontWeight.bold,
-                    ),
-              ),
-            ],
-          ),
-        ),
-        subtitle: Opacity(
-          opacity: isRead ? 0.6 : 1.0,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (item.newReplyCount > 0) ...[
-                const SizedBox(height: 4),
-                Text(
-                  context.l10n.newReplies(item.newReplyCount),
-                  style: AppTheme.of(context).bodyMedium.override(
-                        color: AppTheme.of(context).primary,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                      ),
-                ),
-              ],
-              if (item.message != null) ...[
-                const SizedBox(height: 4),
-                Text(
-                  item.message!,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: AppTheme.of(context).bodyMedium.override(
-                        color: AppTheme.of(context).cadetGrey,
-                        fontSize: 13,
-                      ),
-                ),
-              ],
-              const SizedBox(height: 4),
-              Row(
-                children: [
-                  Text(
-                    _formatDate(item.createdAt),
-                    style: AppTheme.of(context).bodyMedium.override(
-                          fontSize: 12,
-                          color: AppTheme.of(context).cadetGrey,
-                        ),
-                  ),
-                  if (isRead) ...[
-                    const SizedBox(width: 8),
-                    Icon(Icons.done, size: 14, color: AppTheme.of(context).cadetGrey),
-                  ],
-                ],
-              ),
-            ],
-          ),
-        ),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            if (!isRead)
-              Container(
-                width: 10,
-                height: 10,
-                margin: const EdgeInsets.only(right: 8),
+            ListTile(
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              leading: Container(
+                width: 40,
+                height: 40,
                 decoration: BoxDecoration(
-                  color: AppTheme.of(context).primary,
+                  color: color.withValues(alpha: isRead ? 0.05 : 0.1),
                   shape: BoxShape.circle,
                 ),
+                child: Icon(_tileIcon(), color: color, size: 20),
               ),
-            if (onDelete != null)
-              IconButton(
-                icon: Icon(Icons.close, size: 18, color: AppTheme.of(context).cadetGrey),
-                onPressed: onDelete,
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+              title: Opacity(
+                opacity: isRead ? 0.6 : 1.0,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item.title,
+                      style: AppTheme.of(context).bodySmall.override(
+                            fontWeight:
+                                isRead ? FontWeight.normal : FontWeight.bold,
+                          ),
+                    ),
+                  ],
+                ),
+              ),
+              subtitle: Opacity(
+                opacity: isRead ? 0.6 : 1.0,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (item.message != null) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        item.message!,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTheme.of(context).bodyMedium.override(
+                              color: AppTheme.of(context).cadetGrey,
+                              fontSize: 13,
+                            ),
+                      ),
+                    ],
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Text(
+                          _formatDate(item.createdAt),
+                          style: AppTheme.of(context).bodyMedium.override(
+                                fontSize: 12,
+                                color: AppTheme.of(context).cadetGrey,
+                              ),
+                        ),
+                        if (isRead) ...[
+                          const SizedBox(width: 8),
+                          Icon(Icons.done,
+                              size: 14, color: AppTheme.of(context).cadetGrey),
+                        ],
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (!isRead)
+                    Container(
+                      width: 10,
+                      height: 10,
+                      margin: const EdgeInsets.only(right: 8),
+                      decoration: BoxDecoration(
+                        color: AppTheme.of(context).primary,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  if (onDelete != null)
+                    IconButton(
+                      icon: Icon(Icons.close,
+                          size: 18, color: AppTheme.of(context).cadetGrey),
+                      onPressed: onDelete,
+                      padding: EdgeInsets.zero,
+                      constraints:
+                          const BoxConstraints(minWidth: 32, minHeight: 32),
+                    ),
+                ],
+              ),
+            ),
+            if (item.imageUrl != null)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(72, 0, 16, 12),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: AspectRatio(
+                    aspectRatio: 2,
+                    child: Image.network(
+                      item.imageUrl!,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
               ),
           ],
         ),
@@ -433,14 +496,20 @@ class _NotificationTile extends StatelessWidget {
   }
 
   IconData _tileIcon() {
-    if (item.source == 'announcement') return Icons.campaign_outlined;
-    switch (item.systemNotification?.type) {
+    switch (item.notification.type) {
+      case 'group_message':
+        return Icons.chat_bubble_outline;
+      case 'admin_announcement':
+      case 'group_announcement':
+        return Icons.campaign_outlined;
       case 'experience_approved':
+      case 'experience_published':
         return Icons.check_circle;
       case 'experience_rejected':
         return Icons.cancel;
       case 'experience_changes_requested':
         return Icons.edit_note;
+      case 'experience_pending':
       case 'experience_pending_moderation':
         return Icons.hourglass_empty;
       default:
@@ -449,14 +518,17 @@ class _NotificationTile extends StatelessWidget {
   }
 
   Color _tileColor(BuildContext context) {
-    if (item.source == 'announcement') return AppTheme.of(context).secondary;
-    switch (item.systemNotification?.type) {
+    switch (item.notification.type) {
+      case 'group_message':
+        return AppTheme.of(context).secondary;
       case 'experience_approved':
+      case 'experience_published':
         return AppTheme.of(context).success;
       case 'experience_rejected':
         return AppTheme.of(context).error;
       case 'experience_changes_requested':
         return AppTheme.of(context).warning;
+      case 'experience_pending':
       case 'experience_pending_moderation':
         return AppTheme.of(context).copperRed;
       default:

@@ -82,4 +82,7 @@ class CcViewNotificationsUsersRow extends SupabaseDataRow {
 
   String? get audience => getField<String>('audience');
   set audience(String? value) => setField<String>('audience', value);
+
+  String? get imageUrl => getField<String>('image_url');
+  set imageUrl(String? value) => setField<String>('image_url', value);
 }

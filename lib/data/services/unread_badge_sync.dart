@@ -1,22 +1,19 @@
 import 'dart:async';
 
-import 'package:gw_community/data/repositories/announcement_repository.dart';
 import 'package:gw_community/data/repositories/in_app_notification_repository.dart';
 import 'package:gw_community/data/services/app_badge_service.dart';
-import 'package:gw_community/data/services/supabase/supabase.dart';
 
-/// Keeps the phone's app-icon badge equal to the unread total shown in the app.
+/// Keeps the phone's app-icon badge equal to the unread inbox.
 ///
-/// The push sets that badge to 1. Reading a group message updates the group
-/// card and the Messages tab, but those screens do not open the home bell,
-/// which was the only place that wrote the icon badge back.
+/// The push sets that badge to 1. Group messages have their own count on the
+/// group card. Opening a message marks the matching inbox alert as read, and
+/// this sync writes the remaining inbox total back onto the icon.
 class UnreadBadgeSync {
   UnreadBadgeSync._();
 
   static final UnreadBadgeSync instance = UnreadBadgeSync._();
 
   final InAppNotificationRepository _notifications = InAppNotificationRepository();
-  final AnnouncementRepository _announcements = AnnouncementRepository();
   final AppBadgeService _badge = AppBadgeService();
 
   Timer? _timer;
@@ -35,12 +32,7 @@ class UnreadBadgeSync {
     _timer?.cancel();
     _timer = null;
     final generation = ++_generation;
-    final userId = SupaFlow.client.auth.currentUser?.id;
-    final notifications = await _notifications.getUnreadCount();
-    final announcements = userId == null || userId.isEmpty
-        ? 0
-        : await _announcements.getTotalUnreadForUser(userId);
-    final total = notifications + announcements;
+    final total = await _notifications.getUnreadCount();
     if (generation != _generation) return total;
     await _badge.updateBadgeCount(total);
     if (generation != _generation) return refreshNow();

@@ -9,10 +9,8 @@ class UserProfileRepository {
     return result.isNotEmpty ? result.first : null;
   }
 
-  /// Resets the user's journey.
-  /// Deletes the journey with ID 1 for the user and updates the user's started journeys list.
+  /// Resets journey 1 to the initial status and keeps the member's access.
   Future<void> resetJourney(String authUserId, List<int> currentStartedJourneys) async {
-    // First, get the user_journey record to find its ID
     final userJourneys = await CcUserJourneysTable().queryRows(
       queryFn: (q) => q.eq('user_id', authUserId).eq('journey_id', 1),
     );
@@ -20,25 +18,27 @@ class UserProfileRepository {
     if (userJourneys.isNotEmpty) {
       final userJourneyId = userJourneys.first.id;
 
-      // Get all user_steps for this journey to delete their activities
       final userSteps = await CcUserStepsTable().queryRows(
         queryFn: (q) => q.eq('user_journey_id', userJourneyId),
       );
 
-      // Delete user_activities for each user_step
       for (final step in userSteps) {
         await CcUserActivitiesTable().delete(
           matchingRows: (rows) => rows.eq('user_step_id', step.id),
         );
       }
 
-      // Delete user_steps for this journey
       await CcUserStepsTable().delete(
         matchingRows: (rows) => rows.eq('user_journey_id', userJourneyId),
       );
 
-      // Delete user_journey
-      await CcUserJourneysTable().delete(
+      await CcUserJourneysTable().update(
+        data: {
+          'journey_status': 'non_started',
+          'steps_completed': 0,
+          'date_started': null,
+          'date_completed': null,
+        },
         matchingRows: (rows) => rows.eq('id', userJourneyId),
       );
     }

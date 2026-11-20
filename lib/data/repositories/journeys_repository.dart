@@ -31,14 +31,20 @@ class JourneysRepository {
 
     if (AdminViewAsQueries.isOtherUser(userId)) {
       final rows = await AdminViewAsQueries.journeys(userId);
-      return rows.where((row) => publishedIds.contains(row.journeyId)).toList();
+      return rows
+          .where((row) =>
+              publishedIds.contains(row.journeyId) &&
+              _isJourneyInProgress(row.journeyStatus))
+          .toList();
     }
 
     final result = await CcViewUserJourneysTable().queryRows(
       queryFn: (q) =>
           q.eqOrNull('user_id', userId).inFilter('journey_id', publishedIds),
     );
-    return result;
+    return result
+        .where((row) => _isJourneyInProgress(row.journeyStatus))
+        .toList();
   }
 
   Future<List<CcViewAvailJourneysRow>> getAvailableJourneys(
@@ -237,7 +243,17 @@ class JourneysRepository {
         'start_user_journey',
         params: {'p_journey_id': journeyId},
       );
-      return created == true;
+      if (created == true) return true;
+      // An enrollment left at the initial status still needs its first steps.
+      // Older database functions treat any existing row as already started.
+      final existing = await CcUserJourneysTable().queryRows(
+        queryFn: (q) => q.eq('user_id', userId).eq('journey_id', journeyId),
+      );
+      if (existing.isEmpty ||
+          _isJourneyInProgress(existing.first.journeyStatus)) {
+        return false;
+      }
+      return await _startJourneyWithSeparateRequests(userId, journeyId);
     } on PostgrestException catch (error) {
       final missingFunction = error.code == 'PGRST202' ||
           error.message.contains('start_user_journey');
@@ -253,20 +269,36 @@ class JourneysRepository {
       queryFn: (q) => q.eq('user_id', userId).eq('journey_id', journeyId),
     );
 
-    if (existingUserJourney.isNotEmpty) {
-      return false;
-    }
-
     final now = getCurrentTimestamp;
     final nowIsoString = supaSerialize<DateTime>(now);
 
-    final userJourneyRow = await CcUserJourneysTable().insert({
-      'user_id': userId,
-      'journey_id': journeyId,
-      'date_started': nowIsoString,
-      'last_access_date': nowIsoString,
-      'journey_status': 'started',
-    });
+    final CcUserJourneysRow userJourneyRow;
+    if (existingUserJourney.isNotEmpty) {
+      final existing = existingUserJourney.first;
+      if (_isJourneyInProgress(existing.journeyStatus)) {
+        return false;
+      }
+      await _deleteUserJourneyProgress(existing.id);
+      await CcUserJourneysTable().update(
+        data: {
+          'date_started': nowIsoString,
+          'date_completed': null,
+          'last_access_date': nowIsoString,
+          'steps_completed': 0,
+          'journey_status': 'started',
+        },
+        matchingRows: (rows) => rows.eq('id', existing.id),
+      );
+      userJourneyRow = existing;
+    } else {
+      userJourneyRow = await CcUserJourneysTable().insert({
+        'user_id': userId,
+        'journey_id': journeyId,
+        'date_started': nowIsoString,
+        'last_access_date': nowIsoString,
+        'journey_status': 'started',
+      });
+    }
 
     final journeySteps = await CcJourneyStepsTable().queryRows(
       queryFn: (q) =>
@@ -284,7 +316,7 @@ class JourneysRepository {
         'user_journey_id': userJourneyRow.id,
         'user_id': userId,
         'journey_step_id': step.id,
-        'date_started': nowIsoString,
+        'date_started': i == 0 ? nowIsoString : null,
         'step_status': i == 0 ? 'open' : 'locked',
       });
     }
@@ -348,37 +380,56 @@ class JourneysRepository {
   }
 
   Future<void> resetJourney(String userId, int journeyId) async {
-    // Buscar user_journey record
     final userJourneys = await CcUserJourneysTable().queryRows(
       queryFn: (q) => q.eq('user_id', userId).eq('journey_id', journeyId),
     );
 
     if (userJourneys.isEmpty) {
-      return; // Nada para resetar
+      return;
     }
 
     final userJourneyId = userJourneys.first.id;
+    await _deleteUserJourneyProgress(userJourneyId);
+    await CcUserJourneysTable().update(
+      data: {
+        'journey_status': 'non_started',
+        'steps_completed': 0,
+        'date_started': null,
+        'date_completed': null,
+      },
+      matchingRows: (rows) => rows.eq('id', userJourneyId),
+    );
+  }
 
-    // Buscar todos os user_steps da journey
+  /// `non_started` keeps access and shows the journey as not started.
+  bool _isJourneyInProgress(String? status) =>
+      status != null && status != 'non_started';
+
+  void _collectJourneyAccess(
+    int? journeyId,
+    String? status,
+    Set<int> startedJourneyIds,
+    Set<int> initialJourneyIds,
+  ) {
+    if (journeyId == null) return;
+    if (_isJourneyInProgress(status)) {
+      startedJourneyIds.add(journeyId);
+    } else if (status == 'non_started') {
+      initialJourneyIds.add(journeyId);
+    }
+  }
+
+  Future<void> _deleteUserJourneyProgress(int userJourneyId) async {
     final userSteps = await CcUserStepsTable().queryRows(
       queryFn: (q) => q.eq('user_journey_id', userJourneyId),
     );
-
-    // Deletar user_activities de cada user_step
     for (final step in userSteps) {
       await CcUserActivitiesTable().delete(
         matchingRows: (rows) => rows.eq('user_step_id', step.id),
       );
     }
-
-    // Deletar user_steps
     await CcUserStepsTable().delete(
       matchingRows: (rows) => rows.eq('user_journey_id', userJourneyId),
-    );
-
-    // Deletar user_journey
-    await CcUserJourneysTable().delete(
-      matchingRows: (rows) => rows.eq('id', userJourneyId),
     );
   }
 
@@ -417,6 +468,7 @@ class JourneysRepository {
       if (userJourneys.isEmpty) return [];
 
       final journeyIds = userJourneys
+          .where((uj) => _isJourneyInProgress(uj.journeyStatus))
           .map((uj) => uj.journeyId)
           .where((id) => id != null)
           .cast<int>()
@@ -441,21 +493,30 @@ class JourneysRepository {
   /// Returns public journeys + private journeys (via groups) that user has NOT started yet
   Future<List<CcJourneysRow>> getAvailableJourneysForList(String userId) async {
     try {
-      final Set<int> startedJourneyIds;
+      final startedJourneyIds = <int>{};
+      final initialJourneyIds = <int>{};
       if (AdminViewAsQueries.isOtherUser(userId)) {
         final userJourneys = await AdminViewAsQueries.journeys(userId);
-        startedJourneyIds = userJourneys
-            .map((uj) => uj.journeyId)
-            .whereType<int>()
-            .toSet();
+        for (final journey in userJourneys) {
+          _collectJourneyAccess(
+            journey.journeyId,
+            journey.journeyStatus,
+            startedJourneyIds,
+            initialJourneyIds,
+          );
+        }
       } else {
         final userJourneys = await CcUserJourneysTable().queryRows(
           queryFn: (q) => q.eq('user_id', userId),
         );
-        startedJourneyIds = userJourneys
-            .map((uj) => uj.journeyId)
-            .whereType<int>()
-            .toSet();
+        for (final journey in userJourneys) {
+          _collectJourneyAccess(
+            journey.journeyId,
+            journey.journeyStatus,
+            startedJourneyIds,
+            initialJourneyIds,
+          );
+        }
       }
 
       // Get all public journeys (exclude draft journeys)
@@ -474,12 +535,23 @@ class JourneysRepository {
 
       // Get private journeys via user's group memberships
       final privateJourneys = await _getPrivateJourneysForUser(userId);
+      final enrolledJourneys = initialJourneyIds.isEmpty
+          ? <CcJourneysRow>[]
+          : await CcJourneysTable().queryRows(
+              queryFn: (q) => q
+                  .inFilter('id', initialJourneyIds.toList())
+                  .inFilter('status', ['published', 'Published']),
+            );
 
       // Combine and filter out started journeys
       final allAvailable = <CcJourneysRow>[];
       final seenIds = <int>{};
 
-      for (final journey in [...publicJourneys, ...privateJourneys]) {
+      for (final journey in [
+        ...publicJourneys,
+        ...privateJourneys,
+        ...enrolledJourneys,
+      ]) {
         final journeyId = journey.id;
         final isStarted = startedJourneyIds.contains(journeyId);
         debugPrint(

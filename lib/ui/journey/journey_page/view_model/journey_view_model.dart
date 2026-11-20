@@ -80,8 +80,10 @@ class JourneyViewModel extends ChangeNotifier {
         stepNumberOf: (step) => step.stepNumber,
       );
 
-  bool get isJourneyStarted =>
-      _userJourney != null || _startedJourneys.contains(journeyId);
+  bool get isJourneyStarted {
+    if (_userJourney?.journeyStatus == 'non_started') return false;
+    return _userJourney != null || _startedJourneys.contains(journeyId);
+  }
 
   String? get fixedLanguage => _journey?.fixedLanguage;
 
@@ -100,8 +102,9 @@ class JourneyViewModel extends ChangeNotifier {
       _journey = await journeyFuture;
       _sections = await sectionsFuture;
       _userJourney = await userJourneyFuture;
+      final hasAccessOnly = _userJourney?.journeyStatus == 'non_started';
 
-      if (_userJourney != null) {
+      if (_userJourney != null && !hasAccessOnly) {
         // Journey has been started - load user steps
         var steps = await _repository.getUserSteps(currentUserUid, journeyId);
         if (!skipStepAdvance) {
@@ -139,7 +142,8 @@ class JourneyViewModel extends ChangeNotifier {
           _startedJourneys = [..._startedJourneys, journeyId];
         }
       } else {
-        // Journey hasn't been started - load generic journey steps
+        // Access remains, but progress is back at the intro.
+        _userSteps = [];
         _journeySteps = await _repository.getJourneySteps(journeyId);
 
         // Clean up app state if needed

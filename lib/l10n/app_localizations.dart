@@ -3476,6 +3476,42 @@ abstract class AppLocalizations {
   /// **'Stays at the top, even after it has been read.'**
   String get pinMessageHint;
 
+  /// No description provided for @attachImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Add image'**
+  String get attachImage;
+
+  /// No description provided for @replaceImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace image'**
+  String get replaceImage;
+
+  /// No description provided for @removeImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get removeImage;
+
+  /// No description provided for @attachImageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Best at 1200×800 px. Larger photos are resized.'**
+  String get attachImageHint;
+
+  /// No description provided for @imageTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a photo under 12 MB.'**
+  String get imageTooLarge;
+
+  /// No description provided for @imageNotSupported.
+  ///
+  /// In en, this message translates to:
+  /// **'This image could not be used.'**
+  String get imageNotSupported;
+
   /// No description provided for @pinnedMessage.
   ///
   /// In en, this message translates to:

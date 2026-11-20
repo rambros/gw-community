@@ -61,7 +61,10 @@ class JourneyListViewModel extends ChangeNotifier {
         }
 
         // Filter to only include published journeys
-        myJourneysProgress = allUserJourneys.where((j) => publishedJourneyIds.contains(j.journeyId)).toList();
+        myJourneysProgress = allUserJourneys.where((j) {
+          return publishedJourneyIds.contains(j.journeyId) &&
+              j.journeyStatus != 'non_started';
+        }).toList();
 
         // Recalculate steps completed for each journey (removing duplicates)
         await _recalculateStepsCompleted();

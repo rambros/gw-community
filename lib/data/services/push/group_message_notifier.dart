@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 
-/// Asks the server to push a new group message to the members who can see it.
-/// Failure here does not undo the message. The in-app badge comes from the
-/// unread message itself.
+/// Asks the server to alert members who can see a new group message.
+/// The server writes an inbox row and sends the push. Failure here does not
+/// undo the message. The group card still counts the message itself.
 class GroupMessageNotifier {
   static Future<void> notify(int sharingId) async {
     try {

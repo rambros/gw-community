@@ -1,65 +1,42 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:gw_community/data/models/enums/user_role.dart';
 import 'package:gw_community/data/repositories/announcement_repository.dart';
-import 'package:gw_community/data/repositories/facilitator_settings_repository.dart';
 import 'package:gw_community/data/repositories/in_app_notification_repository.dart';
 import 'package:gw_community/data/services/supabase/supabase.dart';
 import 'package:gw_community/data/services/unread_badge_sync.dart';
-import 'package:gw_community/domain/community/message_visibility.dart';
 
-/// Unified item representing either a system notification or a facilitator announcement
+/// One inbox row from `cc_notifications`. Group messages stay in the group tab.
 class UnifiedNotificationItem {
-  final String source; // 'system' | 'announcement'
   final int id;
   final String title;
   final String? message;
+  final String? imageUrl;
   bool isRead;
   final DateTime createdAt;
+  final CcNotificationsRow notification;
 
-  // System notification fields
-  final CcNotificationsRow? systemNotification;
-
-  // Announcement fields
-  final CcViewNotificationsUsersRow? announcement;
-  final String? groupName;
-  final int? groupId;
-  final int newReplyCount;
-
-  UnifiedNotificationItem.fromSystem(CcNotificationsRow n)
-      : source = 'system',
-        id = n.id,
+  UnifiedNotificationItem(CcNotificationsRow n)
+      : id = n.id,
         title = n.title,
         message = n.message,
+        imageUrl = imageUrlOf(n.metadata),
         isRead = n.isRead,
         createdAt = n.createdAt,
-        systemNotification = n,
-        announcement = null,
-        groupName = null,
-        groupId = n.groupId,
-        newReplyCount = 0;
+        notification = n;
+}
 
-  UnifiedNotificationItem.fromAnnouncement(
-    CcViewNotificationsUsersRow a, {
-    required this.isRead,
-    this.newReplyCount = 0,
-    DateTime? activityAt,
-  })  : source = 'announcement',
-        id = a.id!,
-        title = a.title ?? 'Message',
-        message = a.text,
-        createdAt = activityAt ?? a.createdAt ?? a.updatedAt ?? DateTime.now(),
-        systemNotification = null,
-        announcement = a,
-        groupName = a.groupName,
-        groupId = a.groupId;
+String? imageUrlOf(dynamic metadata) {
+  if (metadata is Map && metadata['image_url'] is String) {
+    final url = (metadata['image_url'] as String).trim();
+    if (url.isNotEmpty) return url;
+  }
+  return null;
 }
 
 class InAppNotificationsViewModel extends ChangeNotifier {
   final InAppNotificationRepository _repository = InAppNotificationRepository();
-  final AnnouncementRepository _announcementRepository =
-      AnnouncementRepository();
+  final AnnouncementRepository _announcementRepository = AnnouncementRepository();
 
   List<UnifiedNotificationItem> _items = [];
   List<UnifiedNotificationItem> get items => _items;
@@ -86,90 +63,8 @@ class InAppNotificationsViewModel extends ChangeNotifier {
     _safeNotifyListeners();
 
     try {
-      final userId = SupaFlow.client.auth.currentUser?.id;
-
       final systemNotifs = await _repository.getNotificationsForCurrentUser();
-      final systemItems = systemNotifs
-          .map((n) => UnifiedNotificationItem.fromSystem(n))
-          .toList();
-
-      List<UnifiedNotificationItem> announcementItems = [];
-      if (userId != null) {
-        final memberships = await CcGroupMembersTable().queryRows(
-          queryFn: (q) => q.eq('user_id', userId),
-        );
-        final groupIds =
-            memberships.map((m) => m.groupId).whereType<int>().toList();
-        final facilitatorGroups = memberships
-            .where((m) =>
-                m.groupId != null &&
-                UserRole.fromString(m.userRole) == UserRole.groupManager)
-            .map((m) => m.groupId!)
-            .toSet();
-        final mutedGroups = await FacilitatorSettingsRepository().groupsWithMessagesOff(userId);
-
-        if (groupIds.isNotEmpty) {
-          final announcements = await CcViewNotificationsUsersTable().queryRows(
-            queryFn: (q) => q.inFilter('group_id', groupIds),
-          );
-
-          if (announcements.isNotEmpty) {
-            final visible = announcements
-                .where((a) => canSeeGroupMessage(
-                      audience: a.audience,
-                      recipientUserId: a.recipientUserId,
-                      authorUserId: a.userId,
-                      viewerId: userId,
-                      viewerIsFacilitator: a.groupId != null && facilitatorGroups.contains(a.groupId),
-                    ))
-                .toList();
-
-            if (visible.isNotEmpty) {
-              final visibleIds = visible.map((a) => a.id!).toList();
-              final reads = await CcSharingReadsTable().queryRows(
-                queryFn: (q) =>
-                    q.eq('user_id', userId).inFilter('sharing_id', visibleIds),
-              );
-              final readIds = reads.map((r) => r.experienceId).toSet();
-              final sharingGroupIds = <int, int>{
-                for (final announcement in visible)
-                  if (announcement.id != null && announcement.groupId != null)
-                    announcement.id!: announcement.groupId!,
-              };
-              final replies = await _announcementRepository.getReplyAttention(
-                userId: userId,
-                sharingGroupIds: sharingGroupIds,
-              );
-
-              announcementItems = visible
-                  .map((a) {
-                    final attention = replies.unseen[a.id];
-                    final newReplies = attention?.count ?? 0;
-                    final personalMuted = a.groupId != null &&
-                        mutedGroups.contains(a.groupId) &&
-                        isMessageForFacilitator(
-                          audience: a.audience,
-                          recipientUserId: a.recipientUserId,
-                          authorUserId: a.userId,
-                          viewerId: userId,
-                        );
-                    return UnifiedNotificationItem.fromAnnouncement(
-                      a,
-                      isRead: personalMuted || (readIds.contains(a.id) && newReplies == 0),
-                      newReplyCount: newReplies,
-                      activityAt: attention?.latestAt,
-                    );
-                  })
-                  .toList();
-            }
-          }
-        }
-      }
-
-      final all = [...systemItems, ...announcementItems];
-      all.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-      _items = all;
-
+      _items = systemNotifs.map(UnifiedNotificationItem.new).toList();
       _isLoading = false;
       _safeNotifyListeners();
     } catch (e) {
@@ -179,69 +74,52 @@ class InAppNotificationsViewModel extends ChangeNotifier {
     }
   }
 
-  Future<DateTime?> announcementReadAt(int announcementId) {
-    final userId = SupaFlow.client.auth.currentUser?.id;
-    if (userId == null) return Future.value(null);
-    return _announcementRepository.getAnnouncementReadAt(announcementId, userId);
-  }
-
   Future<void> markAsRead(UnifiedNotificationItem item) async {
     if (item.isRead) return;
 
-    if (item.source == 'system' && item.systemNotification != null) {
-      final success = await _repository.markAsRead(item.id);
-      if (success) {
-        item.isRead = true;
-        _safeNotifyListeners();
-        unawaited(UnreadBadgeSync.instance.refreshNow());
-      }
-    } else if (item.source == 'announcement') {
-      final userId = SupaFlow.client.auth.currentUser?.id;
-      if (userId != null) {
-        await _announcementRepository.markAnnouncementAsRead(item.id, userId);
-        item.isRead = true;
-        _safeNotifyListeners();
-        unawaited(UnreadBadgeSync.instance.refreshNow());
-      }
+    final success = await _repository.markAsRead(item.id);
+    if (success) {
+      item.isRead = true;
+      _safeNotifyListeners();
+      unawaited(UnreadBadgeSync.instance.refreshNow());
     }
   }
 
-  Future<void> markAllAsRead() async {
+  /// Marks the group message read, and the inbox alert that points at it.
+  Future<void> markMessageRead(int sharingId) async {
     final userId = SupaFlow.client.auth.currentUser?.id;
+    if (userId == null) return;
+    await _announcementRepository.markAnnouncementAsRead(sharingId, userId);
+  }
+
+  Future<void> markAllAsRead() async {
     await _repository.markAllAsRead();
-    if (userId != null) {
-      for (final item
-          in _items.where((i) => !i.isRead && i.source == 'announcement')) {
-        await _announcementRepository.markAnnouncementAsRead(item.id, userId);
-      }
-    }
     await loadNotifications();
     unawaited(UnreadBadgeSync.instance.refreshNow());
   }
 
   Future<void> deleteNotification(UnifiedNotificationItem item) async {
-    if (item.source == 'system') {
-      final success = await _repository.deleteNotification(item.id);
-      if (success) {
-        _items.removeWhere((n) => n.source == 'system' && n.id == item.id);
-        _safeNotifyListeners();
-      }
+    final success = await _repository.deleteNotification(item.id);
+    if (success) {
+      _items.removeWhere((n) => n.id == item.id);
+      _safeNotifyListeners();
+      unawaited(UnreadBadgeSync.instance.refreshNow());
     }
-    // Announcements are not deleted individually — they're group content
   }
 
   Future<void> deleteAllNotifications() async {
     final success = await _repository.deleteAllNotifications();
     if (success) {
-      _items.removeWhere((n) => n.source == 'system');
+      _items = [];
       _safeNotifyListeners();
+      unawaited(UnreadBadgeSync.instance.refreshNow());
     }
   }
 
   Future<void> deleteReadNotifications() async {
     final success = await _repository.deleteReadNotifications();
     if (success) {
-      _items.removeWhere((n) => n.source == 'system' && n.isRead);
+      _items.removeWhere((n) => n.isRead);
       _safeNotifyListeners();
     }
   }

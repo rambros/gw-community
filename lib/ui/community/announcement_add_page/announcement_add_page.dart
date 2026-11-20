@@ -324,6 +324,7 @@ class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
             maxLines: 14,
           ),
         ),
+        if (!widget.toFacilitators) _buildImagePicker(context, viewModel),
         if (widget.toFacilitators)
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(8.0, 8.0, 8.0, 0.0),
@@ -379,13 +380,86 @@ class _AnnouncementAddPageState extends State<AnnouncementAddPage> {
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(8.0, 8.0, 8.0, 0.0),
             child: Text(
-              viewModel.errorMessage!,
+              _errorText(context, viewModel.errorMessage!),
               style: AppTheme.of(context).labelMedium.copyWith(
                     color: AppTheme.of(context).error,
                   ),
             ),
           ),
       ],
+    );
+  }
+
+  String _errorText(BuildContext context, String message) {
+    switch (message) {
+      case 'image_too_large':
+        return context.l10n.imageTooLarge;
+      case 'image_not_supported':
+        return context.l10n.imageNotSupported;
+      default:
+        return message;
+    }
+  }
+
+  Widget _buildImagePicker(
+    BuildContext context,
+    AddAnnouncementViewModel viewModel,
+  ) {
+    final bytes = viewModel.imageBytes;
+    return Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(8.0, 8.0, 8.0, 0.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              FFButtonWidget(
+                onPressed: viewModel.isSaving ? null : viewModel.pickImage,
+                text: bytes == null
+                    ? context.l10n.attachImage
+                    : context.l10n.replaceImage,
+                options: FFButtonOptions(
+                  height: 36.0,
+                  padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+                  color: AppTheme.of(context).primaryBackground,
+                  textStyle: AppTheme.of(context).labelMedium.override(
+                        font: GoogleFonts.lexendDeca(),
+                        color: AppTheme.of(context).secondary,
+                      ),
+                  elevation: 0.0,
+                  borderSide: BorderSide(color: AppTheme.of(context).alternate),
+                  borderRadius: BorderRadius.circular(16.0),
+                ),
+              ),
+              if (bytes != null)
+                TextButton(
+                  onPressed: viewModel.isSaving ? null : viewModel.clearImage,
+                  child: Text(context.l10n.removeImage),
+                ),
+            ],
+          ),
+          const SizedBox(height: 6.0),
+          Text(
+            context.l10n.attachImageHint,
+            style: AppTheme.of(context).bodySmall.override(
+                  font: GoogleFonts.lexendDeca(),
+                  color: AppTheme.of(context).secondary,
+                ),
+          ),
+          if (bytes != null) ...[
+            const SizedBox(height: 12.0),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12.0),
+              child: Image.memory(
+                bytes,
+                height: 180.0,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ],
+        ],
+      ),
     );
   }
 

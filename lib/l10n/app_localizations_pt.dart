@@ -1894,6 +1894,25 @@ class AppLocalizationsPt extends AppLocalizations {
   String get pinMessageHint => 'Fica no topo, mesmo depois de lida.';
 
   @override
+  String get attachImage => 'Adicionar imagem';
+
+  @override
+  String get replaceImage => 'Trocar imagem';
+
+  @override
+  String get removeImage => 'Remover';
+
+  @override
+  String get attachImageHint =>
+      'O ideal é 1200×800 px. Fotos maiores são reduzidas.';
+
+  @override
+  String get imageTooLarge => 'Escolha uma foto de até 12 MB.';
+
+  @override
+  String get imageNotSupported => 'Não foi possível usar esta imagem.';
+
+  @override
   String get pinnedMessage => 'Fixada pelo facilitador';
 
   @override

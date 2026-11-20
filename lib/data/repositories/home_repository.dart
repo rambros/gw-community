@@ -26,6 +26,7 @@ class HomeRepository {
     if (AdminViewAsQueries.isOtherUser(userId)) {
       final progress = await getAllUserJourneyProgress(userId);
       return progress
+          .where((row) => row.journeyStatus != 'non_started')
           .map(
             (row) => CcUserJourneysRow({
               'id': row.id,
@@ -40,11 +41,12 @@ class HomeRepository {
     }
 
     // Filter user journeys by ensuring the related journey has status='published'
-    return await CcUserJourneysTable().queryRows(
+    final rows = await CcUserJourneysTable().queryRows(
       queryFn: (q) => q
           .eqOrNull('user_id', userId)
           .inFilter('cc_journeys.status', ['published', 'Published']).select('*, cc_journeys!inner(status)'),
     );
+    return rows.where((row) => row.journeyStatus != 'non_started').toList();
   }
 
   /// Fetches a specific journey by ID
@@ -82,12 +84,17 @@ class HomeRepository {
         queryFn: (q) => q.inFilter('id', journeyIds).inFilter('status', ['published', 'Published']),
       );
       final publishedIds = published.map((j) => j.id).toSet();
-      return rows.where((j) => publishedIds.contains(j.journeyId)).toList();
+      return rows
+          .where((j) =>
+              publishedIds.contains(j.journeyId) &&
+              j.journeyStatus != 'non_started')
+          .toList();
     }
 
-    return await CcViewUserJourneysTable().queryRows(
+    final rows = await CcViewUserJourneysTable().queryRows(
       queryFn: (q) => q.eqOrNull('user_id', userId),
     );
+    return rows.where((row) => row.journeyStatus != 'non_started').toList();
   }
 
   /// Fetches all completed steps for a user across all journeys

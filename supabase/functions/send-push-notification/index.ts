@@ -13,14 +13,25 @@ interface RequestBody {
   reference_id?: number;
   metadata?: Record<string, unknown>;
   notification_type?: string;
+  image_url?: string;
+  /// Updates an unread inbox row with this key instead of inserting another.
+  alert_key?: string;
+  /// Audience label stored on an admin send: all, group, event, list, individual.
+  target_type?: string;
 }
 
 interface FcmMessage {
   token: string;
-  notification: { title: string; body: string };
+  notification: { title: string; body: string; image?: string };
   data?: Record<string, string>;
-  android?: { priority: string };
-  apns?: { payload: { aps: { sound: string; badge: number } } };
+  android?: {
+    priority: string;
+    notification?: { image: string };
+  };
+  apns?: {
+    payload: { aps: { sound: string; badge: number; 'mutable-content'?: number } };
+    fcm_options?: { image: string };
+  };
 }
 
 // ── FCM HTTP v1 helper ────────────────────────────────────────────────────────
@@ -87,6 +98,7 @@ async function sendFcmBatch(
   projectId: string,
   accessToken: string,
   data?: Record<string, string>,
+  imageUrl?: string,
 ): Promise<{ sent: number; failed: number }> {
   let sent = 0;
   let failed = 0;
@@ -97,10 +109,22 @@ async function sendFcmBatch(
 
     const messages: FcmMessage[] = batch.map((token) => ({
       token,
-      notification: { title, body },
+      notification: { title, body, ...(imageUrl ? { image: imageUrl } : {}) },
       data: data ?? {},
-      android: { priority: 'high' },
-      apns: { payload: { aps: { sound: 'default', badge: 1 } } },
+      android: {
+        priority: 'high',
+        ...(imageUrl ? { notification: { image: imageUrl } } : {}),
+      },
+      apns: {
+        payload: {
+          aps: {
+            sound: 'default',
+            badge: 1,
+            ...(imageUrl ? { 'mutable-content': 1 } : {}),
+          },
+        },
+        ...(imageUrl ? { fcm_options: { image: imageUrl } } : {}),
+      },
     }));
 
     const url = `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`;
@@ -144,6 +168,16 @@ serve(async (req) => {
   try {
     const body: RequestBody = await req.json();
     const { user_ids, title, message, channel, group_id, reference_type, reference_id, metadata, notification_type } = body;
+    const imageUrl = body.image_url?.trim() || undefined;
+    const alertKey = body.alert_key?.trim() || undefined;
+    const resolvedType = notification_type ?? (group_id ? 'group_announcement' : 'admin_announcement');
+    const recordSend = resolvedType === 'admin_announcement' || resolvedType === 'group_announcement';
+    const rowMetadata: Record<string, unknown> = {
+      ...(metadata ?? {}),
+      ...(imageUrl && resolvedType !== 'group_message' ? { image_url: imageUrl } : {}),
+      ...(alertKey ? { alert_key: alertKey } : {}),
+    };
+    const hasMetadata = Object.keys(rowMetadata).length > 0;
 
     if (!user_ids?.length || !title || !message || !channel) {
       return new Response(JSON.stringify({ error: 'Missing required fields' }), {
@@ -161,6 +195,41 @@ serve(async (req) => {
     let inAppSent = 0;
     let pushSent = 0;
     let pushFailed = 0;
+    let sendId: number | null = null;
+
+    if (recordSend) {
+      let createdBy: string | null = null;
+      const authHeader = req.headers.get('Authorization');
+      const anonKey = Deno.env.get('SUPABASE_ANON_KEY');
+      if (authHeader && anonKey) {
+        const userClient = createClient(Deno.env.get('SUPABASE_URL')!, anonKey, {
+          global: { headers: { Authorization: authHeader } },
+        });
+        const { data: userData } = await userClient.auth.getUser();
+        createdBy = userData.user?.id ?? null;
+      }
+
+      const { data: sendRow, error: sendError } = await supabase
+        .from('cc_notification_sends')
+        .insert({
+          created_by: createdBy,
+          channel,
+          type: resolvedType,
+          title,
+          message,
+          image_url: imageUrl ?? null,
+          group_id: group_id ?? null,
+          target_type: body.target_type ?? null,
+          recipient_count: user_ids.length,
+          in_app_sent: 0,
+          push_sent: 0,
+          push_failed: 0,
+        })
+        .select('id')
+        .single();
+      if (sendError) throw new Error(`Send log failed: ${sendError.message}`);
+      sendId = sendRow.id as number;
+    }
 
     // ── In-App notifications ─────────────────────────────────────────────────
     if (channel === 'in_app' || channel === 'both') {
@@ -175,22 +244,50 @@ serve(async (req) => {
       const disabledIds = new Set((disabledPrefs ?? []).map((p: { user_id: string }) => p.user_id));
       const inAppRecipients = user_ids.filter((id) => !disabledIds.has(id));
 
-      if (inAppRecipients.length > 0) {
-        const rows = inAppRecipients.map((userId) => ({
+      let pendingRecipients = inAppRecipients;
+      if (alertKey && inAppRecipients.length > 0) {
+        const { data: existing, error: existingError } = await supabase
+          .from('cc_notifications')
+          .select('id, user_id')
+          .in('user_id', inAppRecipients)
+          .eq('is_read', false)
+          .filter('metadata->>alert_key', 'eq', alertKey);
+        if (existingError) throw new Error(`Alert lookup failed: ${existingError.message}`);
+
+        const existingRows = existing ?? [];
+        if (existingRows.length > 0) {
+          const { error: updateError } = await supabase
+            .from('cc_notifications')
+            .update({
+              title,
+              message,
+              created_at: new Date().toISOString(),
+            })
+            .in('id', existingRows.map((row: { id: number }) => row.id));
+          if (updateError) throw new Error(`Alert update failed: ${updateError.message}`);
+          inAppSent += existingRows.length;
+          const updatedUsers = new Set(existingRows.map((row: { user_id: string }) => row.user_id));
+          pendingRecipients = inAppRecipients.filter((id) => !updatedUsers.has(id));
+        }
+      }
+
+      if (pendingRecipients.length > 0) {
+        const rows = pendingRecipients.map((userId) => ({
           user_id: userId,
-          type: notification_type ?? (group_id ? 'group_announcement' : 'admin_announcement'),
+          type: resolvedType,
           title,
           message,
           reference_type: reference_type ?? null,
           reference_id: reference_id ?? null,
           group_id: group_id ?? null,
-          metadata: metadata ?? null,
+          send_id: sendId,
+          metadata: hasMetadata ? rowMetadata : null,
           is_read: false,
         }));
 
         const { error } = await supabase.from('cc_notifications').insert(rows);
         if (error) throw new Error(`In-app insert failed: ${error.message}`);
-        inAppSent = inAppRecipients.length;
+        inAppSent += pendingRecipients.length;
       }
     }
 
@@ -231,15 +328,28 @@ serve(async (req) => {
           const result = await sendFcmBatch(tokens, title, message, projectId, accessToken, {
             group_id: group_id?.toString() ?? '',
             channel: channel,
-          });
+            ...(imageUrl ? { image_url: imageUrl } : {}),
+          }, imageUrl);
           pushSent = result.sent;
           pushFailed = result.failed;
         }
       }
     }
 
+    if (sendId != null) {
+      const { error: countError } = await supabase
+        .from('cc_notification_sends')
+        .update({
+          in_app_sent: inAppSent,
+          push_sent: pushSent,
+          push_failed: pushFailed,
+        })
+        .eq('id', sendId);
+      if (countError) console.error('Send count update failed:', countError.message);
+    }
+
     return new Response(
-      JSON.stringify({ success: true, in_app_sent: inAppSent, push_sent: pushSent, push_failed: pushFailed }),
+      JSON.stringify({ success: true, in_app_sent: inAppSent, push_sent: pushSent, push_failed: pushFailed, send_id: sendId }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
     );
   } catch (e) {

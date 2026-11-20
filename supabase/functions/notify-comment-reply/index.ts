@@ -218,10 +218,12 @@ serve(async (req) => {
           user_ids: [userId],
           title: group?.name ?? 'New replies',
           message: body,
-          channel: 'push',
+          channel: 'both',
+          notification_type: 'group_message',
           group_id: sharing.group_id,
           reference_type: 'group_message',
           reference_id: sharing.id,
+          alert_key: `group_message:${sharing.id}`,
         }),
       });
 

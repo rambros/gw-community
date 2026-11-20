@@ -62,7 +62,7 @@ serve(async (req) => {
     const supabase = createClient(supabaseUrl, serviceKey);
     const { data: sharing, error: sharingError } = await supabase
       .from('cc_sharings')
-      .select('id, type, title, text, group_id, user_id, recipient_user_id, audience')
+      .select('id, type, title, text, group_id, user_id, recipient_user_id, audience, image_url')
       .eq('id', sharingId)
       .maybeSingle();
     if (sharingError) throw new Error(sharingError.message);
@@ -120,10 +120,15 @@ serve(async (req) => {
           user_ids: pushIds,
           title: groupName,
           message: String(sharing.title ?? 'New message').slice(0, 120),
-          channel: 'push',
+          channel: 'both',
+          notification_type: 'group_message',
           group_id: sharing.group_id,
           reference_type: 'group_message',
           reference_id: sharing.id,
+          alert_key: `group_message:${sharing.id}`,
+          ...(typeof sharing.image_url === 'string' && sharing.image_url.trim()
+            ? { image_url: sharing.image_url.trim() }
+            : {}),
         }),
       });
       if (!pushRes.ok) {
